@@ -12,6 +12,7 @@ const { IS_LOGGED_IN } = Queries;
 const { VERIFY_USER } = Mutations;
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
+  console.log(graphQLErrors)
   if (graphQLErrors)
   graphQLErrors.forEach(({ message, locations, path }) =>
     console.log(

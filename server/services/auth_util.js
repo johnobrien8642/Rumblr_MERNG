@@ -14,7 +14,7 @@ const register = async data => {
     throw new Error(message)
   }
 
-  const { username, email, password } = data;
+  const { blogName, email, password } = data;
 
   const existingUser = await User.findOne({ email })
 
@@ -26,7 +26,7 @@ const register = async data => {
 
   const user = new User(
     {
-    username: username,
+    blogName: blogName,
     email: email,
     password: hashedPW
     },
@@ -72,7 +72,7 @@ const login = async data => {
     const user = await User.findOne({ email })
 
     if (!user) {
-      throw new Error('Username does not exist')
+      throw new Error('User with that email does not exist')
     }
 
     if (bcrypt.compareSync(password, user.password)) {

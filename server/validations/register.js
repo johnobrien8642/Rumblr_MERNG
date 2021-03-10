@@ -4,11 +4,11 @@ const validText = require('./valid_text')
 
 module.exports = function validateRegisterInput(data) {
   
-  data.username = validText(data.username) ? data.username : '';
+  data.blogName = validText(data.blogName) ? data.blogName : '';
   data.email = validText(data.email) ? data.email : '';
   data.password = validText(data.password) ? data.password : '';
   
-  if (Validator.isEmpty(data.username)) {
+  if (Validator.isEmpty(data.blogName)) {
     return { message: 'Username cannot be empty', isValid: false }
   }
 

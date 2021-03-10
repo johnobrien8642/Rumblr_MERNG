@@ -9,15 +9,22 @@ const { IS_LOGGED_IN } = Queries;
 
 const Register = () => {
   let [email, setEmail] = useState('');
-  let [username, setUsername] = useState('');
+  let [blogName, setBlogName] = useState('');
   let [password, setPassword] = useState('');
+  let [errorMessages, addErrorMessage] = useState([]);
   let history = useHistory();
 
   const [ registerUser ] = useMutation(REGISTER_USER, {
+    onError(error) {
+      error.graphQLErrors.forEach((error, i) => {
+        addErrorMessage(errorMessages.concat(error.message))
+      })
+    },
     onCompleted({ registerUser }) {
       const { token } = registerUser;
       localStorage.setItem('auth-token', token)
       resetInputs();
+      history.push('/');
     },
     update(client, { data }) {
       client.writeQuery({
@@ -31,18 +38,22 @@ const Register = () => {
 
   const resetInputs = () => {
     setEmail(email = '');
-    setUsername(username = '');
+    setBlogName(blogName = '');
     setPassword(password = '');
+    addErrorMessage(errorMessages = []);
   }
 
   return (
     <div>
+      <ul>
+        {errorMessages.map((error, i) => {
+          return <li key={i}>{error}</li>
+        })}
+      </ul>
       <form
         onSubmit={e => {
           e.preventDefault();
-          registerUser({ variables: { email, username, password }})
-            .then(() => history.push('/'))
-            .catch(err => console.log(err))
+          registerUser({ variables: { email, blogName, password }})
         }}
       >
       <input
@@ -51,9 +62,9 @@ const Register = () => {
         onChange={e => setEmail(email = e.target.value)}
       />
       <input
-        value={username}
-        placeholder={'Username'}
-        onChange={e => setUsername(username = e.target.value)}
+        value={blogName}
+        placeholder={'Blog Name'}
+        onChange={e => setBlogName(blogName = e.target.value)}
       />
       <input
         value={password}
