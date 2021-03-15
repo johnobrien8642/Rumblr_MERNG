@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
-const keys = require('../config/keys');
+const keys = require('../../config/keys');
 const validateRegisterInput = require('../validations/register');
 const validateLoginInput = require('../validations/login');
 const User = require('../models/User');

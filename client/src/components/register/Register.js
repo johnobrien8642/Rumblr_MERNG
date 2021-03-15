@@ -53,7 +53,15 @@ const Register = () => {
       <form
         onSubmit={e => {
           e.preventDefault();
-          registerUser({ variables: { email, blogName, password }})
+          registerUser({ 
+            variables: { 
+              NewUserInput: { 
+                email, 
+                blogName, 
+                password 
+              }
+            }
+          })
         }}
       >
       <input

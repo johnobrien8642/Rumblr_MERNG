@@ -51,7 +51,13 @@ const Login = () => {
       <form
         onSubmit={e => {
           e.preventDefault();
-          loginUser({variables: { email, password }})
+          loginUser({variables: { 
+              LoginUserInput: { 
+                email, 
+                password 
+              }
+            }
+          })
         }}
       >
         <input
