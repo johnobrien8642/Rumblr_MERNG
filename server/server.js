@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
-// const { graphqlHTTP } = require('express-graphql');
 const { ApolloServer } = require('apollo-server-express');
 const models = require('./models/index');
-// const schema = require('./schema/schema');
 const url = 'mongodb://127.0.0.1:27017/Rumblr_MERNG';
 const TypeDefs = require('./schema/types/type_defs')
 const Resolvers = require('./schema/types/resolvers')

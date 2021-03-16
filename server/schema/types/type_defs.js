@@ -1,6 +1,7 @@
 const gql = require('graphql-tag')
 
 const TypeDefs = gql`
+
   type User {
     _id: ID!
     blogName: String!
@@ -10,6 +11,12 @@ const TypeDefs = gql`
     loggedIn: Boolean!
     created: Int!
     lastUpdated: Int!
+  }
+
+  type File {
+    filename: String
+    mimetype: String
+    encoding: String
   }
 
   input NewUserInput {
@@ -38,6 +45,7 @@ const TypeDefs = gql`
     loginUser(LoginUserInput: LoginUserInput): AuthData
     logoutUser(token: String!): AuthData
     verifyUser(token: String!): AuthData
+    createPost(file: Upload!): File!
   }
 `;
 

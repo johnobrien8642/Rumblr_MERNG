@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import Mutations from '../../graphql/mutations'
+const { CREATE_POST } = Mutations;
 
 const CreatePost = () => {
 	let [ mainImageUrl, setMainImageUrl ] = useState('');
 	let [ mainImageFile, setMainImageFile ] = useState(null);
-	let [ bodyImageUrl, setBodyImageUrl ] = useState('');
-	let [ bodyImageFile, setBodyImageFile ] = useState(null);
-	// let [ createPost ] = useMutation(CREATE_POST)
+	// let [ bodyImageUrl, setBodyImageUrl ] = useState('');
+	// let [ bodyImageFile, setBodyImageFile ] = useState(null);
+	let [ createPost ] = useMutation(CREATE_POST)
 
 
 	const previewMainImage = (e) => {
 		const reader = new FileReader();
 		const file = e.currentTarget.files[0];
 		reader.onloadend = () => {
-			setMainImageUrl(mainImageUrl = reader.result)
 			setMainImageFile(mainImageFile = file)
+			setMainImageUrl(mainImageUrl = reader.result)
 		}
 
 		if (file) {
@@ -25,60 +27,61 @@ const CreatePost = () => {
 		}
 	}
 
-	const previewBodyImage = (e) => {
-		const reader = new FileReader();
-		const file = e.currentTarget.files[0];
-		reader.onloadend = () => {
-			setBodyImageUrl(bodyImageUrl = reader.result)
-			setBodyImageFile(bodyImageFile = file)
-		}
+	// const previewBodyImage = (e) => {
+	// 	const reader = new FileReader();
+	// 	const file = e.currentTarget.files[0];
+	// 	reader.onloadend = () => {
+	// 		setBodyImageFile(bodyImageFile = file)
+	// 		setBodyImageUrl(bodyImageUrl = reader.result)
+	// 	}
 
-		if (file) {
-			reader.readAsDataURL(file);
-		} else {
-			setBodyImageUrl('')
-			setBodyImageFile(null)
-		}
-	}
+	// 	if (file) {
+	// 		reader.readAsDataURL(file);
+	// 	} else {
+	// 		setBodyImageUrl('')
+	// 		setBodyImageFile(null)
+	// 	}
+	// }
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-
-		const formData = new FormData();
-		formData.append('mainImage', mainImageFile);
-		formData.append('bodyImage', bodyImageFile);
-		for (var pair of formData.entries()) {
-			console.log(pair[0]+','+pair[1]);
-		}
-		// createPost({
-		// 	variables: { data: formData }
-		// })
+		// let formData = new FormData();
+		// formData.append('mainImage', mainImageFile)
+		
 	}
-
+	
 	const mainImagePreview = 
 	mainImageUrl ? 
 		<img 
 			height='50%'
 			width='50%'
 			object-fit='contain'
+			alt={mainImageFile.name}
 			src={mainImageUrl}
 		/> : null;
 	
-	const bodyImagePreview = 
-	bodyImageUrl ? 
-		<img 
-			height='50%'
-			width='50%'
-			object-fit='contain'
-			src={bodyImageUrl}
-		/> : null;
+	// const bodyImagePreview = 
+	// bodyImageUrl ? 
+	// 	<img 
+	// 		height='50%'
+	// 		width='50%'
+	// 		object-fit='contain'
+	// 		alt={bodyImageFile.name}
+	// 		src={bodyImageUrl}
+	// 	/> : null;
 
 	return (
 		<div>
 			<h2>Create Post</h2>
 			<form
 				onSubmit={e => {
-					handleSubmit(e);
+					// handleSubmit(e);
+					console.log(mainImageFile)
+					createPost({
+						variables: {
+							file: mainImageFile
+						}
+					}).then(data => console.log(data))
 				}}
 				encType={'multipart/form-data'}
 			>
@@ -93,7 +96,7 @@ const CreatePost = () => {
 				{mainImagePreview}
 			</div>
 
-			<div>
+			{/* <div>
 				<h2>Body Image</h2>
 				<input
 					type='file'
@@ -101,7 +104,7 @@ const CreatePost = () => {
 					onChange={previewBodyImage}
 				/>
 				{bodyImagePreview}
-			</div>
+			</div> */}
 			<button type='submit'>Submit</button>
 			</form>
 		</div>

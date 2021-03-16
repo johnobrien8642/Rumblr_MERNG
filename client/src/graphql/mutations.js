@@ -32,10 +32,15 @@ const Mutations = {
       }
     }
   `,
-  // CREATE_POST: gql`
-  //   mutation CreatePost($formData:  )
-
-  // `
+  CREATE_POST: gql`
+    mutation CreatePost($file: Upload!) {
+      createPost(file: $file) {
+        filename
+        mimetype
+        encoding
+      }
+    }
+  `
 };
 
 export default Mutations;
