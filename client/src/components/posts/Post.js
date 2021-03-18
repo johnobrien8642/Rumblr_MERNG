@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios'
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import Mutations from '../../graphql/mutations';
 const mongoose = require('mongoose')
 const { CREATE_POST } = Mutations;
@@ -9,9 +10,10 @@ const Post = () => {
   let [mainImageFiles, setMain] = useState([]);
   let [bodyImageFiles, setBody] = useState([]);
   let [errMessage, setErr] = useState('')
+  let history = useHistory();
   let [createPost] = useMutation(CREATE_POST, {
     onCompleted(data) {
-      console.log(data)
+      history.push('/')
     },
     onError(error) {
       console.log(error)
