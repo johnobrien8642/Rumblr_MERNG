@@ -1,10 +1,11 @@
 import React from 'react';
+import Post from '../posts/Post'
 
 const FeedIndex = () => {
 
   return(
     <div>
-      <p>This is the main feed index</p>
+      <Post />
     </div>
   )
 }

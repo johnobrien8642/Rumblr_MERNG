@@ -31,6 +31,23 @@ const Mutations = {
         loggedIn
       }
     }
+  `,
+  CREATE_POST: gql`
+    mutation CreatePost($mainImages: [ImageInputType], $bodyImages: [ImageInputType]) {
+      createPost(mainImages: $mainImages, bodyImages: $bodyImages) {
+        _id
+        mainImages {
+          _id
+          url
+          created
+        }
+        bodyImages {
+          _id
+          url
+          created
+        }
+      }
+    }
   `
 };
 

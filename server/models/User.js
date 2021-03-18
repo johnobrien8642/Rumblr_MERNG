@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
   blogName: {
-    type: String,
+    type: String, 
     required: true
   },
   email: {
@@ -54,4 +54,4 @@ const UserSchema = new Schema({
   // }
 })
 
-module.exports = mongoose.model('users', UserSchema)
+module.exports = mongoose.model('User', UserSchema)
