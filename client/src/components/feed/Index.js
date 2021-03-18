@@ -1,11 +1,11 @@
 import React from 'react';
-import CreatePost from '../posts/Create_Post'
+import Post from '../posts/Post'
 
 const FeedIndex = () => {
 
   return(
     <div>
-      <CreatePost />
+      <Post />
     </div>
   )
 }

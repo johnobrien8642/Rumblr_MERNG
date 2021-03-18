@@ -33,11 +33,19 @@ const Mutations = {
     }
   `,
   CREATE_POST: gql`
-    mutation CreatePost($file: Upload!) {
-      createPost(file: $file) {
-        filename
-        mimetype
-        encoding
+    mutation CreatePost($mainImages: [ImageInputType], $bodyImages: [ImageInputType]) {
+      createPost(mainImages: $mainImages, bodyImages: $bodyImages) {
+        _id
+        mainImages {
+          _id
+          url
+          created
+        }
+        bodyImages {
+          _id
+          url
+          created
+        }
       }
     }
   `

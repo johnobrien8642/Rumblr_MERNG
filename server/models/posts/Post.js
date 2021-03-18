@@ -1,23 +1,21 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
 const PostSchema = new Schema({
-  mainImages: [ 
+  mainImages: [
     {
-      data: Schema.Types.Mixed,
-      contentType: String,
-      link: Boolean,
-      default: false
+      _id: Schema.Types.ObjectId,
+      created: String,
+      url: String,
     }
   ],
   bodyImages: [
     {
-      data: Schema.Types.Mixed,
-      contentType: String,
-      link: Boolean,
-      default: false
+      _id: Schema.Types.ObjectId,
+      created: String,
+      url: String,
     }
-  ]
+  ],
 })
 
-module.exports = mongoose.model('posts', PostSchema)
+module.exports = mongoose.model('Post', PostSchema, 'posts')
