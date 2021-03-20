@@ -1,9 +1,9 @@
-const express = require('express');
+import mongoose from 'mongoose';
+import express from 'express';
 const router = express.Router();
-const mongoose = require('mongoose');
-const multer = require('multer')
-const { v4 } = require('uuid');
-const register = require('../../validations/register');
+import multer from 'multer';
+import { v4 } from 'uuid';
+import register from '../../validations/register.js';
 
 // const DIR = './public/'
 
@@ -32,7 +32,7 @@ const register = require('../../validations/register');
 
 var upload = multer({ dest: 'uploads/' })
 
-const Image = require('../../models/images/Image');
+const Image = mongoose.model('Image')
 
 router.post('/', upload.any(), async (req, res, next) => {
   const url = req.protocol + '://' + req.get('host')
@@ -55,4 +55,4 @@ router.post('/', upload.any(), async (req, res, next) => {
     })
 })
 
-module.exports = router;
+export default router;

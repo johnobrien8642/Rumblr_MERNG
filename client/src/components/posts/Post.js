@@ -3,7 +3,6 @@ import axios from 'axios'
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../graphql/mutations';
-const mongoose = require('mongoose')
 const { CREATE_POST } = Mutations;
 
 const Post = () => {

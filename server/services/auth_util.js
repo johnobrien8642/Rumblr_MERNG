@@ -1,10 +1,10 @@
-const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose');
-const keys = require('../../config/keys');
-const validateRegisterInput = require('../validations/register');
-const validateLoginInput = require('../validations/login');
-const User = require('../models/User');
-const bcrypt = require('bcryptjs')
+import jwt from 'jsonwebtoken';
+import keys from '../../config/keys.js';
+import validateRegisterInput from '../validations/register.js';
+import validateLoginInput from '../validations/login.js';
+import bcrypt from 'bcryptjs';
+import sendAuthEmail from './send_auth_email.js';
+import User from '../models/User.js';
 
 const register = async data => {
   try {
@@ -19,16 +19,20 @@ const register = async data => {
   const existingUser = await User.findOne({ email })
 
   if (existingUser) {
-    throw new Error('User already exists')
+    throw new Error('Account already exists with that email')
   }
 
   const hashedPW = await bcrypt.hash(password, 10)
+  const current_date = (new Date()).valueOf().toString();
+  const random = Math.random().toString();
+  const emailAuthToken = await bcrypt.hash(`${current_date + random}`, 10)
 
   const user = new User(
     {
     blogName: blogName,
     email: email,
-    password: hashedPW
+    password: hashedPW,
+    emailAuthToken: emailAuthToken
     },
     err => {
       if (err) throw err;
@@ -36,9 +40,12 @@ const register = async data => {
   )
 
   const token = await jwt.sign({ _id: user._id }, keys.secretOrKey)
-
-  user.save();
-  return { token, loggedIn: true, ...user._doc, password: '' }
+  return user.save().then(user => {
+    sendAuthEmail(user)
+    return user
+  }).then(user => {
+    return { token, loggedIn: true, ...user._doc, password: '' }
+  })
   } catch (err) {
     throw err;
   }
@@ -107,4 +114,4 @@ const verify = async data => {
   }
 }
 
-module.exports = { register, logout, login, verify };
+export default { register, logout, login, verify };

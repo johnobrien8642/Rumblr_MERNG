@@ -1,8 +1,8 @@
-const Validator = require('validator');
-const validText = require('./valid_text');
+import Validator from 'validator';
+import validText from './valid_text.js';
 
 
-module.exports = function validateLoginInput(data) {
+function validateLoginInput(data) {
   data.email = validText(data.email) ? data.email : '';
   data.password = validText(data.password) ? data.password : '';
 
@@ -22,3 +22,5 @@ module.exports = function validateLoginInput(data) {
     isValid: true
   }
 }
+
+export default validateLoginInput;

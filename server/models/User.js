@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -24,26 +24,37 @@ const UserSchema = new Schema({
     type: Boolean,
     required: false
   },
-  // authenticated: {
-  //   type: Boolean,
-  //   default: false
-  // },
+  authenticated: {
+    type: Boolean,
+    default: false
+  },
+  emailAuthToken: {
+    type: String
+  },
   created: {
     type: Date,
-    default: Date.now
+    default: Date.now()
   },
   lastUpdated: {
     type: Date,
-    default: Date.now
+    default: Date.now()
   },
   // followers: {
   //   type: Schema.Types.ObjectId,
   //   ref: 'users'
   // },
-  // follows: {
+  // userFollows: {
   //   type: Schema.Types.ObjectId,
   //   ref: 'users'
   // },
+  // tagFollows: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'users'
+  // },
+  // createdTags: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'tags'
+  // }
   // posts: {
   //   type: Schema.Types.ObjectId,
   //   ref: 'posts'
@@ -54,4 +65,7 @@ const UserSchema = new Schema({
   // }
 })
 
-module.exports = mongoose.model('User', UserSchema)
+
+const Post = mongoose.model('User', UserSchema, 'users');
+
+export default Post;

@@ -1,8 +1,8 @@
-const Validator = require('validator')
-const validText = require('./valid_text')
+import Validator from 'validator'
+import validText from './valid_text.js'
 
 
-module.exports = function validateRegisterInput(data) {
+function validateRegisterInput(data) {
   
   data.blogName = validText(data.blogName) ? data.blogName : '';
   data.email = validText(data.email) ? data.email : '';
@@ -30,3 +30,4 @@ module.exports = function validateRegisterInput(data) {
   }
 }
 
+export default validateRegisterInput;

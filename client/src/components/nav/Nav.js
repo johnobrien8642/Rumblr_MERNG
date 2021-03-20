@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import Logout from '../login-logout/Logout';
+import Logout from '../auth/login-logout/Logout';
+import Search from '../search/Search';
 import Queries from '../../graphql/queries';
 const { IS_LOGGED_IN } = Queries;
 
@@ -13,7 +14,7 @@ const Nav = () => {
     return (
       <div>
         <Link to='/'><span>R</span></Link>
-        <input type='search' placeholder={'search'}/>
+        <Search />
         <Logout />
       </div>
     )
@@ -21,7 +22,7 @@ const Nav = () => {
     return (
       <div>
         <Link to='/'><span>R</span></Link>
-        <input type='search' placeholder={'search'}/>
+        <Search />
         <Link to='/login'><button>Login</button></Link>
         <Link to='/register'><button>Register</button></Link>
       </div>
