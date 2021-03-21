@@ -1,6 +1,6 @@
 import graphql from 'graphql';
 const { GraphQLString, 
-        GraphQLID, GraphQLInputObjectType, GraphQLInt } = graphql;
+        GraphQLID, GraphQLInputObjectType } = graphql;
 
 const ImageInputType = new GraphQLInputObjectType({ 
   name: 'ImageInputType',

@@ -7,9 +7,9 @@ const User = mongoose.model('User');
 const Post = mongoose.model('Post');
 
 const UserAndPostType = new GraphQLUnionType({
-  name: 'Search',
+  name: 'UserAndPostType',
   types: [ UserType, PostType ],
-  resolve(value) {
+  resolveType(value) {
     if (value instanceof User) {
       return UserType
     }
