@@ -6,6 +6,7 @@ import App from './components/App';
 import { ApolloClient, InMemoryCache,
          ApolloProvider } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import Cookies from 'js-cookie';
 import Queries from './graphql/queries'
 import Mutations from './graphql/mutations'
 const { IS_LOGGED_IN } = Queries;
@@ -26,13 +27,13 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 const client = new ApolloClient({
   uri: 'http://localhost:5000/graphql',
   headers: {
-    authorization: localStorage.getItem('auth-token')
+    authorization: Cookies.get('auth-token')
   },
   cache: new InMemoryCache(),
   errorLink
 })
 
-const token = localStorage.getItem('auth-token');
+const token = Cookies.get('auth-token');
 
 client.writeQuery({
   query: IS_LOGGED_IN,

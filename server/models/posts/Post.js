@@ -4,16 +4,14 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   mainImages: [
     {
-      _id: Schema.Types.ObjectId,
-      created: String,
-      url: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Image'
     }
   ],
   bodyImages: [
     {
-      _id: Schema.Types.ObjectId,
-      created: String,
-      url: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Image'
     }
   ],
 })

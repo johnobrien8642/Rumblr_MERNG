@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
 import Mutations from '../../../graphql/mutations';
 import Queries from '../../../graphql/queries';
 const { LOGOUT_USER } = Mutations;
@@ -11,7 +12,7 @@ const Logout = () => {
 
   const [ Logout ] = useMutation(LOGOUT_USER, {
     onCompleted({ logoutUser }) {
-      localStorage.setItem('auth-token', logoutUser.token)
+      Cookies.set('auth-token', logoutUser.token)
     },
     update(client, data) {
       client.writeQuery({
@@ -27,7 +28,7 @@ const Logout = () => {
     <div>
       <button
         onClick={e => {
-          const token = localStorage.getItem('auth-token')
+          const token = Cookies.get('auth-token')
           e.preventDefault();
           Logout({ variables: { token }})
             .then(() => history.push('/'))

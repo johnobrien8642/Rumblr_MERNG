@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../graphql/mutations';
 import Queries from '../../../graphql/queries';
+import Cookies from 'js-cookie';
 const { REGISTER_USER } = Mutations;
 const { IS_LOGGED_IN } = Queries;
 
@@ -31,7 +32,7 @@ const Register = () => {
     },
     onCompleted({ registerUser }) {
       const { token } = registerUser;
-      localStorage.setItem('auth-token', token)
+      Cookies.set('auth-token', token)
       resetInputs();
       history.push('/');
     },

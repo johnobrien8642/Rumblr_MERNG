@@ -39,14 +39,18 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now()
   },
-  // followers: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'users'
-  // },
-  // userFollows: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'users'
-  // },
+  followers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ], 
+  userFollows: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
   // tagFollows: {
   //   type: Schema.Types.ObjectId,
   //   ref: 'users'
@@ -63,8 +67,8 @@ const UserSchema = new Schema({
   //   type: Schema.Types.ObjectId,
   //   ref: 'likes'
   // }
+  
 })
-
 
 const Post = mongoose.model('User', UserSchema, 'users');
 

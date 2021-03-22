@@ -1,14 +1,18 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import Cookies from 'js-cookie';
+import keys from '../../../../config/keys.js'
 import UserType from '../objects/user_type.js';
 import PostType from '../objects/post_type.js';
 import ImageType from '../objects/image_type.js';
 import ImageInputType from '../inputs/image_input_type.js';
 const Post = mongoose.model('Post');
 const Image = mongoose.model('Image');
+const User = mongoose.model('User');
 import AuthService from '../../../services/auth_util.js';
 const { GraphQLObjectType, GraphQLID,
-        GraphQLString, GraphQLBoolean, GraphQLList } = graphql;
+        GraphQLString, GraphQLList } = graphql;
 
 const mutation = new GraphQLObjectType({
   name: 'Mutations',
@@ -62,17 +66,43 @@ const mutation = new GraphQLObjectType({
         var post = new Post();
 
         mainImages.forEach((img, i) => {
-          console.log(img)
-          post.mainImages.push(img)
+          post.mainImages.push(img._id)
         })
 
         bodyImages.forEach((img, i) => {
-          post.bodyImages.push(img)
+          post.bodyImages.push(img._id)
         })
 
         return post.save()
+      }
+    },
+    followUser: {
+      type: UserType,
+      args: { 
+        userId: { type: GraphQLID },
+        token: { type: GraphQLString }
       },
+      resolve(parentValue, {userId, token}) {
+        const decoded = jwt.verify(token, keys.secretOrKey);
+        const { _id } = decoded;
+        const currentUserId = _id;
 
+        return User.find({
+          _id: {
+            $in: [currentUserId, userId]
+          }
+        }).then(users => {
+          // console.log(users)
+          const currentUser = currentUserId == users[0]._id ? users[0] : users[1]
+          const user = userId == users[0]._id ? users[0] : users[1]
+          currentUser.userFollows.push(user)
+          user.followers.push(currentUser)
+
+          return Promise.all([currentUser.save(), user.save()]).then(
+            ([currentUser, user]) => (currentUser, user)
+          )
+        })
+      }
     }
   })
 })

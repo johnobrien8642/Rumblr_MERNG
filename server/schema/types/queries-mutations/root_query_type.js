@@ -18,22 +18,20 @@ const RootQueryType = new GraphQLObjectType({
     usersAndPosts: {
       type: new GraphQLList(UserAndPostType),
       args: { filter: { type: UserAndPostInputType } },
-      resolve(_, { filter }) {
+      async resolve(_, { filter }) {
         let query = filter ? {$or: SearchUtil.buildFilters(filter)} : '';
-        
+
         if (query.$or.length === 0) {
           return []
         }
 
         const users = async (query) => {
-          var result = await User.find(query.$or[0]).exec();
-          return result
+          return await User.find(query.$or[0]).exec();
         }
         const posts = async (query) => {
-          var result = await Post.find(query.$or[1]).exec();
-          return result
+          return await Post.find(query.$or[1]).exec();
         }
-
+        
         return Promise.all([users(query), posts(query)]).then(
           ([users, posts]) => {
             return [...users, ...posts]

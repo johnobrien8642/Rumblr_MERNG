@@ -3,6 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import Mutations from '../../../graphql/mutations'
 import Queries from '../../../graphql/queries'
+import Cookies from 'js-cookie';
 const { LOGIN_USER } = Mutations;
 const { IS_LOGGED_IN } = Queries;
 
@@ -27,9 +28,8 @@ const Login = () => {
       })
     },
     onCompleted({ loginUser }) {
-      const { token } = loginUser;
-      localStorage.setItem('auth-token', token)
       resetInputs();
+      Cookies.set('auth-token', loginUser.token)
       history.push('/')
     },
     update(client, { data }) {

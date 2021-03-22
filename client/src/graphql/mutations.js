@@ -48,6 +48,14 @@ const Mutations = {
         }
       }
     }
+  `,
+  FOLLOW_USER: gql`
+    mutation FollowUser($userId: ID, $token: String) {
+      followUser(userId: $userId, token: $token) {
+        _id
+        blogName
+      }
+    }
   `
 };
 
