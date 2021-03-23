@@ -33,8 +33,8 @@ const Mutations = {
     }
   `,
   CREATE_POST: gql`
-    mutation CreatePost($mainImages: [ImageInputType], $bodyImages: [ImageInputType]) {
-      createPost(mainImages: $mainImages, bodyImages: $bodyImages) {
+    mutation CreatePost($mainImages: [ImageInputType], $bodyImages: [ImageInputType], $tags: [String]) {
+      createPost(mainImages: $mainImages, bodyImages: $bodyImages, tags: $tags) {
         _id
         mainImages {
           _id
@@ -45,6 +45,10 @@ const Mutations = {
           _id
           url
           created
+        }
+        tags {
+          _id
+          title
         }
       }
     }

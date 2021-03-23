@@ -3,13 +3,17 @@ import axios from 'axios'
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../graphql/mutations';
+import MatchedTagResults from '../posts/Matched_Tag_Results.js'
 const { CREATE_POST } = Mutations;
 
 const Post = () => {
   let [mainImageFiles, setMain] = useState([]);
   let [bodyImageFiles, setBody] = useState([]);
-  let [errMessage, setErr] = useState('')
+  let [tag, setTag] = useState('');
+  let [tags, setTags] = useState([]);
+  let [errMessage, setErr] = useState('');
   let history = useHistory();
+
   let [createPost] = useMutation(CREATE_POST, {
     onCompleted(data) {
       history.push('/')
@@ -79,6 +83,19 @@ const Post = () => {
     }
   }
 
+  const handleEnterTagInput = (e) => {
+    if (e.key === 'Enter' && tag) {
+      setTags(tags.concat(`#${tag}`))
+      setTag(tag = '')
+    }
+  }
+
+  const handleClickTagInput = (e, title) => {
+    e.preventDefault();
+    setTags(tags.concat(title))
+    setTag(tag = '')
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -130,7 +147,8 @@ const Post = () => {
         createPost({
           variables: {
             mainImages: cleanedMain,
-            bodyImages: cleanedBody
+            bodyImages: cleanedBody,
+            tags: tags
           }
         })
       }
@@ -141,6 +159,7 @@ const Post = () => {
     <div>
       <form
         onSubmit={e => handleSubmit(e)}
+        onKeyPress={e => { e.key === 'Enter' && e.preventDefault(); }}
         encType={'multipart/form-data'}
       >
         <div
@@ -171,10 +190,30 @@ const Post = () => {
           />
         </div>
 
+        <div>
+          {tags.map((tag, i) => {
+            return (
+              <div key={i}>
+                {tag}
+              </div>
+            )
+          })}
+
+          <input
+            type='text'
+            value={tag}
+            placeholder='#tags'
+            onChange={e => setTag(tag = e.target.value)}
+            onKeyDown={e => handleEnterTagInput(e)}
+          />
+          <div>
+            <MatchedTagResults query={tag} handleClickTagInput={handleClickTagInput}/>
+          </div>
+        </div>
         <button
           type='submit'
         >
-          Submit
+          Post
         </button>
       </form>
     </div>

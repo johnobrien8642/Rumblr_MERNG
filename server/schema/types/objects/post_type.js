@@ -1,14 +1,17 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
 import ImageType from './image_type.js';
-const Post = mongoose.model('Post')
+import TagType from './tag_type.js';
+const Post = mongoose.model('Post');
 const { GraphQLList, GraphQLID, 
-        GraphQLObjectType } = graphql;
+        GraphQLString, GraphQLObjectType } = graphql;
 
 const PostType = new GraphQLObjectType({
   name: 'PostType',
   fields: () => ({
     _id: { type: GraphQLID },
+    createdAt: { type: GraphQLString },
+    updatedAt: { type: GraphQLString },
     mainImages: { 
       type: new GraphQLList(ImageType),
       resolve(parentValue) {
@@ -23,6 +26,14 @@ const PostType = new GraphQLObjectType({
         return Post.findById(parentValue._id)
           .populate('bodyImages')
           .then(post => post.bodyImages)
+      }
+    },
+    tags: { 
+      type: new GraphQLList(TagType),
+      resolve(parentValue) {
+        return Post.findById(parentValue._id)
+          .populate('tags')
+          .then(post => post.tags)
       }
     }
   })

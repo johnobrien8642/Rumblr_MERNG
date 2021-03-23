@@ -13,4 +13,5 @@ const ImageSchema = new Schema({
 })
 
 const Image = mongoose.model('Image', ImageSchema, 'images');
+
 export default Image;

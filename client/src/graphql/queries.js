@@ -24,6 +24,14 @@ const Queries = {
       }
     }
   `,
+  FETCH_MATCHING_TAGS: gql`
+    query FetchMatchingTags($filter: String) {
+      fetchMatchingTags(filter: $filter) {
+        _id
+        title
+      }
+    }
+  `,
   FETCH_USERS: gql`
   {
     users {

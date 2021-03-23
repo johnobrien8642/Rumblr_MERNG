@@ -28,16 +28,6 @@ const Results = ({ input }) => {
       }
     }
   );
-
-  // const handleSubmit = (e, userId) => {
-  //   e.preventDefault();
-  //   followUser({
-  //     variables: {
-  //       userId
-  //     }
-  //   })
-  // }
-
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error.message}`;

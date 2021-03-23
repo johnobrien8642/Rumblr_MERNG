@@ -1,15 +1,16 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
-import Cookies from 'js-cookie';
 import keys from '../../../../config/keys.js'
 import UserType from '../objects/user_type.js';
 import PostType from '../objects/post_type.js';
 import ImageType from '../objects/image_type.js';
+import TagType from '../objects/tag_type.js';
 import ImageInputType from '../inputs/image_input_type.js';
 const Post = mongoose.model('Post');
 const Image = mongoose.model('Image');
 const User = mongoose.model('User');
+const Tag = mongoose.model('Tag');
 import AuthService from '../../../services/auth_util.js';
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
@@ -59,11 +60,41 @@ const mutation = new GraphQLObjectType({
     createPost: {
       type: PostType,
       args: {
-        mainImages: { type: new GraphQLList(ImageInputType)},
-        bodyImages: { type: new GraphQLList(ImageInputType)},
+        mainImages: { type: new GraphQLList(ImageInputType) },
+        bodyImages: { type: new GraphQLList(ImageInputType) },
+        tags: { type: new GraphQLList(GraphQLString) },
       },
-      resolve(_, { mainImages, bodyImages }) {
+      resolve(_, { mainImages, bodyImages, tags }) {
         var post = new Post();
+        
+        const getTagArr = async (tags, post) => {
+          return Promise.all(tags.map((t, i) => {
+                return asyncTag(t, post)
+              }
+            )
+          )
+        }
+
+        const asyncTag = async (t, post) => {
+          return findOrCreateTag(t, post)
+        }
+
+        const findOrCreateTag = async (t, post) => {
+          return Tag.findOne({ title: t }).then(tagFound => {
+            if (tagFound) {
+              tagFound.posts.push(post._id)
+              return tagFound.save().then(tag => {
+                return tag;
+              })
+            } else {
+              var newTag = new Tag({ title: t })
+              newTag.posts.push(post._id)
+              return newTag.save().then(tag => {
+                return tag
+              })
+            }
+          })
+        }
 
         mainImages.forEach((img, i) => {
           post.mainImages.push(img._id)
@@ -73,7 +104,17 @@ const mutation = new GraphQLObjectType({
           post.bodyImages.push(img._id)
         })
 
-        return post.save()
+        return Promise.all([getTagArr(tags, post)]).then(
+          ([tags]) => {
+            tags.forEach((t, i) => {
+              post.tags.push(t._id)
+            })
+            post.save().then(post => (
+              post,
+              tags
+            ))
+          }
+        )
       }
     },
     followUser: {

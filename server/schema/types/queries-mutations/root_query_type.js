@@ -3,12 +3,14 @@ import graphql, { GraphQLInputObjectType } from 'graphql';
 import UserType from '../objects/user_type.js';
 import PostType from '../objects/post_type.js';
 import ImageType from '../objects/image_type.js';
+import TagType from '../objects/tag_type.js';
 import UserAndPostType from '../unions/user_and_post_type.js';
 import UserAndPostInputType from '../inputs/user_and_post_input_type.js'
 import SearchUtil from '../../../services/search_util.js';
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
 const Image = mongoose.model('Image');
+const Tag = mongoose.model('Tag');
 const { GraphQLObjectType, GraphQLList,
         GraphQLString, GraphQLID, GraphQLNonNull } = graphql;
 
@@ -28,15 +30,31 @@ const RootQueryType = new GraphQLObjectType({
         const users = async (query) => {
           return await User.find(query.$or[0]).exec();
         }
-        const posts = async (query) => {
-          return await Post.find(query.$or[1]).exec();
-        }
         
-        return Promise.all([users(query), posts(query)]).then(
-          ([users, posts]) => {
-            return [...users, ...posts]
+        return Promise.all([users(query)]).then(
+          ([users]) => {
+            return [...users]
           }
         )
+      }
+    },
+    fetchMatchingTags: {
+      type: new GraphQLList(TagType),
+      args: { filter: { type: GraphQLString } },
+      resolve(_, {filter}) {
+        if (filter === '') {
+          return [];
+        }
+        let query = {};
+        query.title = new RegExp(filter);
+        
+        const tags = async (query) => {
+          return await Tag.find(query).exec()
+        }
+
+        return Promise.all([tags(query)]).then(([tags]) => {
+          return [...tags]
+        })
       }
     },
     users: {
@@ -70,6 +88,19 @@ const RootQueryType = new GraphQLObjectType({
       type: new GraphQLList(ImageType),
       resolve() {
         return Image.find({})
+      }
+    },
+    tags: {
+      type: new GraphQLList(TagType),
+      resolve() {
+        return Tag.find({})
+      }
+    },
+    tag: {
+      type: TagType,
+      args: { _id: { type: GraphQLID } },
+      resolve(_, {_id}) {
+        return Tag.findById(_id)
       }
     }
   })
