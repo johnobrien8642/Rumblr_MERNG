@@ -2,21 +2,21 @@ import mongoose from 'mongoose';
 import graphql from'graphql';
 const { GraphQLUnionType } = graphql;
 import UserType from '../objects/user_type.js';
-import PostType from '../objects/post_type.js';
+import TagType from '../objects/tag_type.js';
 const User = mongoose.model('User');
-const Post = mongoose.model('Post');
+const Tag = mongoose.model('Tag');
 
-const UserAndPostType = new GraphQLUnionType({
-  name: 'UserAndPostType',
-  types: [ UserType, PostType ],
+const UserAndTagType = new GraphQLUnionType({
+  name: 'UserAndTagType',
+  types: [ UserType, TagType ],
   resolveType(value) {
     if (value instanceof User) {
       return UserType
     }
-    if (value instanceof Post) {
-      return PostType
+    if (value instanceof Tag) {
+      return TagType
     }
   }
 })
 
-export default UserAndPostType;
+export default UserAndTagType;

@@ -2,7 +2,7 @@ module.exports = {
   mode: 'development',
   entry: './client/src/index.js',
   output: {
-    path: '/',
+    path: path.resolve(__dirname, 'client', 'public'),
     filename: 'bundle.js'
   },
 

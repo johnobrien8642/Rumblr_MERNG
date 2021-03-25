@@ -1,11 +1,11 @@
 
-const buildFilters = ({OR = [], blogName_contains, tags_contain}) => {
-    const filter = (blogName_contains || tags_contain) ? {} : null;
+const buildFilters = ({OR = [], blogName_contains, tag_title_contains}) => {
+    const filter = (blogName_contains || tag_title_contains) ? {} : null;
     if (blogName_contains) {
       filter.blogName = new RegExp(`${blogName_contains}`);
     }
-    if (tags_contain) {
-      filter.tags = new RegExp(`${tags_contain}`)
+    if (tag_title_contains) {
+      filter.title = new RegExp(`${tag_title_contains}`)
     }
   
     let filters = filter ? [filter] : [];

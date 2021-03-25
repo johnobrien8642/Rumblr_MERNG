@@ -22,6 +22,7 @@ mongoose
 app.use(express.json())
 app.use('/api/posts', posts);
 app.use('/api/mailer', mailer);
+app.use('/uploads', express.static('uploads'))
 app.use(cors());
 app.use(
   '/graphql',

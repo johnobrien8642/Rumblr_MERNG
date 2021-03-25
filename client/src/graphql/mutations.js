@@ -32,16 +32,19 @@ const Mutations = {
       }
     }
   `,
-  CREATE_POST: gql`
-    mutation CreatePost($mainImages: [ImageInputType], $bodyImages: [ImageInputType], $tags: [String]) {
-      createPost(mainImages: $mainImages, bodyImages: $bodyImages, tags: $tags) {
+  CREATE_PHOTO_POST: gql`
+    mutation CreatePhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $tags: [String]) {
+      createPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, tags: $tags) {
         _id
+        user {
+          _id
+        }
         mainImages {
           _id
           url
           created
         }
-        bodyImages {
+        descriptionImages {
           _id
           url
           created
@@ -54,10 +57,42 @@ const Mutations = {
     }
   `,
   FOLLOW_USER: gql`
-    mutation FollowUser($userId: ID, $token: String) {
-      followUser(userId: $userId, token: $token) {
+    mutation FollowUser($userId: ID) {
+      followUser(userId: $userId) {
         _id
         blogName
+      }
+    }
+  `,
+  FOLLOW_TAG: gql`
+    mutation FollowTag($tagId: ID) {
+      followTag(tagId: $tagId) {
+        tag {
+          _id
+          title
+          posts {
+            __typename
+            ... on PhotoPostType {
+              _id
+              description
+              mainImages {
+                _id
+                url
+              }
+              descriptionImages {
+                _id
+                url
+              }
+              tags {
+                _id
+                title
+              }
+            }
+          }
+          user {
+            _id
+          }
+        }
       }
     }
   `

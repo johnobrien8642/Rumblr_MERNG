@@ -1,9 +1,9 @@
 import graphql, { GraphQLInt } from 'graphql';
 import mongoose from 'mongoose';
-import PostType from '../../types/objects/post_type.js';
+import PhotoPostType from './photo_post_type.js';
 import UserType from '../../types/objects/user_type.js';
 const Tag = mongoose.model('Tag');
-const Post = mongoose.model('Post');
+const PhotoPost = mongoose.model('PhotoPost');
 const User = mongoose.model('User');
 const { GraphQLObjectType, GraphQLList,
         GraphQLString, GraphQLID, GraphQLFloat } = graphql;
@@ -13,8 +13,16 @@ const TagType = new GraphQLObjectType({
   fields: () => ({
     _id: { type: GraphQLID },
     title: { type: GraphQLString },
+    user: {
+      type: UserType,
+      resolve(parentValue) {
+        return Tag.findById(parentValue._id)
+          .populate('user')
+          .then(tag => tag.user)
+      }
+    },
     posts: {
-      type: GraphQLList(PostType),
+      type: GraphQLList(PhotoPostType),
       resolve(parentValue) {
         return Tag.findById(parentValue._id)
           .populate('posts')
@@ -61,8 +69,11 @@ const TagType = new GraphQLObjectType({
             }
           })
           .then(tag => {
-            var result = tag.posts.filter(p => p.createdAt.getTime() > (new Date().getTime() - (24*60*60*1000)))
-            return result.length
+            tag.posts.filter(p => 
+              p.createdAt.getTime() > (
+                new Date().getTime() - (24*60*60*1000)
+              )
+            ).length
           })
       }
     },

@@ -2,16 +2,16 @@ import graphql from 'graphql';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import keys from '../../../../config/keys.js'
+import Cookies from 'js-cookie';
 import UserType from '../objects/user_type.js';
-import PostType from '../objects/post_type.js';
+import PhotoPostType from '../objects/photo_post_type.js';
 import ImageType from '../objects/image_type.js';
 import TagType from '../objects/tag_type.js';
 import ImageInputType from '../inputs/image_input_type.js';
-const Post = mongoose.model('Post');
-const Image = mongoose.model('Image');
+import AuthService from '../../../services/auth_util.js';
+const PhotoPost = mongoose.model('PhotoPost');
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
-import AuthService from '../../../services/auth_util.js';
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
 
@@ -57,15 +57,15 @@ const mutation = new GraphQLObjectType({
         return AuthService.verify(args)
       }
     },
-    createPost: {
-      type: PostType,
+    createPhotoPost: {
+      type: PhotoPostType,
       args: {
         mainImages: { type: new GraphQLList(ImageInputType) },
-        bodyImages: { type: new GraphQLList(ImageInputType) },
+        descriptionImages: { type: new GraphQLList(ImageInputType) },
         tags: { type: new GraphQLList(GraphQLString) },
       },
-      resolve(_, { mainImages, bodyImages, tags }) {
-        var post = new Post();
+      resolve(_, { mainImages, descriptionImages, tags }, ctx) {
+        var post = new PhotoPost();
         
         const getTagArr = async (tags, post) => {
           return Promise.all(tags.map((t, i) => {
@@ -100,19 +100,29 @@ const mutation = new GraphQLObjectType({
           post.mainImages.push(img._id)
         })
 
-        bodyImages.forEach((img, i) => {
-          post.bodyImages.push(img._id)
+        descriptionImages.forEach((img, i) => {
+          post.descriptionImages.push(img._id)
         })
 
-        return Promise.all([getTagArr(tags, post)]).then(
-          ([tags]) => {
+        const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
+        const { _id } = decoded;
+
+        console.log(_id)
+
+        return Promise.all([getTagArr(tags, post), User.findById(_id)]).then(
+          ([tags, user]) => {
+            post.user = user._id
+            user.posts.push(post._id)
+
             tags.forEach((t, i) => {
               post.tags.push(t._id)
             })
-            post.save().then(post => (
-              post,
-              tags
-            ))
+
+            return Promise.all([post.save(), user.save()]).then(
+              ([post, user])=> {
+                return post
+              }
+            )
           }
         )
       }
@@ -120,11 +130,13 @@ const mutation = new GraphQLObjectType({
     followUser: {
       type: UserType,
       args: { 
-        userId: { type: GraphQLID },
-        token: { type: GraphQLString }
+        userId: { type: GraphQLID }
       },
-      resolve(parentValue, {userId, token}) {
-        const decoded = jwt.verify(token, keys.secretOrKey);
+      resolve(parentValue, { userId }, ctx) {
+        const decoded = jwt.verify(
+          ctx.headers.authorization, 
+          keys.secretOrKey
+        );
         const { _id } = decoded;
         const currentUserId = _id;
 
@@ -133,7 +145,6 @@ const mutation = new GraphQLObjectType({
             $in: [currentUserId, userId]
           }
         }).then(users => {
-          // console.log(users)
           const currentUser = currentUserId == users[0]._id ? users[0] : users[1]
           const user = userId == users[0]._id ? users[0] : users[1]
           currentUser.userFollows.push(user)
@@ -143,6 +154,31 @@ const mutation = new GraphQLObjectType({
             ([currentUser, user]) => (currentUser, user)
           )
         })
+      }
+    },
+    followTag: {
+      type: TagType,
+      args: { 
+        tagId: { type: GraphQLID }
+      },
+      resolve(parentValue, { tagId }, ctx) {
+        const decoded = jwt.verify(
+          ctx.headers.authorization, 
+          keys.secretOrKey
+        );
+        const { _id } = decoded;
+        const currentUserId = _id;
+
+        return Promise.all([Tag.findById(tagId), User.findById(_id)]).then(
+          ([tag, user]) => {
+            tag.followers.push(user._id)
+            user.tagFollows.push(tag._id)
+            
+            return Promise.all([tag.save(), user.save()]).then(
+              ([tag, user]) => (tag, user)
+            )
+          }
+        )
       }
     }
   })

@@ -1,29 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
-import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-import MatchedTagResults from '../tags/Matched_Tag_Results.js'
-import Mutations from '../../graphql/mutations.js';
-import Queries from '../../graphql/queries.js';
-const { CREATE_POST } = Mutations;
+import { useMutation } from '@apollo/client';
+import MatchedTagResults from '../../tags/Matched_Tag_Results.js'
+import Mutations from '../../../graphql/mutations';
+import Queries from '../../../graphql/queries';
+const { CREATE_PHOTO_POST } = Mutations;
 const { GET_USER_FEED } = Queries;
 
-const Post = () => {
+const PhotoPostForm = () => {
   let [mainImageFiles, setMain] = useState([]);
   let [bodyImageFiles, setBody] = useState([]);
+  let mainImages = useRef([]);
+  let bodyImages = useRef([]);
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
+  let [description, setDescription] = useState('');
   let [errMessage, setErr] = useState('');
   let history = useHistory();
 
-  let [createPost] = useMutation(CREATE_POST, {
+
+  let [createPhotoPost] = useMutation(CREATE_PHOTO_POST, {
+    update(client, { data }){
+    const { createPhotoPost } = data;
+    
+    var readQuery = client.readQuery({
+      query: GET_USER_FEED,
+      variables: {
+        _id: createPhotoPost.user._id
+      }
+    })
+    
+    var { currentUser } = readQuery;
+    var newPostArr = currentUser.posts.concat(createPhotoPost)
+
+    client.writeQuery({
+      query: GET_USER_FEED,
+      variables: {
+        _id: createPhotoPost.user._id
+      },
+      data: {
+        currentUser: {
+          posts: newPostArr
+        }
+      }
+    })
+    },
     onCompleted(data) {
-      history.push('/')
+      resetInputs();
+      history.push('/dashboard');
     },
     onError(error) {
       console.log(error)
     }
   });
+
+  const resetInputs = () => {
+    setMain(mainImageFiles = []);
+    setBody(bodyImageFiles = []);
+    mainImages.current = [];
+    setDescription(description = '');
+    setTag(tag = '');
+    setTags(tags = []);
+    setErr(errMessage = '');
+  }
 
   const previewMainImages = (e) => {
     const files = Object.values(e.currentTarget.files)
@@ -31,20 +71,16 @@ const Post = () => {
       setErr(errMessage = 'Only 10 images can be uploaded here')
       return
     }
-    let mainPreview = document.querySelector('.mainPreview')
-
-    function readAndPreview(file) {
+    
+    const readAndPreview = (file) => {
       var reader = new FileReader();
-
-      reader.addEventListener('load', function() {
-        var image = new Image();
-        image.src = this.result;
-        image.alt = file.name;
-        image.className = 'preview'
+      reader.onloadend = () => {
+        var imgObj = {};
+        imgObj.src = reader.result
+        imgObj.alt = file.name
+        mainImages.current.push(imgObj)
         setMain(mainImageFiles = [...mainImageFiles, file])
-        mainPreview.appendChild( image );
-      }, false)
-
+      }
       reader.readAsDataURL(file);
     }
 
@@ -54,27 +90,23 @@ const Post = () => {
       });
     }
   }
-  
+
   const previewBodyImages = (e) => {
     const files = Object.values(e.currentTarget.files)
-    if (bodyImageFiles.length + 1 > 10) {
+    if (mainImageFiles.length + 1 > 10) {
       setErr(errMessage = 'Only 10 images can be uploaded here')
       return
     }
-    let bodyPreview = document.querySelector('.bodyPreview')
-
-    function readAndPreview(file) {
+    
+    const readAndPreview = (file) => {
       var reader = new FileReader();
-
-      reader.addEventListener('load', function() {
-        var image = new Image();
-        image.src = this.result;
-        image.alt = file.name;
-        image.className = 'preview'
+      reader.onloadend = () => {
+        var imgObj = {};
+        imgObj.src = reader.result
+        imgObj.alt = file.name
+        bodyImages.current.push(imgObj)
         setBody(bodyImageFiles = [...bodyImageFiles, file])
-        bodyPreview.appendChild( image );
-      }, false)
-
+      }
       reader.readAsDataURL(file);
     }
 
@@ -82,7 +114,7 @@ const Post = () => {
       files.forEach((f, i) => {
         readAndPreview(f)
       });
-    }
+    } 
   }
 
   const handleEnterTagInput = (e) => {
@@ -100,7 +132,6 @@ const Post = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     var mainImagesFormData = new FormData();
     var bodyImagesFormData = new FormData();
 
@@ -146,10 +177,11 @@ const Post = () => {
           delete obj.__v 
           return obj
         })
-        createPost({
+        createPhotoPost({
           variables: {
             mainImages: cleanedMain,
-            bodyImages: cleanedBody,
+            description: description,
+            descriptionImages: cleanedBody,
             tags: tags
           }
         })
@@ -158,12 +190,15 @@ const Post = () => {
   }
 
   return (
-    <div>
+    <div
+      className='postForm'
+    >
       <form
         onSubmit={e => handleSubmit(e)}
         onKeyPress={e => { e.key === 'Enter' && e.preventDefault(); }}
         encType={'multipart/form-data'}
       >
+
         <div
           className={'mainPreview'}
         >
@@ -172,12 +207,21 @@ const Post = () => {
           <input
             type='file'
             multiple
-            name='main'
+            name='image'
             accept='.png, .jpg, jpeg'
-            onChange={previewMainImages}
+            onChange={e => previewMainImages(e)}
           />
+          {mainImages.current.map((img, i) => {
+            return <img key={i} src={img.src} alt={img.alt} />
+          })}
         </div>
-        
+
+        <textarea
+          value={description}
+          placeholder='Write a description...'
+          onChange={e => setDescription(description = e.target.value)}
+        ></textarea>
+
         <div
           className={'bodyPreview'}
         >
@@ -186,10 +230,13 @@ const Post = () => {
           <input
             type='file'
             multiple
-            name='body'
+            name='image'
             accept='.png, .jpg, jpeg'
             onChange={previewBodyImages}
           />
+          {bodyImages.current.map((img, i) => {
+            return <img key={i} src={img.src} alt={img.alt} />
+          })}
         </div>
 
         <div>
@@ -208,6 +255,7 @@ const Post = () => {
             onChange={e => setTag(tag = e.target.value)}
             onKeyDown={e => handleEnterTagInput(e)}
           />
+
           <div>
             <MatchedTagResults query={tag} handleClickTagInput={handleClickTagInput}/>
           </div>
@@ -222,4 +270,4 @@ const Post = () => {
   )
 }
 
-export default Post;
+export default PhotoPostForm;

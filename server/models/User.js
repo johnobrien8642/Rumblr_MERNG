@@ -24,50 +24,59 @@ const UserSchema = new Schema({
     type: Boolean,
     required: false
   },
-  authenticated: {
-    type: Boolean,
-    default: false
-  },
-  emailAuthToken: {
-    type: String
-  },
-  created: {
-    type: Date,
-    default: Date.now()
-  },
-  lastUpdated: {
-    type: Date,
-    default: Date.now()
-  },
   followers: [
     {
       type: Schema.Types.ObjectId,
       ref: 'User'
     }
   ], 
+  posts:[
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'PhotoPost'
+    }
+  ],
   userFollows: [
     {
       type: Schema.Types.ObjectId,
       ref: 'User'
     }
   ],
-  // tagFollows: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'users'
+  tagFollows: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
+  createdTags: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Tag'
+    }
+  ], 
+  postLikes: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Like'
+    }
+  ],
+  //// Uncomment both below for email auth
+  //// Go to server/services/auth_util/register and uncomment
+  // authenticated: {
+  //   type: Boolean,
+  //   default: false
   // },
-  // createdTags: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'tags'
-  // }
-  // posts: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'posts'
+  // emailAuthToken: {
+  //   type: String
   // },
-  // postLikes: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'likes'
-  // }
-  
+  createdAt: {
+    type: Date,
+    default: Date.now()
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now()
+  },
 })
 
 const Post = mongoose.model('User', UserSchema, 'users');

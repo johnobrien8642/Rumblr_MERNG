@@ -32,9 +32,9 @@ const Register = () => {
     },
     onCompleted({ registerUser }) {
       const { token } = registerUser;
-      Cookies.set('auth-token', token)
+      Cookies.set('auth-token', token);
       resetInputs();
-      history.push('/');
+      history.push('/dashboard');
     },
     update(client, { data }) {
       client.writeQuery({

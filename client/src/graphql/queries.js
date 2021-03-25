@@ -1,25 +1,88 @@
 import { gql } from '@apollo/client';
 
 const Queries = {
-  SEARCH_USER_AND_POSTS: gql`
-    query SearchUsersAndPosts($filter: UserAndPostInputType) {
-      usersAndPosts(filter: $filter) {
-        __typename 
+  GET_USER_FEED: gql`
+    query getUserFeed {
+      currentUser {
+        _id
+        posts {
+          __typename
+          ... on PhotoPostType {
+            _id
+            user {
+              _id
+              blogName
+            }
+            mainImages {
+              _id
+              url
+            }
+            descriptionImages {
+              _id
+              url
+            }
+            tags {
+              _id
+              title
+            }
+          }
+        }
+        userFollows {
+          _id
+          posts {
+            __typename
+            ... on PhotoPostType {
+              _id
+              mainImages {
+                _id
+                url
+              }
+              descriptionImages {
+                _id
+                url
+              }
+              tags {
+                _id
+                title
+              }
+            }
+          }
+        }
+        tagFollows {
+          posts {
+            __typename
+            ... on PhotoPostType {
+              _id
+              mainImages {
+                _id
+                url
+              }
+              descriptionImages {
+                _id
+                url
+              }
+              tags {
+                _id
+                title
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  SEARCH_USERS_AND_TAGS: gql`
+    query SearchUsersAndTags($filter: UserAndTagInputType) {
+      usersAndTags(filter: $filter) {
+        __typename
         ... on UserType{
           _id
           blogName
           email
         }
-        ... on PostType{
+        ... on TagType{
           _id
-          mainImages {
-            _id
-            url
-          }
-          bodyImages {
-            _id
-            url
-          }
+          title
         }
       }
     }

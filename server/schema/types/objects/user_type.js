@@ -1,5 +1,7 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
+import AnyPostType from '../unions/any_post_type.js'
+import TagType from '../objects/tag_type.js'
 const User = mongoose.model('User');
 const { GraphQLObjectType, GraphQLString,
         GraphQLList, GraphQLInt,
@@ -18,23 +20,38 @@ const UserType = new GraphQLObjectType({
     emailAuthToken: { type: GraphQLString },
     created: { type: GraphQLInt },
     lastUpdated: { type: GraphQLInt },
-    followers: { 
-      type: GraphQLList(UserType),
+    posts: {
+      type: new GraphQLList(AnyPostType),
       resolve(parentValue) {
         return User.findById(parentValue._id)
-          .populate('followers')
-          .then(user => user.followers)
+          .populate('posts')
+          .then(user => user.posts)
+      }
+    },
+    tagFollows: {
+      type: new GraphQLList(TagType),
+      resolve(parentValue) {
+        return User.findById(parentValue._id)
+          .populate('tagFollows')
+          .then(user => user.tagFollows)
       }
     },
     userFollows: { 
       type: GraphQLList(UserType),
       resolve(parentValue) {
         return User.findById(parentValue._id)
-          .populate('userFollows')
-          .then(user => user.userFollows)
-      }
+        .populate('userFollows')
+        .then(user => user.userFollows)
+      },
+      followers: { 
+        type: GraphQLList(UserType),
+        resolve(parentValue) {
+          return User.findById(parentValue._id)
+            .populate('followers')
+            .then(user => user.followers)
+        }
+      },
     },
-    // posts: {},
     // postLikes: {}
   })
 })

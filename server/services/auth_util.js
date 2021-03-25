@@ -24,16 +24,19 @@ const register = async data => {
   }
 
   const hashedPW = await bcrypt.hash(password, 10)
-  const current_date = (new Date()).valueOf().toString();
-  const random = Math.random().toString();
-  const emailAuthToken = await bcrypt.hash(`${current_date + random}`, 10)
+
+  //// Uncomment for email auth
+  //// Go to server/models/User, uncomment emailAuthToken and authenticated
+  // const current_date = (new Date()).valueOf().toString();
+  // const random = Math.random().toString();
+  // const emailAuthToken = await bcrypt.hash(`${current_date + random}`, 10)
 
   const user = new User(
     {
     blogName: blogName,
     email: email,
     password: hashedPW,
-    emailAuthToken: emailAuthToken
+    // emailAuthToken: emailAuthToken //Uncomment for email auth
     },
     err => {
       if (err) throw err;
@@ -41,12 +44,22 @@ const register = async data => {
   )
 
   const token = await jwt.sign({ _id: user._id }, keys.secretOrKey)
+  Cookies.set('auth-token', token)
+  
+  //Comment this for email auth
   return user.save().then(user => {
-    sendAuthEmail(user)
-    return user
-  }).then(user => {
     return { token, loggedIn: true, ...user._doc, password: '' }
   })
+
+  ////Uncomment for email auth, scroll to top, uncomment sendAuthEmail import
+  // return user.save().then(user => {
+  //   sendAuthEmail(user)
+  //   return user
+  // }).then(user => {
+  //   return { token, loggedIn: true, ...user._doc, password: '' }
+  // })
+
+
   } catch (err) {
     throw err;
   }

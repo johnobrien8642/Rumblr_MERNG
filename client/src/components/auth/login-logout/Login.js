@@ -30,7 +30,7 @@ const Login = () => {
     onCompleted({ loginUser }) {
       resetInputs();
       Cookies.set('auth-token', loginUser.token)
-      history.push('/')
+      history.push('/dashboard')
     },
     update(client, { data }) {
       client.writeQuery({

@@ -1,14 +1,17 @@
 import mongoose from 'mongoose';
-import graphql, { GraphQLInputObjectType } from 'graphql';
+import graphql from 'graphql';
+import jwt from 'jsonwebtoken';
+import keys from '../../../../config/keys.js'
 import UserType from '../objects/user_type.js';
-import PostType from '../objects/post_type.js';
+// import PhotoPostType from '../objects/photo_post_type.js';
 import ImageType from '../objects/image_type.js';
 import TagType from '../objects/tag_type.js';
-import UserAndPostType from '../unions/user_and_post_type.js';
-import UserAndPostInputType from '../inputs/user_and_post_input_type.js'
+import UserAndTagType from '../unions/user_and_tag_type.js';
+import UserAndTagInputType from '../inputs/user_and_tag_input_type.js'
+import AnyPostType from '../unions/any_post_type.js'
 import SearchUtil from '../../../services/search_util.js';
 const User = mongoose.model('User');
-const Post = mongoose.model('Post');
+const PhotoPost = mongoose.model('PhotoPost');
 const Image = mongoose.model('Image');
 const Tag = mongoose.model('Tag');
 const { GraphQLObjectType, GraphQLList,
@@ -17,25 +20,43 @@ const { GraphQLObjectType, GraphQLList,
 const RootQueryType = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
-    usersAndPosts: {
-      type: new GraphQLList(UserAndPostType),
-      args: { filter: { type: UserAndPostInputType } },
-      async resolve(_, { filter }) {
+    usersAndTags: {
+      type: new GraphQLList(UserAndTagType),
+      args: { filter: { type: UserAndTagInputType } },
+      async resolve(_, { filter }, ctx) {
         let query = filter ? {$or: SearchUtil.buildFilters(filter)} : '';
 
         if (query.$or.length === 0) {
           return []
         }
-
+        
         const users = async (query) => {
           return await User.find(query.$or[0]).exec();
         }
-        
-        return Promise.all([users(query)]).then(
-          ([users]) => {
-            return [...users]
-          }
+
+        const tags = async (query) => {
+          return await Tag.find(query.$or[1]).exec();
+        }
+        const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
+        const { _id } = decoded;
+        return Promise.all([users(query), tags(query), User.findById(_id)]).then(
+            ([users, tags, user]) => {
+              var unfollowedTags = [];
+              unfollowedTags.concat(tags.filter(tag => user.indexOf(tag) < 0))
+              return [...users, ...unfollowedTags]
+            }
+          )
+        }
+    },
+    currentUser: {
+      type: UserType,
+      resolve(_, args, ctx) {
+        const decoded = jwt.verify(
+          ctx.headers.authorization,
+          keys.secretOrKey
         )
+        const { _id } = decoded;
+        return User.findById(_id)
       }
     },
     fetchMatchingTags: {
@@ -63,15 +84,8 @@ const RootQueryType = new GraphQLObjectType({
         return User.find({})
       }
     },
-    user: {
-      type: UserType,
-      args: { _id: { type: new GraphQLNonNull(GraphQLID) } },
-      resolve(parentValue, args) {
-        return User.findById(args._id)
-      }
-    },
     post: {
-      type: PostType,
+      type: AnyPostType,
       args: { _id: { type: GraphQLID } },
       resolve(parentValue, args) {
         return Post.findById(args._id)

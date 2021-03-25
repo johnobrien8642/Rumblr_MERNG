@@ -1,10 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Results from './Results'
 
 const Search = () => {
   let [input, setInput] = useState('');
-  const ref = useRef('');
-  var query = '';
 
   return (
     <div>
