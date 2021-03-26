@@ -31,9 +31,13 @@ const Results = ({ input }) => {
               return(
                 <li key={res._id}><UserResult user={res} /></li>
               )
-              case 'TagType':
+            case 'TagType':
               return(
                 <li key={res._id}><TagResult tag={res} /></li>
+              )
+            default:
+              return (
+                <li></li>
               )
             }
         })}

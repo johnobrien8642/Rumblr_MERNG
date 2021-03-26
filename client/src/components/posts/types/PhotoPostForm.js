@@ -5,8 +5,9 @@ import { useMutation } from '@apollo/client';
 import MatchedTagResults from '../../tags/Matched_Tag_Results.js'
 import Mutations from '../../../graphql/mutations';
 import Queries from '../../../graphql/queries';
+import Cookies from 'js-cookie';
 const { CREATE_PHOTO_POST } = Mutations;
-const { GET_USER_FEED } = Queries;
+const { FETCH_USER_FEED } = Queries;
 
 const PhotoPostForm = () => {
   let [mainImageFiles, setMain] = useState([]);
@@ -19,32 +20,32 @@ const PhotoPostForm = () => {
   let [errMessage, setErr] = useState('');
   let history = useHistory();
 
-
   let [createPhotoPost] = useMutation(CREATE_PHOTO_POST, {
     update(client, { data }){
     const { createPhotoPost } = data;
-    
-    var readQuery = client.readQuery({
-      query: GET_USER_FEED,
-      variables: {
-        _id: createPhotoPost.user._id
-      }
-    })
-    
-    var { currentUser } = readQuery;
-    var newPostArr = currentUser.posts.concat(createPhotoPost)
-
-    client.writeQuery({
-      query: GET_USER_FEED,
-      variables: {
-        _id: createPhotoPost.user._id
-      },
-      data: {
-        currentUser: {
-          posts: newPostArr
+      console.log(createPhotoPost)
+      var readQuery = client.readQuery({
+        query: FETCH_USER_FEED,
+        variables: {
+          token: Cookies.get('auth-token')
         }
-      }
-    })
+      })
+      
+      var { currentUser } = readQuery;
+      console.log(currentUser)
+      var newPostArr = currentUser.posts.concat(createPhotoPost)
+  
+      client.writeQuery({
+        query: FETCH_USER_FEED,
+        variables: {
+          token: Cookies.get('auth-token')
+        },
+        data: {
+          currentUser: {
+            posts: newPostArr
+          }
+        }
+      })
     },
     onCompleted(data) {
       resetInputs();
@@ -59,6 +60,7 @@ const PhotoPostForm = () => {
     setMain(mainImageFiles = []);
     setBody(bodyImageFiles = []);
     mainImages.current = [];
+    bodyImages.current = [];
     setDescription(description = '');
     setTag(tag = '');
     setTags(tags = []);
@@ -67,6 +69,7 @@ const PhotoPostForm = () => {
 
   const previewMainImages = (e) => {
     const files = Object.values(e.currentTarget.files)
+
     if (mainImageFiles.length + 1 > 10) {
       setErr(errMessage = 'Only 10 images can be uploaded here')
       return
@@ -125,7 +128,6 @@ const PhotoPostForm = () => {
   }
 
   const handleClickTagInput = (e, title) => {
-    e.preventDefault();
     setTags(tags.concat(title))
     setTag(tag = '')
   }
@@ -189,11 +191,22 @@ const PhotoPostForm = () => {
     )
   }
 
+  const removeMainImage = (i) => {
+    mainImages.current.splice(i, 1)
+    setMain(mainImageFiles.splice(i, 1))
+  }
+
+  const removeBodyImage = (i) => {
+    bodyImages.current.splice(i, 1)
+    setMain(bodyImageFiles.splice(i, 1))
+  }
+  
   return (
     <div
       className='postForm'
     >
       <form
+        id='photoPostForm'
         onSubmit={e => handleSubmit(e)}
         onKeyPress={e => { e.key === 'Enter' && e.preventDefault(); }}
         encType={'multipart/form-data'}
@@ -209,10 +222,23 @@ const PhotoPostForm = () => {
             multiple
             name='image'
             accept='.png, .jpg, jpeg'
-            onChange={e => previewMainImages(e)}
+            onChange={e => {
+              previewMainImages(e)
+              document.getElementById('photoPostForm').reset()
+            }}
           />
           {mainImages.current.map((img, i) => {
-            return <img key={i} src={img.src} alt={img.alt} />
+            return (
+              <div key={i}>
+                <button 
+                  type='button' 
+                  onClick={() => removeMainImage(i)}
+                >
+                  X
+                </button>
+                <img src={img.src} alt={img.alt} />
+              </div>
+            )
           })}
         </div>
 
@@ -232,10 +258,23 @@ const PhotoPostForm = () => {
             multiple
             name='image'
             accept='.png, .jpg, jpeg'
-            onChange={previewBodyImages}
+            onChange={e => {
+              previewBodyImages(e)
+              document.getElementById('photoPostForm').reset()
+            }}
           />
           {bodyImages.current.map((img, i) => {
-            return <img key={i} src={img.src} alt={img.alt} />
+            return (
+              <div key={i}>
+                <button 
+                  type='button' 
+                  onClick={() => removeBodyImage(i)}
+                >
+                  X
+                </button>
+                <img src={img.src} alt={img.alt} />
+              </div>
+            )
           })}
         </div>
 

@@ -29,6 +29,9 @@ const UserDetails = () => {
       </button>
       <ul>
         <li>
+          <Logout />
+        </li>
+        <li>
           <Link to='/likes'>Likes</Link>
           <span>{currentUser.postLikeCount}</span>
         </li>
@@ -37,7 +40,11 @@ const UserDetails = () => {
           <span>{currentUser.userFollowCount}</span>
         </li>
         <li>
-          <Logout />
+          <Link 
+            to={`/blog/${currentUser.blogName}`} 
+          >
+            {currentUser.blogName}
+          </Link>
         </li>
       </ul>
     </div>

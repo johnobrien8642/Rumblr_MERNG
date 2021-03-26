@@ -56,9 +56,9 @@ const RootQueryType = new GraphQLObjectType({
     currentUser: {
       type: UserType,
       args: { token: { type: GraphQLString } },
-      resolve(_, args, ctx) {
+      resolve(_, {token}) {
         const decoded = jwt.verify(
-          args.token,
+          token,
           keys.secretOrKey
         )
         const { _id } = decoded;

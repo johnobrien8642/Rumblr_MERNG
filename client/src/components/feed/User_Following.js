@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
-import PhotoPostShow from './types/PhotoPostShow'
 import Queries from '../../graphql/queries';
 import Mutations from '../../graphql/mutations';
 const { FETCH_USER_FOLLOWING } = Queries;

@@ -30,7 +30,7 @@ const Feed = () => {
   })
 
   allPosts.sort((a, b) => b.createdAt - a.createdAt)
-  
+  console.log(allPosts) 
   return(
     <div>
         {allPosts.map((p, i) => {
@@ -42,6 +42,11 @@ const Feed = () => {
                   className='post'
                 >
                   <PhotoPostShow post={p} />
+                </div>
+              )
+            default:
+              return (
+                <div>
                 </div>
               )
           }

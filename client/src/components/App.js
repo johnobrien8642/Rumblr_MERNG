@@ -7,6 +7,7 @@ import Register from './auth/register/Register';
 import WelcomePage from './auth/register/Welcome_Page';
 import UserPostLikes from './feed/User_Post_Likes';
 import UserFollowing from './feed/User_Following';
+import UserBlog from './feed/User_Blog';
 import AuthRoute from '../util/route_util';
 import './../stylesheets/application.scss';
 
@@ -16,6 +17,7 @@ const App = () => {
       <Nav />
       <Switch>
         <AuthRoute exact path='/dashboard' component={Dashboard} />
+        <Route exact path='/blog/:blogName' component={UserBlog} />
         <Route exact path='/likes' component={UserPostLikes} />
         <Route exact path='/following' component={UserFollowing} />
         <Route exact path='/login' component={Login} />

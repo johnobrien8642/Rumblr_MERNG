@@ -9,6 +9,7 @@ const Queries = {
           __typename
           ... on PhotoPostType {
             _id
+            description
             user {
               _id
               blogName
@@ -25,6 +26,7 @@ const Queries = {
               _id
               title
             }
+            createdAt
           }
         }
         userFollowing {
@@ -108,9 +110,41 @@ const Queries = {
       }
     }
   `,
+  FETCH_USER_BLOG: gql`
+    query fetchUserBlog($token: String) {
+      currentUser(token: $token) {
+        _id
+        posts {
+          __typename
+          ... on PhotoPostType {
+            _id
+            description
+            mainImages {
+              _id
+              url
+            }
+            descriptionImages {
+              _id
+              url
+            }
+            tags {
+              _id
+              title
+            }
+            user {
+              _id
+              blogName
+            }
+          }
+        }
+      }
+    }
+  `,
   FETCH_USER_DETAILS_COUNTS: gql`
     query FetchUserDetailsCounts($token: String) {
       currentUser(token: $token) {
+        _id
+        blogName
         userFollowCount
         postLikeCount
       }

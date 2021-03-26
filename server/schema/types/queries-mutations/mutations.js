@@ -66,9 +66,11 @@ const mutation = new GraphQLObjectType({
       args: {
         mainImages: { type: new GraphQLList(ImageInputType) },
         descriptionImages: { type: new GraphQLList(ImageInputType) },
+        description: { type: GraphQLString },
         tags: { type: new GraphQLList(GraphQLString) },
+        token: { type: GraphQLString }
       },
-      resolve(_, { mainImages, descriptionImages, tags }, ctx) {
+      resolve(_, { mainImages, descriptionImages, description, tags }, ctx) {
         var post = new PhotoPost();
         
         const getTagArr = async (tags, post) => {
@@ -107,18 +109,17 @@ const mutation = new GraphQLObjectType({
         descriptionImages.forEach((img, i) => {
           post.descriptionImages.push(img._id)
         })
-
+        
         const decoded = jwt.verify(
           ctx.headers.authorization, 
           keys.secretOrKey
         )
         const { _id } = decoded;
 
-        console.log(_id)
-
         return Promise.all([getTagArr(tags, post), User.findById(_id)]).then(
           ([tags, user]) => {
             post.user = user._id
+            post.description = description
             user.posts.push(post._id)
 
             tags.forEach((t, i) => {

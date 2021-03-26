@@ -30,6 +30,11 @@ const UserPostLikes = () => {
                 <PhotoPostShow post={post} />
               </div>
             )
+          default:
+            return (
+              <div>
+              </div>
+            )
         }
       })}
     </div>
