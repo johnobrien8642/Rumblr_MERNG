@@ -41,7 +41,7 @@ const TagType = new GraphQLObjectType({
       type: GraphQLFloat,
       resolve(parentValue) {
         return Tag.aggregate([
-          { $match: { _id: parentValue._id }},
+          { $match: { _id: parentValue._id } },
             { $project: { 
               followers: { 
                 $size: '$followers'

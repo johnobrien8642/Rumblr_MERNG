@@ -8,6 +8,7 @@ import PhotoPostType from '../objects/photo_post_type.js';
 import ImageType from '../objects/image_type.js';
 import TagType from '../objects/tag_type.js';
 import ImageInputType from '../inputs/image_input_type.js';
+import UserAndTagType from '../unions/user_and_tag_type.js';
 import AuthService from '../../../services/auth_util.js';
 const PhotoPost = mongoose.model('PhotoPost');
 const User = mongoose.model('User');
@@ -25,8 +26,11 @@ const mutation = new GraphQLObjectType({
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
-      resolve(_, args) {
-        return AuthService.register(args)
+      resolve(_, args, ctx) {
+        return AuthService.register(args, ctx).then(res => {
+          ctx.headers.authorization = JSON.stringify(res.token)
+          return res
+        })
       }
     },
     logoutUser: {
@@ -104,7 +108,10 @@ const mutation = new GraphQLObjectType({
           post.descriptionImages.push(img._id)
         })
 
-        const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
+        const decoded = jwt.verify(
+          ctx.headers.authorization, 
+          keys.secretOrKey
+        )
         const { _id } = decoded;
 
         console.log(_id)
@@ -156,8 +163,48 @@ const mutation = new GraphQLObjectType({
         })
       }
     },
+    unfollowUser: {
+      type: UserType,
+      args: { 
+        userId: { type: GraphQLID },
+        token: { type: GraphQLString }
+      },
+      resolve(parentValue, { userId, token }, ctx) {
+        const decoded = jwt.verify(
+          token, 
+          keys.secretOrKey
+        );
+        const { _id } = decoded;
+        const currentUserId = _id;
+
+        return User.find({
+          _id: {
+            $in: [currentUserId, userId]
+          }
+        }).then(users => {
+          const currentUser = currentUserId == users[0]._id ? users[0] : users[1]
+          const user = userId == users[0]._id ? users[0] : users[1]
+
+          var currentUserFiltered = 
+            currentUser.userFollows.filter(u => {
+              u._id == user._id
+            })
+
+          var userFiltered = user.followers.filter(u => {
+            u._id == currentUser._id
+          })
+
+          currentUser.userFollows = currentUserFiltered
+          user.followers = userFiltered
+
+          return Promise.all([currentUser.save(), user.save()]).then(
+            ([currentUser, user]) => (currentUser, user)
+          )
+        })
+      }
+    },
     followTag: {
-      type: TagType,
+      type: UserAndTagType,
       args: { 
         tagId: { type: GraphQLID }
       },
@@ -167,10 +214,11 @@ const mutation = new GraphQLObjectType({
           keys.secretOrKey
         );
         const { _id } = decoded;
-        const currentUserId = _id;
 
         return Promise.all([Tag.findById(tagId), User.findById(_id)]).then(
           ([tag, user]) => {
+            if (user.tagFollows.includes(tag._id)) return;
+
             tag.followers.push(user._id)
             user.tagFollows.push(tag._id)
             
@@ -180,7 +228,33 @@ const mutation = new GraphQLObjectType({
           }
         )
       }
-    }
+    },
+    // unfollowTag: {
+    //   type: UserAndTagType,
+    //   args: { 
+    //     tagId: { type: GraphQLID },
+    //     token: { type: GraphQLString }
+    //   },
+    //   resolve(parentValue, { tagId }, ctx) {
+    //     const decoded = jwt.verify(
+    //       ctx.headers.authorization, 
+    //       keys.secretOrKey
+    //     );
+    //     const { _id } = decoded;
+
+    //     return Promise.all([Tag.findById(tagId), User.findById(_id)]).then(
+    //       ([tag, user]) => {
+
+    //         tag.followers.push(user._id)
+    //         user.tagFollows.push(tag._id)
+            
+    //         return Promise.all([tag.save(), user.save()]).then(
+    //           ([tag, user]) => (tag, user)
+    //         )
+    //       }
+    //     )
+    //   }
+    // }
   })
 })
 

@@ -2,18 +2,23 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import Queries from '../../graphql/queries';
 import PhotoPostShow from '../feed/types/PhotoPostShow';
-const { GET_USER_FEED } = Queries;
+import Cookies from 'js-cookie';
+const { FETCH_USER_FEED } = Queries;
 
 const Feed = () => {
-  let { loading, error, data } = useQuery(GET_USER_FEED)
-
+  let { loading, error, data } = useQuery(FETCH_USER_FEED, {
+    variables: {
+      token: Cookies.get('auth-token')
+    }
+  })
+  
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
 
   var { currentUser } = data;
   const allPosts = [...currentUser.posts]
   
-  currentUser.userFollows.forEach((user, i) => {
+  currentUser.userFollowing.forEach((user, i) => {
     user.populate('posts').then(user => {
       allPosts.concat(user.posts)
     })
@@ -36,7 +41,7 @@ const Feed = () => {
                   key={p._id}
                   className='post'
                 >
-                  <PhotoPostShow post={p} idx={i} />
+                  <PhotoPostShow post={p} />
                 </div>
               )
           }

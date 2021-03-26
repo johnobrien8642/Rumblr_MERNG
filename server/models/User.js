@@ -36,7 +36,7 @@ const UserSchema = new Schema({
       ref: 'PhotoPost'
     }
   ],
-  userFollows: [
+  userFollowing: [
     {
       type: Schema.Types.ObjectId,
       ref: 'User'
@@ -45,19 +45,13 @@ const UserSchema = new Schema({
   tagFollows: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ],
-  createdTags: [
-    {
-      type: Schema.Types.ObjectId,
       ref: 'Tag'
     }
-  ], 
-  postLikes: [
+  ],
+  likedPosts: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Like'
+      ref: 'Post'
     }
   ],
   //// Uncomment both below for email auth

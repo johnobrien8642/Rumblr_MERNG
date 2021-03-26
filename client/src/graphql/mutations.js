@@ -64,12 +64,19 @@ const Mutations = {
       }
     }
   `,
+  UNFOLLOW_USER: gql`
+    mutation UnfollowUser($userId: ID, $token: String) {
+      unfollowUser(userId: $userId, token: $token) {
+        _id
+        blogName
+      }
+    }
+  `,
   FOLLOW_TAG: gql`
     mutation FollowTag($tagId: ID) {
       followTag(tagId: $tagId) {
         tag {
           _id
-          title
           posts {
             __typename
             ... on PhotoPostType {
@@ -83,15 +90,12 @@ const Mutations = {
                 _id
                 url
               }
-              tags {
-                _id
-                title
-              }
             }
           }
-          user {
-            _id
-          }
+        }
+        user {
+          _id
+          blogName
         }
       }
     }

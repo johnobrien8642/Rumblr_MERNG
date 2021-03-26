@@ -39,23 +39,30 @@ const RootQueryType = new GraphQLObjectType({
         }
         const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
         const { _id } = decoded;
-        return Promise.all([users(query), tags(query), User.findById(_id)]).then(
+        return Promise.all([
+          users(query), 
+          tags(query), 
+          User.findById(_id)
+        ]).then(
             ([users, tags, user]) => {
-              var unfollowedTags = [];
-              unfollowedTags.concat(tags.filter(tag => user.indexOf(tag) < 0))
-              return [...users, ...unfollowedTags]
+              var filteredTags = tags.filter(tag => 
+                !user.tagFollows.includes(tag._id)
+              )
+              return [...users, ...filteredTags]
             }
           )
         }
     },
     currentUser: {
       type: UserType,
+      args: { token: { type: GraphQLString } },
       resolve(_, args, ctx) {
         const decoded = jwt.verify(
-          ctx.headers.authorization,
+          args.token,
           keys.secretOrKey
         )
         const { _id } = decoded;
+
         return User.findById(_id)
       }
     },

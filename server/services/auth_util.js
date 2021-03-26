@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 import sendAuthEmail from './send_auth_email.js';
 import User from '../models/User.js';
 
-const register = async data => {
+const register = async (data, ctx) => {
   try {
   const { message, isValid } = validateRegisterInput(data)
 
@@ -44,7 +44,7 @@ const register = async data => {
   )
 
   const token = await jwt.sign({ _id: user._id }, keys.secretOrKey)
-  Cookies.set('auth-token', token)
+  ctx.headers.authorization = token;
   
   //Comment this for email auth
   return user.save().then(user => {

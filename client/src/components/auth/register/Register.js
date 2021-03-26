@@ -34,7 +34,7 @@ const Register = () => {
       const { token } = registerUser;
       Cookies.set('auth-token', token);
       resetInputs();
-      history.push('/dashboard');
+      history.push('/');
     },
     update(client, { data }) {
       client.writeQuery({

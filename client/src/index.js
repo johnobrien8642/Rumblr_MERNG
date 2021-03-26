@@ -24,16 +24,16 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
+const token = Cookies.get('auth-token');
+
 const client = new ApolloClient({
   uri: 'http://localhost:5000/graphql',
   headers: {
-    authorization: Cookies.get('auth-token')
+    authorization: token
   },
   cache: new InMemoryCache(),
   errorLink
 })
-
-const token = Cookies.get('auth-token');
 
 client.writeQuery({
   query: IS_LOGGED_IN,

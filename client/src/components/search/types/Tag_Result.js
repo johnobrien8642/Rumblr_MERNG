@@ -12,7 +12,7 @@ const TagResult = ({ tag }) => {
   let [followTag] = useMutation(FOLLOW_TAG, {
     update(client, { data }) {
       const { followTag } = data;
-      
+      console.log(followTag)
       var readQuery = client.readQuery({
         query: GET_USER_FEED,
         variables: {
@@ -45,9 +45,6 @@ const TagResult = ({ tag }) => {
 
   return (
     <React.Fragment>
-    {/* <li
-      key={tag._id}
-    > */}
       <p>{tag.title}</p>
       <form
         onSubmit={e => {
@@ -61,7 +58,6 @@ const TagResult = ({ tag }) => {
       >
         <button type='submit'>Follow</button>
       </form>
-    {/* </li> */}
     </React.Fragment>
   )
 }

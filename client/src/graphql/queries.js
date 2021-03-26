@@ -1,9 +1,9 @@
 import { gql } from '@apollo/client';
 
 const Queries = {
-  GET_USER_FEED: gql`
-    query getUserFeed {
-      currentUser {
+  FETCH_USER_FEED: gql`
+    query fetchUserFeed($token: String) {
+      currentUser(token: $token) {
         _id
         posts {
           __typename
@@ -27,7 +27,7 @@ const Queries = {
             }
           }
         }
-        userFollows {
+        userFollowing {
           _id
           posts {
             __typename
@@ -71,16 +71,106 @@ const Queries = {
       }
     }
   `,
+  FETCH_USER_LIKED_POSTS: gql`
+    query fetchUserPostLikes($token: String) {
+      currentUser(token: $token) {
+        _id
+        likedPosts {
+          __typename
+          ... on PhotoPostType {
+            _id
+            description
+            mainImages {
+              _id
+              url
+            }
+            descriptionImages {
+              _id
+              url
+            }
+            tags {
+              _id
+              title
+            }
+          }
+        }
+      }
+    }
+  `,
+  FETCH_USER_FOLLOWING: gql`
+    query fetchUserFollowing($token: String) {
+      currentUser(token: $token) {
+        _id
+        userFollowing {
+          _id
+          blogName
+        }
+      }
+    }
+  `,
+  FETCH_USER_DETAILS_COUNTS: gql`
+    query FetchUserDetailsCounts($token: String) {
+      currentUser(token: $token) {
+        userFollowCount
+        postLikeCount
+      }
+    }
+  `,
+  FETCH_USER_DETAILS: gql`
+    query fetchUserDetails {
+      currentUser {
+        _id
+        blogname
+        userFollows {
+          _id
+          blogName
+        }
+        postLikes {
+          _id
+          post {
+            __typename
+            ... on PhotoPostType {
+              _id
+              description
+              mainImages {
+                _id
+                url
+              }
+              descriptionImages {
+                _id
+                url
+              }
+              tags {
+                _id
+                title
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  FETCH_USER_FOLLOWED_TAGS: gql`
+    query fetchUserAndFollowedTags {
+      currentUser {
+        _id
+        tagFollows {
+          _id
+          title
+        }
+      }
+    }
+  `,
   SEARCH_USERS_AND_TAGS: gql`
     query SearchUsersAndTags($filter: UserAndTagInputType) {
       usersAndTags(filter: $filter) {
         __typename
-        ... on UserType{
+        ... on UserType {
           _id
           blogName
           email
         }
-        ... on TagType{
+        ... on TagType {
           _id
           title
         }
