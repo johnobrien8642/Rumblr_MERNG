@@ -6,9 +6,9 @@ const ImageSchema = new Schema({
     type: String,
     required: true
   },
-  created: {
+  createdAt: {
     type: Date,
-    required: true
+    default: Date.now
   }
 })
 

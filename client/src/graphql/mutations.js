@@ -1,4 +1,6 @@
 import { gql } from '@apollo/client';
+import QueryFragments from '../graphql/query_fragments'
+const { PHOTO_POST } = QueryFragments;
 
 const Mutations = {
   LOGIN_USER: gql`
@@ -6,6 +8,7 @@ const Mutations = {
       loginUser(email: $email, password: $password) {
         token
         loggedIn
+        blogName
       }
     }
   `,
@@ -14,6 +17,7 @@ const Mutations = {
       registerUser(blogName: $blogName, email: $email, password: $password) {
         token
         loggedIn
+        blogName
       }
     }
   `,
@@ -29,31 +33,33 @@ const Mutations = {
       logoutUser(token: $token) {
         token
         loggedIn
+        blogName
       }
     }
   `,
   CREATE_PHOTO_POST: gql`
-    mutation CreatePhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String]) {
-      createPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags) {
+    mutation CreatePhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String], $token: String) {
+      createPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags, token: $token) {
         _id
+        description
+        createdAt
         user {
           _id
         }
         mainImages {
           _id
           url
-          created
+          createdAt
         }
         descriptionImages {
           _id
           url
-          created
+          createdAt
         }
         tags {
           _id
           title
         }
-        createdAt
       }
     }
   `,
@@ -74,24 +80,14 @@ const Mutations = {
     }
   `,
   FOLLOW_TAG: gql`
-    mutation FollowTag($tagId: ID) {
-      followTag(tagId: $tagId) {
-        tag {
-          _id
-          posts {
-            __typename
-            ... on PhotoPostType {
-              _id
-              description
-              mainImages {
-                _id
-                url
-              }
-              descriptionImages {
-                _id
-                url
-              }
-            }
+    mutation FollowTag($tagId: ID, $token: String) {
+      followTag(tagId: $tagId, token: $token) {
+        _id
+        title
+        posts {
+          __typename
+          ... on PhotoPostType {
+            ${PHOTO_POST}
           }
         }
         user {
@@ -99,7 +95,7 @@ const Mutations = {
           blogName
         }
       }
-    }
+    } 
   `
 };
 

@@ -17,7 +17,7 @@ const Results = ({ input }) => {
       }
     }
   );
-
+  
   if (loading) return 'Loading...';
   if (error) return `Error: ${error.message}`;
 
@@ -25,7 +25,6 @@ const Results = ({ input }) => {
     <div>
       <ul>
         {data.usersAndTags.map((res, i) => {
-          console.log(res)
           switch(res.__typename) {
             case 'UserType':
               return(

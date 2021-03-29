@@ -1,32 +1,27 @@
 import { gql } from '@apollo/client';
+import QueryFragments from './query_fragments.js';
+const { PHOTO_POST } = QueryFragments;
 
 const Queries = {
   FETCH_USER_FEED: gql`
-    query fetchUserFeed($token: String) {
-      currentUser(token: $token) {
+    query fetchUserFeed($blogName: String) {
+      user(blogName: $blogName) {
         _id
+        blogName
         posts {
           __typename
           ... on PhotoPostType {
-            _id
-            description
-            user {
-              _id
-              blogName
+            ${PHOTO_POST}
+          }
+        }
+        reposts {
+          _id
+          createdAt
+          post {
+            __typename
+            ... on PhotoPostType {
+              ${PHOTO_POST}
             }
-            mainImages {
-              _id
-              url
-            }
-            descriptionImages {
-              _id
-              url
-            }
-            tags {
-              _id
-              title
-            }
-            createdAt
           }
         }
         userFollowing {
@@ -34,39 +29,16 @@ const Queries = {
           posts {
             __typename
             ... on PhotoPostType {
-              _id
-              mainImages {
-                _id
-                url
-              }
-              descriptionImages {
-                _id
-                url
-              }
-              tags {
-                _id
-                title
-              }
+              ${PHOTO_POST}
             }
           }
         }
         tagFollows {
+          _id
           posts {
             __typename
             ... on PhotoPostType {
-              _id
-              mainImages {
-                _id
-                url
-              }
-              descriptionImages {
-                _id
-                url
-              }
-              tags {
-                _id
-                title
-              }
+              ${PHOTO_POST}
             }
           }
         }
@@ -74,34 +46,21 @@ const Queries = {
     }
   `,
   FETCH_USER_LIKED_POSTS: gql`
-    query fetchUserPostLikes($token: String) {
-      currentUser(token: $token) {
+    query fetchUserPostLikes($blogName: String) {
+      user(blogName: $blogName) {
         _id
         likedPosts {
           __typename
           ... on PhotoPostType {
-            _id
-            description
-            mainImages {
-              _id
-              url
-            }
-            descriptionImages {
-              _id
-              url
-            }
-            tags {
-              _id
-              title
-            }
+            ${PHOTO_POST}
           }
         }
       }
     }
   `,
   FETCH_USER_FOLLOWING: gql`
-    query fetchUserFollowing($token: String) {
-      currentUser(token: $token) {
+    query fetchUserFollowing($blogName: String) {
+      user(blogName: $blogName) {
         _id
         userFollowing {
           _id
@@ -110,30 +69,35 @@ const Queries = {
       }
     }
   `,
-  FETCH_USER_BLOG: gql`
-    query fetchUserBlog($token: String) {
-      currentUser(token: $token) {
+  FETCH_CURRENT_USER_BLOG: gql`
+    query fetchUserBlog($blogName: String) {
+      user(blogName: $blogName) {
         _id
         posts {
           __typename
           ... on PhotoPostType {
-            _id
-            description
-            mainImages {
-              _id
-              url
-            }
-            descriptionImages {
-              _id
-              url
-            }
-            tags {
-              _id
-              title
-            }
-            user {
-              _id
-              blogName
+            ${PHOTO_POST}
+          }
+        }
+      }
+    }
+  `,
+  FETCH_USER_BLOG: gql`
+    query fetchUserBlog($blogName: String) {
+      user(blogName: $blogName) {
+        _id
+        blogName
+        posts {
+          __typename
+          ... on PhotoPostType {
+            ${PHOTO_POST}
+          }
+        }
+        reposts {
+          post {
+            __typename
+            ... on PhotoPostType {
+              ${PHOTO_POST}
             }
           }
         }
@@ -141,8 +105,8 @@ const Queries = {
     }
   `,
   FETCH_USER_DETAILS_COUNTS: gql`
-    query FetchUserDetailsCounts($token: String) {
-      currentUser(token: $token) {
+    query FetchUserDetailsCounts($blogName: String) {
+      user(blogName: $blogName) {
         _id
         blogName
         userFollowCount
@@ -151,8 +115,8 @@ const Queries = {
     }
   `,
   FETCH_USER_DETAILS: gql`
-    query fetchUserDetails {
-      currentUser {
+    query fetchUserDetails($blogName: String) {
+      user(blogName: $blogName) {
         _id
         blogname
         userFollows {
@@ -164,20 +128,7 @@ const Queries = {
           post {
             __typename
             ... on PhotoPostType {
-              _id
-              description
-              mainImages {
-                _id
-                url
-              }
-              descriptionImages {
-                _id
-                url
-              }
-              tags {
-                _id
-                title
-              }
+              ${PHOTO_POST}
             }
           }
         }
@@ -185,8 +136,8 @@ const Queries = {
     }
   `,
   FETCH_USER_FOLLOWED_TAGS: gql`
-    query fetchUserAndFollowedTags {
-      currentUser {
+    query fetchUserAndFollowedTags($blogName: String) {
+      user(blogName: $blogName) {
         _id
         tagFollows {
           _id
@@ -220,18 +171,18 @@ const Queries = {
     }
   `,
   FETCH_USERS: gql`
-  {
-    users {
-      _id
-      username
+    {
+      users {
+        _id
+        username
+      }
     }
-  }
-`,
-  IS_LOGGED_IN: gql`
-  query isLoggedIn {
-     isLoggedIn @client
-   } 
   `,
+  IS_LOGGED_IN: gql`
+    query isLoggedIn {
+       isLoggedIn @client
+     } 
+    `,
 }
 
 export default Queries;

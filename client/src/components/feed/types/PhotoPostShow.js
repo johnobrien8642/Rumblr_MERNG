@@ -1,9 +1,37 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const PhotoPostShow = ({ post }) => {
+
+  const postHeader = () => {
+    if (post.reposter) {
+      return (
+        <span>
+          <Link to={`/view/blog/${post.reposter}`}>
+            {post.reposter}
+          </Link>
+          <i class="fas fa-retweet"></i>
+          <Link to={`/view/blog/${post.user.blogName}`}>
+            {post.user.blogName}
+          </Link>
+        </span>
+      )
+    } else {
+      return (
+        <span>
+          <Link 
+            to={`/view/blog/${post.user.blogName}`}
+          >
+            {post.user.blogName}
+          </Link>
+        </span>
+      )
+    }
+  }
+
   return(
     <React.Fragment>
-      <span>{post.user.blogName}</span>
+      {postHeader()}
       <div>
         {post.mainImages.map((mainImg, i) => {
           return <img key={i} src={`${mainImg.url}`} alt={'usefilename'} />

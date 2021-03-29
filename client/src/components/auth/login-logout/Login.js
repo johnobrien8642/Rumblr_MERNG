@@ -28,8 +28,10 @@ const Login = () => {
       })
     },
     onCompleted({ loginUser }) {
+      const { token, blogName } = loginUser;
+      Cookies.set('auth-token', token)
+      Cookies.set('currentUser', blogName)
       resetInputs();
-      Cookies.set('auth-token', loginUser.token)
       history.push('/dashboard')
     },
     update(client, { data }) {

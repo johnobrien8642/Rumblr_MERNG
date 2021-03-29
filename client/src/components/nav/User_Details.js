@@ -8,16 +8,17 @@ const { FETCH_USER_DETAILS_COUNTS } = Queries;
 
 const UserDetails = () => {
   let [active, setActive] = useState(false);
+  
   let { loading, error, data } = useQuery(FETCH_USER_DETAILS_COUNTS, {
     variables: {
-      token: Cookies.get('auth-token')
+      blogName: Cookies.get('currentUser')
     }
   })
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`
 
-  let { currentUser } = data;
+  let { user } = data;
   
   if (active) {
     return (
@@ -33,17 +34,17 @@ const UserDetails = () => {
         </li>
         <li>
           <Link to='/likes'>Likes</Link>
-          <span>{currentUser.postLikeCount}</span>
+          <span>{user.postLikeCount}</span>
         </li>
         <li>
           <Link to='/following'>Following</Link>
-          <span>{currentUser.userFollowCount}</span>
+          <span>{user.userFollowCount}</span>
         </li>
         <li>
           <Link 
-            to={`/blog/${currentUser.blogName}`} 
+            to={`/view/blog/${user.blogName}`} 
           >
-            {currentUser.blogName}
+            {user.blogName}
           </Link>
         </li>
       </ul>

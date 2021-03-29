@@ -1,6 +1,7 @@
 import graphql, { GraphQLInt } from 'graphql';
 import mongoose from 'mongoose';
 import PhotoPostType from './photo_post_type.js';
+import AnyPostType from '../unions/any_post_type.js'
 import UserType from '../../types/objects/user_type.js';
 const Tag = mongoose.model('Tag');
 const PhotoPost = mongoose.model('PhotoPost');
@@ -22,7 +23,7 @@ const TagType = new GraphQLObjectType({
       }
     },
     posts: {
-      type: GraphQLList(PhotoPostType),
+      type: new GraphQLList(AnyPostType),
       resolve(parentValue) {
         return Tag.findById(parentValue._id)
           .populate('posts')
@@ -30,7 +31,7 @@ const TagType = new GraphQLObjectType({
       }
     },
     followers: {
-      type: GraphQLList(UserType),
+      type: new GraphQLList(UserType),
       resolve(parentValue) {
         return Tag.findById(parentValue._id)
           .populate('followers')

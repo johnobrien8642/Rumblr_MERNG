@@ -1,44 +1,54 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useQuery } from '@apollo/client';
 import Queries from '../../graphql/queries';
 import PhotoPostShow from '../feed/types/PhotoPostShow';
 import Cookies from 'js-cookie';
 const { FETCH_USER_FEED } = Queries;
 
-const Feed = () => {
+const Feed = ({ blogName }) => {
+  let allPosts = useRef([]);
+  
   let { loading, error, data } = useQuery(FETCH_USER_FEED, {
     variables: {
-      token: Cookies.get('auth-token')
-    }
+      blogName: blogName ? blogName : Cookies.get('currentUser')
+    } 
   })
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
-
-  var { currentUser } = data;
-  const allPosts = [...currentUser.posts]
   
-  currentUser.userFollowing.forEach((user, i) => {
-    user.populate('posts').then(user => {
-      allPosts.concat(user.posts)
-    })
-  })
-  currentUser.tagFollows.forEach((tag, i) => {
-    tag.populate('posts').then(tag => {
-      allPosts.concat(tag.posts)
-    })
+  var { user } = data;
+  console.log(user)
+  allPosts.current = [...user.posts]
+
+  user.reposts.forEach((repost, i) => {
+    var post = repost.post
+    post.createdAt = repost.createdAt
+    post.reposter = user.blogName
+    
+    allPosts.current = [...allPosts.current, post]
   })
 
-  allPosts.sort((a, b) => b.createdAt - a.createdAt)
-  console.log(allPosts) 
+  user.userFollowing.forEach((user, i) => {
+    allPosts.current = [...allPosts.current, ...user.posts]
+  })
+
+  user.tagFollows.forEach((tag, i) => {
+    allPosts.current = [...allPosts.current, ...tag.posts]
+  })
+
+  allPosts.current.sort((a, b) => {  
+    return parseInt(b.createdAt) - parseInt(a.createdAt)
+  })
+
   return(
     <div>
-        {allPosts.map((p, i) => {
+        {allPosts.current.map((p, i) => {
           switch(p.__typename) {
             case 'PhotoPostType':
               return (
                 <div
-                  key={p._id}
+                  key={i}
                   className='post'
                 >
                   <PhotoPostShow post={p} />

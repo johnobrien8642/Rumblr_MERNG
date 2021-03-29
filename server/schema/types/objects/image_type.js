@@ -8,7 +8,7 @@ const ImageType = new GraphQLObjectType({
   fields: () => ({
     _id: { type: GraphQLID },
     url: { type: GraphQLString },
-    created: { type: GraphQLString }
+    createdAt: { type: GraphQLString }
   })
 })
 

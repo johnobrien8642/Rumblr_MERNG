@@ -4,9 +4,7 @@ import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import MatchedTagResults from '../tags/Matched_Tag_Results.js'
 import Mutations from '../../graphql/mutations.js';
-import Queries from '../../graphql/queries.js';
 const { CREATE_POST } = Mutations;
-const { GET_USER_FEED } = Queries;
 
 const Post = () => {
   let [mainImageFiles, setMain] = useState([]);

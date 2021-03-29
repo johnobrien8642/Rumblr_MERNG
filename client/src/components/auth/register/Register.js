@@ -31,8 +31,9 @@ const Register = () => {
       }
     },
     onCompleted({ registerUser }) {
-      const { token } = registerUser;
-      Cookies.set('auth-token', token);
+      const { token, blogName } = registerUser;
+      Cookies.set('auth-token', token)
+      Cookies.set('currentUser', blogName)
       resetInputs();
       history.push('/');
     },

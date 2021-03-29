@@ -17,7 +17,7 @@ const App = () => {
       <Nav />
       <Switch>
         <AuthRoute exact path='/dashboard' component={Dashboard} />
-        <Route exact path='/blog/:blogName' component={UserBlog} />
+        <Route exact path='/view/blog/:blogName' component={UserBlog} />
         <Route exact path='/likes' component={UserPostLikes} />
         <Route exact path='/following' component={UserFollowing} />
         <Route exact path='/login' component={Login} />

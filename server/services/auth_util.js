@@ -4,7 +4,8 @@ import Cookies from 'js-cookie';
 import validateRegisterInput from '../validations/register.js';
 import validateLoginInput from '../validations/login.js';
 import bcrypt from 'bcryptjs';
-import sendAuthEmail from './send_auth_email.js';
+////Uncomment for email auth
+// import sendAuthEmail from './send_auth_email.js';
 import User from '../models/User.js';
 
 const register = async (data, ctx) => {
@@ -44,11 +45,10 @@ const register = async (data, ctx) => {
   )
 
   const token = await jwt.sign({ _id: user._id }, keys.secretOrKey)
-  ctx.headers.authorization = token;
   
   //Comment this for email auth
   return user.save().then(user => {
-    return { token, loggedIn: true, ...user._doc, password: '' }
+    return { token, loggedIn: true, ...user._doc, ...user.blogName}
   })
 
   ////Uncomment for email auth, scroll to top, uncomment sendAuthEmail import
@@ -72,7 +72,8 @@ const logout = async data => {
 
     const user = await User.findById({ _id })
 
-    const token = '';
+    Cookies.set('auth-token', '')
+    Cookies.set('currentUser', '')
 
     return { token, loggedIn: false, ...user._doc }
   } catch (err) {
@@ -97,8 +98,10 @@ const login = async data => {
     }
 
     if (bcrypt.compareSync(password, user.password)) {
+      Cookies.set('currentUser', user.blogName)
       const token = jwt.sign({ _id: user._id }, keys.secretOrKey)
-      return { token, loggedIn: true, ...user._doc }
+      Cookies.set('auth-token', token)
+      return { token, loggedIn: true, ...user._doc, ...user.blogName}
     } else {
       throw new Error('Password is incorrect')
     }

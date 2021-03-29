@@ -9,7 +9,7 @@ import Cookies from 'js-cookie';
 const { CREATE_PHOTO_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
-const PhotoPostForm = () => {
+const PhotoPostForm = () => { 
   let [mainImageFiles, setMain] = useState([]);
   let [bodyImageFiles, setBody] = useState([]);
   let mainImages = useRef([]);
@@ -23,7 +23,7 @@ const PhotoPostForm = () => {
   let [createPhotoPost] = useMutation(CREATE_PHOTO_POST, {
     update(client, { data }){
     const { createPhotoPost } = data;
-      console.log(createPhotoPost)
+      
       var readQuery = client.readQuery({
         query: FETCH_USER_FEED,
         variables: {
@@ -32,9 +32,9 @@ const PhotoPostForm = () => {
       })
       
       var { currentUser } = readQuery;
-      console.log(currentUser)
-      var newPostArr = currentUser.posts.concat(createPhotoPost)
-  
+      
+      var newPostArr = [...currentUser.posts, createPhotoPost]
+      
       client.writeQuery({
         query: FETCH_USER_FEED,
         variables: {
@@ -134,6 +134,7 @@ const PhotoPostForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     var mainImagesFormData = new FormData();
     var bodyImagesFormData = new FormData();
 
@@ -184,7 +185,8 @@ const PhotoPostForm = () => {
             mainImages: cleanedMain,
             description: description,
             descriptionImages: cleanedBody,
-            tags: tags
+            tags: tags,
+            token: Cookies.get('auth-token')
           }
         })
       }

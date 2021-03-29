@@ -7,7 +7,7 @@ const ImageInputType = new GraphQLInputObjectType({
   fields: () => ({
     _id: { type: GraphQLID },
     url: { type: GraphQLString },
-    created: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
   })
 })
 

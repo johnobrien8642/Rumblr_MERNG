@@ -37,8 +37,10 @@ const RootQueryType = new GraphQLObjectType({
         const tags = async (query) => {
           return await Tag.find(query.$or[1]).exec();
         }
+
         const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
         const { _id } = decoded;
+
         return Promise.all([
           users(query), 
           tags(query), 
@@ -52,19 +54,6 @@ const RootQueryType = new GraphQLObjectType({
             }
           )
         }
-    },
-    currentUser: {
-      type: UserType,
-      args: { token: { type: GraphQLString } },
-      resolve(_, {token}) {
-        const decoded = jwt.verify(
-          token,
-          keys.secretOrKey
-        )
-        const { _id } = decoded;
-
-        return User.findById(_id)
-      }
     },
     fetchMatchingTags: {
       type: new GraphQLList(TagType),
@@ -83,6 +72,13 @@ const RootQueryType = new GraphQLObjectType({
         return Promise.all([tags(query)]).then(([tags]) => {
           return [...tags]
         })
+      }
+    },
+    user: {
+      type: UserType,
+      args: { blogName: { type: GraphQLString } },
+      resolve(parentValue, { blogName }) {
+        return User.findOne({ blogName: blogName })
       }
     },
     users: {

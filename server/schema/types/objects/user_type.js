@@ -5,6 +5,7 @@ import keys from '../../../../config/keys.js'
 import AnyPostType from '../unions/any_post_type.js'
 import TagType from '../objects/tag_type.js'
 import LikeType from '../objects/like_type.js'
+import RepostType from '../objects/repost_type.js'
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
 const { GraphQLObjectType, GraphQLString,
@@ -23,7 +24,7 @@ const UserType = new GraphQLObjectType({
     ////Uncomment for email auth
     // authenticated: { type: GraphQLBoolean },
     // emailAuthToken: { type: GraphQLString },
-    created: { type: GraphQLInt },
+    createdAt: { type: GraphQLInt },
     lastUpdated: { type: GraphQLInt },
     posts: {
       type: new GraphQLList(AnyPostType),
@@ -31,6 +32,14 @@ const UserType = new GraphQLObjectType({
         return User.findById(parentValue._id)
           .populate('posts')
           .then(user => user.posts)
+      }
+    },
+    reposts: {
+      type: new GraphQLList(RepostType),
+      resolve(parentValue) {
+        return User.findById(parentValue._id)
+          .populate('reposts')
+          .then(user => user.reposts)
       }
     },
     tagFollows: {
@@ -67,18 +76,12 @@ const UserType = new GraphQLObjectType({
     },
     userFollowCount: {
       type: GraphQLInt,
-      resolve(parentValue, args, ctx) {
-        const decoded = jwt.verify(
-          ctx.headers.authorization, 
-          keys.secretOrKey
-        )
-        const { _id } = decoded;
-        let idToSearch = mongoose.Types.ObjectId(_id)
+      resolve(parentValue) {
         return User.aggregate([
-          { $match: { _id: idToSearch } },
+          { $match: { _id: parentValue._id } },
             { $project: {
               followerCount: {
-                $size: '$userFollows'
+                $size: '$userFollowing'
               }
             }
           }
@@ -87,19 +90,12 @@ const UserType = new GraphQLObjectType({
     },
     postLikeCount: {
       type: GraphQLInt,
-      resolve(parentValue, args, ctx) {
-        const decoded = jwt.verify(
-          ctx.headers.authorization, 
-          keys.secretOrKey
-        )
-        const { _id } = decoded;
-        let idToSearch = mongoose.Types.ObjectId(_id)
-
+      resolve(parentValue) {
         return User.aggregate([
-          { $match: { _id: idToSearch } },
+          { $match: { _id: parentValue._id } },
             { $project: {
               postLikeCount: {
-                $size: '$postLikes'
+                $size: '$likedPosts'
               }
             }
           }

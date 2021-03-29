@@ -11,8 +11,9 @@ const Logout = () => {
   let history = useHistory(); 
 
   const [ Logout ] = useMutation(LOGOUT_USER, {
-    onCompleted({ logoutUser }) {
-      Cookies.set('auth-token', logoutUser.token)
+    onCompleted() {
+      Cookies.set('auth-token', '')
+      Cookies.set('currentUser', '')
     },
     update(client, data) {
       client.writeQuery({

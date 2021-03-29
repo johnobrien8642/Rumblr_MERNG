@@ -36,6 +36,12 @@ const UserSchema = new Schema({
       ref: 'PhotoPost'
     }
   ],
+  reposts:[
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Repost'
+    }
+  ],
   userFollowing: [
     {
       type: Schema.Types.ObjectId,
@@ -65,11 +71,11 @@ const UserSchema = new Schema({
   // },
   createdAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now
   },
   updatedAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now
   },
 })
 

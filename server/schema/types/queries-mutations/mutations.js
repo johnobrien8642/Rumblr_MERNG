@@ -70,7 +70,7 @@ const mutation = new GraphQLObjectType({
         tags: { type: new GraphQLList(GraphQLString) },
         token: { type: GraphQLString }
       },
-      resolve(_, { mainImages, descriptionImages, description, tags }, ctx) {
+      resolve(_, { mainImages, descriptionImages, description, tags, token }, ctx) {
         var post = new PhotoPost();
         
         const getTagArr = async (tags, post) => {
@@ -111,11 +111,11 @@ const mutation = new GraphQLObjectType({
         })
         
         const decoded = jwt.verify(
-          ctx.headers.authorization, 
+          token, 
           keys.secretOrKey
         )
         const { _id } = decoded;
-
+        
         return Promise.all([getTagArr(tags, post), User.findById(_id)]).then(
           ([tags, user]) => {
             post.user = user._id
@@ -127,9 +127,7 @@ const mutation = new GraphQLObjectType({
             })
 
             return Promise.all([post.save(), user.save()]).then(
-              ([post, user])=> {
-                return post
-              }
+              ([post, user])=> (post)
             )
           }
         )
@@ -205,26 +203,29 @@ const mutation = new GraphQLObjectType({
       }
     },
     followTag: {
-      type: UserAndTagType,
+      type: TagType,
       args: { 
-        tagId: { type: GraphQLID }
+        tagId: { type: GraphQLID },
+        token: { type: GraphQLString }
       },
-      resolve(parentValue, { tagId }, ctx) {
+      resolve(parentValue, { tagId, token }) {
         const decoded = jwt.verify(
-          ctx.headers.authorization, 
+          token, 
           keys.secretOrKey
         );
         const { _id } = decoded;
 
         return Promise.all([Tag.findById(tagId), User.findById(_id)]).then(
           ([tag, user]) => {
+            console.log(tag)
+            console.log(user)
             if (user.tagFollows.includes(tag._id)) return;
-
+        
             tag.followers.push(user._id)
             user.tagFollows.push(tag._id)
             
             return Promise.all([tag.save(), user.save()]).then(
-              ([tag, user]) => (tag, user)
+              ([tag, user]) => (tag)
             )
           }
         )

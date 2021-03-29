@@ -10,6 +10,7 @@ const RepostType = new GraphQLObjectType({
   name: 'RepostType',
   fields: () => ({
     _id: { type: GraphQLID },
+    createdAt: { type: GraphQLString },
     user: {
       type: UserType,
       resolve(parentValue) {
@@ -23,7 +24,7 @@ const RepostType = new GraphQLObjectType({
       resolve(parentValue) {
         return Repost.findById(parentValue._id)
           .populate('post')
-          .then(like => like.post)
+          .then(repost => repost.post)
       }
     },
   })

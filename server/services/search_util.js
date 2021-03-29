@@ -1,4 +1,3 @@
-
 const buildFilters = ({OR = [], blogName_contains, tag_title_contains}) => {
     const filter = (blogName_contains || tag_title_contains) ? {} : null;
     if (blogName_contains) {
