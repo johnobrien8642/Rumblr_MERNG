@@ -31,7 +31,19 @@ const client = new ApolloClient({
   headers: {
     authorization: token
   },
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      PhotoPostType: {
+        fields: {
+          likes: {
+            merge(existing, incoming) {
+              return incoming
+            }
+          }
+        }
+      }
+    }
+  }),
   errorLink
 })
 

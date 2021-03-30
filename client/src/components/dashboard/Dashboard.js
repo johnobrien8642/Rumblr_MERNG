@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import PostNav from '../posts/Post_Nav'
 import Feed from '../feed/Feed.js'
 
@@ -13,4 +14,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard;
+export default withRouter(Dashboard);

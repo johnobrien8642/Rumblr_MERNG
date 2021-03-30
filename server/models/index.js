@@ -8,10 +8,10 @@ import Repost from './reposts/Repost.js'
 const models = {
   User,
   Image,
-  PhotoPost,
   Tag,
   Like,
-  Repost
+  Repost,
+  PhotoPost,
 }
 
 export default models;

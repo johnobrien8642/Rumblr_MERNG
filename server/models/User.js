@@ -54,10 +54,10 @@ const UserSchema = new Schema({
       ref: 'Tag'
     }
   ],
-  likedPosts: [
+  likes: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Post'
+      ref: 'Like'
     }
   ],
   //// Uncomment both below for email auth
@@ -79,6 +79,6 @@ const UserSchema = new Schema({
   },
 })
 
-const Post = mongoose.model('User', UserSchema, 'users');
+const User = mongoose.model('User', UserSchema, 'users');
 
-export default Post;
+export default User;

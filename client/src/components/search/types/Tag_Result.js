@@ -58,7 +58,7 @@ const TagResult = ({ tag }) => {
           followTag({
             variables: {
               tagId: tag._id,
-              token: Cookies.get('auth-token')
+              blogName: Cookies.get('blogName')
             }
           })
         }}

@@ -1,7 +1,10 @@
+
 const QueryFragments = {
   PHOTO_POST:`
       _id
       description
+      reposter
+      repostCaption
       createdAt
       user {
         _id
@@ -18,6 +21,9 @@ const QueryFragments = {
       tags {
         _id
         title
+      }
+      likes {
+        _id
       }
   `
 }

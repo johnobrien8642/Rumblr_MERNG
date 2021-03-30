@@ -8,6 +8,7 @@ import WelcomePage from './auth/register/Welcome_Page';
 import UserPostLikes from './feed/User_Post_Likes';
 import UserFollowing from './feed/User_Following';
 import UserBlog from './feed/User_Blog';
+import Repost from './feed/Repost'
 import AuthRoute from '../util/route_util';
 import './../stylesheets/application.scss';
 
@@ -18,6 +19,7 @@ const App = () => {
       <Switch>
         <AuthRoute exact path='/dashboard' component={Dashboard} />
         <Route exact path='/view/blog/:blogName' component={UserBlog} />
+        <Route exact path='/repost/:blogName/:postId/:typename' component={Repost} />
         <Route exact path='/likes' component={UserPostLikes} />
         <Route exact path='/following' component={UserFollowing} />
         <Route exact path='/login' component={Login} />

@@ -10,9 +10,13 @@ import TagType from '../objects/tag_type.js';
 import ImageInputType from '../inputs/image_input_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
 import AuthService from '../../../services/auth_util.js';
+import RepostType from '../objects/repost_type.js';
+import LikeType from '../objects/like_type.js';
+import AnyPostType from '../unions/any_post_type.js'
 const PhotoPost = mongoose.model('PhotoPost');
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
+const Repost = mongoose.model('Repost');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
 
@@ -38,8 +42,8 @@ const mutation = new GraphQLObjectType({
       args: {
         token: { type: GraphQLString }
       },
-      resolve(_, args) {
-        return AuthService.logout(args)
+      resolve(_, { token }) {
+        return AuthService.logout(token)
       }
     },
     loginUser: {
@@ -61,6 +65,39 @@ const mutation = new GraphQLObjectType({
         return AuthService.verify(args)
       }
     },
+    likePost: {
+      type: LikeType,
+      args: {
+        postId: { type: GraphQLID },
+        user: { type: GraphQLString },
+        type: { type: GraphQLString }
+      },
+      resolve(_, { postId, user, type }) {
+        switch(type) {
+          case 'PhotoPostType':
+            return PhotoPost.like(postId, user).then(res => (res))
+          default:
+            console.log('no types matched')
+        }
+      }
+    },
+    unlikePost: {
+      type: AnyPostType,
+      args: {
+        postId: { type: GraphQLID },
+        likeId: { type: GraphQLID },
+        user: { type: GraphQLString },
+        type: { type: GraphQLString }
+      },
+      resolve(_, { postId, likeId, user, type }) {
+        switch(type) {
+          case 'PhotoPostType':
+            return PhotoPost.unlike(postId, likeId, user).then(res => (res))
+          default:
+            console.log('no types matched')
+        }
+      }
+    },
     createPhotoPost: {
       type: PhotoPostType,
       args: {
@@ -68,96 +105,69 @@ const mutation = new GraphQLObjectType({
         descriptionImages: { type: new GraphQLList(ImageInputType) },
         description: { type: GraphQLString },
         tags: { type: new GraphQLList(GraphQLString) },
-        token: { type: GraphQLString }
+        token: { type: GraphQLString },
+        user: { type: GraphQLString }
       },
-      resolve(_, { mainImages, descriptionImages, description, tags, token }, ctx) {
-        var post = new PhotoPost();
-        
-        const getTagArr = async (tags, post) => {
-          return Promise.all(tags.map((t, i) => {
-                return asyncTag(t, post)
-              }
-            )
+      resolve(_, { 
+        mainImages, 
+        descriptionImages, 
+        description, tags,
+        user
+      }) {
+        return PhotoPost
+          .create(
+            mainImages, 
+            descriptionImages, 
+            description, tags, 
+            user
           )
-        }
-
-        const asyncTag = async (t, post) => {
-          return findOrCreateTag(t, post)
-        }
-
-        const findOrCreateTag = async (t, post) => {
-          return Tag.findOne({ title: t }).then(tagFound => {
-            if (tagFound) {
-              tagFound.posts.push(post._id)
-              return tagFound.save().then(tag => {
-                return tag;
-              })
-            } else {
-              var newTag = new Tag({ title: t })
-              newTag.posts.push(post._id)
-              return newTag.save().then(tag => {
-                return tag
-              })
-            }
-          })
-        }
-
-        mainImages.forEach((img, i) => {
-          post.mainImages.push(img._id)
-        })
-
-        descriptionImages.forEach((img, i) => {
-          post.descriptionImages.push(img._id)
-        })
-        
-        const decoded = jwt.verify(
-          token, 
-          keys.secretOrKey
-        )
-        const { _id } = decoded;
-        
-        return Promise.all([getTagArr(tags, post), User.findById(_id)]).then(
-          ([tags, user]) => {
-            post.user = user._id
-            post.description = description
-            user.posts.push(post._id)
-
-            tags.forEach((t, i) => {
-              post.tags.push(t._id)
-            })
-
-            return Promise.all([post.save(), user.save()]).then(
-              ([post, user])=> (post)
-            )
-          }
-        )
+      }
+    },
+    repostPhotoPost: {
+      type: PhotoPostType,
+      args: {
+        mainImages: { type: new GraphQLList(ImageInputType) },
+        descriptionImages: { type: new GraphQLList(ImageInputType) },
+        description: { type: GraphQLString },
+        tags: { type: new GraphQLList(GraphQLString) },
+        token: { type: GraphQLString },
+        reposter: { type: GraphQLString },
+        repostCaption: { type: GraphQLString },
+        user: { type: GraphQLString }
+      },
+      resolve(_, { 
+        mainImages, 
+        descriptionImages, 
+        description, tags, 
+        reposter, repostCaption, 
+        user
+      }) {
+        return PhotoPost
+          .repost(
+            mainImages, 
+            descriptionImages, 
+            description, 
+            tags, reposter, 
+            repostCaption, user
+          )
       }
     },
     followUser: {
       type: UserType,
       args: { 
-        userId: { type: GraphQLID }
+        user: { type: GraphQLString },
+        currentUser: { type: GraphQLString }
       },
-      resolve(parentValue, { userId }, ctx) {
-        const decoded = jwt.verify(
-          ctx.headers.authorization, 
-          keys.secretOrKey
-        );
-        const { _id } = decoded;
-        const currentUserId = _id;
-
-        return User.find({
-          _id: {
-            $in: [currentUserId, userId]
-          }
-        }).then(users => {
-          const currentUser = currentUserId == users[0]._id ? users[0] : users[1]
-          const user = userId == users[0]._id ? users[0] : users[1]
+      resolve(parentValue, { user, currentUser }) {
+        return Promise.all([
+          User.findOne({ blogName: user }), 
+          User.findOne({ blogName: currentUser })
+        ]).then(([user, currentUser]) => {
           currentUser.userFollows.push(user)
           user.followers.push(currentUser)
 
-          return Promise.all([currentUser.save(), user.save()]).then(
-            ([currentUser, user]) => (currentUser, user)
+          return Promise.all([user.save(), currentUser.save()]).then(
+            (user, currentUser) => (user, currentUser)
           )
         })
       }
@@ -206,19 +216,15 @@ const mutation = new GraphQLObjectType({
       type: TagType,
       args: { 
         tagId: { type: GraphQLID },
-        token: { type: GraphQLString }
+        blogName: { type: GraphQLString }
       },
-      resolve(parentValue, { tagId, token }) {
-        const decoded = jwt.verify(
-          token, 
-          keys.secretOrKey
-        );
-        const { _id } = decoded;
-
-        return Promise.all([Tag.findById(tagId), User.findById(_id)]).then(
+      resolve(parentValue, { tagId, blogName }) {
+        
+        return Promise.all([
+          Tag.findById(tagId), 
+          User.findOne({ blogName: blogName })
+        ]).then(
           ([tag, user]) => {
-            console.log(tag)
-            console.log(user)
             if (user.tagFollows.includes(tag._id)) return;
         
             tag.followers.push(user._id)
@@ -231,6 +237,16 @@ const mutation = new GraphQLObjectType({
         )
       }
     },
+    repost: {
+      type: RepostType,
+      args: { 
+        postId: { type: GraphQLID },
+
+      },
+      resolve(parentValue, { postId }) {
+        
+      }
+    }
     // unfollowTag: {
     //   type: UserAndTagType,
     //   args: { 

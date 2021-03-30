@@ -8,12 +8,12 @@ const RepostSchema = new Schema({
   },
   post: {
     type: Schema.Types.ObjectId,
-    ref: 'Post'
+    ref: 'PhotoPost'
   },
   createdAt: {
     type: Date,
     default: Date.now
-  }
+  },
 })
 
 const Repost = mongoose.model('Repost', RepostSchema, 'reposts');

@@ -9,13 +9,16 @@ import TagType from '../objects/tag_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
 import UserAndTagInputType from '../inputs/user_and_tag_input_type.js'
 import AnyPostType from '../unions/any_post_type.js'
+import LikeType from '../objects/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
 const User = mongoose.model('User');
 const PhotoPost = mongoose.model('PhotoPost');
 const Image = mongoose.model('Image');
 const Tag = mongoose.model('Tag');
+const Like = mongoose.model('Like')
 const { GraphQLObjectType, GraphQLList,
-        GraphQLString, GraphQLID, GraphQLNonNull } = graphql;
+        GraphQLString, GraphQLID, 
+        GraphQLNonNull, GraphQLBoolean } = graphql;
 
 const RootQueryType = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -74,6 +77,69 @@ const RootQueryType = new GraphQLObjectType({
         })
       }
     },
+    doesUserLikePost: {
+      type: LikeType,
+      args: {
+        user: { type: GraphQLString },
+        postId: { type: GraphQLID }
+      },
+      resolve(_, {user, postId}) {
+        return User
+          .findOne({ blogName: user })
+          .populate('likes')
+          .then(user => {
+            var found = {};
+            user.likes.forEach((like, i) => {
+              if (like.post._id == postId) {
+                found = like
+              }
+            })
+            return found
+          })
+      }
+    },
+    fetchUserFeed: {
+      type: new GraphQLList(AnyPostType),
+      args: { blogName: { type: GraphQLString } },
+      resolve(_, { blogName }) {
+        return User
+          .findOne({ blogName: blogName})
+          .populate('posts')
+          .populate({ 
+            path: 'reposts',
+            populate: { path: 'post' }
+          })
+          .populate({ 
+            path: 'userFollowing',
+            populate: { path: 'posts' }
+          })
+          .populate({ 
+            path: 'tagFollows',
+            populate: { path: 'posts' }
+          })
+          .then(user => {
+            var allPosts = [...user.posts];
+
+            user.reposts.forEach((repost, i) => {
+              // console.log(repost.post)
+              allPosts = [...allPosts, repost.post]
+            })
+            
+            user.userFollowing.forEach((user, i) => {
+              allPosts = [...allPosts, ...user.posts]
+            })
+          
+            user.tagFollows.forEach((tag, i) => {
+              allPosts = [...allPosts, ...tag.posts]
+            })
+
+            allPosts.sort((a, b) => {
+              return (b.createdAt.getTime() - a.createdAt.getTime())
+            })
+            return allPosts
+          })
+      }
+    },
     user: {
       type: UserType,
       args: { blogName: { type: GraphQLString } },
@@ -89,9 +155,15 @@ const RootQueryType = new GraphQLObjectType({
     },
     post: {
       type: AnyPostType,
-      args: { _id: { type: GraphQLID } },
-      resolve(parentValue, args) {
-        return Post.findById(args._id)
+      args: { 
+        postId: { type: GraphQLID },
+        typename: { type: GraphQLString }
+      },
+      resolve(parentValue, { postId, typename }) {
+        switch(typename) {
+          case 'PhotoPostType':
+            return PhotoPost.findById(postId)
+        }
       }
     },
     image: {
@@ -118,6 +190,13 @@ const RootQueryType = new GraphQLObjectType({
       args: { _id: { type: GraphQLID } },
       resolve(_, {_id}) {
         return Tag.findById(_id)
+      }
+    },
+    like: {
+      type: LikeType,
+      args: { _id: { type: GraphQLID } },
+      resolve(_, {_id}) {
+        return Like.findById(_id)
       }
     }
   })

@@ -1,4 +1,4 @@
-import graphql from 'graphql';
+import graphql, { GraphQLBoolean } from 'graphql';
 import mongoose from 'mongoose';
 import ImageType from './image_type.js';
 import TagType from './tag_type.js';
@@ -54,14 +54,8 @@ const PhotoPostType = new GraphQLObjectType({
           .then(photoPost => photoPost.likes)
       }
     },
-    reposts: {
-      type: new GraphQLList(RepostType),
-      resolve(parentValue) {
-        return PhotoPost.findById(parentValue._id)
-          .populate('reposts')
-          .then(photoPost => photoPost.reposts)
-      }
-    },
+    reposter: { type: GraphQLString },
+    repostCaption: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     updatedAt: { type: GraphQLString },
   })

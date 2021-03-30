@@ -67,15 +67,12 @@ const register = async (data, ctx) => {
 
 const logout = async data => {
   try {
-    const decoded = jwt.verify(data.token, keys.secretOrKey);
+    const decoded = jwt.verify(data, keys.secretOrKey);
     const { _id } = decoded;
 
     const user = await User.findById({ _id })
 
-    Cookies.set('auth-token', '')
-    Cookies.set('currentUser', '')
-
-    return { token, loggedIn: false, ...user._doc }
+    return { loggedIn: false, ...user._doc }
   } catch (err) {
     throw err;
   }

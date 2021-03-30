@@ -11,17 +11,21 @@ const Logout = () => {
   let history = useHistory(); 
 
   const [ Logout ] = useMutation(LOGOUT_USER, {
-    onCompleted() {
-      Cookies.set('auth-token', '')
-      Cookies.set('currentUser', '')
-    },
-    update(client, data) {
+    update(client, { data }) {
       client.writeQuery({
         query: IS_LOGGED_IN,
         data: {
-          isLoggedIn: data.data.logoutUser.loggedIn,
+          isLoggedIn: data.logoutUser.loggedIn,
         }
       })
+    },
+    onCompleted() {
+      Cookies.set('auth-token', '')
+      Cookies.set('currentUser', '')
+      history.push('/')
+    },
+    onError(error) {
+      console.log(error)
     }
   })
 
@@ -29,11 +33,12 @@ const Logout = () => {
     <div>
       <button
         onClick={e => {
-          const token = Cookies.get('auth-token')
           e.preventDefault();
-          Logout({ variables: { token }})
-            .then(() => history.push('/'))
-            .catch(err => console.log(err))
+          Logout({ 
+            variables: { 
+              token: Cookies.get('auth-token')
+            }
+          })
         }}
       >
        Logout

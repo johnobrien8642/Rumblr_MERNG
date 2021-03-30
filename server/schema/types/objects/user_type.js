@@ -6,6 +6,7 @@ import AnyPostType from '../unions/any_post_type.js'
 import TagType from '../objects/tag_type.js'
 import LikeType from '../objects/like_type.js'
 import RepostType from '../objects/repost_type.js'
+import Like from '../../../models/likes/Like.js';
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
 const { GraphQLObjectType, GraphQLString,
@@ -58,6 +59,14 @@ const UserType = new GraphQLObjectType({
         .then(user => user.userFollowing)
       }
     },
+    likes: { 
+      type: GraphQLList(LikeType),
+      resolve(parentValue) {
+        return User.findById(parentValue._id)
+        .populate('likes')
+        .then(user => user.likes)
+      }
+    },
     likedPosts: { 
       type: GraphQLList(AnyPostType),
       resolve(parentValue) {
@@ -95,7 +104,7 @@ const UserType = new GraphQLObjectType({
           { $match: { _id: parentValue._id } },
             { $project: {
               postLikeCount: {
-                $size: '$likedPosts'
+                $size: '$likes'
               }
             }
           }

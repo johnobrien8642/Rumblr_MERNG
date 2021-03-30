@@ -21,7 +21,7 @@ const LikeType = new GraphQLObjectType({
       type: AnyPostType,
       resolve(parentValue) {
         return Like.findById(parentValue._id)
-        .populate('post')
+          .populate('post')
           .then(like => like.post)
       }
     },

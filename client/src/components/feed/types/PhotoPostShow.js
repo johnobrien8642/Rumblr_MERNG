@@ -1,16 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PostOptions from '../Post_Options'
 
-const PhotoPostShow = ({ post }) => {
+const PhotoPostShow = ({ post, reposter }) => {
 
   const postHeader = () => {
-    if (post.reposter) {
+    if (reposter || post.reposter) {
+      var reposterBlogName = reposter ? reposter : post.reposter
       return (
         <span>
-          <Link to={`/view/blog/${post.reposter}`}>
-            {post.reposter}
+          <Link to={`/view/blog/${reposterBlogName}`}>
+            {reposterBlogName}
           </Link>
-          <i class="fas fa-retweet"></i>
+          <i className="fas fa-retweet"></i>
           <Link to={`/view/blog/${post.user.blogName}`}>
             {post.user.blogName}
           </Link>
@@ -29,6 +31,25 @@ const PhotoPostShow = ({ post }) => {
     }
   }
 
+  const repostFooter = () => {
+    if (post.reposter) {
+      return (
+        <div>
+          <span>
+            <i className="fas fa-retweet"></i>
+            <Link to={`/view/blog/${post.reposter}`}>
+              {post.reposter}
+            </Link>
+          </span>
+          <p>{post.repostCaption}</p> 
+        </div>
+      )
+    } else {
+      <div>
+      </div>
+    }
+  }
+
   return(
     <React.Fragment>
       {postHeader()}
@@ -44,13 +65,15 @@ const PhotoPostShow = ({ post }) => {
         })}
       </div>
       
+      {repostFooter()}
+      
       <div>
         {post.tags.map((tag, i) => {
           return <div key={i}>{tag.title}</div>
         })}
       </div>
     
-    {/* <PostFeedOptions post={post}/> */}
+      <PostOptions post={post} />
     </React.Fragment>
   )
 }

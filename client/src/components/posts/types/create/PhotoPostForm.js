@@ -2,12 +2,12 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import MatchedTagResults from '../../tags/Matched_Tag_Results.js'
-import Mutations from '../../../graphql/mutations';
-import Queries from '../../../graphql/queries';
+import MatchedTagResults from '../../../tags/Matched_Tag_Results.js'
+import Mutations from '../../../../graphql/mutations';
+import Queries from '../../../../graphql/queries';
 import Cookies from 'js-cookie';
 const { CREATE_PHOTO_POST } = Mutations;
-const { FETCH_USER_FEED } = Queries;
+const { FETCH_FEED } = Queries;
 
 const PhotoPostForm = () => { 
   let [mainImageFiles, setMain] = useState([]);
@@ -25,29 +25,27 @@ const PhotoPostForm = () => {
     const { createPhotoPost } = data;
       
       var readQuery = client.readQuery({
-        query: FETCH_USER_FEED,
+        query: FETCH_FEED,
         variables: {
-          token: Cookies.get('auth-token')
+          blogName: Cookies.get('currentUser')
         }
       })
       
-      var { currentUser } = readQuery;
+      var { fetchUserFeed } = readQuery;
       
-      var newPostArr = [...currentUser.posts, createPhotoPost]
+      var newPostArr = [createPhotoPost, ...fetchUserFeed]
       
       client.writeQuery({
-        query: FETCH_USER_FEED,
+        query: FETCH_FEED,
         variables: {
-          token: Cookies.get('auth-token')
+          blogName: Cookies.get('currentUser')
         },
         data: {
-          currentUser: {
-            posts: newPostArr
-          }
+          fetchUserFeed: newPostArr
         }
       })
     },
-    onCompleted(data) {
+    onCompleted() {
       resetInputs();
       history.push('/dashboard');
     },
@@ -172,21 +170,22 @@ const PhotoPostForm = () => {
 
     Promise.all([main(), body()]).then(
       ([mainObjs, bodyObjs]) => {
-        let cleanedMain = mainObjs.map((obj) => { 
-          delete obj.__v 
+        let cleanedMain = mainObjs.map((obj) => {
+          delete obj.__v
           return obj
         })
-        let cleanedBody = bodyObjs.map((obj) => { 
-          delete obj.__v 
+        let cleanedBody = bodyObjs.map((obj) => {
+          delete obj.__v
           return obj
         })
+        
         createPhotoPost({
           variables: {
             mainImages: cleanedMain,
             description: description,
             descriptionImages: cleanedBody,
             tags: tags,
-            token: Cookies.get('auth-token')
+            user: Cookies.get('currentUser')
           }
         })
       }

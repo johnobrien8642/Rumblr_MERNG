@@ -8,11 +8,11 @@ const { FETCH_USER_DETAILS_COUNTS } = Queries;
 
 const UserDetails = () => {
   let [active, setActive] = useState(false);
-  
   let { loading, error, data } = useQuery(FETCH_USER_DETAILS_COUNTS, {
     variables: {
       blogName: Cookies.get('currentUser')
-    }
+    },
+    pollInterval: 500
   })
   
   if (loading) return 'Loading...';

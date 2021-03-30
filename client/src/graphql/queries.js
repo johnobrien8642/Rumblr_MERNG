@@ -3,44 +3,12 @@ import QueryFragments from './query_fragments.js';
 const { PHOTO_POST } = QueryFragments;
 
 const Queries = {
-  FETCH_USER_FEED: gql`
-    query fetchUserFeed($blogName: String) {
-      user(blogName: $blogName) {
-        _id
-        blogName
-        posts {
-          __typename
-          ... on PhotoPostType {
-            ${PHOTO_POST}
-          }
-        }
-        reposts {
-          _id
-          createdAt
-          post {
-            __typename
-            ... on PhotoPostType {
-              ${PHOTO_POST}
-            }
-          }
-        }
-        userFollowing {
-          _id
-          posts {
-            __typename
-            ... on PhotoPostType {
-              ${PHOTO_POST}
-            }
-          }
-        }
-        tagFollows {
-          _id
-          posts {
-            __typename
-            ... on PhotoPostType {
-              ${PHOTO_POST}
-            }
-          }
+  FETCH_FEED: gql`
+    query FetchFeed($blogName: String) {
+      fetchUserFeed(blogName: $blogName) {
+        __typename
+        ... on PhotoPostType {
+          ${PHOTO_POST}
         }
       }
     }
@@ -49,10 +17,13 @@ const Queries = {
     query fetchUserPostLikes($blogName: String) {
       user(blogName: $blogName) {
         _id
-        likedPosts {
-          __typename
-          ... on PhotoPostType {
-            ${PHOTO_POST}
+        likes {
+          _id
+          post {
+            __typename
+            ... on PhotoPostType {
+              ${PHOTO_POST}
+            }
           }
         }
       }
@@ -170,11 +141,20 @@ const Queries = {
       }
     }
   `,
-  FETCH_USERS: gql`
-    {
-      users {
+  FETCH_POST: gql`
+    query FetchPost($postId: ID, $typename: String) {
+      post(postId: $postId, typename: $typename ) {
+        __typename
+        ... on PhotoPostType {
+          ${PHOTO_POST}
+        }
+      }
+    }
+  `,
+  DOES_USER_LIKE_POST: gql`
+    query DoesUserLikePost($user: String, $postId: ID) {
+      doesUserLikePost(user: $user, postId: $postId) {
         _id
-        username
       }
     }
   `,

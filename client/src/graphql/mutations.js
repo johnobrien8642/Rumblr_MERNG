@@ -37,29 +37,40 @@ const Mutations = {
       }
     }
   `,
-  CREATE_PHOTO_POST: gql`
-    mutation CreatePhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String], $token: String) {
-      createPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags, token: $token) {
+  LIKE_POST: gql`
+    mutation LikePost($postId: ID, $user: String, $type: String) {
+      likePost(postId: $postId, user: $user, type: $type) {
         _id
-        description
-        createdAt
-        user {
-          _id
+        post {
+          __typename
+          ... on PhotoPostType {
+            ${PHOTO_POST}
+          }
         }
-        mainImages {
-          _id
-          url
-          createdAt
+      }
+    }
+  `,
+  UNLIKE_POST: gql`
+    mutation unlikePost($postId: ID, $likeId: ID, $user: String, $type: String) {
+      unlikePost(postId: $postId, likeId: $likeId, user: $user, type: $type) {
+        __typename
+        ... on PhotoPostType {
+          ${PHOTO_POST}
         }
-        descriptionImages {
-          _id
-          url
-          createdAt
-        }
-        tags {
-          _id
-          title
-        }
+      }
+    }
+  `,
+  CREATE_PHOTO_POST: gql`
+    mutation CreatePhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String], $token: String, $user: String) {
+      createPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags, token: $token, user: $user) {
+        ${PHOTO_POST}
+      }
+    }
+  `,
+  REPOST_PHOTO_POST: gql`
+    mutation RepostPhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String], $token: String, $reposter: String, $repostCaption: String, $user: String) {
+      repostPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags, token: $token, reposter: $reposter, repostCaption: $repostCaption, user: $user) {
+        ${PHOTO_POST}
       }
     }
   `,
