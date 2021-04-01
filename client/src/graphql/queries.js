@@ -3,13 +3,22 @@ import QueryFragments from './query_fragments.js';
 const { PHOTO_POST } = QueryFragments;
 
 const Queries = {
-  FETCH_FEED: gql`
-    query FetchFeed($blogName: String) {
+  FETCH_USER_FEED: gql`
+    query FetchUserFeed($blogName: String) {
       fetchUserFeed(blogName: $blogName) {
         __typename
         ... on PhotoPostType {
           ${PHOTO_POST}
         }
+      }
+    }
+  `,
+  FETCH_USER: gql`
+    query fetchUser($blogName: String) {
+      user(blogName: $blogName) {
+        _id
+        blogName
+        blogDescription
       }
     }
   `,
@@ -152,10 +161,15 @@ const Queries = {
     }
   `,
   DOES_USER_LIKE_POST: gql`
-    query DoesUserLikePost($user: String, $postId: ID) {
-      doesUserLikePost(user: $user, postId: $postId) {
+    query DoesUserLikePost($currentUser: String, $postId: ID) {
+      doesUserLikePost(currentUser: $currentUser, postId: $postId) {
         _id
       }
+    }
+  `,
+  DOES_USER_FOLLOW_USER: gql`
+    query DoesUserFollowUser($currentUser: String, $userId: ID) {
+      doesUserFollowUser(currentUser: $currentUser, userId: $userId)
     }
   `,
   IS_LOGGED_IN: gql`

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Results from './Results';
-import FollowedTags from './types/Followed_Tags.js';
+import FollowedTags from './resultTypes/Followed_Tags_Result.js';
 import Queries from '../../graphql/queries';
 const { IS_LOGGED_IN } = Queries;
 
@@ -9,7 +9,7 @@ const Search = () => {
   let [input, setInput] = useState('');
   let [active, setActive] = useState('');
 
-  const activateFollowedTags = () => {
+  const activate = () => {
     active ? setActive(active = false) : setActive(active = true)
   }
 
@@ -23,14 +23,13 @@ const Search = () => {
           value={input}
           placeholder={'Search Rumblr'}
           onChange={e => {
-            activateFollowedTags()
             setInput(input = e.target.value)
           }}
-          onFocus={activateFollowedTags}
-          onBlur={activateFollowedTags}
+          onFocus={activate}
+          onBlur={activate}
         />
         <FollowedTags active={active} />
-        <Results input={input} />
+        <Results input={input} active={active} />
       </div>
     )
   } else {

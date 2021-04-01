@@ -4,13 +4,30 @@ import { HashRouter } from 'react-router-dom';
 import './index.css';
 import App from './components/App';
 import { ApolloClient, InMemoryCache,
-         ApolloProvider } from '@apollo/client';
+         ApolloProvider, HttpLink } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
+import { setContext } from '@apollo/client/link/context';
 import Cookies from 'js-cookie';
 import Queries from './graphql/queries'
 import Mutations from './graphql/mutations'
+
 const { IS_LOGGED_IN } = Queries;
 const { VERIFY_USER } = Mutations;
+
+const token = Cookies.get('auth-token');
+
+const authLink = setContext((_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? token : "",
+    }
+  }
+});
+
+const httpLink = new HttpLink({
+  uri: 'http://localhost:5000/graphql',
+});
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   console.log(graphQLErrors)
@@ -24,13 +41,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-const token = Cookies.get('auth-token');
-
 const client = new ApolloClient({
-  uri: 'http://localhost:5000/graphql',
-  headers: {
-    authorization: token
-  },
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache({
     typePolicies: {
       PhotoPostType: {

@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { NetworkStatus, useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
-import PhotoPostShow from './types/PhotoPostShow'
+import PhotoPostShow from '../posts/types/PhotoPost/PhotoPostShow'
 import Queries from '../../graphql/queries';
 const { FETCH_USER_LIKED_POSTS } = Queries;
 
-const UserPostLikes = () => {
-  let { loading, error, data, refetch, networkStatus } = useQuery(FETCH_USER_LIKED_POSTS, {
+const UserPostLikesFeed = () => {
+  let { loading, error, 
+        data, refetch, networkStatus } = useQuery(FETCH_USER_LIKED_POSTS, {
     variables: {
       blogName: Cookies.get('currentUser')
     }
@@ -51,4 +52,4 @@ const UserPostLikes = () => {
   )
 }
 
-export default UserPostLikes;
+export default UserPostLikesFeed;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import PhotoPostRepost from '../posts/types/repost/PhotoPostRepost';
+import PhotoPostRepost from '../types/PhotoPost/PhotoPostRepost';
 
 const Repost = () => {
   var { typename } = useParams();

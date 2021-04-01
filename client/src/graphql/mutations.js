@@ -13,8 +13,8 @@ const Mutations = {
     }
   `,
   REGISTER_USER: gql`
-    mutation RegisterUser($blogName: String!, $email: String!, $password: String!) {
-      registerUser(blogName: $blogName, email: $email, password: $password) {
+    mutation RegisterUser($blogName: String!, $email: String!, $password: String!, $blogDescription: String) {
+      registerUser(blogName: $blogName, email: $email, password: $password, blogDescription: $blogDescription) {
         token
         loggedIn
         blogName
@@ -75,16 +75,16 @@ const Mutations = {
     }
   `,
   FOLLOW_USER: gql`
-    mutation FollowUser($userId: ID) {
-      followUser(userId: $userId) {
+    mutation FollowUser($currentUser: String, $user: String) {
+      followUser(currentUser: $currentUser, user: $user) {
         _id
         blogName
       }
     }
   `,
   UNFOLLOW_USER: gql`
-    mutation UnfollowUser($userId: ID, $token: String) {
-      unfollowUser(userId: $userId, token: $token) {
+    mutation UnfollowUser($currentUser: String, $user: String) {
+      unfollowUser(currentUser: $currentUser, user: $user) {
         _id
         blogName
       }

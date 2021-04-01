@@ -2,13 +2,13 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Nav from '../components/nav/Nav'
 import Dashboard from './dashboard/Dashboard';
-import Login from '../components/auth/login-logout/Login';
-import Register from './auth/register/Register';
-import WelcomePage from './auth/register/Welcome_Page';
-import UserPostLikes from './feed/User_Post_Likes';
-import UserFollowing from './feed/User_Following';
-import UserBlog from './feed/User_Blog';
-import Repost from './feed/Repost'
+import Login from '../components/auth/Login';
+import Register from './auth/Register';
+import WelcomePage from './auth/Welcome_Page';
+import UserPostLikes from './feeds/User_Post_Likes_Feed';
+import UserFollowing from './feeds/User_Following_Feed';
+import UserBlog from './feeds/User_Blog_Show';
+import Repost from './posts/util/Repost'
 import AuthRoute from '../util/route_util';
 import './../stylesheets/application.scss';
 

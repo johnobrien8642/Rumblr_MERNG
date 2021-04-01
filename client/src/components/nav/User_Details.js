@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Link } from 'react-router-dom';
-import Logout from '../auth/login-logout/Logout.js'
+import Logout from '../auth/Logout.js'
 import Queries from '../../graphql/queries';
 import Cookies from 'js-cookie';
 const { FETCH_USER_DETAILS_COUNTS } = Queries;
 
 const UserDetails = () => {
   let [active, setActive] = useState(false);
+
   let { loading, error, data } = useQuery(FETCH_USER_DETAILS_COUNTS, {
     variables: {
       blogName: Cookies.get('currentUser')
     },
-    pollInterval: 500
+    pollInterval: active ? 500 : 0
   })
   
   if (loading) return 'Loading...';
-  if (error) return `Error: ${error}`
-
+  if (error) return `Error: ${error.message}`
   let { user } = data;
-  
+
   if (active) {
     return (
     <div>

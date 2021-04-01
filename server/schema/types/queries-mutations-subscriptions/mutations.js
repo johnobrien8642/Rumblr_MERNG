@@ -155,19 +155,19 @@ const mutation = new GraphQLObjectType({
     followUser: {
       type: UserType,
       args: { 
-        user: { type: GraphQLString },
-        currentUser: { type: GraphQLString }
+        currentUser: { type: GraphQLString },
+        user: { type: GraphQLString }
       },
       resolve(parentValue, { user, currentUser }) {
         return Promise.all([
           User.findOne({ blogName: user }), 
           User.findOne({ blogName: currentUser })
         ]).then(([user, currentUser]) => {
-          currentUser.userFollows.push(user)
+          currentUser.userFollowing.push(user)
           user.followers.push(currentUser)
 
           return Promise.all([user.save(), currentUser.save()]).then(
-            (user, currentUser) => (user, currentUser)
+            ([user, currentUser]) => (user, currentUser)
           )
         })
       }
@@ -175,38 +175,40 @@ const mutation = new GraphQLObjectType({
     unfollowUser: {
       type: UserType,
       args: { 
-        userId: { type: GraphQLID },
-        token: { type: GraphQLString }
+        currentUser: { type: GraphQLString },
+        user: { type: GraphQLString }
       },
-      resolve(parentValue, { userId, token }, ctx) {
-        const decoded = jwt.verify(
-          token, 
-          keys.secretOrKey
-        );
-        const { _id } = decoded;
-        const currentUserId = _id;
-
+      resolve(parentValue, { currentUser, user }) {
         return User.find({
-          _id: {
-            $in: [currentUserId, userId]
+          blogName: {
+            $in: [currentUser, user]
           }
         }).then(users => {
-          const currentUser = currentUserId == users[0]._id ? users[0] : users[1]
-          const user = userId == users[0]._id ? users[0] : users[1]
-
+          const currentUserFound = currentUser == users[0].blogName ? users[0] : users[1]
+          const userFound = user == users[0].blogName ? users[0] : users[1]
+          
           var currentUserFiltered = 
-            currentUser.userFollows.filter(u => {
-              u._id == user._id
+            currentUserFound.userFollowing.filter(u => {
+               if (u == userFound._id.toString()) {
+                 return false
+               } else {
+                 return true
+               }
             })
 
-          var userFiltered = user.followers.filter(u => {
-            u._id == currentUser._id
-          })
+          var userFiltered = 
+            userFound.followers.filter(u => {
+              if (u == currentUserFound._id.toString()) {
+                return false
+              } else {
+                return true
+              }
+            })
+          
+          currentUserFound.userFollowing = currentUserFiltered
+          userFound.followers = userFiltered
 
-          currentUser.userFollows = currentUserFiltered
-          user.followers = userFiltered
-
-          return Promise.all([currentUser.save(), user.save()]).then(
+          return Promise.all([currentUserFound.save(), userFound.save()]).then(
             ([currentUser, user]) => (currentUser, user)
           )
         })

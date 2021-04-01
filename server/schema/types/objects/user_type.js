@@ -1,14 +1,10 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
-import keys from '../../../../config/keys.js'
 import AnyPostType from '../unions/any_post_type.js'
 import TagType from '../objects/tag_type.js'
 import LikeType from '../objects/like_type.js'
 import RepostType from '../objects/repost_type.js'
-import Like from '../../../models/likes/Like.js';
 const User = mongoose.model('User');
-const Tag = mongoose.model('Tag');
 const { GraphQLObjectType, GraphQLString,
         GraphQLList, GraphQLInt,
         GraphQLBoolean, GraphQLID } = graphql;
@@ -18,6 +14,7 @@ const UserType = new GraphQLObjectType({
   fields: () => ({
     _id: { type: GraphQLID },
     blogName: { type: GraphQLString },
+    blogDescription: { type: GraphQLString },
     email: { type: GraphQLString },
     password: { type: GraphQLString },
     token: { type: GraphQLString },

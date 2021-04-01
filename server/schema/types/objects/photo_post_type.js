@@ -7,7 +7,7 @@ import LikeType from './like_type.js';
 import RepostType from './repost_type.js';
 const PhotoPost = mongoose.model('PhotoPost');
 const { GraphQLList, GraphQLID, 
-        GraphQLString, GraphQLObjectType } = graphql;
+        GraphQLString, GraphQLObjectType, GraphQLS } = graphql;
 
 const PhotoPostType = new GraphQLObjectType({
   name: 'PhotoPostType',

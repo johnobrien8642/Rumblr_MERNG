@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-import Mutations from '../../../graphql/mutations';
-import Queries from '../../../graphql/queries';
+import Mutations from '../../graphql/mutations';
+import Queries from '../../graphql/queries';
 import Cookies from 'js-cookie';
 const { REGISTER_USER } = Mutations;
 const { IS_LOGGED_IN } = Queries;
@@ -11,6 +11,7 @@ const { IS_LOGGED_IN } = Queries;
 const Register = () => {
   let [email, setEmail] = useState('');
   let [blogName, setBlogName] = useState('');
+  let [blogDescription, setBlogDescription] = useState('');
   let [password, setPassword] = useState('');
   let [errorMessages, addErrorMessage] = useState([]);
   let history = useHistory();
@@ -83,6 +84,11 @@ const Register = () => {
         placeholder={'Blog Name'}
         onChange={e => setBlogName(blogName = e.target.value)}
       />
+      <textarea
+        value={blogDescription}
+        placeholder={'Blog description'}
+        onChange={e => setBlogDescription(blogDescription = e.target.value)}
+      ></textarea>
       <input
         value={password}
         placeholder={'Password'}

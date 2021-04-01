@@ -90,12 +90,12 @@ PhotoPostSchema.statics.unlike = (
     ])
     .then(([user, photoPost]) => {
     var userLikeFiltered = user.likes.filter(like => {
-      return like._id == likeId ? false : true
+      return like._id == likeId.toString() ? false : true
     })
     var photoPostFiltered = photoPost.likes.filter(like => {
-      return like._id == likeId ? false : true
+      return like._id == likeId.toString() ? false : true
     })
-  
+
     user.likes = userLikeFiltered
     photoPost.likes = photoPostFiltered
       

@@ -1,13 +1,13 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { withRouter } from 'react-router-dom';
-import Queries from '../../graphql/queries';
-import PhotoPostShow from '../feed/types/PhotoPostShow';
+import PhotoPostShow from '../posts/types/PhotoPost/PhotoPostShow';
 import Cookies from 'js-cookie';
-const { FETCH_FEED } = Queries;
+import Queries from '../../graphql/queries';
+const { FETCH_USER_FEED } = Queries;
 
-const Feed = ({ blogName }) => {
-  let { loading, error, data } = useQuery(FETCH_FEED, {
+const Feed = ({ blogName, user }) => {
+  let { loading, error, data } = useQuery(FETCH_USER_FEED, {
     variables: {
       blogName: blogName ? blogName : Cookies.get('currentUser')
     }
@@ -17,9 +17,22 @@ const Feed = ({ blogName }) => {
   if (error) return `Error: ${error}`;
 
   var { fetchUserFeed } = data;
+
+  const header = (user) => {
+    if (user) {
+      return (
+        <div>
+          <h1>{user.blogName}</h1>
+          <p>{user.blogDescription}</p>
+        </div>
+      )
+    }
+  }
   
   return(
     <div>
+      {header(user)}
+      <div>
         {fetchUserFeed.map((p, i) => {
           switch(p.__typename) {
             case 'PhotoPostType':
@@ -38,6 +51,7 @@ const Feed = ({ blogName }) => {
               )
           }
         })}
+        </div>
     </div>
   )
 }

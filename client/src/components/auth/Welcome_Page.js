@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+//This is the welcome page for email auth. Go to auth_util
+//and begin uncommenting in register function.
+
 const WelcomePage = () => {
 
   return(

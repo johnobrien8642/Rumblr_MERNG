@@ -6,6 +6,9 @@ const UserSchema = new Schema({
     type: String, 
     required: true
   },
+  blogDescription: {
+    type: String,
+  },
   email: {
     type: String,
     required: true

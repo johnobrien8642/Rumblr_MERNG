@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PostOptions from '../Post_Options'
+import PostOptions from '../../util/Post_Options'
 
 const PhotoPostShow = ({ post, reposter }) => {
 

@@ -1,20 +1,22 @@
-import React from 'react'; 
+import React, { useEffect } from 'react'; 
 import { useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
 import { Link, withRouter } from 'react-router-dom';
-import LikeButton from '../feed/Like_Button'
-import Queries from '../../graphql/queries';
+import LikeButton from '../util/Like_Button.js'
+import Queries from '../../../graphql/queries';
 const { DOES_USER_LIKE_POST } = Queries;
 
 const PostOptions = ({ post }) => {
-  let { loading, error, data } = useQuery(DOES_USER_LIKE_POST,{
+  let { loading, error, data, refetch } = useQuery(DOES_USER_LIKE_POST,{
     variables: {
-      postId: post._id,
-      user: Cookies.get('currentUser'),
-      typename: post.__typename
+      currentUser: Cookies.get('currentUser'),
+      postId: post._id
     },
-    pollInterval: 500
   })
+  
+  useEffect(() => {
+    refetch()
+  }, [refetch])
 
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`

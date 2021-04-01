@@ -17,8 +17,7 @@ const Image = mongoose.model('Image');
 const Tag = mongoose.model('Tag');
 const Like = mongoose.model('Like')
 const { GraphQLObjectType, GraphQLList,
-        GraphQLString, GraphQLID, 
-        GraphQLNonNull, GraphQLBoolean } = graphql;
+        GraphQLString, GraphQLID, GraphQLBoolean } = graphql;
 
 const RootQueryType = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -40,7 +39,7 @@ const RootQueryType = new GraphQLObjectType({
         const tags = async (query) => {
           return await Tag.find(query.$or[1]).exec();
         }
-
+        
         const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
         const { _id } = decoded;
 
@@ -80,18 +79,42 @@ const RootQueryType = new GraphQLObjectType({
     doesUserLikePost: {
       type: LikeType,
       args: {
-        user: { type: GraphQLString },
+        currentUser: { type: GraphQLString },
         postId: { type: GraphQLID }
       },
-      resolve(_, {user, postId}) {
+      resolve(_, {currentUser, postId}) {
         return User
-          .findOne({ blogName: user })
+          .findOne({ blogName: currentUser })
           .populate('likes')
           .then(user => {
             var found = {};
             user.likes.forEach((like, i) => {
               if (like.post._id == postId) {
                 found = like
+              }
+            })
+            return found
+          })
+      }
+    },
+    doesUserFollowUser: {
+      type: GraphQLBoolean,
+      args: {
+        currentUser: { type: GraphQLString },
+        userId: { type: GraphQLID }
+      },
+      resolve(_, {currentUser, userId}) {
+        
+        return User
+          .findOne({ blogName: currentUser })
+          .populate('userFollowing')
+          .then(user => {
+            // console.log(user)
+            var found = false;
+            user.userFollowing.forEach((user, i) => {
+              // console.log(userId)
+              if (user._id == userId) {
+                found = true
               }
             })
             return found
@@ -121,7 +144,6 @@ const RootQueryType = new GraphQLObjectType({
             var allPosts = [...user.posts];
 
             user.reposts.forEach((repost, i) => {
-              // console.log(repost.post)
               allPosts = [...allPosts, repost.post]
             })
             
@@ -136,6 +158,7 @@ const RootQueryType = new GraphQLObjectType({
             allPosts.sort((a, b) => {
               return (b.createdAt.getTime() - a.createdAt.getTime())
             })
+            
             return allPosts
           })
       }
