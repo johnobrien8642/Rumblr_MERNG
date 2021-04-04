@@ -5,10 +5,11 @@ import Dashboard from './dashboard/Dashboard';
 import Login from '../components/auth/Login';
 import Register from './auth/Register';
 import WelcomePage from './auth/Welcome_Page';
-import UserPostLikes from './feeds/User_Post_Likes_Feed';
-import UserFollowing from './feeds/User_Following_Feed';
-import UserBlog from './feeds/User_Blog_Show';
-import Repost from './posts/util/Repost'
+import TagFeed from './feeds/Tag_Feed';
+import UserPostLikesFeed from './feeds/User_Post_Likes_Feed';
+import UserFollowingFeed from './feeds/User_Following_Feed';
+import UserBlogShow from './feeds/User_Blog_Show';
+import RepostForm from './posts/RepostForm'
 import AuthRoute from '../util/route_util';
 import './../stylesheets/application.scss';
 
@@ -18,10 +19,11 @@ const App = () => {
       <Nav />
       <Switch>
         <AuthRoute exact path='/dashboard' component={Dashboard} />
-        <Route exact path='/view/blog/:blogName' component={UserBlog} />
-        <Route exact path='/repost/:blogName/:postId/:typename' component={Repost} />
-        <Route exact path='/likes' component={UserPostLikes} />
-        <Route exact path='/following' component={UserFollowing} />
+        <Route exact path='/view/blog/:blogName' component={UserBlogShow} />
+        <Route exact path='/repost/:blogName/:postId/:typename' component={RepostForm} />
+        <Route exact path='/view/tag/:tagTitle' component={TagFeed} />
+        <Route exact path='/likes' component={UserPostLikesFeed} />
+        <Route exact path='/following' component={UserFollowingFeed} />
         <Route exact path='/login' component={Login} />
         <Route exact path='/register' component={Register}/>
         <Route exact path='/welcome' component={WelcomePage} />

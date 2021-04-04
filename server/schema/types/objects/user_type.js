@@ -94,18 +94,25 @@ const UserType = new GraphQLObjectType({
         ]).then(res => res[0].followerCount)
       }
     },
-    postLikeCount: {
+    totalLikeCount: {
       type: GraphQLInt,
       resolve(parentValue) {
         return User.aggregate([
           { $match: { _id: parentValue._id } },
-            { $project: {
-              postLikeCount: {
-                $size: '$likes'
-              }
+          { 
+            $lookup: {
+              from: 'likes',
+              localField: '_id',
+              foreignField: 'user',
+              as: 'likes'
+            }
+          },
+          { 
+            $project: {
+              "totalLikeCount": { "$size": '$likes' }
             }
           }
-        ]).then(res => res[0].postLikeCount)
+        ]).then(res => res[0].totalLikeCount)
       }
     },
     // postLikes: {}

@@ -8,8 +8,21 @@ const LikeSchema = new Schema({
   },
   post: {
     type: Schema.Types.ObjectId,
-    ref: 'PhotoPost'
-  }
+    refPath: 'onModel'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  onModel: {
+    type: String,
+    required: true,
+    enum: [ 'TextPost', 'PhotoPost', 'Repost' ]
+  },
+  kind: {
+    type: String,
+    default: 'Like'
+  },
 })
 
 const Like = mongoose.model('Like', LikeSchema, 'likes')

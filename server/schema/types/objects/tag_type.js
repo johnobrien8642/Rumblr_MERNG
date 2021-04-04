@@ -1,6 +1,6 @@
 import graphql, { GraphQLInt } from 'graphql';
 import mongoose from 'mongoose';
-import PhotoPostType from './photo_post_type.js';
+import PhotoPostType from './posts/photo_post_type.js';
 import AnyPostType from '../unions/any_post_type.js'
 import UserType from '../../types/objects/user_type.js';
 const Tag = mongoose.model('Tag');

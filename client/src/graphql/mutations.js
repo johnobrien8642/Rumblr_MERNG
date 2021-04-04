@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import QueryFragments from '../graphql/query_fragments'
-const { PHOTO_POST } = QueryFragments;
+const { TEXT_POST, PHOTO_POST } = QueryFragments;
 
 const Mutations = {
   LOGIN_USER: gql`
@@ -38,39 +38,55 @@ const Mutations = {
     }
   `,
   LIKE_POST: gql`
-    mutation LikePost($postId: ID, $user: String, $type: String) {
-      likePost(postId: $postId, user: $user, type: $type) {
+    mutation LikePost($postId: ID, $user: String, $postKind: String) {
+      likePost(postId: $postId, user: $user, postKind: $postKind) {
         _id
-        post {
-          __typename
-          ... on PhotoPostType {
-            ${PHOTO_POST}
-          }
-        }
       }
     }
   `,
   UNLIKE_POST: gql`
-    mutation unlikePost($postId: ID, $likeId: ID, $user: String, $type: String) {
-      unlikePost(postId: $postId, likeId: $likeId, user: $user, type: $type) {
-        __typename
-        ... on PhotoPostType {
-          ${PHOTO_POST}
-        }
+    mutation unlikePost($likeId: ID) {
+      unlikePost(likeId: $likeId) {
+        _id
+      }
+    }
+  `,
+  CREATE_TEXT_POST: gql`
+    mutation CreateTextPost($title: String, $body: String, $descriptionImages: [ImageInputType], $user: String, $tags: [String]) {
+      createTextPost(title: $title, body: $body, descriptionImages: $descriptionImages, user: $user, tags: $tags) {
+        ${TEXT_POST}
       }
     }
   `,
   CREATE_PHOTO_POST: gql`
-    mutation CreatePhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String], $token: String, $user: String) {
-      createPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags, token: $token, user: $user) {
+    mutation CreatePhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String], $user: String) {
+      createPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags, user: $user) {
         ${PHOTO_POST}
       }
     }
   `,
-  REPOST_PHOTO_POST: gql`
-    mutation RepostPhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String], $token: String, $reposter: String, $repostCaption: String, $user: String) {
-      repostPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags, token: $token, reposter: $reposter, repostCaption: $repostCaption, user: $user) {
-        ${PHOTO_POST}
+  CREATE_REPOST: gql`
+    mutation repost($postId: ID, $repostCaption: String, $user: String, $repostedFrom: String, $postKind: String) {
+      repost(postId: $postId, repostCaption: $repostCaption, user: $user, repostedFrom: $repostedFrom, postKind: $postKind) {
+        _id
+        repostedFrom {
+          _id
+          blogName
+        }
+        user {
+          _id
+          blogName
+        }
+        repostCaption
+        post {
+          __typename
+          ... on TextPostType {
+            ${TEXT_POST}
+          }
+          ... on PhotoPostType {
+            ${PHOTO_POST}
+          }
+        }
       }
     }
   `,

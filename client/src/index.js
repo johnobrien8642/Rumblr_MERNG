@@ -43,19 +43,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache({
-    typePolicies: {
-      PhotoPostType: {
-        fields: {
-          likes: {
-            merge(existing, incoming) {
-              return incoming
-            }
-          }
-        }
-      }
-    }
-  }),
+  cache: new InMemoryCache(),
   errorLink
 })
 

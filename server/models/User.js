@@ -27,24 +27,6 @@ const UserSchema = new Schema({
     type: Boolean,
     required: false
   },
-  followers: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ], 
-  posts:[
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'PhotoPost'
-    }
-  ],
-  reposts:[
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Repost'
-    }
-  ],
   userFollowing: [
     {
       type: Schema.Types.ObjectId,
@@ -80,6 +62,10 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  kind: {
+    type: String,
+    default: 'User'
+  }
 })
 
 const User = mongoose.model('User', UserSchema, 'users');

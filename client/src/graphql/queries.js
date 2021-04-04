@@ -1,12 +1,50 @@
 import { gql } from '@apollo/client';
 import QueryFragments from './query_fragments.js';
-const { PHOTO_POST } = QueryFragments;
+const { TEXT_POST, PHOTO_POST } = QueryFragments;
 
 const Queries = {
   FETCH_USER_FEED: gql`
-    query FetchUserFeed($blogName: String) {
-      fetchUserFeed(blogName: $blogName) {
+    query FetchUserFeed($query: String) {
+      fetchUserFeed(query: $query) {
         __typename
+        ... on RepostType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+          }
+          repostedFrom {
+            _id
+            blogName
+          }
+          repostCaption
+          post {
+            __typename
+            ... on TextPostType {
+              ${TEXT_POST}
+            }
+            ... on PhotoPostType {
+              ${PHOTO_POST}
+            }
+          }
+        }
+        ... on TextPostType {
+          ${TEXT_POST}
+        }
+        ... on PhotoPostType {
+          ${PHOTO_POST}
+        }
+      }
+    }
+  `,
+  FETCH_TAG_FEED: gql`
+    query FetchUserFeed($query: String) {
+      fetchTagFeed(query: $query) {
+        __typename
+        ... on TextPostType {
+          ${TEXT_POST}
+        }
         ... on PhotoPostType {
           ${PHOTO_POST}
         }
@@ -30,6 +68,9 @@ const Queries = {
           _id
           post {
             __typename
+            ... on TextPostType {
+              ${TEXT_POST}
+            }
             ... on PhotoPostType {
               ${PHOTO_POST}
             }
@@ -55,6 +96,9 @@ const Queries = {
         _id
         posts {
           __typename
+          ... on TextPostType {
+            ${TEXT_POST}
+          }
           ... on PhotoPostType {
             ${PHOTO_POST}
           }
@@ -69,6 +113,9 @@ const Queries = {
         blogName
         posts {
           __typename
+          ... on TextPostType {
+            ${TEXT_POST}
+          }
           ... on PhotoPostType {
             ${PHOTO_POST}
           }
@@ -76,6 +123,9 @@ const Queries = {
         reposts {
           post {
             __typename
+            ... on TextPostType {
+              ${TEXT_POST}
+            }
             ... on PhotoPostType {
               ${PHOTO_POST}
             }
@@ -90,7 +140,7 @@ const Queries = {
         _id
         blogName
         userFollowCount
-        postLikeCount
+        totalLikeCount
       }
     }
   `,
@@ -107,6 +157,9 @@ const Queries = {
           _id
           post {
             __typename
+            ... on TextPostType {
+              ${TEXT_POST}
+            }
             ... on PhotoPostType {
               ${PHOTO_POST}
             }
@@ -151,9 +204,12 @@ const Queries = {
     }
   `,
   FETCH_POST: gql`
-    query FetchPost($postId: ID, $typename: String) {
-      post(postId: $postId, typename: $typename ) {
+    query FetchPost($postId: ID, $type: String) {
+      post(postId: $postId, type: $type ) {
         __typename
+        ... on TextPostType {
+          ${TEXT_POST}
+        }
         ... on PhotoPostType {
           ${PHOTO_POST}
         }
@@ -161,8 +217,8 @@ const Queries = {
     }
   `,
   DOES_USER_LIKE_POST: gql`
-    query DoesUserLikePost($currentUser: String, $postId: ID) {
-      doesUserLikePost(currentUser: $currentUser, postId: $postId) {
+    query DoesUserLikePost($user: String, $postId: ID) {
+      doesUserLikePost(user: $user, postId: $postId) {
         _id
       }
     }

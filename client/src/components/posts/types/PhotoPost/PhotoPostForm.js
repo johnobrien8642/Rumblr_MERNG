@@ -2,48 +2,52 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import MatchedTagResults from '../../../tags/Matched_Tag_Results.js'
+import MatchedTagResults from '../../../tags/Matched_Tag_Results.js';
 import Mutations from '../../../../graphql/mutations';
 import Queries from '../../../../graphql/queries';
 import Cookies from 'js-cookie';
 const { CREATE_PHOTO_POST } = Mutations;
-const { FETCH_FEED } = Queries;
+const { FETCH_USER_FEED } = Queries;
 
 const PhotoPostForm = () => { 
-  let [mainImageFiles, setMain] = useState([]);
-  let [bodyImageFiles, setBody] = useState([]);
+  let [mainImageFiles, setMainImageFiles] = useState([]);
+  let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let mainImages = useRef([]);
   let bodyImages = useRef([]);
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
   let [description, setDescription] = useState('');
-  let [errMessage, setErr] = useState('');
+  let [errMessage, setErrMessage] = useState('');
   let history = useHistory();
 
   let [createPhotoPost] = useMutation(CREATE_PHOTO_POST, {
     update(client, { data }){
-    const { createPhotoPost } = data;
-      
-      var readQuery = client.readQuery({
-        query: FETCH_FEED,
-        variables: {
-          blogName: Cookies.get('currentUser')
-        }
-      })
-      
-      var { fetchUserFeed } = readQuery;
-      
-      var newPostArr = [createPhotoPost, ...fetchUserFeed]
-      
-      client.writeQuery({
-        query: FETCH_FEED,
-        variables: {
-          blogName: Cookies.get('currentUser')
-        },
-        data: {
-          fetchUserFeed: newPostArr
-        }
-      })
+    try {
+      const { createPhotoPost } = data;
+        
+        var readQuery = client.readQuery({
+          query: FETCH_USER_FEED,
+          variables: {
+            query: Cookies.get('currentUser')
+          }
+        })
+        
+        var { fetchUserFeed } = readQuery;
+        
+        var newPostArr = [createPhotoPost, ...fetchUserFeed]
+        
+        client.writeQuery({
+          query: FETCH_USER_FEED,
+          variables: {
+            query: Cookies.get('currentUser')
+          },
+          data: {
+            fetchUserFeed: newPostArr
+          }
+        })
+    } catch(err) {
+      console.log(err)
+    }
     },
     onCompleted() {
       resetInputs();
@@ -55,21 +59,21 @@ const PhotoPostForm = () => {
   });
 
   const resetInputs = () => {
-    setMain(mainImageFiles = []);
-    setBody(bodyImageFiles = []);
+    setMainImageFiles(mainImageFiles = []);
+    setBodyImageFiles(bodyImageFiles = []);
     mainImages.current = [];
     bodyImages.current = [];
     setDescription(description = '');
     setTag(tag = '');
     setTags(tags = []);
-    setErr(errMessage = '');
+    setErrMessage(errMessage = '');
   }
 
   const previewMainImages = (e) => {
     const files = Object.values(e.currentTarget.files)
 
     if (mainImageFiles.length + 1 > 10) {
-      setErr(errMessage = 'Only 10 images can be uploaded here')
+      setErrMessage(errMessage = 'Only 10 images can be uploaded here')
       return
     }
     
@@ -80,7 +84,7 @@ const PhotoPostForm = () => {
         imgObj.src = reader.result
         imgObj.alt = file.name
         mainImages.current.push(imgObj)
-        setMain(mainImageFiles = [...mainImageFiles, file])
+        setMainImageFiles(mainImageFiles = [...mainImageFiles, file])
       }
       reader.readAsDataURL(file);
     }
@@ -94,8 +98,8 @@ const PhotoPostForm = () => {
 
   const previewBodyImages = (e) => {
     const files = Object.values(e.currentTarget.files)
-    if (mainImageFiles.length + 1 > 10) {
-      setErr(errMessage = 'Only 10 images can be uploaded here')
+    if (bodyImageFiles.length + 1 > 10) {
+      setErrMessage(errMessage = 'Only 10 images can be uploaded here')
       return
     }
     
@@ -106,7 +110,7 @@ const PhotoPostForm = () => {
         imgObj.src = reader.result
         imgObj.alt = file.name
         bodyImages.current.push(imgObj)
-        setBody(bodyImageFiles = [...bodyImageFiles, file])
+        setBodyImageFiles(bodyImageFiles = [...bodyImageFiles, file])
       }
       reader.readAsDataURL(file);
     }
@@ -130,6 +134,16 @@ const PhotoPostForm = () => {
     setTag(tag = '')
   }
 
+  const removeMainImage = (i) => {
+    mainImages.current.splice(i, 1)
+    setMainImageFiles(mainImageFiles.splice(i, 1))
+  }
+
+  const removeBodyImage = (i) => {
+    bodyImages.current.splice(i, 1)
+    setMainImageFiles(bodyImageFiles.splice(i, 1))
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -146,7 +160,7 @@ const PhotoPostForm = () => {
       bodyImagesFormData.append('photos', file2);
     }
 
-    function main() {
+    function mainPost() {
       return axios.post('/api/posts/', mainImagesFormData, {
         headers: {
           'Content-Type': 'undefined'
@@ -157,7 +171,7 @@ const PhotoPostForm = () => {
       })
     }
 
-    function body() {
+    function bodyPost() {
       return axios.post('/api/posts/', bodyImagesFormData, {
         headers: {
           'Content-Type': 'undefined'
@@ -168,7 +182,7 @@ const PhotoPostForm = () => {
       })
     }
 
-    Promise.all([main(), body()]).then(
+    Promise.all([mainPost(), bodyPost()]).then(
       ([mainObjs, bodyObjs]) => {
         let cleanedMain = mainObjs.map((obj) => {
           delete obj.__v
@@ -192,16 +206,6 @@ const PhotoPostForm = () => {
     )
   }
 
-  const removeMainImage = (i) => {
-    mainImages.current.splice(i, 1)
-    setMain(mainImageFiles.splice(i, 1))
-  }
-
-  const removeBodyImage = (i) => {
-    bodyImages.current.splice(i, 1)
-    setMain(bodyImageFiles.splice(i, 1))
-  }
-  
   return (
     <div
       className='postForm'
@@ -297,11 +301,18 @@ const PhotoPostForm = () => {
           />
 
           <div>
-            <MatchedTagResults query={tag} handleClickTagInput={handleClickTagInput}/>
+            <MatchedTagResults 
+              query={tag} 
+              handleClickTagInput={handleClickTagInput}
+            />
           </div>
         </div>
         <button
           type='submit'
+          disabled={
+            mainImageFiles.length === 0 && 
+            bodyImageFiles.length === 0
+          }
         >
           Post
         </button>

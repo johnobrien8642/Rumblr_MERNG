@@ -10,11 +10,16 @@ const Search = () => {
   let [active, setActive] = useState('');
 
   const activate = () => {
-    active ? setActive(active = false) : setActive(active = true)
+    if (active) {
+      setActive(active = false)
+      setInput(input = '')
+    } else {
+      setActive(active = true)
+    }
   }
 
   const { data } = useQuery(IS_LOGGED_IN);
-  
+
   if (data.isLoggedIn) {
     return (
       <div>
@@ -25,11 +30,10 @@ const Search = () => {
           onChange={e => {
             setInput(input = e.target.value)
           }}
-          onFocus={activate}
-          onBlur={activate}
+          onClick={activate}
         />
-        <FollowedTags active={active} />
-        <Results input={input} active={active} />
+        <FollowedTags active={active} activate={activate} />
+        <Results input={input} active={active} activate={activate} />
       </div>
     )
   } else {

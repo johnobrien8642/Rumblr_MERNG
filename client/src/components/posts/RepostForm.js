@@ -2,35 +2,36 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useParams, useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import PhotoPostShow from './PhotoPostShow'
-import Mutations from '../../../../graphql/mutations'
-import Queries from '../../../../graphql/queries'
-const { REPOST_PHOTO_POST } = Mutations;
-const { FETCH_POST, FETCH_FEED } = Queries;
+import PhotoPostShow from './types/PhotoPost/PhotoPostShow'
+import TextPostShow from './types/TextPost/TextPostShow'
+import Mutations from '../../graphql/mutations'
+import Queries from '../../graphql/queries'
+const { CREATE_REPOST } = Mutations;
+const { FETCH_POST, FETCH_USER_FEED } = Queries;
 
-const PhotoPostRepost = () => {
+const RepostForm = () => {
   let [repostCaption, setRepostCaption] = useState('');
   let { postId, typename } = useParams();
   let history = useHistory();
-  let [repostPhotoPost] = useMutation(REPOST_PHOTO_POST, {
+  let [repost] = useMutation(CREATE_REPOST, {
     update(client, { data }) {
-      const { repostPhotoPost } = data;
-
+      const { repost } = data;
+      
       var readFeed = client.readQuery({
-        query: FETCH_FEED,
+        query: FETCH_USER_FEED,
         variables: {
-          blogName: Cookies.get('currentUser')
+          query: Cookies.get('currentUser')
         }
       })
-
+  
       var { fetchUserFeed } = readFeed;
-
-      var newPostArr = [repostPhotoPost, ...fetchUserFeed]
+      
+      var newPostArr = [repost, ...fetchUserFeed]
 
       client.writeQuery({
-        query: FETCH_FEED,
+        query: FETCH_USER_FEED,
         variables: {
-          blogName: Cookies.get('currentUser')
+          query: Cookies.get('currentUser')
         },
         data: {
           fetchUserFeed: newPostArr
@@ -40,60 +41,63 @@ const PhotoPostRepost = () => {
     onCompleted(data) {
       resetInputs();
       history.push('/dashboard')
+    },
+    onError(error) {
+      console.log(error)
     }
   })
   
   let { loading, error, data } = useQuery(FETCH_POST, {
     variables: {
       postId: postId,
-      typename: typename
+      type: typename
     }
   })
 
-  
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`
   
   const { post } = data;
 
+  const displayPost = (post) => {
+    if (post.kind === 'PhotoPost') {
+      return (
+        <PhotoPostShow 
+          post={post}
+          reposter={Cookies.get('currentUser')} 
+        />
+      )
+    } else if (post.kind === 'TextPost') {
+      return (
+        <TextPostShow 
+          post={post}
+          reposter={Cookies.get('currentUser')} 
+        />
+      )
+    }
+  }
+
   const resetInputs = () => {
     setRepostCaption(repostCaption = '');
   }
-
   return (
     <div>
       <form
         onSubmit={e => {
           e.preventDefault();
-          repostPhotoPost({
+          repost({
             variables: {
-              user: post.user.blogName,
-              mainImages: post.mainImages.map((img, i) => {
-                var cleanedImg = {};
-                cleanedImg._id = img._id
-                cleanedImg.url = img.url
-                cleanedImg.createdAt = img.createdAt
-                return cleanedImg
-              }),
-              description: post.description,
-              descriptionImages: post.descriptionImages.map((img, i) => {
-                var cleanedImg = {};
-                cleanedImg._id = img._id
-                cleanedImg.url = img.url
-                cleanedImg.createdAt = img.createdAt
-                return cleanedImg
-              }),
-              tags: post.tags.map((t, i) => (t._id)),
-              reposter: Cookies.get('currentUser'),
-              repostCaption: repostCaption
+              postId: post._id,
+              repostCaption: repostCaption,
+              user: Cookies.get('currentUser'),
+              repostedFrom: post.user.blogName,
+              postKind: post.kind,
             }
           })
         }}
       >
-        <PhotoPostShow 
-          post={post}
-          reposter={Cookies.get('currentUser')} 
-        />
+        
+        {displayPost(post)}
 
         <textarea
           type='text'
@@ -119,4 +123,4 @@ const PhotoPostRepost = () => {
   )
 }
 
-export default PhotoPostRepost;
+export default RepostForm;

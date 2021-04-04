@@ -6,15 +6,15 @@ import Like from '../likes/Like.js'
 import Repost from '../reposts/Repost.js'
 
 const PhotoPostSchema = new Schema({
-  description: {
-    type: String
-  },
   mainImages: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Image'
     }
   ],
+  description: {
+    type: String
+  },
   descriptionImages: [
     {
       type: Schema.Types.ObjectId,
@@ -31,18 +31,6 @@ const PhotoPostSchema = new Schema({
       ref: 'Tag'
     }
   ],
-  likes: [
-    {
-    type: Schema.Types.ObjectId,
-      ref: 'Like'
-    }
-  ],
-  reposter: {
-    type: String
-  },
-  repostCaption: {
-    type: String
-  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -51,6 +39,10 @@ const PhotoPostSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  kind: {
+    type: String,
+    default: 'PhotoPost'
+  }
 })
 
 PhotoPostSchema.statics.like = (
@@ -60,7 +52,7 @@ PhotoPostSchema.statics.like = (
   var like = new Like();
   
   return Promise.all([
-    User.findOne({ blogName: user}), 
+    User.findOne({ blogName: user }), 
     PhotoPost.findById(postId)
   ])
   .then(([user, photoPost]) => {
@@ -89,15 +81,18 @@ PhotoPostSchema.statics.unlike = (
     PhotoPost.findById(postId)
     ])
     .then(([user, photoPost]) => {
-    var userLikeFiltered = user.likes.filter(like => {
+      var userLikeFiltered = user.likes.filter(like => {
       return like._id == likeId.toString() ? false : true
     })
     var photoPostFiltered = photoPost.likes.filter(like => {
       return like._id == likeId.toString() ? false : true
     })
 
+  
+
     user.likes = userLikeFiltered
     photoPost.likes = photoPostFiltered
+
       
     return Promise.all(([
       user.save(), 
@@ -114,7 +109,7 @@ PhotoPostSchema.statics.create = (
   tags, user
 ) => {
   var post = new PhotoPost();
-          
+  
   const getTagArr = async (tags, post) => {
     return Promise.all(tags.map((t, i) => {
           return asyncTag(t, post)
@@ -130,13 +125,9 @@ PhotoPostSchema.statics.create = (
   const findOrCreateTag = async (t, post) => {
     return Tag.findOne({ title: t }).then(tagFound => {
       if (tagFound) {
-        tagFound.posts.push(post._id)
-        return tagFound.save().then(tag => {
-          return tag;
-        })
+        return tagFound
       } else {
         var newTag = new Tag({ title: t })
-        newTag.posts.push(post._id)
         return newTag.save().then(tag => {
           return tag
         })
@@ -157,9 +148,8 @@ PhotoPostSchema.statics.create = (
     User.findOne({ blogName: user })
   ]).then(
     ([tags, user]) => {
-      post.user = user._id
       post.description = description
-      user.posts.push(post._id)
+      post.user = user._id
 
       tags.forEach((t, i) => {
         post.tags.push(t._id)
@@ -172,50 +162,6 @@ PhotoPostSchema.statics.create = (
   )
 }
 
-PhotoPostSchema.statics.repost = (
-  mainImages, 
-  descriptionImages, 
-  description, tags, 
-  reposter, repostCaption, 
-  user
-) => {
-  var post = new PhotoPost({
-    description: description,
-    tags: tags,
-    reposter: reposter,
-    repostCaption: repostCaption
-  });
-
-  mainImages.forEach((img, i) => {
-    post.mainImages.push(img._id)
-  })
-
-  descriptionImages.forEach((img, i) => {
-    post.descriptionImages.push(img._id)
-  })
-
-  var repost = new Repost({
-    post: post._id
-  });
-
-  return Promise.all([
-    User.findOne({ blogName: reposter }),
-    User.findOne({ blogName: user })
-  ]).then(([reposter, user]) => {
-    repost.user = reposter._id
-    post.user = user._id
-    reposter.posts.push(post._id)
-    reposter.reposts.push(repost._id)
-    user.reposts.push(repost._id)
-    return Promise.all(
-      ([reposter.save(),
-        user.save(),
-        post.save(),
-        repost.save()  
-      ])).then(([reposter, user, post, repost]) => (post))
-  })
-}
-
-const PhotoPost = mongoose.model('PhotoPost', PhotoPostSchema, 'photoPosts')
+const PhotoPost = mongoose.model('PhotoPost', PhotoPostSchema, 'posts')
 
 export default PhotoPost;

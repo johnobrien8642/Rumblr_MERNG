@@ -5,6 +5,7 @@ import validText from './valid_text.js'
 function validateRegisterInput(data) {
   
   data.blogName = validText(data.blogName) ? data.blogName : '';
+  data.blogDescription = validText(data.blogDescription) ? data.blogDescription : '';
   data.email = validText(data.email) ? data.email : '';
   data.password = validText(data.password) ? data.password : '';
   

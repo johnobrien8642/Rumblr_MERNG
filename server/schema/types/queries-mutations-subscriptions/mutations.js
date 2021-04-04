@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken';
 import keys from '../../../../config/keys.js'
 import Cookies from 'js-cookie';
 import UserType from '../objects/user_type.js';
-import PhotoPostType from '../objects/photo_post_type.js';
+import TextPostType from '../objects/posts/text_post_type.js'
+import PhotoPostType from '../objects/posts/photo_post_type.js';
 import ImageType from '../objects/image_type.js';
 import TagType from '../objects/tag_type.js';
 import ImageInputType from '../inputs/image_input_type.js';
@@ -13,10 +14,12 @@ import AuthService from '../../../services/auth_util.js';
 import RepostType from '../objects/repost_type.js';
 import LikeType from '../objects/like_type.js';
 import AnyPostType from '../unions/any_post_type.js'
+const TextPost = mongoose.model('TextPost');
 const PhotoPost = mongoose.model('PhotoPost');
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
 const Repost = mongoose.model('Repost');
+const Like = mongoose.model('Like');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
 
@@ -27,6 +30,7 @@ const mutation = new GraphQLObjectType({
       type: UserType,
       args: {
         blogName: { type: GraphQLString },
+        blogDescription: { type: GraphQLString },
         email: { type: GraphQLString },
         password: { type: GraphQLString },
       },
@@ -70,32 +74,50 @@ const mutation = new GraphQLObjectType({
       args: {
         postId: { type: GraphQLID },
         user: { type: GraphQLString },
-        type: { type: GraphQLString }
+        postKind: { type: GraphQLString }
       },
-      resolve(_, { postId, user, type }) {
-        switch(type) {
-          case 'PhotoPostType':
-            return PhotoPost.like(postId, user).then(res => (res))
-          default:
-            console.log('no types matched')
-        }
+      resolve(_, { postId, user, postKind }) {
+        var like = new Like();
+        
+        return User.findOne({ blogName: user })        
+          .then((user) => {
+            like.user = user._id
+            like.post = postId
+            like.onModel = postKind
+            return Promise.all(([like.save()]))
+              .then(([like]) => (like))
+          })
       }
     },
     unlikePost: {
-      type: AnyPostType,
+      type: LikeType,
       args: {
-        postId: { type: GraphQLID },
         likeId: { type: GraphQLID },
-        user: { type: GraphQLString },
-        type: { type: GraphQLString }
       },
-      resolve(_, { postId, likeId, user, type }) {
-        switch(type) {
-          case 'PhotoPostType':
-            return PhotoPost.unlike(postId, likeId, user).then(res => (res))
-          default:
-            console.log('no types matched')
-        }
+      resolve(_, { likeId }) {
+        return Like.deleteOne({ _id: likeId })
+      }
+    },
+    createTextPost: {
+      type: TextPostType,
+      args: {
+        title: { type: GraphQLString },
+        body: { type: GraphQLString },
+        descriptionImages: { type: new GraphQLList(ImageInputType) },
+        user: { type: GraphQLString },
+        tags: { type: new GraphQLList(GraphQLString) },
+      },
+      resolve(_, { 
+        title, body, 
+        descriptionImages, 
+        user, tags
+      }) {
+        return TextPost
+          .create(
+            title, body,
+            descriptionImages,
+            user, tags 
+          )
       }
     },
     createPhotoPost: {
@@ -105,7 +127,6 @@ const mutation = new GraphQLObjectType({
         descriptionImages: { type: new GraphQLList(ImageInputType) },
         description: { type: GraphQLString },
         tags: { type: new GraphQLList(GraphQLString) },
-        token: { type: GraphQLString },
         user: { type: GraphQLString }
       },
       resolve(_, { 
@@ -120,35 +141,6 @@ const mutation = new GraphQLObjectType({
             descriptionImages, 
             description, tags, 
             user
-          )
-      }
-    },
-    repostPhotoPost: {
-      type: PhotoPostType,
-      args: {
-        mainImages: { type: new GraphQLList(ImageInputType) },
-        descriptionImages: { type: new GraphQLList(ImageInputType) },
-        description: { type: GraphQLString },
-        tags: { type: new GraphQLList(GraphQLString) },
-        token: { type: GraphQLString },
-        reposter: { type: GraphQLString },
-        repostCaption: { type: GraphQLString },
-        user: { type: GraphQLString }
-      },
-      resolve(_, { 
-        mainImages, 
-        descriptionImages, 
-        description, tags, 
-        reposter, repostCaption, 
-        user
-      }) {
-        return PhotoPost
-          .repost(
-            mainImages, 
-            descriptionImages, 
-            description, 
-            tags, reposter, 
-            repostCaption, user
           )
       }
     },
@@ -243,10 +235,30 @@ const mutation = new GraphQLObjectType({
       type: RepostType,
       args: { 
         postId: { type: GraphQLID },
-
+        repostCaption: { type: GraphQLString },
+        user: { type: GraphQLString },
+        repostedFrom: { type: GraphQLString },
+        postKind: { type: GraphQLString }
       },
-      resolve(parentValue, { postId }) {
+      resolve(parentValue, {
+        postId, repostCaption,
+        user, repostedFrom,
+        postKind
+      }) {
+        var repost = new Repost();
         
+        return Promise.all([
+          User.findOne({ blogName: user }),
+          User.findOne({ blogName: repostedFrom }),
+        ]).then(([reposter, reposted]) => {
+          repost.post = postId
+          repost.user = reposter._id
+          repost.repostedFrom = reposted._id
+          repost.repostCaption = repostCaption
+          repost.onModel = postKind
+          return Promise.all(
+            ([repost.save()])).then(([repost]) => repost)
+        })
       }
     }
     // unfollowTag: {

@@ -18,6 +18,7 @@ const UserBlogShow = () => {
   if (error) return `Error: ${error}`;
 
   const { user } = data;
+
   return (
     <Feed
       blogName={blogName}

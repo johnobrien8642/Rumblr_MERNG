@@ -16,7 +16,7 @@ const register = async (data, ctx) => {
     throw new Error(message)
   }
 
-  const { blogName, email, password } = data;
+  const { blogName, blogDescription, email, password } = data;
 
   const existingUser = await User.findOne({ email })
 
@@ -35,6 +35,7 @@ const register = async (data, ctx) => {
   const user = new User(
     {
     blogName: blogName,
+    blogDescription: blogDescription,
     email: email,
     password: hashedPW,
     // emailAuthToken: emailAuthToken //Uncomment for email auth

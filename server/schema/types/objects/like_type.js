@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import AnyPostType from '../unions/any_post_type.js';
 import UserType from '../objects/user_type.js';
 const Like = mongoose.model('Like');
-const { GraphQLID, GraphQLObjectType } = graphql;
+const { GraphQLID, GraphQLObjectType, 
+        GraphQLString } = graphql;
 
 const LikeType = new GraphQLObjectType({
   name: 'LikeType',
@@ -25,6 +26,8 @@ const LikeType = new GraphQLObjectType({
           .then(like => like.post)
       }
     },
+    createdAt: { type: GraphQLString },
+    kind: { type: GraphQLString }
   })
 })
 

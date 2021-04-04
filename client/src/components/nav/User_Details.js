@@ -13,7 +13,7 @@ const UserDetails = () => {
     variables: {
       blogName: Cookies.get('currentUser')
     },
-    pollInterval: active ? 500 : 0
+    pollInterval: active ? 300 : 0
   })
   
   if (loading) return 'Loading...';
@@ -34,7 +34,7 @@ const UserDetails = () => {
         </li>
         <li>
           <Link to='/likes'>Likes</Link>
-          <span>{user.postLikeCount}</span>
+          <span>{user.totalLikeCount}</span>
         </li>
         <li>
           <Link to='/following'>Following</Link>

@@ -1,22 +1,18 @@
 import React from 'react';
+import PostOptions from '../../../posts/util/components/Post_Options'
 import PostShowUtil from '../../util/functions/post_show_util.js'
-import PostOptions from '../../util/components/Post_Options'
 const { postHeader, repostFooter, postTags } = PostShowUtil;
 
-const PhotoPostShow = ({ post }) => {
+const TextPostShow = ({ post }) => {
+  
   var postData = post.kind === 'Repost' ? post.post : post
-
   return(
     <React.Fragment>
 
       {postHeader(post)}
 
-      <div>
-        {postData.mainImages.map((mainImg, i) => {
-          return <img key={i} src={`${mainImg.url}`} alt={'usefilename'} />
-        })}
-      </div>
-      <p>{postData.description}</p>
+      <h1>{postData.title}</h1>
+      <p>{postData.body}</p>
       <div>
         {postData.descriptionImages.map((descripImg, i) => {
           return <img key={i} src={`${descripImg.url}`} alt={'usefilename'} />
@@ -27,9 +23,9 @@ const PhotoPostShow = ({ post }) => {
 
       {postTags(postData)}
     
-      <PostOptions post={postData} />
+      <PostOptions post={post} />
     </React.Fragment>
   )
 }
 
-export default PhotoPostShow;
+export default TextPostShow;

@@ -8,14 +8,30 @@ const RepostSchema = new Schema({
   },
   post: {
     type: Schema.Types.ObjectId,
-    ref: 'PhotoPost'
+    refPath: 'onModel'
+  },
+  repostedFrom: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  repostCaption: {
+    type: String
   },
   createdAt: {
     type: Date,
     default: Date.now
   },
+  onModel: {
+    type: String,
+    required: true,
+    enum: [ 'TextPost', 'PhotoPost' ]
+  },
+  kind: {
+    type: String,
+    default: 'Repost'
+  },
 })
 
-const Repost = mongoose.model('Repost', RepostSchema, 'reposts');
+const Repost = mongoose.model('Repost', RepostSchema, 'posts');
 
 export default Repost;

@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 const { FETCH_USER_FEED } = Queries;
 const { FOLLOW_TAG } = Mutations;
 
-const TagResult = ({ tag }) => {
+const TagResult = ({ tag, activate }) => {
   let history = useHistory();
 
   let [followTag] = useMutation(FOLLOW_TAG, {
@@ -49,6 +49,7 @@ const TagResult = ({ tag }) => {
     <React.Fragment>
       <Link 
         to={`/view/tag/${tag.title}`}
+        onClick={activate}
       >
         {tag.title}
       </Link>

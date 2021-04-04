@@ -6,23 +6,20 @@ const TagSchema = new Schema({
     type: String,
     required: true
   },
-  posts: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'PhotoPost'
-    }
-  ],
-  followers: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ],
-  followerCount: {
-    type: Number
+  createdAt: {
+    type: Date,
+    default: Date.now
   },
-  heat: {
-    type: Number
+  // followerCount: {
+  //   type: Number
+  // },
+  // heat: {
+  //   type: Number
+  // },
+  kind: {
+    type: String,
+    default: 'Tag',
+    immutable: true
   }
 })
 
