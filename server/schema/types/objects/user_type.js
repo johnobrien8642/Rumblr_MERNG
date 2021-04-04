@@ -24,6 +24,7 @@ const UserType = new GraphQLObjectType({
     // emailAuthToken: { type: GraphQLString },
     createdAt: { type: GraphQLInt },
     lastUpdated: { type: GraphQLInt },
+    kind: { type: GraphQLString },
     posts: {
       type: new GraphQLList(AnyPostType),
       resolve(parentValue) {
@@ -85,13 +86,31 @@ const UserType = new GraphQLObjectType({
       resolve(parentValue) {
         return User.aggregate([
           { $match: { _id: parentValue._id } },
-            { $project: {
-              followerCount: {
-                $size: '$userFollowing'
-              }
+          {
+            $lookup: {
+              from: 'follows',
+              let: { user: parentValue._id, onModel: 'User' },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and: 
+                      [
+                        { $eq: [ "$user", "$$user" ] },
+                        { $eq: [ "$onModel", "$$onModel" ]}
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'followedUsers'
+            }
+          },
+          {
+            $project: {
+              "followedUsersCount": { "$size": "$followedUsers" }
             }
           }
-        ]).then(res => res[0].followerCount)
+        ]).then(res => res[0].followedUsersCount)
       }
     },
     totalLikeCount: {

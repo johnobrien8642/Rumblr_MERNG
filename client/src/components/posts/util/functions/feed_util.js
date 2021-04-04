@@ -1,18 +1,15 @@
 import React from 'react';
+import TagResult from '../../../search/resultTypes/Tag_Result';
+import UserResult from '../../../search/resultTypes/User_Result';
 
-const header = (user, tagTitle) => {
+const header = (user, tag) => {
   if (user) {
     return (
-      <div>
-        <h1>{user.blogName}</h1>
-        <p>{user.blogDescription}</p>
-      </div>
+      <UserResult user={user} />
     )
-  } else if (tagTitle) {
+  } else if (tag) {
     return (
-      <div>
-        <h1>{tagTitle}</h1>
-      </div>
+      <TagResult tag={tag} />
     )
   }
 }

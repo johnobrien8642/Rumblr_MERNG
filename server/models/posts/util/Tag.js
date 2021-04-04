@@ -18,8 +18,7 @@ const TagSchema = new Schema({
   // },
   kind: {
     type: String,
-    default: 'Tag',
-    immutable: true
+    default: 'Tag'
   }
 })
 

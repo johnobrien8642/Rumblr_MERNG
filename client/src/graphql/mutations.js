@@ -45,8 +45,22 @@ const Mutations = {
     }
   `,
   UNLIKE_POST: gql`
-    mutation unlikePost($likeoId: ID) {
-      unlikePost(likeoId: $likeoId) {
+    mutation unlikePost($likeId: ID) {
+      unlikePost(likeId: $likeId) {
+        _id
+      }
+    }
+  `,
+  FOLLOW: gql`
+    mutation Follow($user: String, $item: String, $itemKind: String) {
+      follow(user: $user, item: $item, itemKind: $itemKind) {
+        _id
+      }
+    }
+  `,
+  UNFOLLOW: gql`
+    mutation Unfollow($followId: ID) {
+      unfollow(followId: $followId) {
         _id
       }
     }
@@ -61,20 +75,6 @@ const Mutations = {
         ... on TextPostType {
           ${TEXT_POST}
         }
-      }
-    }
-  `,
-  CREATE_TEXT_POST: gql`
-    mutation CreateTextPost($title: String, $body: String, $descriptionImages: [ImageInputType], $user: String, $tags: [String]) {
-      createTextPost(title: $title, body: $body, descriptionImages: $descriptionImages, user: $user, tags: $tags) {
-        ${TEXT_POST}
-      }
-    }
-  `,
-  CREATE_PHOTO_POST: gql`
-    mutation CreatePhotoPost($mainImages: [ImageInputType], $descriptionImages: [ImageInputType], $description: String, $tags: [String], $user: String) {
-      createPhotoPost(mainImages: $mainImages, descriptionImages: $descriptionImages, description: $description, tags: $tags, user: $user) {
-        ${PHOTO_POST}
       }
     }
   `,

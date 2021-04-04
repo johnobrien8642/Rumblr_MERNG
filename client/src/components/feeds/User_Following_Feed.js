@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { useQuery } from '@apollo/client';
+import UserResult from '../search/resultTypes/User_Result'
 import Cookies from 'js-cookie';
 import Queries from '../../graphql/queries';
-import Mutations from '../../graphql/mutations';
-const { FETCH_USER_FOLLOWING } = Queries;
-const { UNFOLLOW_USER, FOLLOW_USER } = Mutations;
+const { FETCH_FOLLOWED_USERS } = Queries;
 
 const UserFollowingFeed = () => {
-  let [followed, setFollowed] = useState(true)
-  let { loading, error, data, refetch } = useQuery(FETCH_USER_FOLLOWING, {
+  let { loading, error, data, refetch } = useQuery(FETCH_FOLLOWED_USERS, {
     variables: {
-      blogName: Cookies.get('currentUser')
+      user: Cookies.get('currentUser')
     }
   })
 
@@ -18,54 +16,19 @@ const UserFollowingFeed = () => {
     refetch()
   }, [refetch])
 
-  let [unfollowUser] = useMutation(UNFOLLOW_USER, {
-    onCompleted() {
-      setFollowed(followed = false)
-    }
-  })
-
-  let [followUser] = useMutation(FOLLOW_USER, {
-    onCompleted() {
-      setFollowed(followed = true)
-    }
-  })
-
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`
-
-  const { user } = data;
+  
+  const { fetchFollowedUsers } = data;
 
   return(
     <div>
-      {user.userFollowing.map((user, i) => {
+      {fetchFollowedUsers.map((follow, i) => {
         return (
           <div
-            key={user._id}
+            key={i}
           >
-            <p>{user.blogName}</p>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-
-                if (followed) {
-                  unfollowUser({
-                    variables: {
-                      userId: user._id,
-                      token: Cookies.get('auth-token')
-                    }
-                  })
-                } else {
-                  followUser({
-                    variables: {
-                      userId: user._id,
-                      token: Cookies.get('auth-token')
-                    }
-                  })
-                }
-              }}
-            >
-              <button type='submit'>{followed ? 'Unfollow' : 'Follow'}</button>
-            </form>
+            <UserResult user={follow.follows} />
           </div>
         )
       })}

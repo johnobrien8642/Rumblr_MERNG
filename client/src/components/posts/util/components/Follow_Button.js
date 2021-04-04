@@ -1,20 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
 import Mutations from '../../../../graphql/mutations';
 const { FOLLOW, UNFOLLOW } = Mutations;
 
-const FollowButton = ({ user, tag, followed }) => {
+const FollowButton = ({ user, tag, follow }) => {
+  
   var initial;
   var TagOrUser;
   var itemKind;
+  var followId = useRef('')
 
   if (user) {
-    initial = followed ? true : false
+    if (follow) {
+      initial = true
+      followId.current = follow._id
+    } else {
+      initial = false
+    }
     TagOrUser = user.blogName
     itemKind = user.kind
   } else if (tag) {
-    initial = followed ? true : false
+    if (follow) {
+      initial = true
+      followId.current = follow._id
+    } else {
+      initial = false
+    }
     TagOrUser = tag._id
     itemKind = tag.kind
   }
@@ -22,6 +34,9 @@ const FollowButton = ({ user, tag, followed }) => {
   let [status, setStatus] = useState(initial)
 
   let [followUser] = useMutation(FOLLOW, {
+    onCompleted({ follow }) {
+      followId.current = follow._id
+    },
     onError(error) {
       console.log(error.message)
     }
@@ -41,8 +56,7 @@ const FollowButton = ({ user, tag, followed }) => {
             e.preventDefault();
             unfollowUser({
               variables: {
-                currentUser: Cookies.get('currentUser'),
-                // user: input1
+                followId: followId.current
               }
             })
             setStatus(status = false)

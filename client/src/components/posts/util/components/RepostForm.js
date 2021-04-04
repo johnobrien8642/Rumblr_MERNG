@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useParams, useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import PhotoPostShow from '../../types/PhotoPost/PhotoPostShow'
-import TextPostShow from '../../types/TextPost/TextPostShow'
+import PostShow from '../../types/show/PostShow'
 import Mutations from '../../../../graphql/mutations'
 import Queries from '../../../../graphql/queries'
 const { CREATE_REPOST } = Mutations;
@@ -59,27 +58,10 @@ const RepostForm = () => {
   
   const { post } = data;
 
-  const displayPost = (post) => {
-    if (post.kind === 'PhotoPost') {
-      return (
-        <PhotoPostShow 
-          post={post}
-          reposter={Cookies.get('currentUser')} 
-        />
-      )
-    } else if (post.kind === 'TextPost') {
-      return (
-        <TextPostShow 
-          post={post}
-          reposter={Cookies.get('currentUser')} 
-        />
-      )
-    }
-  }
-
   const resetInputs = () => {
     setRepostCaption(repostCaption = '');
   }
+
   return (
     <div>
       <form
@@ -97,7 +79,7 @@ const RepostForm = () => {
         }}
       >
         
-        {displayPost(post)}
+        <PostShow post={post} />
 
         <textarea
           type='text'

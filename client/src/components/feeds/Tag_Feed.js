@@ -1,12 +1,27 @@
 import React from 'react';
+import { useQuery } from '@apollo/client';
 import Feed from '../feeds/Feed.js';
 import { useParams } from 'react-router-dom';
+import Queries from '../../graphql/queries';
+const { FETCH_TAG } = Queries;
  
 const TagFeed = () => {
   let { tagTitle } = useParams();
+  var hashedTitle = "#" + tagTitle
+
+  let { loading, error, data } = useQuery(FETCH_TAG, {
+    variables: {
+      tagTitle: hashedTitle
+    }
+  })
+  
+  if (loading) return 'Loading...';
+  if (error) return `Error: ${error}`;
+
+  const { tag } = data;
   
   return (
-    <Feed tagTitle={tagTitle} />
+    <Feed tag={tag} />
   )
 }
 

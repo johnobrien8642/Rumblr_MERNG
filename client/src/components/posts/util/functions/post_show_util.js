@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const postHeader = (post) => {
-  // console.log(post)
   if (post.kind === 'Repost') {
     return (
       <span>
@@ -68,6 +67,7 @@ const postTags = (postData) => (
 
 const postBody = (postData) => {
   if (postData.kind === 'TextPost') {
+
     return (
     <React.Fragment>
       <h2>{postData.title}</h2>
@@ -79,7 +79,9 @@ const postBody = (postData) => {
         </div>
     </React.Fragment>
     )
+
   } else if (postData.kind === 'PhotoPost') {
+
     <React.Fragment>
       <div>
         {postData.mainImages.map((mainImg, i) => {
@@ -93,6 +95,7 @@ const postBody = (postData) => {
         })}
       </div>
     </React.Fragment> 
+
   }
 }
 

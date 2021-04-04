@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { withRouter } from 'react-router-dom';
 import PostShow from '../posts/types/show/PostShow.js'
 import Cookies from 'js-cookie';
 import Queries from '../../graphql/queries';
@@ -8,20 +7,19 @@ import FeedUtil from '../posts/util/functions/feed_util.js'
 const { FETCH_USER_FEED, FETCH_TAG_FEED } = Queries;
 const { header } = FeedUtil;
 
-const Feed = ({ blogName, tagTitle, user }) => {
+const Feed = ({ tag, user }) => {
   let query;
-
-  if (blogName) {
+  if (user) {
     query = FETCH_USER_FEED;
-  } else if (tagTitle) {
+  } else if (tag) {
     query = FETCH_TAG_FEED;
   } else {
     query = FETCH_USER_FEED;
   }
-  
+
   let { loading, error, data } = useQuery(query, {
     variables: {
-      query: blogName ? blogName : tagTitle ? tagTitle : Cookies.get('currentUser')
+      query: user ? user.blogName : tag ? tag.title.slice(1) : Cookies.get('currentUser')
     }
   })
   
@@ -35,10 +33,9 @@ const Feed = ({ blogName, tagTitle, user }) => {
   
   return(
     <div>
-      {header(user, tagTitle)}
+      {header(user, tag)}
       <div>
-        {feedVar.map((item, i) => {
-          var post = item.__typename === 'RepostType' ? item.post : item
+        {feedVar.map((post, i) => {
           return (
             <div
               className='post'
@@ -53,4 +50,4 @@ const Feed = ({ blogName, tagTitle, user }) => {
   )
 }
 
-export default withRouter(Feed);
+export default Feed;

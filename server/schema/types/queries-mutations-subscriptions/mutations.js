@@ -127,10 +127,11 @@ const mutation = new GraphQLObjectType({
         item: { type: GraphQLString },
         itemKind: { type: GraphQLString }
       },
-      resolve(_, { user, itemId }) {
+      resolve(_, { user, item, itemKind }) {
         var follow = new Follow({
           onModel: itemKind
         })
+        
         return Promise.all([
           User.findOne({ blogName: user }),
           User.findOne({ blogName: item }),
@@ -143,9 +144,17 @@ const mutation = new GraphQLObjectType({
           } else if (tag) {
             follow.follows = tag._id
           }
-
-          return Promise.all(([follow.save()])).then(follow => follow)
+          return Promise.all(([follow.save()])).then(([follow]) => follow)
         })
+      }
+    },
+    unfollow: {
+      type: FollowType,
+      args: {
+        followId: { type: GraphQLID }
+      },
+      resolve(_, { followId }) {
+        return Follow.deleteOne({ _id: followId })
       }
     },
     repost: {

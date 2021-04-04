@@ -20,10 +20,7 @@ const UserBlogShow = () => {
   const { user } = data;
 
   return (
-    <Feed
-      blogName={blogName}
-      user={user}
-    />
+    <Feed user={user} />
   )
 }
 

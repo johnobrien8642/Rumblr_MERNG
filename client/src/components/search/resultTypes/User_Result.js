@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { Link } from 'react-router-dom';
 import FollowButton from '../../posts/util/components/Follow_Button';
@@ -8,18 +8,22 @@ import Cookies from 'js-cookie';
 const { DOES_USER_FOLLOW_USER } = Queries;
 
 const UserResult = ({ user, activate }) => {
-  let { loading, error, data } = useQuery(DOES_USER_FOLLOW_USER, {
+  let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_USER, {
     variables: {
-      userId: user._id,
-      currentUser: Cookies.get('currentUser')
+      user: Cookies.get('currentUser'),
+      otherUser: user.blogName
     },
   })
+
+  useEffect(() => {
+    refetch()
+  }, [refetch])
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
   
   const { doesUserFollowUser } = data;
-  
+
   return (
     <React.Fragment>
       <Link 
@@ -30,7 +34,7 @@ const UserResult = ({ user, activate }) => {
       </Link>
       <FollowButton 
         user={user} 
-        followed={doesUserFollowUser}
+        follow={doesUserFollowUser}
       />
     </React.Fragment>
   )

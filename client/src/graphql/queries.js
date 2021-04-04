@@ -60,32 +60,34 @@ const Queries = {
       }
     }
   `,
-  FETCH_USER_LIKED_POSTS: gql`
-    query fetchUserPostLikes($blogName: String) {
-      user(blogName: $blogName) {
+  FETCH_USER_LIKES: gql`
+    query FetchUserLikes($user: String) {
+      fetchUserLikes(user: $user) {
         _id
-        likes {
-          _id
-          post {
-            __typename
-            ... on TextPostType {
-              ${TEXT_POST}
-            }
-            ... on PhotoPostType {
-              ${PHOTO_POST}
-            }
+        post {
+          __typename
+          ... on TextPostType {
+            ${TEXT_POST}
+          }
+          ... on PhotoPostType {
+            ${PHOTO_POST}
           }
         }
       }
     }
   `,
-  FETCH_USER_FOLLOWING: gql`
-    query fetchUserFollowing($blogName: String) {
-      user(blogName: $blogName) {
+  FETCH_FOLLOWED_USERS: gql`
+    query fetchFollowedUsers($user: String) {
+      fetchFollowedUsers(user: $user) {
         _id
-        userFollowing {
-          _id
-          blogName
+        follows {
+          __typename
+          ... on UserType {
+            _id
+            blogName
+            blogDescription
+            kind
+          }
         }
       }
     }
@@ -187,10 +189,12 @@ const Queries = {
           _id
           blogName
           email
+          kind
         }
         ... on TagType {
           _id
           title
+          kind
         }
       }
     }
@@ -216,6 +220,14 @@ const Queries = {
       }
     }
   `,
+  FETCH_TAG: gql`
+    query FetchTag($tagTitle: String) {
+      tag(tagTitle: $tagTitle) {
+        _id
+        title
+      }
+    }
+  `,
   DOES_USER_LIKE_POST: gql`
     query DoesUserLikePost($user: String, $postId: ID) {
       doesUserLikePost(user: $user, postId: $postId) {
@@ -224,8 +236,17 @@ const Queries = {
     }
   `,
   DOES_USER_FOLLOW_USER: gql`
-    query DoesUserFollowUser($currentUser: String, $userId: ID) {
-      doesUserFollowUser(currentUser: $currentUser, userId: $userId)
+    query DoesUserFollowUser($user: String, $otherUser: String) {
+      doesUserFollowUser(user: $user, otherUser: $otherUser) {
+        _id
+      }
+    }
+  `,
+  DOES_USER_FOLLOW_TAG: gql`
+    query DoesUserFollowTag($user: String, $tagId: ID) {
+      doesUserFollowTag(user: $user, tagId: $tagId) {
+        _id
+      }
     }
   `,
   IS_LOGGED_IN: gql`

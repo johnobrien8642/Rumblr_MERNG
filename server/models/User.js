@@ -27,22 +27,10 @@ const UserSchema = new Schema({
     type: Boolean,
     required: false
   },
-  userFollowing: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  ],
   tagFollows: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Tag'
-    }
-  ],
-  likes: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Like'
     }
   ],
   //// Uncomment both below for email auth

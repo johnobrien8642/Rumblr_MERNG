@@ -20,8 +20,8 @@ const App = () => {
       <Switch>
         <AuthRoute exact path='/dashboard' component={Dashboard} />
         <Route exact path='/view/blog/:blogName' component={UserBlogShow} />
-        <Route exact path='/repost/:blogName/:postId/:typename' component={RepostForm} />
         <Route exact path='/view/tag/:tagTitle' component={TagFeed} />
+        <Route exact path='/repost/:blogName/:postId/:typename' component={RepostForm} />
         <Route exact path='/likes' component={UserPostLikesFeed} />
         <Route exact path='/following' component={UserFollowingFeed} />
         <Route exact path='/login' component={Login} />

@@ -1,71 +1,42 @@
-import React from 'react';
-import { useMutation } from '@apollo/client';
-import { useHistory, Link } from 'react-router-dom';
-import Mutations from '../../../graphql/mutations';
+import React, { useEffect } from 'react';
+import { useQuery } from '@apollo/client';
+import { Link } from 'react-router-dom';
+import FollowButton from '../../posts/util/components/Follow_Button'
 import Queries from '../../../graphql/queries';
 import Cookies from 'js-cookie';
-const { FETCH_USER_FEED } = Queries;
-const { FOLLOW_TAG } = Mutations;
+const { DOES_USER_FOLLOW_TAG } = Queries;
 
 const TagResult = ({ tag, activate }) => {
-  let history = useHistory();
-
-  let [followTag] = useMutation(FOLLOW_TAG, {
-    update(client, { data }) {
-      console.log(data)
-      const { followTag } = data;
-
-      var readQuery = client.readQuery({
-        query: FETCH_USER_FEED,
-        variables: {
-          _id: followTag.user._id
-        }
-      })
-
-      var { currentUser } = readQuery;
-      var newPostArr = currentUser.tagFollows.push(followTag._id)
-
-      client.writeQuery({
-        query: FETCH_USER_FEED,
-        variables: {
-          _id: followTag.user._id
-        },
-        data: {
-          currentUser: {
-            posts: newPostArr
-          }
-        }
-      })
-    },
-    onCompleted(data) {
-      history.push('/dashboard')
-    },
-    onError(error) {
-      console.log(error.message)
+  let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_TAG, {
+    variables: {
+      user: Cookies.get('currentUser'),
+      tagId: tag._id
     }
-  });
+  })
+
+  useEffect(() => {
+    refetch()
+  }, [refetch])
+
+  if (loading) return 'Loading...';
+  if (error) return `Error: ${error}`;
+
+  const { doesUserFollowTag } = data;
+  
+  var cleanedTag = tag.title.slice(1)
 
   return (
     <React.Fragment>
       <Link 
-        to={`/view/tag/${tag.title}`}
+        to={`/view/tag/${cleanedTag}`}
         onClick={activate}
       >
         {tag.title}
       </Link>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          followTag({
-            variables: {
-              tagId: tag._id,
-              blogName: Cookies.get('blogName')
-            }
-          })
-        }}
-      >
-        <button type='submit'>Follow</button>
-      </form>
+      <FollowButton
+        tag={tag} 
+        follow={doesUserFollowTag}
+      />
     </React.Fragment>
   )
 }

@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
 import { NetworkStatus, useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
-import PhotoPostShow from '../posts/types/PhotoPost/PhotoPostShow'
+import PostShow from '../posts/types/show/PostShow'
 import Queries from '../../graphql/queries';
-const { FETCH_USER_LIKED_POSTS } = Queries;
+const { FETCH_USER_LIKES } = Queries;
 
 const UserPostLikesFeed = () => {
   let { loading, error, 
-        data, refetch, networkStatus } = useQuery(FETCH_USER_LIKED_POSTS, {
+        data, refetch, 
+        networkStatus } = useQuery(FETCH_USER_LIKES, {
     variables: {
-      blogName: Cookies.get('currentUser')
+      user: Cookies.get('currentUser')
     }
   })
 
@@ -20,33 +21,26 @@ const UserPostLikesFeed = () => {
   if (networkStatus === NetworkStatus.refetch) return 'Refetching!';
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
-
-  const { user } = data;
   
-  var allPosts = [];
-  user.likes.forEach((like, i) => {
-    allPosts = [...allPosts, like.post]
+  const { fetchUserLikes } = data;
+
+  var likedPosts = [];
+  
+  fetchUserLikes.forEach((like, i) => {
+  likedPosts = [...likedPosts, like.post]
   })
 
   return(
     <div>
-      {allPosts.map((post, i) => {
-        switch(post.__typename) {
-          case 'PhotoPostType':
-            return (
-              <div
-                key={post._id}
-                className='post'
-              >
-                <PhotoPostShow post={post} />
-              </div>
-            )
-          default:
-            return (
-              <div>
-              </div>
-            )
-        }
+      {likedPosts.map((post, i) => {
+        return (
+          <div
+            className='post'
+            key={i}
+          >
+            <PostShow post={post} />
+          </div>
+        )
       })}
     </div>
   )

@@ -8,13 +8,27 @@ const { IS_LOGGED_IN } = Queries;
 const Search = () => {
   let [input, setInput] = useState('');
   let [active, setActive] = useState('');
+  
+  const onBlur = (e) => {
+    if (!e.relatedTarget) {
+      setActive(active = false)
+    }
+  }
 
-  const activate = () => {
+  const clickActivate = () => {
     if (active) {
       setActive(active = false)
-      setInput(input = '')
     } else {
       setActive(active = true)
+    }
+  }
+
+
+  const inputActivate = () => {
+    if (input) {
+      setActive(active = true)
+    } else {
+      setActive(active = false)
     }
   }
 
@@ -22,18 +36,20 @@ const Search = () => {
 
   if (data.isLoggedIn) {
     return (
-      <div>
+      <div
+        onBlur={e => onBlur(e)}
+      >
         <input 
           type='text'
           value={input}
           placeholder={'Search Rumblr'}
           onChange={e => {
             setInput(input = e.target.value)
+            inputActivate()
           }}
-          onClick={activate}
         />
-        <FollowedTags active={active} activate={activate} />
-        <Results input={input} active={active} activate={activate} />
+        <FollowedTags active={active} activate={clickActivate} />
+        <Results input={input} active={active} activate={clickActivate} />
       </div>
     )
   } else {

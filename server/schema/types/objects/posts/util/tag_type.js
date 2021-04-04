@@ -14,6 +14,7 @@ const TagType = new GraphQLObjectType({
   fields: () => ({
     _id: { type: GraphQLID },
     title: { type: GraphQLString },
+    kind: { type: GraphQLString },
     user: {
       type: UserType,
       resolve(parentValue) {
