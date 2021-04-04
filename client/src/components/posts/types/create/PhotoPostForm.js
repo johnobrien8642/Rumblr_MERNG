@@ -204,11 +204,6 @@ const PhotoPostForm = () => {
         createPost({
           variables: {
             instanceData: instanceData
-            // mainImages: cleanedMain,
-            // description: description,
-            // descriptionImages: cleanedBody,
-            // tags: tags,
-            // user: Cookies.get('currentUser'),
           }
         })
       }

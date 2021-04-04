@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 const postHeader = (post) => {
@@ -65,6 +66,36 @@ const postTags = (postData) => (
   </div>
 )
 
-const PostShowUtil = { postHeader, repostFooter, postTags }
+const postBody = (postData) => {
+  if (postData.kind === 'TextPost') {
+    return (
+    <React.Fragment>
+      <h2>{postData.title}</h2>
+      <p>{postData.body}</p>
+        <div>
+          {postData.descriptionImages.map((descripImg, i) => {
+            return <img key={i} src={`${descripImg.url}`} alt={'usefilename'} />
+          })}
+        </div>
+    </React.Fragment>
+    )
+  } else if (postData.kind === 'PhotoPost') {
+    <React.Fragment>
+      <div>
+        {postData.mainImages.map((mainImg, i) => {
+          return <img key={i} src={`${mainImg.url}`} alt={'usefilename'} />
+        })}
+      </div>
+      <p>{postData.description}</p>
+      <div>
+        {postData.descriptionImages.map((descripImg, i) => {
+          return <img key={i} src={`${descripImg.url}`} alt={'usefilename'} />
+        })}
+      </div>
+    </React.Fragment> 
+  }
+}
+
+const PostShowUtil = { postHeader, postBody, repostFooter, postTags }
 
 export default PostShowUtil;

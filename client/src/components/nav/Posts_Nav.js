@@ -1,6 +1,6 @@
 import React from 'react';
-import PhotoPostForm from '../posts/types/PhotoPost/PhotoPostForm'
-import TextPostForm from '../posts/types/TextPost/TextPostForm'
+import PhotoPostForm from '../posts/types/create/PhotoPostForm'
+import TextPostForm from '../posts/types/create/TextPostForm'
 
 const PostNav = () => {
 

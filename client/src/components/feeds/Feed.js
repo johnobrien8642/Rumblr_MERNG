@@ -1,11 +1,12 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { withRouter } from 'react-router-dom';
-import TextPostShow from '../posts/types/TextPost/TextPostShow';
-import PhotoPostShow from '../posts/types/PhotoPost/PhotoPostShow';
+import PostShow from '../posts/types/show/PostShow.js'
 import Cookies from 'js-cookie';
 import Queries from '../../graphql/queries';
+import FeedUtil from '../posts/util/functions/feed_util.js'
 const { FETCH_USER_FEED, FETCH_TAG_FEED } = Queries;
+const { header } = FeedUtil;
 
 const Feed = ({ blogName, tagTitle, user }) => {
   let query;
@@ -31,56 +32,21 @@ const Feed = ({ blogName, tagTitle, user }) => {
   
   var feedVar;
   fetchTagFeed ? feedVar = fetchTagFeed : feedVar = fetchUserFeed;
-
-  const header = (user) => {
-    if (user) {
-      return (
-        <div>
-          <h1>{user.blogName}</h1>
-          <p>{user.blogDescription}</p>
-        </div>
-      )
-    } else if (tagTitle) {
-      return (
-        <div>
-          <h1>{tagTitle}</h1>
-        </div>
-      )
-    }
-  }
   
   return(
     <div>
-      {header(user)}
+      {header(user, tagTitle)}
       <div>
         {feedVar.map((item, i) => {
-          // console.log(feedVar)
           var post = item.__typename === 'RepostType' ? item.post : item
-          switch(post.__typename) {
-            case 'TextPostType':
-              return (
-                <div
-                  key={i}
-                  className='post'
-                >
-                  <TextPostShow post={item} />
-                </div>
-              )
-            case 'PhotoPostType':
-              return (
-                <div
-                  key={i}
-                  className='post'
-                >
-                  <PhotoPostShow post={item} />
-                </div>
-              )
-            default:
-              return (
-                <div>
-                </div>
-              )
-          }
+          return (
+            <div
+              className='post'
+              key={i}
+            >
+              <PostShow post={post} idx={i} />
+            </div>
+          )
         })}
         </div>
     </div>
