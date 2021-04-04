@@ -1,14 +1,13 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
-import ImageType from '../image_type.js';
-import TagType from '../tag_type.js';
-import UserType from '../user_type.js';
-import LikeType from '../like_type.js';
-import RepostType from '../repost_type.js';
+import ImageType from '../util/image_type.js';
+import TagType from '../util/tag_type.js';
+import UserType from '../../user_type.js';
+import LikeType from '../util/like_type.js';
+import RepostType from '../util/repost_type.js';
 const PhotoPost = mongoose.model('PhotoPost');
 const { GraphQLList, GraphQLID, 
-        GraphQLString, GraphQLObjectType,
-        GraphQLBoolean } = graphql;
+        GraphQLString, GraphQLObjectType } = graphql;
 
 const PhotoPostType = new GraphQLObjectType({
   name: 'PhotoPostType',

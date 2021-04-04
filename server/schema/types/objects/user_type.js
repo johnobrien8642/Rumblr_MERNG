@@ -1,9 +1,9 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
 import AnyPostType from '../unions/any_post_type.js'
-import TagType from '../objects/tag_type.js'
-import LikeType from '../objects/like_type.js'
-import RepostType from '../objects/repost_type.js'
+import TagType from '../objects/posts/util/tag_type.js'
+import LikeType from '../objects/posts/util/like_type.js'
+import RepostType from '../objects/posts/util/repost_type.js'
 const User = mongoose.model('User');
 const { GraphQLObjectType, GraphQLString,
         GraphQLList, GraphQLInt,

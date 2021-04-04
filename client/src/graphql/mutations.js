@@ -45,9 +45,22 @@ const Mutations = {
     }
   `,
   UNLIKE_POST: gql`
-    mutation unlikePost($likeId: ID) {
-      unlikePost(likeId: $likeId) {
+    mutation unlikePost($likeoId: ID) {
+      unlikePost(likeoId: $likeoId) {
         _id
+      }
+    }
+  `,
+  CREATE_POST: gql`
+    mutation CreatePost($instanceData: JSONObject ) {
+      createPost(instanceData: $instanceData) {
+        __typename
+        ... on PhotoPostType {
+          ${PHOTO_POST}
+        }
+        ... on TextPostType {
+          ${TEXT_POST}
+        }
       }
     }
   `,
@@ -90,40 +103,7 @@ const Mutations = {
       }
     }
   `,
-  FOLLOW_USER: gql`
-    mutation FollowUser($currentUser: String, $user: String) {
-      followUser(currentUser: $currentUser, user: $user) {
-        _id
-        blogName
-      }
-    }
-  `,
-  UNFOLLOW_USER: gql`
-    mutation UnfollowUser($currentUser: String, $user: String) {
-      unfollowUser(currentUser: $currentUser, user: $user) {
-        _id
-        blogName
-      }
-    }
-  `,
-  FOLLOW_TAG: gql`
-    mutation FollowTag($tagId: ID, $token: String) {
-      followTag(tagId: $tagId, token: $token) {
-        _id
-        title
-        posts {
-          __typename
-          ... on PhotoPostType {
-            ${PHOTO_POST}
-          }
-        }
-        user {
-          _id
-          blogName
-        }
-      }
-    } 
-  `
+  
 };
 
 export default Mutations;

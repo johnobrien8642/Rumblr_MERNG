@@ -1,8 +1,8 @@
 import graphql from'graphql';
 const { GraphQLUnionType } = graphql;
-import TextPostType from '../objects/posts/text_post_type.js';
-import PhotoPostType from '../objects/posts/photo_post_type.js';
-import RepostType from '../objects/repost_type.js'
+import TextPostType from '../objects/posts/types/text_post_type.js';
+import PhotoPostType from '../objects/posts/types/photo_post_type.js';
+import RepostType from '../objects/posts/util/repost_type.js'
 
 const AnyPostType = new GraphQLUnionType({
   name: 'AnyPostType',

@@ -1,27 +1,33 @@
 import graphql from 'graphql';
+import { GraphQLJSON, GraphQLJSONObject } from 'graphql-type-json';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import keys from '../../../../config/keys.js'
 import Cookies from 'js-cookie';
 import UserType from '../objects/user_type.js';
-import TextPostType from '../objects/posts/text_post_type.js'
-import PhotoPostType from '../objects/posts/photo_post_type.js';
-import ImageType from '../objects/image_type.js';
-import TagType from '../objects/tag_type.js';
+import TextPostType from '../objects/posts/types/text_post_type.js'
+import PhotoPostType from '../objects/posts/types/photo_post_type.js';
+import ImageType from '../objects/posts/util/image_type.js';
+import TagType from '../objects/posts/util/tag_type.js';
 import ImageInputType from '../inputs/image_input_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
 import AuthService from '../../../services/auth_util.js';
-import RepostType from '../objects/repost_type.js';
-import LikeType from '../objects/like_type.js';
+import RepostType from '../objects/posts/util/repost_type.js';
+import LikeType from '../objects/posts/util/like_type.js';
+import FollowType from '../objects/posts/util/follow_type.js';
 import AnyPostType from '../unions/any_post_type.js'
+import CreatePostUtil from '../../../models/posts/types/util/post_create_util.js'
 const TextPost = mongoose.model('TextPost');
 const PhotoPost = mongoose.model('PhotoPost');
+const Post = mongoose.model('Post');
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
 const Repost = mongoose.model('Repost');
 const Like = mongoose.model('Like');
+const Follow = mongoose.model('Follow');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
+const { createPhotoPost, createTextPost } = CreatePostUtil;
 
 const mutation = new GraphQLObjectType({
   name: 'Mutations',
@@ -69,6 +75,22 @@ const mutation = new GraphQLObjectType({
         return AuthService.verify(args)
       }
     },
+    createPost: {
+      type: AnyPostType,
+      args: {
+        instanceData: { type: GraphQLJSONObject },
+      },
+      resolve(_, { instanceData }) {
+        switch(instanceData.kind) {
+          case 'TextPost':
+            return createTextPost(instanceData)
+          case 'PhotoPost':
+            return createPhotoPost(instanceData)
+          default:
+            console.log('no types matched')
+        }
+      }
+    },
     likePost: {
       type: LikeType,
       args: {
@@ -98,137 +120,32 @@ const mutation = new GraphQLObjectType({
         return Like.deleteOne({ _id: likeId })
       }
     },
-    createTextPost: {
-      type: TextPostType,
+    follow: {
+      type: FollowType,
       args: {
-        title: { type: GraphQLString },
-        body: { type: GraphQLString },
-        descriptionImages: { type: new GraphQLList(ImageInputType) },
         user: { type: GraphQLString },
-        tags: { type: new GraphQLList(GraphQLString) },
+        item: { type: GraphQLString },
+        itemKind: { type: GraphQLString }
       },
-      resolve(_, { 
-        title, body, 
-        descriptionImages, 
-        user, tags
-      }) {
-        return TextPost
-          .create(
-            title, body,
-            descriptionImages,
-            user, tags 
-          )
-      }
-    },
-    createPhotoPost: {
-      type: PhotoPostType,
-      args: {
-        mainImages: { type: new GraphQLList(ImageInputType) },
-        descriptionImages: { type: new GraphQLList(ImageInputType) },
-        description: { type: GraphQLString },
-        tags: { type: new GraphQLList(GraphQLString) },
-        user: { type: GraphQLString }
-      },
-      resolve(_, { 
-        mainImages, 
-        descriptionImages, 
-        description, tags,
-        user
-      }) {
-        return PhotoPost
-          .create(
-            mainImages, 
-            descriptionImages, 
-            description, tags, 
-            user
-          )
-      }
-    },
-    followUser: {
-      type: UserType,
-      args: { 
-        currentUser: { type: GraphQLString },
-        user: { type: GraphQLString }
-      },
-      resolve(parentValue, { user, currentUser }) {
-        return Promise.all([
-          User.findOne({ blogName: user }), 
-          User.findOne({ blogName: currentUser })
-        ]).then(([user, currentUser]) => {
-          currentUser.userFollowing.push(user)
-          user.followers.push(currentUser)
-
-          return Promise.all([user.save(), currentUser.save()]).then(
-            ([user, currentUser]) => (user, currentUser)
-          )
+      resolve(_, { user, itemId }) {
+        var follow = new Follow({
+          onModel: itemKind
         })
-      }
-    },
-    unfollowUser: {
-      type: UserType,
-      args: { 
-        currentUser: { type: GraphQLString },
-        user: { type: GraphQLString }
-      },
-      resolve(parentValue, { currentUser, user }) {
-        return User.find({
-          blogName: {
-            $in: [currentUser, user]
-          }
-        }).then(users => {
-          const currentUserFound = currentUser == users[0].blogName ? users[0] : users[1]
-          const userFound = user == users[0].blogName ? users[0] : users[1]
-          
-          var currentUserFiltered = 
-            currentUserFound.userFollowing.filter(u => {
-               if (u == userFound._id.toString()) {
-                 return false
-               } else {
-                 return true
-               }
-            })
-
-          var userFiltered = 
-            userFound.followers.filter(u => {
-              if (u == currentUserFound._id.toString()) {
-                return false
-              } else {
-                return true
-              }
-            })
-          
-          currentUserFound.userFollowing = currentUserFiltered
-          userFound.followers = userFiltered
-
-          return Promise.all([currentUserFound.save(), userFound.save()]).then(
-            ([currentUser, user]) => (currentUser, user)
-          )
-        })
-      }
-    },
-    followTag: {
-      type: TagType,
-      args: { 
-        tagId: { type: GraphQLID },
-        blogName: { type: GraphQLString }
-      },
-      resolve(parentValue, { tagId, blogName }) {
-        
         return Promise.all([
-          Tag.findById(tagId), 
-          User.findOne({ blogName: blogName })
-        ]).then(
-          ([tag, user]) => {
-            if (user.tagFollows.includes(tag._id)) return;
-        
-            tag.followers.push(user._id)
-            user.tagFollows.push(tag._id)
-            
-            return Promise.all([tag.save(), user.save()]).then(
-              ([tag, user]) => (tag)
-            )
+          User.findOne({ blogName: user }),
+          User.findOne({ blogName: item }),
+          Tag.findOne({ title: item }),
+        ]).then(([user, followsUser, tag ]) => {
+          follow.user = user._id
+
+          if (followsUser) {
+            follow.follows = followsUser._id
+          } else if (tag) {
+            follow.follows = tag._id
           }
-        )
+
+          return Promise.all(([follow.save()])).then(follow => follow)
+        })
       }
     },
     repost: {
@@ -261,32 +178,6 @@ const mutation = new GraphQLObjectType({
         })
       }
     }
-    // unfollowTag: {
-    //   type: UserAndTagType,
-    //   args: { 
-    //     tagId: { type: GraphQLID },
-    //     token: { type: GraphQLString }
-    //   },
-    //   resolve(parentValue, { tagId }, ctx) {
-    //     const decoded = jwt.verify(
-    //       ctx.headers.authorization, 
-    //       keys.secretOrKey
-    //     );
-    //     const { _id } = decoded;
-
-    //     return Promise.all([Tag.findById(tagId), User.findById(_id)]).then(
-    //       ([tag, user]) => {
-
-    //         tag.followers.push(user._id)
-    //         user.tagFollows.push(tag._id)
-            
-    //         return Promise.all([tag.save(), user.save()]).then(
-    //           ([tag, user]) => (tag, user)
-    //         )
-    //       }
-    //     )
-    //   }
-    // }
   })
 })
 

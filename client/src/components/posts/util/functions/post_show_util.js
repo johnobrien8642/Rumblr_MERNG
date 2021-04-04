@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const postHeader = (post) => {
+  // console.log(post)
   if (post.kind === 'Repost') {
     return (
       <span>

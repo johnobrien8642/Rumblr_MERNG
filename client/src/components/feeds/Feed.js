@@ -54,6 +54,7 @@ const Feed = ({ blogName, tagTitle, user }) => {
       {header(user)}
       <div>
         {feedVar.map((item, i) => {
+          // console.log(feedVar)
           var post = item.__typename === 'RepostType' ? item.post : item
           switch(post.__typename) {
             case 'TextPostType':

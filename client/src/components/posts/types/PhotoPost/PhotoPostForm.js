@@ -6,7 +6,7 @@ import MatchedTagResults from '../../../tags/Matched_Tag_Results.js';
 import Mutations from '../../../../graphql/mutations';
 import Queries from '../../../../graphql/queries';
 import Cookies from 'js-cookie';
-const { CREATE_PHOTO_POST } = Mutations;
+const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const PhotoPostForm = () => { 
@@ -20,10 +20,10 @@ const PhotoPostForm = () => {
   let [errMessage, setErrMessage] = useState('');
   let history = useHistory();
 
-  let [createPhotoPost] = useMutation(CREATE_PHOTO_POST, {
+  let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
     try {
-      const { createPhotoPost } = data;
+      const { createPost } = data;
         
         var readQuery = client.readQuery({
           query: FETCH_USER_FEED,
@@ -34,7 +34,7 @@ const PhotoPostForm = () => {
         
         var { fetchUserFeed } = readQuery;
         
-        var newPostArr = [createPhotoPost, ...fetchUserFeed]
+        var newPostArr = [createPost, ...fetchUserFeed]
         
         client.writeQuery({
           query: FETCH_USER_FEED,
@@ -192,14 +192,23 @@ const PhotoPostForm = () => {
           delete obj.__v
           return obj
         })
+
+        var instanceData = {};
+        instanceData.mainImages = cleanedMain;
+        instanceData.description = description;
+        instanceData.descriptionImages = cleanedBody;
+        instanceData.tags = tags;
+        instanceData.user = Cookies.get('currentUser');
+        instanceData.kind = 'PhotoPost';
         
-        createPhotoPost({
+        createPost({
           variables: {
-            mainImages: cleanedMain,
-            description: description,
-            descriptionImages: cleanedBody,
-            tags: tags,
-            user: Cookies.get('currentUser')
+            instanceData: instanceData
+            // mainImages: cleanedMain,
+            // description: description,
+            // descriptionImages: cleanedBody,
+            // tags: tags,
+            // user: Cookies.get('currentUser'),
           }
         })
       }

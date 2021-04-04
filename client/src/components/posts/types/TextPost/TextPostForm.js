@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import MatchedTagResults from '../../../tags/Matched_Tag_Results';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
-const { CREATE_TEXT_POST } = Mutations;
+const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const TextPostForm = () => {
@@ -19,9 +19,9 @@ const TextPostForm = () => {
   let [errMessage, setErrMessage] = useState('');
   let history = useHistory();
 
-  let [createTextPost] = useMutation(CREATE_TEXT_POST, {
+  let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
-    const { createTextPost } = data;
+    const { createPost } = data;
       
       var readQuery = client.readQuery({
         query: FETCH_USER_FEED,
@@ -32,7 +32,7 @@ const TextPostForm = () => {
       
       var { fetchUserFeed } = readQuery;
       
-      var newPostArr = [createTextPost, ...fetchUserFeed]
+      var newPostArr = [createPost, ...fetchUserFeed]
       
       client.writeQuery({
         query: FETCH_USER_FEED,
@@ -134,14 +134,18 @@ const TextPostForm = () => {
           delete obj.__v
           return obj
         })
+
+        var instanceData = {};
+        instanceData.title = title;
+        instanceData.body = body;
+        instanceData.user = Cookies.get('currentUser');
+        instanceData.descriptionImages = cleanedBody;
+        instanceData.tags = tags;
+        instanceData.kind = 'TextPost';
         
-        createTextPost({
+        createPost({
           variables: {
-            title: title,
-            body: body,
-            user: Cookies.get('currentUser'),
-            descriptionImages: cleanedBody,
-            tags: tags
+            instanceData: instanceData
           }
         })
       }

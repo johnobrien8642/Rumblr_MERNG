@@ -4,13 +4,13 @@ import jwt from 'jsonwebtoken';
 import keys from '../../../../config/keys.js'
 import UserType from '../objects/user_type.js';
 // import PhotoPostType from '../objects/photo_post_type.js';
-import RepostType from '../objects/repost_type.js';
-import ImageType from '../objects/image_type.js';
-import TagType from '../objects/tag_type.js';
+import RepostType from '../objects/posts/util/repost_type.js';
+import ImageType from '../objects/posts/util/image_type.js';
+import TagType from '../objects/posts/util/tag_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
 import UserAndTagInputType from '../inputs/user_and_tag_input_type.js'
 import AnyPostType from '../unions/any_post_type.js'
-import LikeType from '../objects/like_type.js'
+import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
 const User = mongoose.model('User');
 const TextPost = mongoose.model('TextPost');

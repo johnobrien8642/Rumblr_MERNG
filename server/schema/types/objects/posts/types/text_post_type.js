@@ -1,8 +1,8 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
-import ImageType from '../image_type.js';
-import TagType from '../tag_type.js';
-import UserType from '../user_type.js';
+import ImageType from '../util/image_type.js';
+import TagType from '../util/tag_type.js';
+import UserType from '../../user_type.js';
 const TextPost = mongoose.model('TextPost')
 const { GraphQLList, GraphQLID, 
         GraphQLString, GraphQLObjectType } = graphql;
