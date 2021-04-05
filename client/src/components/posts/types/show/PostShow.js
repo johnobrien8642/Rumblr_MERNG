@@ -4,6 +4,7 @@ import PostShowUtil from '../../util/functions/post_show_util.js';
 const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
 
 const PostShow = ({ post }) => {
+  
   var postData = post.kind === 'Repost' ? post.post : post
 
   return (

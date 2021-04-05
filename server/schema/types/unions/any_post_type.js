@@ -8,7 +8,6 @@ const AnyPostType = new GraphQLUnionType({
   name: 'AnyPostType',
   types: () => [ RepostType, TextPostType, PhotoPostType ],
   resolveType(value) {
-    // console.log(value)
     if (value.kind === 'Repost') {
       return RepostType
     } else if (value.kind === 'TextPost') {

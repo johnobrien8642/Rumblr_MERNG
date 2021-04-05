@@ -46,24 +46,31 @@ const repostFooter = (post) => {
   }
 }
 
-const postTags = (postData) => (
+const postTags = (postData) => {
+  var data = (postData.kind === 'Like' && 
+              postData.post.kind === 'Repost') ? 
+              postData.post.post :
+              postData
+
+  return (
   <div>
-  {postData.tags.map((tag, i) => {
-    var cleanedTitle = tag.title.slice(1)
-    return (
-      <div 
-       key={i}
-      >
-        <Link 
-          to={`/view/tag/${cleanedTitle}`}
+    {data.tags.map((tag, i) => {
+      var cleanedTitle = tag.title.slice(1)
+      return (
+        <div 
+         key={i}
         >
-          {tag.title}
-        </Link>
-      </div>
-    )
-  })}
-  </div>
-)
+          <Link 
+            to={`/view/tag/${cleanedTitle}`}
+          >
+            {tag.title}
+          </Link>
+        </div>
+      )
+    })}
+    </div>
+  )
+  }
 
 const postBody = (postData) => {
   if (postData.kind === 'TextPost') {

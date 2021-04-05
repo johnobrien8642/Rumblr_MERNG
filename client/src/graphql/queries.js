@@ -64,8 +64,26 @@ const Queries = {
     query FetchUserLikes($user: String) {
       fetchUserLikes(user: $user) {
         _id
+        kind
+        user {
+          _id
+          blogName
+        }
         post {
           __typename
+          ... on RepostType {
+            _id
+            kind
+            post {
+              __typename
+              ... on TextPostType {
+                ${TEXT_POST}
+              }
+              ... on PhotoPostType {
+                ${PHOTO_POST}
+              }
+            }
+          }
           ... on TextPostType {
             ${TEXT_POST}
           }

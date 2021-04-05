@@ -23,16 +23,10 @@ const UserPostLikesFeed = () => {
   if (error) return `Error: ${error}`;
   
   const { fetchUserLikes } = data;
-
-  var likedPosts = [];
   
-  fetchUserLikes.forEach((like, i) => {
-  likedPosts = [...likedPosts, like.post]
-  })
-
   return(
     <div>
-      {likedPosts.map((post, i) => {
+      {fetchUserLikes.map((post, i) => {
         return (
           <div
             className='post'
