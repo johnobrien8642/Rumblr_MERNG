@@ -2,11 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const postHeader = (post) => {
+  var data = demeterPost(post)
+
   if (post.kind === 'Repost') {
     return (
       <span>
-        <Link to={`/view/blog/${post.user.blogName}`}>
-          {post.user.blogName}
+        <Link to={`/view/blog/${data.user.blogName}`}>
+          {data.user.blogName}
         </Link>
         <i className="fas fa-retweet"></i>
         <Link to={`/view/blog/${post.repostedFrom.blogName}`}>
@@ -28,16 +30,18 @@ const postHeader = (post) => {
 }
 
 const repostFooter = (post) => {
+  var data = demeterPost(post)
+
   if (post.kind === 'Repost') {
     return (
       <div>
         <span>
           <i className="fas fa-retweet"></i>
-          <Link to={`/view/blog/${post.user.blogName}`}>
-            {post.user.blogName}
+          <Link to={`/view/blog/${data.user.blogName}`}>
+            {data.user.blogName}
           </Link>
         </span>
-        <p>{post.repostCaption}</p> 
+        <p>{data.repostCaption}</p> 
       </div>
     )
   } else {
@@ -46,11 +50,8 @@ const repostFooter = (post) => {
   }
 }
 
-const postTags = (postData) => {
-  var data = (postData.kind === 'Like' && 
-              postData.post.kind === 'Repost') ? 
-              postData.post.post :
-              postData
+const postTags = (post) => {
+  var data = demeterPost(post)
 
   return (
   <div>
@@ -72,37 +73,75 @@ const postTags = (postData) => {
   )
   }
 
-const postBody = (postData) => {
-  if (postData.kind === 'TextPost') {
+const postBody = (post) => {
+  var data = demeterPost(post)
+
+  if (data.kind === 'TextPost') {
 
     return (
     <React.Fragment>
-      <h2>{postData.title}</h2>
-      <p>{postData.body}</p>
+      <h3>{data.title}</h3>
+      <p>{data.body}</p>
         <div>
-          {postData.descriptionImages.map((descripImg, i) => {
+          {data.descriptionImages.map((descripImg, i) => {
             return <img key={i} src={`${descripImg.url}`} alt={'usefilename'} />
           })}
         </div>
     </React.Fragment>
     )
 
-  } else if (postData.kind === 'PhotoPost') {
+  } else if (data.kind === 'PhotoPost') {
 
+    var descriptionArr = [...data.descriptionImages]
+
+    data.descriptions.forEach((obj, i) => {
+      descriptionArr.splice(obj.displayIdx, 0, obj)
+    })
+  
+    return (
     <React.Fragment>
       <div>
-        {postData.mainImages.map((mainImg, i) => {
+        {data.mainImages.map((mainImg, i) => {
           return <img key={i} src={`${mainImg.url}`} alt={'usefilename'} />
         })}
       </div>
-      <p>{postData.description}</p>
+      <p>{data.description}</p>
       <div>
-        {postData.descriptionImages.map((descripImg, i) => {
-          return <img key={i} src={`${descripImg.url}`} alt={'usefilename'} />
+        {descriptionArr.map((obj, i) => {
+          if (obj.kind === 'text') {
+            return <div key={i}>{obj.content}</div>
+          } else if (obj.kind === 'Image') {
+            return <img key={i} src={`${obj.url}`} alt={'usefilename'} />
+          }
         })}
       </div>
-    </React.Fragment> 
+    </React.Fragment>
+    )
 
+  } else if (data.kind === 'QuotePost') {
+
+    return (
+      <React.Fragment>
+        <h1>{data.title}</h1>
+        <p>{data.body}</p>
+          <div>
+            {data.descriptionImages.map((descripImg, i) => {
+              return <img key={i} src={`${descripImg.url}`} alt={'usefilename'} />
+            })}
+          </div>
+      </React.Fragment>
+      )
+      
+  }
+}
+
+const demeterPost = (post) => {
+  if (post.kind === 'Like' && post.post.kind === 'Repost') {
+    return post.post.post
+  } else if (post.kind === 'Like' || post.kind === 'Repost') {
+    return post.post
+  } else {
+    return post
   }
 }
 

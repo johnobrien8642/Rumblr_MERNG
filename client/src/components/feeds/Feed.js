@@ -39,7 +39,7 @@ const Feed = ({ tag, user }) => {
           return (
             <div
               className='post'
-              key={i}
+              key={post._id}
             >
               <PostShow post={post} idx={i} />
             </div>

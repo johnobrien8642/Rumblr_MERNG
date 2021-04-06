@@ -4,18 +4,15 @@ import PostShowUtil from '../../util/functions/post_show_util.js';
 const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
 
 const PostShow = ({ post }) => {
-  
-  var postData = post.kind === 'Repost' ? post.post : post
-
   return (
     <React.Fragment>
       {postHeader(post)}
 
-      {postBody(postData)}
+      {postBody(post)}
 
       {repostFooter(post)}
 
-      {postTags(postData)}
+      {postTags(post)}
 
       <PostOptions post={post} />
     </React.Fragment>

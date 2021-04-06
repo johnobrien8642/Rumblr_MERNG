@@ -5,6 +5,7 @@ import TagType from '../util/tag_type.js';
 import UserType from '../../user_type.js';
 import LikeType from '../util/like_type.js';
 import RepostType from '../util/repost_type.js';
+import { GraphQLJSONObject } from 'graphql-type-json';
 const PhotoPost = mongoose.model('PhotoPost');
 const { GraphQLList, GraphQLID, 
         GraphQLString, GraphQLObjectType } = graphql;
@@ -21,7 +22,7 @@ const PhotoPostType = new GraphQLObjectType({
           .then(photoPost => photoPost.mainImages)
       }
     },
-    description: { type: GraphQLString },
+    descriptions: { type: GraphQLList(GraphQLJSONObject) },
     descriptionImages: { 
       type: new GraphQLList(ImageType),
       resolve(parentValue) {

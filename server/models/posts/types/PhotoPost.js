@@ -12,9 +12,13 @@ const PhotoPost = Post.discriminator('PhotoPost',
         ref: 'Image'
       }
     ],
-    description: {
-      type: String
-    },
+    descriptions: [ 
+      {
+        kind: String,
+        content: String,
+        displayIdx: Number
+      }
+    ],
     descriptionImages: [
       {
         type: Schema.Types.ObjectId,

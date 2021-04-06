@@ -6,9 +6,16 @@ const ImageSchema = new Schema({
     type: String,
     required: true
   },
+  displayIdx: {
+    type: Number
+  },
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  kind: {
+    type: String,
+    default: 'Image'
   }
 })
 

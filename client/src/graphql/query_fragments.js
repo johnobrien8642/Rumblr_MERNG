@@ -2,7 +2,7 @@
 const QueryFragments = {
   PHOTO_POST:`
     _id
-    description
+    descriptions
     user {
       _id
       blogName
@@ -14,6 +14,7 @@ const QueryFragments = {
     descriptionImages {
       _id
       url
+      kind
     }
     tags {
       _id

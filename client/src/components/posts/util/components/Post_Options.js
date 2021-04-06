@@ -7,10 +7,20 @@ import Queries from '../../../../graphql/queries';
 const { DOES_USER_LIKE_POST } = Queries;
 
 const PostOptions = ({ post }) => {
+  
+  var postId
+  if (post.kind === 'Like' && post.kind === 'Repost') {
+    postId = post.post.post._id
+  } else if (post.kind === 'Like') {
+    postId = post.post._id
+  } else {
+    postId = post._id
+  }
+
   let { loading, error, data, refetch } = useQuery(DOES_USER_LIKE_POST,{
     variables: {
       user: Cookies.get('currentUser'),
-      postId: post._id
+      postId: postId
     }
   })
 
@@ -18,7 +28,7 @@ const PostOptions = ({ post }) => {
   if (error) return `Error: ${error}`
 
   const { doesUserLikePost } = data;
-  
+
   return (
     <div>
       <Link
@@ -27,7 +37,7 @@ const PostOptions = ({ post }) => {
         Repost
       </Link>
       <LikeButton 
-        post={post} 
+        post={post}
         liked={doesUserLikePost} 
         refetchDoesUserLikePost={refetch}
       />

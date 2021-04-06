@@ -63,7 +63,7 @@ const createTextPost = ({
 const createPhotoPost = ({
     mainImages, 
     descriptionImages, 
-    description,
+    descriptions,
     tags, user
   }) => {
     console.log(user)
@@ -107,7 +107,9 @@ const createPhotoPost = ({
       User.findOne({ blogName: user })
     ]).then(
       ([tags, user]) => {
-        post.description = description
+        descriptions.forEach((obj, i) => {
+          post.descriptions.push(obj)
+        })
         post.user = user._id
   
         tags.forEach((t, i) => {
