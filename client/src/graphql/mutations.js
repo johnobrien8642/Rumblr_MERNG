@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
-import QueryFragments from '../graphql/query_fragments'
-const { TEXT_POST, PHOTO_POST } = QueryFragments;
+import AllPostQueryFragments from './all_posts_query_fragment.js'
+const { ALL_POSTS } = AllPostQueryFragments;
 
 const Mutations = {
   LOGIN_USER: gql`
@@ -69,12 +69,7 @@ const Mutations = {
     mutation CreatePost($instanceData: JSONObject ) {
       createPost(instanceData: $instanceData) {
         __typename
-        ... on PhotoPostType {
-          ${PHOTO_POST}
-        }
-        ... on TextPostType {
-          ${TEXT_POST}
-        }
+       ${ALL_POSTS}
       }
     }
   `,
@@ -93,12 +88,7 @@ const Mutations = {
         repostCaption
         post {
           __typename
-          ... on TextPostType {
-            ${TEXT_POST}
-          }
-          ... on PhotoPostType {
-            ${PHOTO_POST}
-          }
+          ${ALL_POSTS}
         }
       }
     }

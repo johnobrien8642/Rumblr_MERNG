@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { Link } from 'react-router-dom';
-import FollowButton from '../../posts/util/components/Follow_Button'
+import FollowButton from '../../posts/util/components/social/Follow_Button'
 import Queries from '../../../graphql/queries';
 import Cookies from 'js-cookie';
 const { DOES_USER_FOLLOW_TAG } = Queries;

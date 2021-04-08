@@ -10,7 +10,7 @@ const TextPost = Post.discriminator('TextPost',
       type: String,
       default: ''
     },
-    body: {
+    main: {
       type: String,
       default: ''
     },

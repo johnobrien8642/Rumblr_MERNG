@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
-import Mutations from '../../../../graphql/mutations'
+import Mutations from '../../../../../graphql/mutations'
 const { LIKE_POST, UNLIKE_POST } = Mutations;
 
 const LikeButton = ({ post, liked, refetchDoesUserLikePost }) => {

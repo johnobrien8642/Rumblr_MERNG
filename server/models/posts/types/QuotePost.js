@@ -4,14 +4,14 @@ const Post = mongoose.model('Post')
 
 const options = { discriminatorKey: 'kind' }
 
-const PhotoPost = Post.discriminator('PhotoPost',
+const QuotePost = Post.discriminator('QuotePost',
   new Schema({
-    mainImages: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Image'
-      }
-    ],
+    quote: {
+      type: String
+    },
+    source: {
+      type: String
+    }
   }), options)
 
-export default PhotoPost;
+export default QuotePost;

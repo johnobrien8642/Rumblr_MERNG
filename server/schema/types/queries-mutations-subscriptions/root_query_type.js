@@ -13,6 +13,7 @@ import UserAndTagInputType from '../inputs/user_and_tag_input_type.js'
 import AnyPostType from '../unions/any_post_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
+import Post from '../../../models/posts/types/Post.js';
 const User = mongoose.model('User');
 const TextPost = mongoose.model('TextPost');
 const PhotoPost = mongoose.model('PhotoPost');
@@ -332,34 +333,10 @@ const RootQueryType = new GraphQLObjectType({
     post: {
       type: AnyPostType,
       args: { 
-        postId: { type: GraphQLID },
-        type: { type: GraphQLString }
+        postId: { type: GraphQLID }
       },
-      resolve(parentValue, { postId, type }) {
-        switch(type) {
-          case 'TextPostType':
-            return TextPost.findById(postId)
-          case 'PhotoPostType':
-            return PhotoPost.findById(postId)
-          default:
-            return 'no types matched'
-        }
-      }
-    },
-    postById: {
-      type: AnyPostType,
-      args: { 
-        postId: { type: GraphQLID },
-      },
-      resolve(parentValue, { postId, type }) {
-        switch(type) {
-          case 'TextPostType':
-            return TextPost.findById(postId)
-          case 'PhotoPostType':
-            return PhotoPost.findById(postId)
-          default:
-            return 'no types matched'
-        }
+      resolve(parentValue, { postId }) {
+        return Post.findById(postId)
       }
     },
     image: {

@@ -1,23 +1,36 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-import MatchedTagResults from '../../../tags/Matched_Tag_Results';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
+import TextPostInput from '../../util/components/forms/inputTypes/Text_Post_Input'
+import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
+import Tags from '../../util/components/forms/Tags'
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const TextPostForm = () => {
-  let [title, setTitle] = useState("");
-  let [body, setBody] = useState("");
+  let [title, setTitle] = useState('');
+  let [main, setMain] = useState('')
+  let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
-  let [tag, setTag] = useState("");
-  let [tags, setTags] = useState([]);
+  let body = useRef([]);
   let bodyImages = useRef([]);
+  let [tag, setTag] = useState('');
+  let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
+  let [render, setRender] = useState(0);
   let history = useHistory();
+
+  useEffect(() => {
+    body.current.forEach((obj, i) => {
+      if (obj.kind === 'text') {
+        obj.displayIdx = i
+      }
+    })
+  })
 
   let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
@@ -55,56 +68,13 @@ const TextPostForm = () => {
 
   const resetInputs = () => {
     setTitle(title = '');
-    setBody(body = '');
+    setMain(main = '');
+    body.current = []
     setBodyImageFiles(bodyImageFiles = []);
     bodyImages.current = [];
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');
-  }
-
-  const previewBodyImages = (e) => {
-    const files = Object.values(e.currentTarget.files)
-    if (bodyImageFiles.length + 1 > 10) {
-      setErrMessage(errMessage = 'Only 10 images can be uploaded here')
-      return
-    }
-    
-    const readAndPreview = (file) => {
-      var reader = new FileReader();
-      reader.onloadend = () => {
-        var imgObj = {};
-        imgObj.src = reader.result
-        imgObj.alt = file.name
-        bodyImages.current.push(imgObj)
-        setBodyImageFiles(bodyImageFiles = [...bodyImageFiles, file])
-      }
-      reader.readAsDataURL(file);
-    }
-
-    if (files) {
-      files.forEach((f, i) => {
-        readAndPreview(f)
-      });
-    } 
-  }
-
-  const handleEnterTagInput = (e) => {
-    if (e.key === 'Enter' && tag) {
-      setTags(tags.concat(`#${tag}`))
-      setTag(tag = '')
-    }
-  }
-
-  const handleClickTagInput = (e, title) => {
-    setTags(tags.concat(title))
-    setTag(tag = '')
-  }
-
-
-  const removeBodyImage = (i) => {
-    bodyImages.current.splice(i, 1)
-    setBodyImageFiles(bodyImageFiles.splice(i, 1))
   }
 
   const handleSubmit = async (e) => {
@@ -134,14 +104,17 @@ const TextPostForm = () => {
           delete obj.__v
           return obj
         })
-
+        
         var instanceData = {};
         instanceData.title = title;
-        instanceData.body = body;
-        instanceData.user = Cookies.get('currentUser');
+        instanceData.main = main;
+        instanceData.descriptions = body.current.filter(obj =>
+          obj.kind !== 'img'
+        )
         instanceData.descriptionImages = cleanedBody;
+        instanceData.user = Cookies.get('currentUser');
         instanceData.tags = tags;
-        instanceData.kind = 'TextPost';
+        instanceData.kind = 'TextPost'
         
         createPost({
           variables: {
@@ -156,77 +129,39 @@ const TextPostForm = () => {
     <div
       className='postForm'
     >
+      <h1>TextPost</h1>
       <form
         id='textPostForm'
         onSubmit={e => handleSubmit(e)}
         onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
         encType={'multipart/form-data'}
       >
-      <input 
-        value={title}
-        placeholder='Title'
-        onChange={e => setTitle(title = e.target.value)}
+
+      <TextPostInput 
+        title={title}
+        setTitle={setTitle}
+        main={main}
+        setMain={setMain}
       />
-      <textarea
-          value={body}
-          placeholder='Your text here...'
-          onChange={e => setBody(body = e.target.value)}
-      ></textarea>
 
-      <div
-        className={'bodyPreview'}
-      >
-        <h2>Body Images</h2>
-        <p>{errMessage}</p>
-        <input
-          type='file'
-          multiple
-          name='image'
-          accept='.png, .jpg, jpeg'
-          onChange={e => {
-            previewBodyImages(e)
-            document.getElementById('photoPostForm').reset()
-          }}
-        />
-        {bodyImages.current.map((img, i) => {
-          return (
-            <div key={i}>
-              <button 
-                type='button' 
-                onClick={() => removeBodyImage(i)}
-              >
-                X
-              </button>
-              <img src={img.src} alt={img.alt} />
-            </div>
-          )
-        })}
-      </div>
+      <BodyImageAndText
+        body={body}
+        bodyImageFiles={bodyImageFiles}
+        setBodyImageFiles={setBodyImageFiles}
+        description={description}
+        setDescription={setDescription}
+        render={render}
+        setRender={setRender}
+        errMessage={errMessage}
+        setErrMessage={setErrMessage}
+      />
 
-      <div>
-          {tags.map((tag, i) => {
-            return (
-              <div key={i}>
-                {tag}
-              </div>
-            )
-          })}
-
-          <input
-            type='text'
-            value={tag}
-            placeholder='#tags'
-            onChange={e => setTag(tag = e.target.value)}
-            onKeyDown={e => handleEnterTagInput(e)}
-          />
-
-          <div>
-            <MatchedTagResults 
-              query={tag} 
-              handleClickTagInput={handleClickTagInput}
-            />
-          </div>
-      </div>
+      <Tags
+        tag={tag}
+        setTag={setTag}
+        tags={tags}
+        setTags={setTags}
+      />
 
       <button
         type='submit'

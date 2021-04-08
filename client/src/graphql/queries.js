@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
-import QueryFragments from './query_fragments.js';
-const { TEXT_POST, PHOTO_POST } = QueryFragments;
+import AllPostQueryFragment from './all_posts_query_fragment.js';
+const { ALL_POSTS } = AllPostQueryFragment;
 
 const Queries = {
   FETCH_USER_FEED: gql`
@@ -21,20 +21,10 @@ const Queries = {
           repostCaption
           post {
             __typename
-            ... on TextPostType {
-              ${TEXT_POST}
-            }
-            ... on PhotoPostType {
-              ${PHOTO_POST}
-            }
+            ${ALL_POSTS}
           }
         }
-        ... on TextPostType {
-          ${TEXT_POST}
-        }
-        ... on PhotoPostType {
-          ${PHOTO_POST}
-        }
+        ${ALL_POSTS}
       }
     }
   `,
@@ -42,12 +32,7 @@ const Queries = {
     query FetchUserFeed($query: String) {
       fetchTagFeed(query: $query) {
         __typename
-        ... on TextPostType {
-          ${TEXT_POST}
-        }
-        ... on PhotoPostType {
-          ${PHOTO_POST}
-        }
+        ${ALL_POSTS}
       }
     }
   `,
@@ -76,20 +61,10 @@ const Queries = {
             kind
             post {
               __typename
-              ... on TextPostType {
-                ${TEXT_POST}
-              }
-              ... on PhotoPostType {
-                ${PHOTO_POST}
-              }
+              ${ALL_POSTS}
             }
           }
-          ... on TextPostType {
-            ${TEXT_POST}
-          }
-          ... on PhotoPostType {
-            ${PHOTO_POST}
-          }
+          ${ALL_POSTS}
         }
       }
     }
@@ -116,12 +91,7 @@ const Queries = {
         _id
         posts {
           __typename
-          ... on TextPostType {
-            ${TEXT_POST}
-          }
-          ... on PhotoPostType {
-            ${PHOTO_POST}
-          }
+          ${ALL_POSTS}
         }
       }
     }
@@ -133,22 +103,12 @@ const Queries = {
         blogName
         posts {
           __typename
-          ... on TextPostType {
-            ${TEXT_POST}
-          }
-          ... on PhotoPostType {
-            ${PHOTO_POST}
-          }
+          ${ALL_POSTS}
         }
         reposts {
           post {
             __typename
-            ... on TextPostType {
-              ${TEXT_POST}
-            }
-            ... on PhotoPostType {
-              ${PHOTO_POST}
-            }
+            ${ALL_POSTS}
           }
         }
       }
@@ -177,12 +137,7 @@ const Queries = {
           _id
           post {
             __typename
-            ... on TextPostType {
-              ${TEXT_POST}
-            }
-            ... on PhotoPostType {
-              ${PHOTO_POST}
-            }
+            ${ALL_POSTS}
           }
         }
       }
@@ -229,12 +184,7 @@ const Queries = {
     query FetchPost($postId: ID, $type: String) {
       post(postId: $postId, type: $type ) {
         __typename
-        ... on TextPostType {
-          ${TEXT_POST}
-        }
-        ... on PhotoPostType {
-          ${PHOTO_POST}
-        }
+        ${ALL_POSTS}
       }
     }
   `,

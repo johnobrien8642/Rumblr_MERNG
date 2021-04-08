@@ -16,6 +16,7 @@ import RepostType from '../objects/posts/util/repost_type.js';
 import LikeType from '../objects/posts/util/like_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
 import AnyPostType from '../unions/any_post_type.js'
+import CreateFunctions from '../../../models/posts/types/util/create_functions.js'
 import CreatePostUtil from '../../../models/posts/types/util/post_create_util.js'
 const TextPost = mongoose.model('TextPost');
 const PhotoPost = mongoose.model('PhotoPost');
@@ -27,7 +28,8 @@ const Like = mongoose.model('Like');
 const Follow = mongoose.model('Follow');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
-const { createPhotoPost, createTextPost } = CreatePostUtil;
+const { createPhotoPost, createTextPost,
+        createQuotePost } = CreateFunctions;
 
 const mutation = new GraphQLObjectType({
   name: 'Mutations',
@@ -86,8 +88,10 @@ const mutation = new GraphQLObjectType({
             return createTextPost(instanceData)
           case 'PhotoPost':
             return createPhotoPost(instanceData)
+          case 'QuotePost':
+            return createQuotePost(instanceData)
           default:
-            console.log('no types matched')
+            console.log('no types matched in createPost')
         }
       }
     },

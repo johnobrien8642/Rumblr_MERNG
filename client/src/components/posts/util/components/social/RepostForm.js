@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import { useParams, useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import PostShow from '../../types/show/PostShow'
-import Mutations from '../../../../graphql/mutations'
-import Queries from '../../../../graphql/queries'
+import PostShow from '../../../types/show/PostShow'
+import Mutations from '../../../../../graphql/mutations'
+import Queries from '../../../../../graphql/queries'
 const { CREATE_REPOST } = Mutations;
 const { FETCH_POST, FETCH_USER_FEED } = Queries;
 

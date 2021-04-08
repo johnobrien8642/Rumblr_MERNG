@@ -9,7 +9,7 @@ import TagFeed from './feeds/Tag_Feed';
 import UserPostLikesFeed from './feeds/User_Post_Likes_Feed';
 import UserFollowingFeed from './feeds/User_Following_Feed';
 import UserBlogShow from './feeds/User_Blog_Show';
-import RepostForm from './posts/util/components/RepostForm'
+import RepostForm from './posts/util/components/social/RepostForm'
 import AuthRoute from '../util/route_util';
 import './../stylesheets/application.scss';
 

@@ -2,8 +2,8 @@ import React from 'react';
 import { useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
 import { Link, withRouter } from 'react-router-dom';
-import LikeButton from '../components/Like_Button.js'
-import Queries from '../../../../graphql/queries';
+import LikeButton from './Like_Button'
+import Queries from '../../../../../graphql/queries';
 const { DOES_USER_LIKE_POST } = Queries;
 
 const PostOptions = ({ post }) => {

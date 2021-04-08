@@ -1,19 +1,19 @@
 import graphql from 'graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import mongoose from 'mongoose';
+import UserType from '../../user_type.js';
 import ImageType from '../util/image_type.js';
 import TagType from '../util/tag_type.js';
-import UserType from '../../user_type.js';
-import { GraphQLJSONObject } from 'graphql-type-json';
 const Post = mongoose.model('Post');
 const { GraphQLList, GraphQLID, 
         GraphQLString, GraphQLObjectType } = graphql;
 
-const TextPostType = new GraphQLObjectType({
-  name: 'TextPostType',
+const QuotePostType = new GraphQLObjectType({
+  name: 'QuotePostType',
   fields: () => ({
     _id: { type: GraphQLID },
-    title: { type: GraphQLString },
-    main: { type: GraphQLString },
+    quote: { type: GraphQLString },
+    source: { type: GraphQLString },
     user: {
       type: UserType,
       resolve(parentValue) {
@@ -45,4 +45,4 @@ const TextPostType = new GraphQLObjectType({
   })
 })
 
-export default TextPostType;
+export default QuotePostType;

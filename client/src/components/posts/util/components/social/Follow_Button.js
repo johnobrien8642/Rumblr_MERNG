@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
-import Mutations from '../../../../graphql/mutations';
+import Mutations from '../../../../../graphql/mutations';
 const { FOLLOW, UNFOLLOW } = Mutations;
 
 const FollowButton = ({ user, tag, follow }) => {

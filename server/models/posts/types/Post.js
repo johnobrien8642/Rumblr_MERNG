@@ -10,6 +10,19 @@ const PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
+  descriptions: [ 
+    {
+      kind: String,
+      content: String,
+      displayIdx: Number
+    }
+  ],
+  descriptionImages: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Image'
+    }
+  ],
   tags: [
     {
       type: Schema.Types.ObjectId,
@@ -29,15 +42,6 @@ const PostSchema = new Schema({
     default: 'Post'
   }
 }, options)
-
-
-// PostSchema.statics.create = (
-//   instanceData
-//   ) => {
-//     if (instanceData.kind === 'PhotoPost') {
-//       createPhotoPost(instanceData)
-//     }
-//   }
   
 const Post = mongoose.model('Post', PostSchema, 'posts')
 
