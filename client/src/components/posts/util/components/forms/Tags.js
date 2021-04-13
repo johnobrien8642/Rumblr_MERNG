@@ -1,7 +1,7 @@
 import React from 'react';
 import PostCreateUtil from '../../functions/post_create_util.js'
 import MatchedTagResults from './Matched_Tag_Results'
-const { handleEnterTagInput, handleClickTagInput } = PostCreateUtil;
+const { handleTagInput, handleFoundTag } = PostCreateUtil;
 
 const Tags = ({
   tags, setTags,
@@ -9,7 +9,9 @@ const Tags = ({
 }) => {
 
   return (
-    <div>
+    <div
+      
+    >
       {tags.map((tag, i) => {
         return (
           <div key={i}>
@@ -24,18 +26,39 @@ const Tags = ({
         placeholder='#tags'
         onChange={e => setTag(tag = e.target.value)}
         onKeyDown={e => {
-          handleEnterTagInput(
-              e, tag, setTags,
-              tags, setTag
-            )
+          if (
+            (e.key === 'Enter' && tag) || 
+            (e.key === '#' && tag)
+          ) {
+            handleTagInput(
+                tag, setTag,
+                tags, setTags
+              )
+            }
           }
         }
+        onClick={e => {
+          if (tag) {
+            handleTagInput(
+              tag, setTag,
+              tags, setTags
+            )
+          }
+        }}
+        onBlur={e => {
+          if (!e.relatedTarget && tag) {
+            handleTagInput(
+              tag, setTag,
+              tags, setTags
+            )
+          }
+        }}
       />
 
       <div>
         <MatchedTagResults 
           query={tag}
-          handleClickTagInput={handleClickTagInput}
+          handleFoundTag={handleFoundTag}
           tags={tags}
           setTags={setTags}
           tag={tag}

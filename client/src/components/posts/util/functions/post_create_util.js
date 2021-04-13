@@ -1,13 +1,13 @@
-//preview images
+//preview images and links
 /* eslint-disable no-loop-func */
-
+import axios from 'axios';
 
 const previewMainImages = (
-  e, setMainImageFiles,
-  mainImageFiles,
+  e, main,
+  mainImageFiles, 
+  setMainImageFiles,
   setErrMessage,
   errMessage,
-  main
 ) => {
 
   const files = Object.values(e.currentTarget.files)
@@ -18,7 +18,7 @@ const previewMainImages = (
     return
 
   }
-  
+
   const readAndPreview = (file, i) => {
 
     var reader = new FileReader();
@@ -130,22 +130,60 @@ const removeBodyObj = (
   }
 }
 
+const removeLinkSiteNameAndImage = (
+  siteName, setSitename, 
+  imageUrl, setImageUrl,
+  showNameAndUrl,
+  setShowNameAndUrl,
+) => {
+  setSitename(siteName = '')
+  setImageUrl(imageUrl = '')
+  setShowNameAndUrl(showNameAndUrl = false)
+}
+
+const removeLinkTitleAndDesc = (
+  title, setTitle, 
+  setLinkDescription, 
+  linkDescription,
+  showTitleAndLinkDescription,
+  setShowTitleAndLinkDescription,
+) => {
+  setTitle(title = '')
+  setLinkDescription(linkDescription = '')
+  setShowTitleAndLinkDescription(showTitleAndLinkDescription = false)
+}
+
 //handle tags
 
-const handleEnterTagInput = (
-    e, tag, setTags,
-    tags, setTag
+const handleTagInput = (
+    tag, setTag,
+    tags, setTags
   ) => {
-  if (e.key === 'Enter' && tag) {
-    setTags(tags.concat(`#${tag}`))
+  //eslint-disable-next-line
+  var trimmedTag = tag.trim()
+    
+  var noSingleHash = new RegExp(/^#$/, 'g')
+  var validText = trimmedTag.match(noSingleHash)
+  
+  if (!validText) {
+    //eslint-disable-next-line
+    var matchText = new RegExp(/[\w+\s+.,!@$%&*()_+=?<>;:-]*/, 'g')
+    var cleanedText = tag.match(matchText)
+    if (cleanedText) {
+      var cleanedArr = cleanedText.filter(str => str !== '')
+      cleanedArr[0].trim()
+      setTags(tags.concat(`#${cleanedArr[0]}`))
+      setTag(tag = '')
+    }
+  } else {
     setTag(tag = '')
   }
 }
 
-const handleClickTagInput = (
-    e, title,
-    setTags, tags,
-    setTag, tag
+const handleFoundTag = (
+    title, setTags, 
+    tags, setTag, 
+    tag
   ) => {
   setTags(tags.concat(title))
   setTag(tag = '')
@@ -203,9 +241,7 @@ const onDropMain = (
 
     main.current.splice(oldIdx, 1)
     main.current.splice(i, 0, parsedObj)
-    // var sortedMain = true
-    // var sortedArrMain = [...mainImageFiles];
-
+  
     let sortedArrMain = [];
     let filteredMain = main.current.filter(obj => obj.kind === 'img');
     
@@ -226,13 +262,26 @@ const allowDrop = (e) => {
   e.preventDefault();
 }
 
+//async link preview
+
+const fetchUrlMetadata = (link) => {
+  return axios.post('/api/posts/metadata', {
+    params: {
+      url: link
+    }
+  })
+}
+
 
 const PostCreateUtil = { 
   previewMainImages, previewBodyImages,
   removeMainObj, removeBodyObj,
-  handleEnterTagInput, 
-  handleClickTagInput,
-  drag, onDropBody, onDropMain, allowDrop
+  handleTagInput, 
+  handleFoundTag,
+  drag, onDropBody, onDropMain, 
+  allowDrop, removeLinkSiteNameAndImage,
+  removeLinkTitleAndDesc,
+  fetchUrlMetadata
 };
 
 export default PostCreateUtil;

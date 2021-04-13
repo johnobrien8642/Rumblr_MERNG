@@ -5,15 +5,16 @@ import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
-import QuotePostInput from '../../util/components/forms/inputTypes/Quote_Post_Input'
+
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
+import PostCreateUtil from '../../util/functions/post_create_util.js'
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
+const { fetchUrlMetadata } = PostCreateUtil;
 
-const QuotePostForm = () => {
-  let [quote, setQuote] = useState('');
-  let [source, setSource] = useState('')
+const AudioPostForm = () => {
+  
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -22,7 +23,7 @@ const QuotePostForm = () => {
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
-  let formId = 'quotePostForm'
+  const formId = 'audioPostForm';
   let history = useHistory();
 
   let [createPost] = useMutation(CREATE_POST, {
@@ -60,8 +61,6 @@ const QuotePostForm = () => {
   });
 
   const resetInputs = () => {
-    setQuote(quote = '');
-    setSource(source = '');
     setBodyImageFiles(bodyImageFiles = []);
     bodyImages.current = [];
     body.current = [];
@@ -99,13 +98,12 @@ const QuotePostForm = () => {
         })
 
         var instanceData = {};
-        instanceData.quote = quote;
-        instanceData.source = source;
+        
         instanceData.descriptions = body.current.filter(obj => obj.kind !== 'img')
         instanceData.descriptionImages = cleanedBody;
         instanceData.tags = tags;
         instanceData.user = Cookies.get('currentUser');
-        instanceData.kind = 'QuotePost';
+        instanceData.kind = 'LinkPost';
         
         createPost({
           variables: {
@@ -120,20 +118,13 @@ const QuotePostForm = () => {
     <div
       className='postForm'
     >
-      <h1>QuotePost</h1>
+      <h1>AudioPost</h1>
       <form
         id={formId}
         onSubmit={e => handleSubmit(e)}
         onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
         encType={'multipart/form-data'}
       >
-
-      <QuotePostInput
-        quote={quote}
-        setQuote={setQuote}
-        source={source}
-        setSource={setSource}
-      />
 
       <BodyImageAndText
         formId={formId}
@@ -157,7 +148,7 @@ const QuotePostForm = () => {
 
       <button
         type='submit'
-        disabled={!quote}
+        // disabled={!link}
       >
         Post
       </button>
@@ -166,4 +157,4 @@ const QuotePostForm = () => {
   )
 }
 
-export default QuotePostForm;
+export default AudioPostForm;

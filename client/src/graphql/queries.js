@@ -181,8 +181,8 @@ const Queries = {
     }
   `,
   FETCH_POST: gql`
-    query FetchPost($postId: ID, $type: String) {
-      post(postId: $postId, type: $type ) {
+    query FetchPost($postId: ID) {
+      post(postId: $postId) {
         __typename
         ${ALL_POSTS}
       }

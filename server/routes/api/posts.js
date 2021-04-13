@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import express from 'express';
 const router = express.Router();
 import multer from 'multer';
+import ogs from 'open-graph-scraper';
 
 var upload = multer({ dest: 'uploads/' })
 
@@ -27,6 +28,13 @@ router.post('/', upload.any(), async (req, res, next) => {
     .catch(err => {
       console.log(err)
     })
+})
+
+router.post('/metadata', (req, res, next) => {
+  const options = { url: req.body.params.url }
+  ogs(options, (error, results, response) => {
+    res.send(results)
+  })
 })
 
 export default router;

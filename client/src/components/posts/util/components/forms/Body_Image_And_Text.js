@@ -5,7 +5,7 @@ import BodyImageInput from './inputTypes/Body_Image_Input';
 import DescriptionStringInput from './inputTypes/Description_String_Input';
 
 const BodyImageAndText = ({
-  body, bodyImageFiles,
+  formId, body, bodyImageFiles,
   setBodyImageFiles, description,
   setDescription, render, 
   setRender, errMessage, 
@@ -20,7 +20,7 @@ const BodyImageAndText = ({
           switch(obj.kind) {
             case 'img':
               return (
-                <div
+                <React.Fragment
                   key={i}
                 >
                   <BodyImageDnD
@@ -30,11 +30,11 @@ const BodyImageAndText = ({
                     bodyImageFiles={bodyImageFiles}
                     setBodyImageFiles={setBodyImageFiles}                
                   />
-                </div>
+                </React.Fragment>
               )
             case 'text':
               return (
-                <div
+                <React.Fragment
                   key={i}
                 >
                   <BodyTextDnD
@@ -46,7 +46,7 @@ const BodyImageAndText = ({
                     render={render}
                     setRender={setRender}
                   />
-                </div>
+                </React.Fragment>
               )
               default:
                 return 'no types matched draggable body'  
@@ -55,7 +55,8 @@ const BodyImageAndText = ({
 
 
         <div>
-          <BodyImageInput 
+          <BodyImageInput
+            formId={formId}
             body={body}
             bodyImageFiles={bodyImageFiles}
             setBodyImageFiles={setBodyImageFiles}

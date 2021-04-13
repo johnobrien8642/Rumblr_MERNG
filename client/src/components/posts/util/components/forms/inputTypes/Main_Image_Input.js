@@ -1,17 +1,17 @@
 import React from 'react';
 import PostCreateUtil from '../../../functions/post_create_util.js'
-const { previewBodyImages } = PostCreateUtil;
+const { previewMainImages } = PostCreateUtil;
 
-const BodyImageInput = ({
-  formId, body, 
-  bodyImageFiles,
-  setBodyImageFiles,
+const MainImageInput = ({
+  formId, main, 
+  mainImageFiles,
+  setMainImageFiles,
   errMessage, setErrMessage
 }) => {
 
   return (
     <React.Fragment>
-      <h2>Body Images</h2>
+      <h2>Main Images</h2>
         <p>{errMessage}</p>
           <input
             type='file'
@@ -19,9 +19,9 @@ const BodyImageInput = ({
             name='image'
             accept='.png, .jpg, jpeg'
             onChange={e => {
-              previewBodyImages(
-                e, body, bodyImageFiles,
-                setBodyImageFiles,
+              previewMainImages(
+                e, main, mainImageFiles,
+                setMainImageFiles,
                 setErrMessage, errMessage,
               )
               document.getElementById(`${formId}`).reset()
@@ -31,4 +31,4 @@ const BodyImageInput = ({
   )
 }
 
-export default BodyImageInput;
+export default MainImageInput;

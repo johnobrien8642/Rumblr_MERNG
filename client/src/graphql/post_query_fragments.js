@@ -35,6 +35,14 @@ const QueryFragments = {
     quote
     source
   `,
+  LINK_POST:`
+    _id
+    linkObj
+  `,
+  CHAT_POST:`
+    _id
+    chat
+  `,
 }
 
 export default QueryFragments;

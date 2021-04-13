@@ -29,7 +29,8 @@ const Follow = mongoose.model('Follow');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
 const { createPhotoPost, createTextPost,
-        createQuotePost } = CreateFunctions;
+        createQuotePost, createLinkPost,
+        createChatPost } = CreateFunctions;
 
 const mutation = new GraphQLObjectType({
   name: 'Mutations',
@@ -83,6 +84,7 @@ const mutation = new GraphQLObjectType({
         instanceData: { type: GraphQLJSONObject },
       },
       resolve(_, { instanceData }) {
+        console.log(instanceData)
         switch(instanceData.kind) {
           case 'TextPost':
             return createTextPost(instanceData)
@@ -90,6 +92,10 @@ const mutation = new GraphQLObjectType({
             return createPhotoPost(instanceData)
           case 'QuotePost':
             return createQuotePost(instanceData)
+          case 'LinkPost':
+            return createLinkPost(instanceData)
+          case 'ChatPost':
+            return createChatPost(instanceData)
           default:
             console.log('no types matched in createPost')
         }

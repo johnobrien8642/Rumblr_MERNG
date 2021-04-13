@@ -24,6 +24,7 @@ const PhotoPostForm = () => {
   let [render, setRender] = useState(0)
   let main = useRef([]);
   let body = useRef([]);
+  const formId = 'photoPostForm'
   let history = useHistory();
 
   useEffect(() => {
@@ -75,6 +76,7 @@ const PhotoPostForm = () => {
   const resetInputs = () => {
     setMainImageFiles(mainImageFiles = []);
     setBodyImageFiles(bodyImageFiles = []);
+    setDescription(description = '');
     mainImages.current = [];
     bodyImages.current = [];
     stringObjs.current = [];
@@ -134,6 +136,8 @@ const PhotoPostForm = () => {
           delete obj.__v
           return obj
         })
+
+        console.log(cleanedMain)
     
         var instanceData = {};
         instanceData.mainImages = cleanedMain;
@@ -158,13 +162,14 @@ const PhotoPostForm = () => {
     >
       <h1>PhotoPost</h1>
       <form
-        id='photoPostForm'
+        id={formId}
         onSubmit={e => handleSubmit(e)}
         onKeyPress={e => { e.key === 'Enter' && e.preventDefault(); }}
         encType={'multipart/form-data'}
       >
-
+      
         <PhotoPostInput
+          formId={formId}
           main={main}
           mainImageFiles={mainImageFiles}
           setMainImageFiles={setMainImageFiles}
@@ -173,6 +178,7 @@ const PhotoPostForm = () => {
         />
 
         <BodyImageAndText
+          formId={formId}
           body={body}
           bodyImageFiles={bodyImageFiles}
           setBodyImageFiles={setBodyImageFiles}

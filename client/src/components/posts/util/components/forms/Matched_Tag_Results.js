@@ -23,8 +23,8 @@ const MatchedTagResults = ({
           return (
             <li 
               key={i}
-              onClick={e => handleClickTagInput(
-                  e, tag.title, 
+              onClick={() => handleClickTagInput(
+                  tag.title, 
                   setTags, tags, 
                   setTag, tag
                 )

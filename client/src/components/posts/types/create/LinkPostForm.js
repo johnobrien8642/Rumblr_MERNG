@@ -5,15 +5,24 @@ import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
-import QuotePostInput from '../../util/components/forms/inputTypes/Quote_Post_Input'
+import LinkPreview from '../../util/components/forms/Link_Preview'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
+import PostCreateUtil from '../../util/functions/post_create_util.js'
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
+const { fetchUrlMetadata } = PostCreateUtil;
 
-const QuotePostForm = () => {
-  let [quote, setQuote] = useState('');
-  let [source, setSource] = useState('')
+const LinkPostForm = () => {
+  let [link, setLink] = useState('');
+  let [pastLink, setPastLink] = useState('')
+
+  let [siteName, setSiteName] = useState('');
+  let [imageUrl, setImageUrl] = useState('');
+  let [title, setTitle] = useState('');
+  let [linkDescription, setLinkDescription] = useState('');
+
+  let [result, setResult] = useState('');
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -22,7 +31,7 @@ const QuotePostForm = () => {
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
-  let formId = 'quotePostForm'
+  const formId = 'linkPostForm';
   let history = useHistory();
 
   let [createPost] = useMutation(CREATE_POST, {
@@ -60,8 +69,13 @@ const QuotePostForm = () => {
   });
 
   const resetInputs = () => {
-    setQuote(quote = '');
-    setSource(source = '');
+    setLink(link = '');
+    setPastLink(pastLink = '');
+    setResult(result = '');
+    setSiteName(siteName = '');
+    setImageUrl(imageUrl = '');
+    setTitle(title = '');
+    setLinkDescription(linkDescription = '');
     setBodyImageFiles(bodyImageFiles = []);
     bodyImages.current = [];
     body.current = [];
@@ -98,14 +112,20 @@ const QuotePostForm = () => {
           return obj
         })
 
+        var linkObj = {};
+        linkObj.link = link
+        linkObj.siteName = siteName
+        linkObj.imageUrl = imageUrl
+        linkObj.title = title
+        linkObj.linkDescription = linkDescription
+
         var instanceData = {};
-        instanceData.quote = quote;
-        instanceData.source = source;
+        instanceData.linkObj = linkObj;
         instanceData.descriptions = body.current.filter(obj => obj.kind !== 'img')
         instanceData.descriptionImages = cleanedBody;
         instanceData.tags = tags;
         instanceData.user = Cookies.get('currentUser');
-        instanceData.kind = 'QuotePost';
+        instanceData.kind = 'LinkPost';
         
         createPost({
           variables: {
@@ -116,11 +136,30 @@ const QuotePostForm = () => {
     )
   }
   
+  const handleLinkPreview = () => {
+    if (link !== pastLink && link !== '') {
+      setPastLink(pastLink = link)
+      fetchUrlMetadata(link).then(res => {
+        setResult(result = res)
+        setSiteName(siteName = res.data.ogSiteName)
+        setImageUrl(imageUrl = res.data.ogImage.url)
+        setTitle(title = res.data.ogTitle)
+        setLinkDescription(linkDescription = res.data.ogDescription)
+      })
+    }
+  }
+
+  const resetLink = () => {
+    setLink(link = '')
+    setPastLink(pastLink = '')
+    setResult(result = '')
+  }
+  
   return (
     <div
       className='postForm'
     >
-      <h1>QuotePost</h1>
+      <h1>LinkPost</h1>
       <form
         id={formId}
         onSubmit={e => handleSubmit(e)}
@@ -128,11 +167,23 @@ const QuotePostForm = () => {
         encType={'multipart/form-data'}
       >
 
-      <QuotePostInput
-        quote={quote}
-        setQuote={setQuote}
-        source={source}
-        setSource={setSource}
+      {handleLinkPreview()}
+      
+      <LinkPreview
+        link={link}
+        setLink={setLink}
+        pastLink={pastLink}
+        setPastLink={setPastLink}
+        result={result}
+        siteName={siteName}
+        setSiteName={setSiteName}
+        imageUrl={imageUrl}
+        setImageUrl={setImageUrl}
+        title={title}
+        setTitle={setTitle}
+        linkDescription={linkDescription}
+        setLinkDescription={setLinkDescription}
+        resetLink={resetLink}
       />
 
       <BodyImageAndText
@@ -157,7 +208,7 @@ const QuotePostForm = () => {
 
       <button
         type='submit'
-        disabled={!quote}
+        disabled={!link}
       >
         Post
       </button>
@@ -166,4 +217,4 @@ const QuotePostForm = () => {
   )
 }
 
-export default QuotePostForm;
+export default LinkPostForm;

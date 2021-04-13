@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const postHeader = (post) => {
   var data = demeterPost(post)
-
+  
   if (post.kind === 'Repost') {
     return (
       <span>
@@ -75,63 +75,33 @@ const postTags = (post) => {
 
 const postBody = (post) => {
   var data = demeterPost(post)
-  
-  // console.log(data)
 
   var descriptionArr = [...data.descriptionImages]
-
+  
+  data.descriptions.forEach((obj, i) => {
+    descriptionArr.splice(obj.displayIdx, 0, obj)
+  })
+  
   if (data.kind === 'TextPost') {
-
-    data.descriptions.forEach((obj, i) => {
-      descriptionArr.splice(obj.displayIdx, 0, obj)
-    })
-
     return (
-    <React.Fragment>
-      <h3>{data.title}</h3>
-      <p>{data.main}</p>
-        <div>
-          {descriptionArr.map((obj, i) => {
-            switch(obj.kind) {
-              case 'text':
-                return <div key={i}>{obj.content}</div>
-              case 'Image':
-                return <img key={i} src={`${obj.url}`} alt={'usefilename'} />
-              default:
-                return 'no keys matched postBody TextPost'
-            }
-          })}
-        </div>
-    </React.Fragment>
+      <React.Fragment>
+        <h3>{data.title}</h3>
+        <p>{data.main}</p>
+        {displayDescription(descriptionArr)}
+      </React.Fragment>
     )
 
   } else if (data.kind === 'PhotoPost') {
-
-    data.descriptions.forEach((obj, i) => {
-      descriptionArr.splice(obj.displayIdx, 0, obj)
-    })
-  
     return (
-    <React.Fragment>
-      <div>
-        {data.mainImages.map((mainImg, i) => {
-          return <img key={i} src={`${mainImg.url}`} alt={'usefilename'} />
-        })}
-      </div>
-      <p>{data.description}</p>
-      <div>
-        {descriptionArr.map((obj, i) => {
-          switch(obj.kind) {
-            case 'text':
-              return <div key={i}>{obj.content}</div>
-            case 'Image':
-              return <img key={i} src={`${obj.url}`} alt={'usefilename'} />
-            default:
-              return 'no keys matched postBody PhotoPost'
-          }
-        })}
-      </div>
-    </React.Fragment>
+      <React.Fragment>
+        <div>
+          {data.mainImages.map((mainImg, i) => {
+            return <img key={i} src={`${mainImg.url}`} alt={'usefilename'} />
+          })}
+        </div>
+        <p>{data.description}</p>
+        {displayDescription(descriptionArr)}
+      </React.Fragment>
     )
 
   } else if (data.kind === 'QuotePost') {
@@ -144,27 +114,34 @@ const postBody = (post) => {
           <span>-</span>
           {data.source}
         </p>
-
-          <div>
-            {descriptionArr.map((obj, i) => {
-              switch(obj.kind) {
-                case 'text':
-                  return <div key={i}>{obj.content}</div>
-                case 'Image':
-                  return <img key={i} src={`${obj.url}`} alt={'usefilename'} />
-                default:
-                  return 'no keys matched postBody PhotoPost'
-              }
-            })}
-          </div>
+          {displayDescription(descriptionArr)}
       </React.Fragment>
-      )
-      
+    )
+  } else if (data.kind === 'LinkPost') {
+    return (
+      <React.Fragment>
+      <a href={data.linkObj.link}>
+        <span>{data.linkObj.siteName}</span>
+        <img src={data.linkObj.imageUrl}  alt={'link page img'}/>
+        <h2>{data.linkObj.title}</h2>
+        <p>{data.linkObj.linkDescription}</p>
+      </a>
+      {displayDescription(descriptionArr)}
+      </React.Fragment>
+    )
+  } else if (data.kind === 'ChatPost') {
+    return (
+      <React.Fragment>
+        <div 
+          dangerouslySetInnerHTML={{__html: data.chat}}
+        />
+        {displayDescription(descriptionArr)}
+      </React.Fragment>
+    )
   }
 }
 
 const demeterPost = (post) => {
-  console.log(post)
   if (post.kind === 'Like' && post.post.kind === 'Repost') {
     return post.post.post
   } else if (post.kind === 'Like' || post.kind === 'Repost') {
@@ -172,6 +149,23 @@ const demeterPost = (post) => {
   } else {
     return post
   }
+}
+
+const displayDescription = (descriptionArr) => {
+  return (
+    <div>
+      {descriptionArr.map((obj, i) => {
+        switch(obj.kind) {
+          case 'text':
+            return <div key={i}>{obj.content}</div>
+          case 'Image':
+            return <img key={i} src={`${obj.url}`} alt={'usefilename'} />
+          default:
+            return 'no keys matched postBody PhotoPost'
+        }
+      })}
+    </div>
+  )
 }
 
 const PostShowUtil = { postHeader, postBody, repostFooter, postTags }

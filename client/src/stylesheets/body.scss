@@ -1,3 +1,7 @@
+b {
+  font-weight: normal;
+}
+
 .postForm {
   border: 1px solid black;
   width: fit-content;
@@ -21,4 +25,15 @@
 
 .draggable:hover {
   cursor: pointer
+}
+
+.chatText {
+  border: 1px solid black;
+  height: 200px;
+  width: 70%;
+  white-space: pre-wrap;
+}
+
+.boldText {
+  font-weight: bold;
 }

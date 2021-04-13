@@ -1,5 +1,6 @@
 import PostQueryFragments from './post_query_fragments.js'
-const { POST, TEXT_POST, PHOTO_POST, QUOTE_POST } = PostQueryFragments;
+const { POST, TEXT_POST, PHOTO_POST, 
+        QUOTE_POST, LINK_POST, CHAT_POST } = PostQueryFragments;
 
 const AllQueryFragment = {
   ALL_POSTS:`
@@ -13,6 +14,14 @@ const AllQueryFragment = {
     }
     ... on QuotePostType {
       ${QUOTE_POST}
+      ${POST}
+    }
+    ... on LinkPostType {
+      ${LINK_POST}
+      ${POST}
+    }
+    ... on ChatPostType {
+      ${CHAT_POST}
       ${POST}
     }
   `

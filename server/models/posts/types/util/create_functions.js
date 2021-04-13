@@ -2,6 +2,8 @@ import mongoose from 'mongoose'
 const TextPost = mongoose.model('TextPost')
 const PhotoPost = mongoose.model('PhotoPost')
 const QuotePost = mongoose.model('QuotePost')
+const LinkPost = mongoose.model('LinkPost')
+const ChatPost = mongoose.model('ChatPost')
 const User = mongoose.model('User')
 const Tag = mongoose.model('Tag')
 
@@ -175,6 +177,65 @@ const createQuotePost = ({
       post.quote = quote
       post.source = source
       post.user = user._id
+
+      tags.forEach((t, i) => {
+        post.tags.push(t._id)
+      })
+
+      return Promise.all([post.save(), user.save()]).then(
+        ([post, user])=> (post)
+      )
+    }
+  )
+}
+
+const createLinkPost = ({
+  linkObj, descriptions,
+  descriptionImages,
+  tags, user,
+}) => {
+  var post = new LinkPost();
+  
+  const getTagArr = async (tags, post) => {
+    return Promise.all(tags.map((t, i) => {
+          return asyncTag(t, post)
+        }
+      )
+    )
+  }
+
+  const asyncTag = async (t, post) => {
+    return findOrCreateTag(t, post)
+  }
+
+  const findOrCreateTag = async (t, post) => {
+    return Tag.findOne({ title: t }).then(tagFound => {
+      if (tagFound) {
+        return tagFound
+      } else {
+        var newTag = new Tag({ title: t })
+        return newTag.save().then(tag => {
+          return tag
+        })
+      }
+    })
+  }
+  
+  descriptionImages.forEach((img, i) => {
+    post.descriptionImages.push(img._id)
+  })
+  
+  return Promise.all([
+    getTagArr(tags, post),
+    User.findOne({ blogName: user })
+  ]).then(
+    ([tags, user]) => {
+      descriptions.forEach((obj, i) => {
+        post.descriptions.push(obj)
+      })
+
+      post.linkObj = linkObj
+      post.user = user._id
       console.log(post)
       tags.forEach((t, i) => {
         post.tags.push(t._id)
@@ -187,9 +248,69 @@ const createQuotePost = ({
   )
 }
 
-const CreateFunctions = { 
+const createChatPost = ({
+  chat, descriptions,
+  descriptionImages,
+  tags, user,
+}) => {
+  var post = new ChatPost();
+  
+  const getTagArr = async (tags, post) => {
+    return Promise.all(tags.map((t, i) => {
+          return asyncTag(t, post)
+        }
+      )
+    )
+  }
+
+  const asyncTag = async (t, post) => {
+    return findOrCreateTag(t, post)
+  }
+
+  const findOrCreateTag = async (t, post) => {
+    return Tag.findOne({ title: t }).then(tagFound => {
+      if (tagFound) {
+        return tagFound
+      } else {
+        var newTag = new Tag({ title: t })
+        return newTag.save().then(tag => {
+          return tag
+        })
+      }
+    })
+  }
+  
+  descriptionImages.forEach((img, i) => {
+    post.descriptionImages.push(img._id)
+  })
+  
+  return Promise.all([
+    getTagArr(tags, post),
+    User.findOne({ blogName: user })
+  ]).then(
+    ([tags, user]) => {
+      descriptions.forEach((obj, i) => {
+        post.descriptions.push(obj)
+      })
+
+      post.chat = chat
+      post.user = user._id
+      
+      tags.forEach((t, i) => {
+        post.tags.push(t._id)
+      })
+
+      return Promise.all([post.save(), user.save()]).then(
+        ([post, user])=> (post)
+      )
+    }
+  )
+}
+
+const CreateFunctions = {
   createPhotoPost, createTextPost,
-  createQuotePost
+  createQuotePost, createLinkPost,
+  createChatPost,
 }
 
 export default CreateFunctions;

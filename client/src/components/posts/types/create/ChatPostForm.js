@@ -1,19 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
-import QuotePostInput from '../../util/components/forms/inputTypes/Quote_Post_Input'
+import ChatPostInput from '../../util/components/forms/inputTypes/Chat_Post_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
-const QuotePostForm = () => {
-  let [quote, setQuote] = useState('');
-  let [source, setSource] = useState('')
+const ChatPostForm = () => {
+  let [chat, setChat] = useState('');
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -22,8 +21,16 @@ const QuotePostForm = () => {
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
-  let formId = 'quotePostForm'
+  const formId = 'chatPostForm'
   let history = useHistory();
+
+  useEffect(() => {
+    body.current.forEach((obj, i) => {
+      if (obj.kind === 'text') {
+        obj.displayIdx = i
+      }
+    })
+  })
 
   let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
@@ -60,11 +67,11 @@ const QuotePostForm = () => {
   });
 
   const resetInputs = () => {
-    setQuote(quote = '');
-    setSource(source = '');
+    setChat(chat = '')
+    setDescription(description = '')
+    body.current = []
     setBodyImageFiles(bodyImageFiles = []);
     bodyImages.current = [];
-    body.current = [];
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');
@@ -97,15 +104,16 @@ const QuotePostForm = () => {
           delete obj.__v
           return obj
         })
-
+        
         var instanceData = {};
-        instanceData.quote = quote;
-        instanceData.source = source;
-        instanceData.descriptions = body.current.filter(obj => obj.kind !== 'img')
+        instanceData.chat = chat;
+        instanceData.descriptions = body.current.filter(obj =>
+          obj.kind !== 'img'
+        )
         instanceData.descriptionImages = cleanedBody;
-        instanceData.tags = tags;
         instanceData.user = Cookies.get('currentUser');
-        instanceData.kind = 'QuotePost';
+        instanceData.tags = tags;
+        instanceData.kind = 'ChatPost'
         
         createPost({
           variables: {
@@ -120,7 +128,7 @@ const QuotePostForm = () => {
     <div
       className='postForm'
     >
-      <h1>QuotePost</h1>
+      <h1>ChatPost</h1>
       <form
         id={formId}
         onSubmit={e => handleSubmit(e)}
@@ -128,11 +136,9 @@ const QuotePostForm = () => {
         encType={'multipart/form-data'}
       >
 
-      <QuotePostInput
-        quote={quote}
-        setQuote={setQuote}
-        source={source}
-        setSource={setSource}
+      <ChatPostInput
+        chat={chat}
+        setChat={setChat}
       />
 
       <BodyImageAndText
@@ -157,7 +163,7 @@ const QuotePostForm = () => {
 
       <button
         type='submit'
-        disabled={!quote}
+        disabled={!chat}
       >
         Post
       </button>
@@ -166,4 +172,4 @@ const QuotePostForm = () => {
   )
 }
 
-export default QuotePostForm;
+export default ChatPostForm;

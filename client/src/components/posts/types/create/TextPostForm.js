@@ -22,6 +22,7 @@ const TextPostForm = () => {
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
+  const formId = 'textPostForm'
   let history = useHistory();
 
   useEffect(() => {
@@ -131,7 +132,7 @@ const TextPostForm = () => {
     >
       <h1>TextPost</h1>
       <form
-        id='textPostForm'
+        id={formId}
         onSubmit={e => handleSubmit(e)}
         onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
         encType={'multipart/form-data'}
@@ -145,6 +146,7 @@ const TextPostForm = () => {
       />
 
       <BodyImageAndText
+        formId={formId}
         body={body}
         bodyImageFiles={bodyImageFiles}
         setBodyImageFiles={setBodyImageFiles}
