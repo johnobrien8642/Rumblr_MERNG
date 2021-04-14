@@ -1,20 +1,21 @@
 import React, { useState, useRef } from 'react';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
-
-import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
-import Tags from '../../util/components/forms/Tags'
-import PostCreateUtil from '../../util/functions/post_create_util.js'
+import AudioFileInput from '../../util/components/forms/inputTypes/Audio_File_Input';
+import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text';
+import Tags from '../../util/components/forms/Tags';
+import PostCreateUtil from '../../util/functions/post_create_util.js';
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
-const { fetchUrlMetadata } = PostCreateUtil;
+const { bodyPost, audioPost, updateCache } = PostCreateUtil;
 
 const AudioPostForm = () => {
-  
+  let audioFile = useRef({});
+  let audioObj = useRef({})
+  let [active, setActive] = useState(false)
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -24,32 +25,16 @@ const AudioPostForm = () => {
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   const formId = 'audioPostForm';
+  const formInputId = 'audioPostInput'
   let history = useHistory();
 
   let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
-    const { createPost } = data;
-      
-      var readQuery = client.readQuery({
-        query: FETCH_USER_FEED,
-        variables: {
-          query: Cookies.get('currentUser')
-        }
-      })
-      
-      var { fetchUserFeed } = readQuery;
-      
-      var newPostArr = [createPost, ...fetchUserFeed]
-      
-      client.writeQuery({
-        query: FETCH_USER_FEED,
-        variables: {
-          query: Cookies.get('currentUser')
-        },
-        data: {
-          fetchUserFeed: newPostArr
-        }
-      })
+      const { createPost } = data;
+      var currentUser = Cookies.get('currentUser')
+      var query = FETCH_USER_FEED
+        
+      updateCache(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();
@@ -72,38 +57,39 @@ const AudioPostForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    var audioFileFormData = new FormData();
     var bodyImagesFormData = new FormData();
+
+    audioFileFormData.append('audio', audioFile.current)
 
     for (var i2 = 0; i2 < bodyImageFiles.length; i2++) {
       var file2 = bodyImageFiles[i2];
-      bodyImagesFormData.append('photos', file2);
+      bodyImagesFormData.append('images', file2);
     }
 
-    function bodyPost() {
-      return axios.post('/api/posts/', bodyImagesFormData, {
-        headers: {
-          'Content-Type': 'undefined'
-        }
-      }).then(bodyRes => {
-        let bodyImgObj = bodyRes.data;
-        return bodyImgObj
-      })
-    }
-
-    Promise.all([bodyPost()]).then(
-      ([bodyObjs]) => {
+    Promise.all([
+      bodyPost(bodyImagesFormData),
+      audioPost(audioFileFormData)
+    ]).then(
+      ([bodyObjs, audio]) => {
         let cleanedBody = bodyObjs.map((obj) => {
           delete obj.__v
           return obj
         })
 
+        var audioMeta = {}
+        audioMeta.title = audioObj.current.title
+        audioMeta.artist = audioObj.current.artist
+        audioMeta.album = audioObj.current.album
+
         var instanceData = {};
-        
+        instanceData.audioFile = audio[0]._id
+        instanceData.audioMeta = audioMeta
         instanceData.descriptions = body.current.filter(obj => obj.kind !== 'img')
         instanceData.descriptionImages = cleanedBody;
         instanceData.tags = tags;
         instanceData.user = Cookies.get('currentUser');
-        instanceData.kind = 'LinkPost';
+        instanceData.kind = 'AudioPost';
         
         createPost({
           variables: {
@@ -125,9 +111,18 @@ const AudioPostForm = () => {
         onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
         encType={'multipart/form-data'}
       >
+    
+      <AudioFileInput
+        formId={formId}
+        audioFile={audioFile}
+        audioObj={audioObj}
+        active={active}
+        setActive={setActive}
+      />
 
       <BodyImageAndText
         formId={formId}
+        formInputId={formInputId}
         body={body}
         bodyImageFiles={bodyImageFiles}
         setBodyImageFiles={setBodyImageFiles}
@@ -137,6 +132,7 @@ const AudioPostForm = () => {
         setRender={setRender}
         errMessage={errMessage}
         setErrMessage={setErrMessage}
+        formInputId={formInputId}
       />
 
       <Tags
@@ -148,7 +144,7 @@ const AudioPostForm = () => {
 
       <button
         type='submit'
-        // disabled={!link}
+        disabled={!audioFile.current}
       >
         Post
       </button>

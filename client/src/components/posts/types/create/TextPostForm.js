@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
@@ -8,6 +7,8 @@ import Queries from '../../../../graphql/queries.js';
 import TextPostInput from '../../util/components/forms/inputTypes/Text_Post_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
+import PostCreateUtil from '../../util/functions/post_create_util.js';
+const { bodyPost, updateCache } = PostCreateUtil;
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -23,6 +24,7 @@ const TextPostForm = () => {
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   const formId = 'textPostForm'
+  const formInputId = 'textPostInput'
   let history = useHistory();
 
   useEffect(() => {
@@ -36,27 +38,10 @@ const TextPostForm = () => {
   let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
     const { createPost } = data;
-      
-      var readQuery = client.readQuery({
-        query: FETCH_USER_FEED,
-        variables: {
-          query: Cookies.get('currentUser')
-        }
-      })
-      
-      var { fetchUserFeed } = readQuery;
-      
-      var newPostArr = [createPost, ...fetchUserFeed]
-      
-      client.writeQuery({
-        query: FETCH_USER_FEED,
-        variables: {
-          query: Cookies.get('currentUser')
-        },
-        data: {
-          fetchUserFeed: newPostArr
-        }
-      })
+    var currentUser = Cookies.get('currentUser')
+    var query = FETCH_USER_FEED
+    
+    updateCache(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();
@@ -85,21 +70,12 @@ const TextPostForm = () => {
 
     for (var i2 = 0; i2 < bodyImageFiles.length; i2++) {
       var file2 = bodyImageFiles[i2];
-      bodyImagesFormData.append('photos', file2);
+      bodyImagesFormData.append('images', file2);
     }
 
-    function bodyPost() {
-      return axios.post('/api/posts/', bodyImagesFormData, {
-        headers: {
-          'Content-Type': 'undefined'
-        }
-      }).then(bodyRes => {
-        let bodyImgObj = bodyRes.data;
-        return bodyImgObj
-      })
-    }
-
-    Promise.all([bodyPost()]).then(
+    Promise.all([
+      bodyPost(bodyImagesFormData)
+    ]).then(
       ([bodyObjs]) => {
         let cleanedBody = bodyObjs.map((obj) => {
           delete obj.__v
@@ -147,6 +123,7 @@ const TextPostForm = () => {
 
       <BodyImageAndText
         formId={formId}
+        formInputId={formInputId}
         body={body}
         bodyImageFiles={bodyImageFiles}
         setBodyImageFiles={setBodyImageFiles}
@@ -167,7 +144,7 @@ const TextPostForm = () => {
 
       <button
         type='submit'
-        disabled={!title}
+        disabled={!main}
       >
         Post
       </button>

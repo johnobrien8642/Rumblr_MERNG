@@ -5,7 +5,8 @@ import BodyImageInput from './inputTypes/Body_Image_Input';
 import DescriptionStringInput from './inputTypes/Description_String_Input';
 
 const BodyImageAndText = ({
-  formId, body, bodyImageFiles,
+  formId, formInputId, 
+  body, bodyImageFiles,
   setBodyImageFiles, description,
   setDescription, render, 
   setRender, errMessage, 
@@ -28,7 +29,7 @@ const BodyImageAndText = ({
                     img={obj}
                     body={body}
                     bodyImageFiles={bodyImageFiles}
-                    setBodyImageFiles={setBodyImageFiles}                
+                    setBodyImageFiles={setBodyImageFiles}            
                   />
                 </React.Fragment>
               )
@@ -68,6 +69,7 @@ const BodyImageAndText = ({
             body={body}
             description={description}
             setDescription={setDescription}
+            formInputId={formInputId}
           />
         </div>
       </div>

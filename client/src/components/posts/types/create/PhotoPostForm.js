@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import Mutations from '../../../../graphql/mutations';
@@ -8,8 +7,10 @@ import Cookies from 'js-cookie';
 import PhotoPostInput from '../../util/components/forms/inputTypes/Photo_Post_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
+import PostCreateUtil from '../../util/functions/post_create_util.js'
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
+const { mainPost, bodyPost, updateCache } = PostCreateUtil;
 
 const PhotoPostForm = () => {
   let [mainImageFiles, setMainImageFiles] = useState([]);
@@ -25,6 +26,7 @@ const PhotoPostForm = () => {
   let main = useRef([]);
   let body = useRef([]);
   const formId = 'photoPostForm'
+  const formInputId = 'photoPostInput'
   let history = useHistory();
 
   useEffect(() => {
@@ -37,32 +39,11 @@ const PhotoPostForm = () => {
 
   let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
-    try {
       const { createPost } = data;
-        
-        var readQuery = client.readQuery({
-          query: FETCH_USER_FEED,
-          variables: {
-            query: Cookies.get('currentUser')
-          }
-        })
-        
-        var { fetchUserFeed } = readQuery;
-        
-        var newPostArr = [createPost, ...fetchUserFeed]
-        
-        client.writeQuery({
-          query: FETCH_USER_FEED,
-          variables: {
-            query: Cookies.get('currentUser')
-          },
-          data: {
-            fetchUserFeed: newPostArr
-          }
-        })
-    } catch(err) {
-      console.log(err)
-    }
+      var currentUser = Cookies.get('currentUser')
+      var query = FETCH_USER_FEED
+      
+      updateCache(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();
@@ -95,37 +76,18 @@ const PhotoPostForm = () => {
 
     for (var i = 0; i < mainImageFiles.length; i++) {
       var file = mainImageFiles[i];
-      mainImagesFormData.append('photos', file);
+      mainImagesFormData.append('images', file);
     }
 
     for (var i2 = 0; i2 < bodyImageFiles.length; i2++) {
       var file2 = bodyImageFiles[i2];
-      bodyImagesFormData.append('photos', file2);
+      bodyImagesFormData.append('images', file2);
     }
 
-    function mainPost() {
-      return axios.post('/api/posts/', mainImagesFormData, {
-        headers: {
-          'Content-Type': 'undefined'
-        }
-      }).then(mainRes => {
-        let mainImgObj = mainRes.data;
-        return mainImgObj
-      })
-    }
-
-    function bodyPost() {
-      return axios.post('/api/posts/', bodyImagesFormData, {
-        headers: {
-          'Content-Type': 'undefined'
-        }
-      }).then(bodyRes => {
-        let bodyImgObj = bodyRes.data;
-        return bodyImgObj
-      })
-    }
-
-    Promise.all([mainPost(), bodyPost()]).then(
+    Promise.all([
+      mainPost(mainImagesFormData), 
+      bodyPost(bodyImagesFormData)
+    ]).then(
       ([mainObjs, bodyObjs]) => {
         let cleanedMain = mainObjs.map((obj) => {
           delete obj.__v
@@ -136,8 +98,6 @@ const PhotoPostForm = () => {
           delete obj.__v
           return obj
         })
-
-        console.log(cleanedMain)
     
         var instanceData = {};
         instanceData.mainImages = cleanedMain;
@@ -170,6 +130,7 @@ const PhotoPostForm = () => {
       
         <PhotoPostInput
           formId={formId}
+          formInputId={formInputId}
           main={main}
           mainImageFiles={mainImageFiles}
           setMainImageFiles={setMainImageFiles}
@@ -179,6 +140,7 @@ const PhotoPostForm = () => {
 
         <BodyImageAndText
           formId={formId}
+          formInputId={formInputId}
           body={body}
           bodyImageFiles={bodyImageFiles}
           setBodyImageFiles={setBodyImageFiles}

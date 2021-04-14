@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <link rel="icon" type="image/png" href="/rumblr-favicon.png" />
+    <script hidden src="https://cdn.tiny.cloud/1/cqp14d1tkp4c39owy1mnlhqpnsvov42oco9gm1ojmgpz8tcg/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+    <script>
+      tinymce.init({
+        selector: '.textEditor',
+        plugins: 'autolink link',
+        toolbar: 'bold italic underline link',
+        menubar: 'insert format',
+        default_link_target: '_blank',
+        inline: true
+      })
+    </script>
     <title>Rumblr</title>
   </head>
   <body>    

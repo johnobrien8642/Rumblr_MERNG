@@ -24,7 +24,15 @@ const RepostSchema = new Schema({
   onModel: {
     type: String,
     required: true,
-    enum: [ 'TextPost', 'PhotoPost' ]
+    enum: [ 
+      'TextPost', 
+      'PhotoPost', 
+      'QuotePost', 
+      'LinkPost', 
+      'ChatPost', 
+      'AudioPost', 
+      'VideoPost',
+    ]
   },
   kind: {
     type: String,

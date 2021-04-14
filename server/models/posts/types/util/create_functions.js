@@ -4,6 +4,8 @@ const PhotoPost = mongoose.model('PhotoPost')
 const QuotePost = mongoose.model('QuotePost')
 const LinkPost = mongoose.model('LinkPost')
 const ChatPost = mongoose.model('ChatPost')
+const AudioPost = mongoose.model('AudioPost')
+const VideoPost = mongoose.model('VideoPost')
 const User = mongoose.model('User')
 const Tag = mongoose.model('Tag')
 
@@ -307,10 +309,132 @@ const createChatPost = ({
   )
 }
 
+const createAudioPost = ({
+  audioFile, audioMeta, 
+  descriptions,
+  descriptionImages,
+  tags, user,
+}) => {
+  var post = new AudioPost();
+  
+  const getTagArr = async (tags, post) => {
+    return Promise.all(tags.map((t, i) => {
+          return asyncTag(t, post)
+        }
+      )
+    )
+  }
+
+  const asyncTag = async (t, post) => {
+    return findOrCreateTag(t, post)
+  }
+
+  const findOrCreateTag = async (t, post) => {
+    return Tag.findOne({ title: t }).then(tagFound => {
+      if (tagFound) {
+        return tagFound
+      } else {
+        var newTag = new Tag({ title: t })
+        return newTag.save().then(tag => {
+          return tag
+        })
+      }
+    })
+  }
+  
+  descriptionImages.forEach((img, i) => {
+    post.descriptionImages.push(img._id)
+  })
+  
+  return Promise.all([
+    getTagArr(tags, post),
+    User.findOne({ blogName: user })
+  ]).then(
+    ([tags, user]) => {
+      descriptions.forEach((obj, i) => {
+        post.descriptions.push(obj)
+      })
+
+      post.audioMeta = audioMeta
+      post.audioFile = audioFile
+      post.user = user._id
+      
+      tags.forEach((t, i) => {
+        post.tags.push(t._id)
+      })
+
+      return Promise.all([post.save(), user.save()]).then(
+        ([post, user])=> (post)
+      )
+    }
+  )
+}
+
+const createVideoPost = ({
+  videoLink,
+  descriptions,
+  descriptionImages,
+  tags, user,
+}) => {
+  var post = new VideoPost();
+  
+  const getTagArr = async (tags, post) => {
+    return Promise.all(tags.map((t, i) => {
+          return asyncTag(t, post)
+        }
+      )
+    )
+  }
+
+  const asyncTag = async (t, post) => {
+    return findOrCreateTag(t, post)
+  }
+
+  const findOrCreateTag = async (t, post) => {
+    return Tag.findOne({ title: t }).then(tagFound => {
+      if (tagFound) {
+        return tagFound
+      } else {
+        var newTag = new Tag({ title: t })
+        return newTag.save().then(tag => {
+          return tag
+        })
+      }
+    })
+  }
+  
+  descriptionImages.forEach((img, i) => {
+    post.descriptionImages.push(img._id)
+  })
+  
+  return Promise.all([
+    getTagArr(tags, post),
+    User.findOne({ blogName: user })
+  ]).then(
+    ([tags, user]) => {
+      descriptions.forEach((obj, i) => {
+        post.descriptions.push(obj)
+      })
+
+      post.videoLink = videoLink
+      post.user = user._id
+      
+      tags.forEach((t, i) => {
+        post.tags.push(t._id)
+      })
+
+      return Promise.all([post.save(), user.save()]).then(
+        ([post, user])=> (post)
+      )
+    }
+  )
+}
+
 const CreateFunctions = {
   createPhotoPost, createTextPost,
   createQuotePost, createLinkPost,
-  createChatPost,
+  createChatPost, createAudioPost,
+  createVideoPost
 }
 
 export default CreateFunctions;

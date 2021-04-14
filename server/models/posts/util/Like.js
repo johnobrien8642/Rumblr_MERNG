@@ -17,7 +17,16 @@ const LikeSchema = new Schema({
   onModel: {
     type: String,
     required: true,
-    enum: [ 'TextPost', 'PhotoPost', 'Repost' ]
+    enum: [ 
+      'TextPost', 
+      'PhotoPost', 
+      'QuotePost', 
+      'LinkPost', 
+      'ChatPost', 
+      'AudioPost', 
+      'VideoPost', 
+      'Repost'
+    ]
   },
   kind: {
     type: String,

@@ -4,16 +4,12 @@ const Post = mongoose.model('Post');
 
 const options = { discriminatorKey: 'kind' }
 
-const TextPost = Post.discriminator('TextPost',
+const VideoPost = Post.discriminator('VideoPost',
   new Schema({
-    title: {
-      type: String,
-      default: ''
-    },
-    main: {
-      type: String,
-      default: ''
+    videoLink: {
+      type: Schema.Types.ObjectId,
+      ref: 'Video'
     },
   }), options)
 
-export default TextPost;
+export default VideoPost;

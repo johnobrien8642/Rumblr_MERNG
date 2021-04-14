@@ -6,38 +6,27 @@ const ChatPostInput = ({
 }) => {
 
   useEffect(() => {
-
     var firstSpace = document.createTextNode(' ')
     var chatDiv = document.querySelector('.chatText')
     chatDiv.appendChild(firstSpace)
-    
   }, [])
 
   const regexChat = () => {
+    var chatDiv = document.querySelector('.chatText')
+  
+    const bolded = chatDiv.innerText
+      .replace(/^(.*?:)/gm, '<strong>$1</strong>')
+      .split('\n').join('<br/>')
 
-    var regexBold = new RegExp(/^(.*?:)/, 'gm')
+    chatDiv.innerHTML = bolded
 
     if (window.getSelection) {
-      var sel = window.getSelection(),
-      suffixNode, bold = document.createElement('span')
-      bold.setAttribute('class', 'boldText')
-      var range = sel.getRangeAt(0)
-      range.deleteContents()
-      
-      var text = range.commonAncestorContainer.textContent
-      var matched = text.match(regexBold)
-
-      if (matched) {
-        bold.innerText = range.commonAncestorContainer.textContent
-        range.commonAncestorContainer.textContent = '';
-        range.insertNode(bold)
-        range.setEndAfter(bold)
-        range.collapse(false)
-        range.insertNode((suffixNode = document.createTextNode(' ')))
-        range.setStartAfter(suffixNode);
-        sel.removeAllRanges();
-        sel.addRange(range)
-      }
+      var range = document.createRange();
+      range.selectNodeContents(chatDiv)
+      range.collapse(false);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
     }
   }
 
@@ -46,14 +35,9 @@ const ChatPostInput = ({
       className='chatText'
       contentEditable={true}
       onInput={e => {
-        var html = document.querySelector('.chatText')
+        regexChat()
 
-        if (e.nativeEvent.data !== null) {
-          regexChat()
-          setChat(chat = html.innerHTML)
-        } else {
-          setChat(chat = html.innerHTML)
-        }
+        chat.current = e.target.innerHTML
       }}
       
       onKeyDown={e => {

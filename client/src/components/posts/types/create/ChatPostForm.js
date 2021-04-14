@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
@@ -8,11 +7,13 @@ import Queries from '../../../../graphql/queries.js';
 import ChatPostInput from '../../util/components/forms/inputTypes/Chat_Post_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
+import PostCreateUtil from '../../util/functions/post_create_util.js';
+const { bodyPost, updateCache } = PostCreateUtil;
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const ChatPostForm = () => {
-  let [chat, setChat] = useState('');
+  let chat = useRef('')
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -21,7 +22,8 @@ const ChatPostForm = () => {
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
-  const formId = 'chatPostForm'
+  const formId = 'chatPostForm';
+  const formInputId = 'chatPostInput';
   let history = useHistory();
 
   useEffect(() => {
@@ -34,28 +36,11 @@ const ChatPostForm = () => {
 
   let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
-    const { createPost } = data;
-      
-      var readQuery = client.readQuery({
-        query: FETCH_USER_FEED,
-        variables: {
-          query: Cookies.get('currentUser')
-        }
-      })
-      
-      var { fetchUserFeed } = readQuery;
-      
-      var newPostArr = [createPost, ...fetchUserFeed]
-      
-      client.writeQuery({
-        query: FETCH_USER_FEED,
-        variables: {
-          query: Cookies.get('currentUser')
-        },
-        data: {
-          fetchUserFeed: newPostArr
-        }
-      })
+      const { createPost } = data;
+      var currentUser = Cookies.get('currentUser')
+      var query = FETCH_USER_FEED
+        
+      updateCache(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();
@@ -67,7 +52,8 @@ const ChatPostForm = () => {
   });
 
   const resetInputs = () => {
-    setChat(chat = '')
+    // setChat(chat = '')
+    chat.current = '';
     setDescription(description = '')
     body.current = []
     setBodyImageFiles(bodyImageFiles = []);
@@ -87,26 +73,18 @@ const ChatPostForm = () => {
       bodyImagesFormData.append('photos', file2);
     }
 
-    function bodyPost() {
-      return axios.post('/api/posts/', bodyImagesFormData, {
-        headers: {
-          'Content-Type': 'undefined'
-        }
-      }).then(bodyRes => {
-        let bodyImgObj = bodyRes.data;
-        return bodyImgObj
-      })
-    }
-
-    Promise.all([bodyPost()]).then(
+    Promise.all([
+      bodyPost(bodyImagesFormData)
+    ]).then(
       ([bodyObjs]) => {
+        console.log(bodyObjs)
         let cleanedBody = bodyObjs.map((obj) => {
           delete obj.__v
           return obj
         })
         
         var instanceData = {};
-        instanceData.chat = chat;
+        instanceData.chat = chat.current;
         instanceData.descriptions = body.current.filter(obj =>
           obj.kind !== 'img'
         )
@@ -138,11 +116,11 @@ const ChatPostForm = () => {
 
       <ChatPostInput
         chat={chat}
-        setChat={setChat}
       />
 
       <BodyImageAndText
         formId={formId}
+        formInputId={formInputId}
         body={body}
         bodyImageFiles={bodyImageFiles}
         setBodyImageFiles={setBodyImageFiles}

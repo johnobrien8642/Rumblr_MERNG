@@ -73,27 +73,6 @@ const Mutations = {
       }
     }
   `,
-  CREATE_REPOST: gql`
-    mutation repost($postId: ID, $repostCaption: String, $user: String, $repostedFrom: String, $postKind: String) {
-      repost(postId: $postId, repostCaption: $repostCaption, user: $user, repostedFrom: $repostedFrom, postKind: $postKind) {
-        _id
-        repostedFrom {
-          _id
-          blogName
-        }
-        user {
-          _id
-          blogName
-        }
-        repostCaption
-        post {
-          __typename
-          ${ALL_POSTS}
-        }
-      }
-    }
-  `,
-  
 };
 
 export default Mutations;

@@ -1,26 +1,32 @@
 import React from 'react';
 
 const DescriptionStringInput = ({
-  body, description, setDescription,
+  body, description, setDescription, formInputId
 }) => {
-
   return (
-    <textarea
-      value={description}
-      placeholder='Write a description...'
-      onChange={e => setDescription(description = e.target.value)}
-      onKeyPress={e => {
-        if (e.key === 'Enter' && description !== '') {
-          var textObj = {
-            kind: 'text',
-            content: description, 
-            displayIdx: body.current.length
+    <React.Fragment>
+      <div
+        id={formInputId}
+        className='textEditor'
+        contentEditable={true}
+        value={description}
+        placeholder='Write a description...'
+        onInput={e => setDescription(description = e.target.innerHTML)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' && description !== '') {
+            var textObj = {
+              kind: 'text',
+              content: description,
+              displayIdx: body.current.length
+            }
+
+            document.querySelector(`#${formInputId}`).innerHTML = ''
+            body.current.push(textObj)
+            setDescription(description = '')
           }
-          body.current.push(textObj)
-          setDescription(description = '')
-        }
-      }}
-    ></textarea>
+        }}
+      ></div>
+    </React.Fragment>
   )
 }
 

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import AudioPlayer from 'react-h5-audio-player';
+import ReactPlayer from 'react-player';
 
 const postHeader = (post) => {
   var data = demeterPost(post)
@@ -86,7 +88,7 @@ const postBody = (post) => {
     return (
       <React.Fragment>
         <h3>{data.title}</h3>
-        <p>{data.main}</p>
+        <div dangerouslySetInnerHTML={{ __html: data.main }} />
         {displayDescription(descriptionArr)}
       </React.Fragment>
     )
@@ -138,6 +140,28 @@ const postBody = (post) => {
         {displayDescription(descriptionArr)}
       </React.Fragment>
     )
+  } else if (data.kind === 'AudioPost') {
+    return (
+      <React.Fragment>
+        <p>Title: {data.audioMeta.title}</p>
+        <p>Artist: {data.audioMeta.artist}</p>
+        <p>Album: {data.audioMeta.album}</p>
+        <AudioPlayer
+          src={data.audioFile.url}
+        />
+        {displayDescription(descriptionArr)}
+      </React.Fragment>
+    )
+  } else if (data.kind === 'VideoPost') {
+    return (
+      <React.Fragment>
+        <ReactPlayer 
+          url={data.videoLink.url}
+          controls
+        />
+        {displayDescription(descriptionArr)}
+      </React.Fragment>
+    )
   }
 }
 
@@ -157,7 +181,12 @@ const displayDescription = (descriptionArr) => {
       {descriptionArr.map((obj, i) => {
         switch(obj.kind) {
           case 'text':
-            return <div key={i}>{obj.content}</div>
+            return (
+              <div 
+                key={i}
+                dangerouslySetInnerHTML={{ __html: obj.content }}
+              />
+            )
           case 'Image':
             return <img key={i} src={`${obj.url}`} alt={'usefilename'} />
           default:

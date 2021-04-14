@@ -11,7 +11,6 @@ const PhotoPostInput = ({
 }) => {
 
   return (
-    
     <div
       className={'mainPreview'}
     >

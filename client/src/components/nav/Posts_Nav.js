@@ -5,6 +5,7 @@ import QuotePostForm from '../posts/types/create/QuotePostForm'
 import LinkPostForm from '../posts/types/create/LinkPostForm'
 import ChatPostForm from '../posts/types/create/ChatPostForm'
 import AudioPostForm from '../posts/types/create/AudioPostForm'
+import VideoPostForm from '../posts/types/create/VideoPostForm'
 
 
 const PostNav = () => {
@@ -17,6 +18,7 @@ const PostNav = () => {
       <LinkPostForm />
       <ChatPostForm />
       <AudioPostForm />
+      <VideoPostForm />
     </div>
   )
 }

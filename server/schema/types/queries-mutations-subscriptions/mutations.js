@@ -17,7 +17,6 @@ import LikeType from '../objects/posts/util/like_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
 import AnyPostType from '../unions/any_post_type.js'
 import CreateFunctions from '../../../models/posts/types/util/create_functions.js'
-import CreatePostUtil from '../../../models/posts/types/util/post_create_util.js'
 const TextPost = mongoose.model('TextPost');
 const PhotoPost = mongoose.model('PhotoPost');
 const Post = mongoose.model('Post');
@@ -30,7 +29,8 @@ const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
 const { createPhotoPost, createTextPost,
         createQuotePost, createLinkPost,
-        createChatPost } = CreateFunctions;
+        createChatPost, createAudioPost,
+        createVideoPost } = CreateFunctions;
 
 const mutation = new GraphQLObjectType({
   name: 'Mutations',
@@ -84,7 +84,6 @@ const mutation = new GraphQLObjectType({
         instanceData: { type: GraphQLJSONObject },
       },
       resolve(_, { instanceData }) {
-        console.log(instanceData)
         switch(instanceData.kind) {
           case 'TextPost':
             return createTextPost(instanceData)
@@ -96,6 +95,10 @@ const mutation = new GraphQLObjectType({
             return createLinkPost(instanceData)
           case 'ChatPost':
             return createChatPost(instanceData)
+          case 'AudioPost':
+            return createAudioPost(instanceData)
+          case 'VideoPost':
+            return createVideoPost(instanceData)
           default:
             console.log('no types matched in createPost')
         }

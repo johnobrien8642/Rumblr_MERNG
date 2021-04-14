@@ -1,6 +1,7 @@
-//preview images and links
+//preview files
 /* eslint-disable no-loop-func */
 import axios from 'axios';
+import Validator from 'validator';
 
 const previewMainImages = (
   e, main,
@@ -92,6 +93,59 @@ const previewBodyImages = (
   }
 }
 
+const previewAudio = (
+  e, mm, audioObj, 
+  audioFile, 
+  active, setActive
+) => {
+  const file = e.currentTarget.files[0]
+
+  var reader = new FileReader();
+
+  reader.onloadend = () => {
+    // console.log(file)
+    mm.parseBlob(file).then(meta => {
+      const { common } = meta;
+      audioObj.current.src = reader.result
+      audioObj.current.album = common.album || ''
+      audioObj.current.artist = common.artist || ''
+      audioObj.current.title = common.title || ''
+      audioObj.current.kind = 'audioObj'
+      audioFile.current = file
+      setActive(active = true)
+    })
+  }
+
+  reader.readAsDataURL(file)
+}
+
+const previewVideoFile = (
+  e, videoObj, 
+  videoFile,
+  active, setActive
+) => {
+  const file = e.currentTarget.files[0]
+  const videoPath = URL.createObjectURL(file)
+
+  videoFile.current = file
+  videoObj.current = videoPath
+  setActive(active = true)
+}
+
+const previewVideoLink = (
+  e, videoObj,
+  active, setActive
+) => {
+  if (Validator.isURL(e.target.value)) {
+    var matched = new RegExp(/youtube|vimeo|twitch|dailymotion/)
+
+    if (matched) {
+      videoObj.current = e.target.value
+      setActive(active = true)
+    }
+  }
+}
+
 //remove objs
 
 const removeMainObj = (
@@ -131,7 +185,7 @@ const removeBodyObj = (
 }
 
 const removeLinkSiteNameAndImage = (
-  siteName, setSitename, 
+  siteName, setSitename,
   imageUrl, setImageUrl,
   showNameAndUrl,
   setShowNameAndUrl,
@@ -151,6 +205,24 @@ const removeLinkTitleAndDesc = (
   setTitle(title = '')
   setLinkDescription(linkDescription = '')
   setShowTitleAndLinkDescription(showTitleAndLinkDescription = false)
+}
+
+const removeAudioObj = (
+  audioObj, audioFile,
+  active, setActive
+) => {
+  audioObj.current = {}
+  audioFile.current = {}
+  setActive(active = false)
+}
+
+const removeVideoObj = (
+  videoObj, videoFile,
+  active, setActive
+) => {
+  videoObj.current = {}
+  videoFile.current = {}
+  setActive(active = false)
 }
 
 //handle tags
@@ -272,16 +344,99 @@ const fetchUrlMetadata = (link) => {
   })
 }
 
+//async file upload
+
+const mainPost = (
+  mainImagesFormData
+) => {
+  return axios.post('/api/posts/images', mainImagesFormData, {
+    headers: {
+      'Content-Type': 'undefined'
+    }
+  }).then(mainRes => {
+    let mainImgObj = mainRes.data;
+    return mainImgObj
+  })
+}
+
+const bodyPost = (
+  bodyImagesFormData
+) => {
+  return axios.post('/api/posts/images', bodyImagesFormData, {
+    headers: {
+      'Content-Type': 'undefined'
+    }
+  }).then(bodyRes => {
+    let bodyImgObj = bodyRes.data;
+    return bodyImgObj
+  })
+}
+
+const audioPost = (
+  audioFileFormData
+) => {
+  return axios.post('/api/posts/audio', audioFileFormData, {
+    headers: {
+      'Content-Type': 'undefined'
+    }
+  }).then(audioRes => {
+    let audioObj = audioRes.data
+    return audioObj
+  })
+}
+
+const videoPost = (
+  videoFileFormData
+) => {
+  return axios.post('/api/posts/video', videoFileFormData, {
+    headers: {
+      'Content-Type': 'undefined'
+    }
+  }).then(videoRes => {
+    let videoObj = videoRes.data
+    return videoObj
+  })
+}
+
+//apollo cache
+
+const updateCache = (
+  client, createPost,
+  currentUser, query
+) => {
+  var readQuery = client.readQuery({
+    query: query,
+    variables: {
+      query: currentUser
+    }
+  })
+  
+  var { fetchUserFeed } = readQuery;
+  
+  var newPostArr = [createPost, ...fetchUserFeed]
+  
+  client.writeQuery({
+    query: query,
+    variables: {
+      query: currentUser
+    },
+    data: {
+      fetchUserFeed: newPostArr
+    }
+  })
+}
 
 const PostCreateUtil = { 
-  previewMainImages, previewBodyImages,
-  removeMainObj, removeBodyObj,
-  handleTagInput, 
-  handleFoundTag,
-  drag, onDropBody, onDropMain, 
-  allowDrop, removeLinkSiteNameAndImage,
+  previewMainImages, previewBodyImages, 
+  previewAudio, previewVideoFile, 
+  previewVideoLink, removeMainObj,
+  removeBodyObj, removeAudioObj,
+  removeVideoObj, handleTagInput, handleFoundTag, 
+  drag, onDropBody, onDropMain, allowDrop, 
+  removeLinkSiteNameAndImage,
   removeLinkTitleAndDesc,
-  fetchUrlMetadata
+  fetchUrlMetadata, mainPost, bodyPost,
+  audioPost, videoPost, updateCache
 };
 
 export default PostCreateUtil;

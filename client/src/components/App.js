@@ -11,7 +11,9 @@ import UserFollowingFeed from './feeds/User_Following_Feed';
 import UserBlogShow from './feeds/User_Blog_Show';
 import RepostForm from './posts/util/components/social/RepostForm'
 import AuthRoute from '../util/route_util';
+import 'react-h5-audio-player/lib/styles.css';
 import './../stylesheets/application.scss';
+
 
 const App = () => {
   return (

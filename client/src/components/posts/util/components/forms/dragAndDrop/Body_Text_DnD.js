@@ -27,15 +27,15 @@ const BodyTextDnD = ({
       <button 
         type='button' 
         onClick={() => removeBodyObj(
-            i, text.kind, body, 
-            setBodyImageFiles, 
+            i, text.kind, body,
+            setBodyImageFiles,
             bodyImageFiles
           )
         }
       >
         X
       </button>
-      <p>{text.content}</p>
+      <div dangerouslySetInnerHTML={{ __html: text.content }}/>
     </div>
   )
 }

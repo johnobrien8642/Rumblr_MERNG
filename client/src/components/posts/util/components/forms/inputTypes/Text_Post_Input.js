@@ -12,11 +12,13 @@ const TextPostInput = ({
         placeholder='Title'
         onChange={e => setTitle(title = e.target.value)}
       />
-      <textarea
+      <div
+          className='textEditor'
+          contentEditable={true}
           value={main}
           placeholder='Your text here...'
-          onChange={e => setMain(main = e.target.value)}
-      ></textarea>
+          onInput={e => setMain(main = e.target.innerHTML)}
+      ></div>
     </div>
   )
 }

@@ -43,6 +43,21 @@ const QueryFragments = {
     _id
     chat
   `,
+  AUDIO_POST:`
+    _id
+    audioFile {
+      _id
+      url
+    }
+    audioMeta
+  `,
+  VIDEO_POST:`
+    _id
+    videoLink {
+      _id
+      url
+    }
+  `,
 }
 
 export default QueryFragments;
