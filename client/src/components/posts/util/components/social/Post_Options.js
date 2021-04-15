@@ -1,12 +1,18 @@
 import React from 'react'; 
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
 import { Link, withRouter } from 'react-router-dom';
 import LikeButton from './Like_Button'
 import Queries from '../../../../../graphql/queries';
-const { DOES_USER_LIKE_POST } = Queries;
+import Mutations from '../../../../../graphql/mutations';
+import PostCreateUtil from '../../functions/post_create_util.js'
+const { DOES_USER_LIKE_POST, FETCH_USER_FEED } = Queries;
+const { DELETE_POST } = Mutations;
+const { updateCacheDelete } = PostCreateUtil;
 
-const PostOptions = ({ post }) => {
+const PostOptions = ({ 
+  post, refetchNotes 
+}) => {
   
   var postId
   if (post.kind === 'Like' && post.kind === 'Repost') {
@@ -16,6 +22,19 @@ const PostOptions = ({ post }) => {
   } else {
     postId = post._id
   }
+
+  let [deletePost] = useMutation(DELETE_POST, {
+    update(client, { data }) {
+      const { deletePost } = data;
+      var currentUser = Cookies.get('currentUser')
+      var query = FETCH_USER_FEED
+
+      updateCacheDelete(
+        client, deletePost,
+        currentUser, query
+      )
+    }
+  })
 
   let { loading, error, data, refetch } = useQuery(DOES_USER_LIKE_POST,{
     variables: {
@@ -32,14 +51,28 @@ const PostOptions = ({ post }) => {
   return (
     <div>
       <Link
-        to={`/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
+        to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
       >
         Repost
       </Link>
-      <LikeButton 
+      <LikeButton
         post={post}
-        liked={doesUserLikePost} 
+        liked={doesUserLikePost}
+        refetchNotes={refetchNotes}
         refetchDoesUserLikePost={refetch}
+      />
+      
+      <img
+        className='deletePostBtn'
+        src="https://img.icons8.com/metro/26/000000/delete.png"
+        alt=''
+        onClick={() => {
+          deletePost({
+            variables: {
+              postId: post._id
+            }
+          })
+        }}
       />
     </div>
   )

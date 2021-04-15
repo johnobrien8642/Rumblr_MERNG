@@ -10,7 +10,7 @@ import Tags from '../../util/components/forms/Tags'
 import PostCreateUtil from '../../util/functions/post_create_util.js'
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
-const { mainPost, bodyPost, updateCache } = PostCreateUtil;
+const { mainPost, bodyPost, updateCacheCreate } = PostCreateUtil;
 
 const PhotoPostForm = () => {
   let [mainImageFiles, setMainImageFiles] = useState([]);
@@ -43,7 +43,7 @@ const PhotoPostForm = () => {
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
       
-      updateCache(client, createPost, currentUser, query)
+      updateCacheCreate(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();

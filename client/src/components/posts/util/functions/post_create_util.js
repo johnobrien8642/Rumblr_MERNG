@@ -386,21 +386,33 @@ const audioPost = (
 }
 
 const videoPost = (
-  videoFileFormData
+  videoFileFormData,
+  videoObj
 ) => {
-  return axios.post('/api/posts/video', videoFileFormData, {
-    headers: {
-      'Content-Type': 'undefined'
-    }
-  }).then(videoRes => {
-    let videoObj = videoRes.data
-    return videoObj
-  })
+  if (videoObj.current) {
+    return axios.post('/api/posts/video', {
+      params: {
+        url: videoObj.current
+      }
+    }).then(videoRes => {
+      let videoObj = videoRes.data
+      return videoObj
+    })
+  } else {
+    return axios.post('/api/posts/video', videoFileFormData, {
+      headers: {
+        'Content-Type': 'undefined'
+      }
+    }).then(videoRes => {
+      let videoObj = videoRes.data
+      return videoObj
+    })
+  }
 }
 
 //apollo cache
 
-const updateCache = (
+const updateCacheCreate = (
   client, createPost,
   currentUser, query
 ) => {
@@ -426,6 +438,39 @@ const updateCache = (
   })
 }
 
+const updateCacheDelete = (
+  client, deletePost,
+  currentUser, query
+) => {
+  var readFeed = client.readQuery({
+    query: query,
+    variables: {
+      query: currentUser
+    }
+  })
+
+  var { fetchUserFeed } = readFeed;
+
+  var newPostArr = fetchUserFeed.filter(post => {
+      if (post._id !== deletePost._id) {
+        return false
+      } else {
+        return true
+      }
+    }
+  )
+
+  client.writeQuery({
+    query: query,
+    variables: {
+      query: currentUser
+    },
+    data: {
+      fetchUserFeed: newPostArr
+    }
+  })
+}
+
 const PostCreateUtil = { 
   previewMainImages, previewBodyImages, 
   previewAudio, previewVideoFile, 
@@ -436,7 +481,8 @@ const PostCreateUtil = {
   removeLinkSiteNameAndImage,
   removeLinkTitleAndDesc,
   fetchUrlMetadata, mainPost, bodyPost,
-  audioPost, videoPost, updateCache
+  audioPost, videoPost, updateCacheCreate,
+  updateCacheDelete
 };
 
 export default PostCreateUtil;

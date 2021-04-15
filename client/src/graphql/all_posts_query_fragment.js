@@ -30,7 +30,7 @@ const AllQueryFragment = {
       ${POST}
     }
     ... on VideoPostType {
-    ${VIDEO_POST}
+      ${VIDEO_POST}
       ${POST}
     }
   `

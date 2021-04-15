@@ -4,12 +4,17 @@ import Cookies from 'js-cookie';
 import Mutations from '../../../../../graphql/mutations'
 const { LIKE_POST, UNLIKE_POST } = Mutations;
 
-const LikeButton = ({ post, liked, refetchDoesUserLikePost }) => {
+const LikeButton = ({ 
+  post, liked, 
+  refetchDoesUserLikePost,
+  refetchNotes
+}) => {
   var initial = liked ? true : false
 
   let [status, setStatus] = useState(initial)
 
   useEffect(() => {
+    refetchNotes()
     refetchDoesUserLikePost()
   })
 

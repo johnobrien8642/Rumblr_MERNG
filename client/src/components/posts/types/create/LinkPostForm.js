@@ -10,17 +10,15 @@ import Tags from '../../util/components/forms/Tags'
 import PostCreateUtil from '../../util/functions/post_create_util.js'
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
-const { fetchUrlMetadata, bodyPost, updateCache } = PostCreateUtil;
+const { fetchUrlMetadata, bodyPost, updateCacheCreate } = PostCreateUtil;
 
 const LinkPostForm = () => {
   let [link, setLink] = useState('');
   let [pastLink, setPastLink] = useState('')
-
   let [siteName, setSiteName] = useState('');
   let [imageUrl, setImageUrl] = useState('');
   let [title, setTitle] = useState('');
   let [linkDescription, setLinkDescription] = useState('');
-
   let [result, setResult] = useState('');
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
@@ -31,7 +29,7 @@ const LinkPostForm = () => {
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   const formId = 'linkPostForm';
-  const formInputId = 'linkPostInput'
+  const formInputId = 'linkPostInput';
   let history = useHistory();
 
   let [createPost] = useMutation(CREATE_POST, {
@@ -40,7 +38,7 @@ const LinkPostForm = () => {
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
         
-      updateCache(client, createPost, currentUser, query)
+      updateCacheCreate(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();

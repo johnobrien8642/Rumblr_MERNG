@@ -11,12 +11,11 @@ import TagType from '../objects/posts/util/tag_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
 import UserAndTagInputType from '../inputs/user_and_tag_input_type.js'
 import AnyPostType from '../unions/any_post_type.js'
+import LikeAndRepostType from '../unions/like_and_repost_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
-import Post from '../../../models/posts/types/Post.js';
 const User = mongoose.model('User');
-const TextPost = mongoose.model('TextPost');
-const PhotoPost = mongoose.model('PhotoPost');
+const Post = mongoose.model('Post');
 const Image = mongoose.model('Image');
 const Tag = mongoose.model('Tag');
 const Like = mongoose.model('Like');
@@ -273,7 +272,7 @@ const RootQueryType = new GraphQLObjectType({
         return User.aggregate([
           { $match: { blogName: user } },
           {
-            $lookup: {
+            $lookup: {  
               from: 'follows',
               let: { user: '$_id', onModel: 'User' },
                 pipeline: [
@@ -314,6 +313,53 @@ const RootQueryType = new GraphQLObjectType({
               { $unwind: "$postsWithTag" },
               { $replaceRoot: { "newRoot": "$postsWithTag" } },
               { $sort: { "createdAt": -1 } }
+        ]).then(res => res)
+      }
+    },
+    fetchLikesAndReposts: {
+      type: new GraphQLList(LikeAndRepostType),
+      args: { postId: { type: GraphQLID } },
+      resolve(parentValue, { postId }) {
+        var recastPostId = mongoose.Types.ObjectId(postId)
+        return Post.aggregate([
+          { $match: { _id: recastPostId } },
+          {
+            $lookup: {
+              from: 'likes',
+              localField: '_id',
+              foreignField: 'post',
+              as: 'likes'
+            }
+          },
+          {
+            $lookup: {  
+              from: 'posts',
+              let: { postId: '$_id', postKind: 'Repost' },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and: 
+                      [
+                        { $eq: [ "$post", "$$postId" ] },
+                        { $eq: [ "$kind", "$$postKind" ]}
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'reposts'
+            }
+          },
+          { $addFields: { 
+              notes: { 
+                $concatArrays: [ 
+                  "$likes", "$reposts"
+                ] 
+              } 
+            } 
+          },
+          { $unwind: "$notes" },
+          { $replaceRoot: { "newRoot": "$notes" } }
         ]).then(res => res)
       }
     },

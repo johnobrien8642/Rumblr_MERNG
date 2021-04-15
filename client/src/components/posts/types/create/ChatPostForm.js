@@ -8,7 +8,7 @@ import ChatPostInput from '../../util/components/forms/inputTypes/Chat_Post_Inpu
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostCreateUtil from '../../util/functions/post_create_util.js';
-const { bodyPost, updateCache } = PostCreateUtil;
+const { bodyPost, updateCacheCreate } = PostCreateUtil;
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -40,7 +40,7 @@ const ChatPostForm = () => {
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
         
-      updateCache(client, createPost, currentUser, query)
+      updateCacheCreate(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();
@@ -52,7 +52,6 @@ const ChatPostForm = () => {
   });
 
   const resetInputs = () => {
-    // setChat(chat = '')
     chat.current = '';
     setDescription(description = '')
     body.current = []

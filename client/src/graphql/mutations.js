@@ -73,6 +73,21 @@ const Mutations = {
       }
     }
   `,
+  DELETE_POST: gql`
+    mutation deletePost($postId: ID ) {
+      deletePost(postId: $postId)
+    }
+  `,
+  CREATE_REPOST: gql`
+    mutation CreateRepost($repostData: JSONObject ) {
+      repost(repostData: $repostData) {
+       _id
+       post {
+         ${ALL_POSTS}
+       }
+      }
+    }
+  `,
 };
 
 export default Mutations;

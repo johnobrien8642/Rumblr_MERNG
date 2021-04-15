@@ -62,30 +62,48 @@ const RepostForm = () => {
     setRepostCaption(repostCaption = '');
   }
 
+  const handleSubmit = () => {
+    var repostObj = {}
+
+    if (post.kind === 'Repost') {
+      repostObj.postId = post.post._id
+      repostObj.postKind = post.post.kind
+    } else {
+      repostObj.postId = post._id
+      repostObj.postKind = post.kind
+    }
+
+    repostObj.repostCaption = repostCaption
+    repostObj.user = Cookies.get('currentUser')
+    repostObj.repostedFrom = post.user.blogName
+
+    repost({
+      variables: {
+        repostData: repostObj
+      }
+    })
+  }
+
   return (
     <div>
       <form
         onSubmit={e => {
           e.preventDefault();
-          repost({
-            variables: {
-              postId: post._id,
-              repostCaption: repostCaption,
-              user: Cookies.get('currentUser'),
-              repostedFrom: post.user.blogName,
-              postKind: post.kind,
-            }
-          })
+          handleSubmit()
         }}
       >
         
-        <PostShow post={post} />
+        <PostShow 
+          post={post} 
+        />
 
         <textarea
           type='text'
           value={repostCaption}
           placeholder={'Enter a caption'}
-          onChange={e => setRepostCaption(repostCaption = e.target.value)}
+          onChange={e => {
+            setRepostCaption(repostCaption = e.target.value)
+          }}
         ></textarea>
 
         <button 

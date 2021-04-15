@@ -33,6 +33,7 @@ const postHeader = (post) => {
 
 const repostFooter = (post) => {
   var data = demeterPost(post)
+  var repost = post
 
   if (post.kind === 'Repost') {
     return (
@@ -43,7 +44,7 @@ const repostFooter = (post) => {
             {data.user.blogName}
           </Link>
         </span>
-        <p>{data.repostCaption}</p> 
+        <p>{repost.repostCaption}</p> 
       </div>
     )
   } else {

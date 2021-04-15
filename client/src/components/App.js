@@ -9,7 +9,6 @@ import TagFeed from './feeds/Tag_Feed';
 import UserPostLikesFeed from './feeds/User_Post_Likes_Feed';
 import UserFollowingFeed from './feeds/User_Following_Feed';
 import UserBlogShow from './feeds/User_Blog_Show';
-import RepostForm from './posts/util/components/social/RepostForm'
 import AuthRoute from '../util/route_util';
 import 'react-h5-audio-player/lib/styles.css';
 import './../stylesheets/application.scss';
@@ -20,10 +19,9 @@ const App = () => {
     <div className="App">
       <Nav />
       <Switch>
-        <AuthRoute exact path='/dashboard' component={Dashboard} />
+        <AuthRoute path='/dashboard' component={Dashboard} />
         <Route exact path='/view/blog/:blogName' component={UserBlogShow} />
         <Route exact path='/view/tag/:tagTitle' component={TagFeed} />
-        <Route exact path='/repost/:blogName/:postId/:typename' component={RepostForm} />
         <Route exact path='/likes' component={UserPostLikesFeed} />
         <Route exact path='/following' component={UserFollowingFeed} />
         <Route exact path='/login' component={Login} />

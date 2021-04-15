@@ -6,7 +6,7 @@ const options = { discriminatorKey: 'kind' }
 
 const VideoPost = Post.discriminator('VideoPost',
   new Schema({
-    videoLink: {
+  videoLink: {
       type: Schema.Types.ObjectId,
       ref: 'Video'
     },

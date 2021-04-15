@@ -10,7 +10,8 @@ import Tags from '../../util/components/forms/Tags';
 import PostCreateUtil from '../../util/functions/post_create_util.js';
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
-const { bodyPost, videoPost, updateCache } = PostCreateUtil;
+const { bodyPost, videoPost, 
+        updateCacheCreate } = PostCreateUtil;
 
 const VideoPostForm = () => {
   let videoFile = useRef('');
@@ -34,7 +35,7 @@ const VideoPostForm = () => {
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
         
-      updateCache(client, createPost, currentUser, query)
+      updateCacheCreate(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();
@@ -46,6 +47,9 @@ const VideoPostForm = () => {
   });
 
   const resetInputs = () => {
+    videoObj.current = '';
+    videoFile.current = '';
+    setActive(active = false);
     setBodyImageFiles(bodyImageFiles = []);
     bodyImages.current = [];
     body.current = [];
@@ -60,7 +64,9 @@ const VideoPostForm = () => {
     var videoFileFormData = new FormData();
     var bodyImagesFormData = new FormData();
 
-    videoFileFormData.append('video', videoFile.current)
+    if (videoFile.current) {
+      videoFileFormData.append('video', videoFile.current)
+    }
 
     for (var i2 = 0; i2 < bodyImageFiles.length; i2++) {
       var file2 = bodyImageFiles[i2];
@@ -69,7 +75,7 @@ const VideoPostForm = () => {
 
     Promise.all([
       bodyPost(bodyImagesFormData),
-      videoPost(videoFileFormData)
+      videoPost(videoFileFormData, videoObj)
     ]).then(
       ([bodyObjs, video]) => {
         let cleanedBody = bodyObjs.map((obj) => {
@@ -78,11 +84,7 @@ const VideoPostForm = () => {
         })
 
         var instanceData = {};
-        if (video) {
-          instanceData.videoLink = video[0]._id
-        } else {
-          instanceData.videoLink = videoObj.current
-        }
+        instanceData.videoLink = video[0]._id
         instanceData.descriptions = body.current.filter(obj => obj.kind !== 'img')
         instanceData.descriptionImages = cleanedBody;
         instanceData.tags = tags;
@@ -97,7 +99,7 @@ const VideoPostForm = () => {
       }
     )
   }
-  
+
   return (
     <div
       className='postForm'
@@ -141,7 +143,7 @@ const VideoPostForm = () => {
 
       <button
         type='submit'
-        disabled={!videoFile.current || !videoObj.current}
+        disabled={!videoObj.current}
       >
         Post
       </button>

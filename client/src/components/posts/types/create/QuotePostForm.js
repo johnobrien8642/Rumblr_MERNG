@@ -8,7 +8,7 @@ import QuotePostInput from '../../util/components/forms/inputTypes/Quote_Post_In
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostCreateUtil from '../../util/functions/post_create_util.js';
-const { bodyPost, updateCache } = PostCreateUtil;
+const { bodyPost, updateCacheCreate } = PostCreateUtil;
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -33,7 +33,7 @@ const QuotePostForm = () => {
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
 
-      updateCache(client, createPost, currentUser, query)
+      updateCacheCreate(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();

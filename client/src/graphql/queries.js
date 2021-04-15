@@ -184,6 +184,23 @@ const Queries = {
     query FetchPost($postId: ID) {
       post(postId: $postId) {
         __typename
+        ... on RepostType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+          }
+          repostedFrom {
+            _id
+            blogName
+          }
+          repostCaption
+          post {
+            __typename
+            ${ALL_POSTS}
+          }
+        }
         ${ALL_POSTS}
       }
     }
@@ -193,6 +210,29 @@ const Queries = {
       tag(tagTitle: $tagTitle) {
         _id
         title
+      }
+    }
+  `,
+  FETCH_LIKES_AND_REPOSTS: gql`
+    query FetchLikesAndReposts($postId: ID) {
+      fetchLikesAndReposts(postId: $postId) {
+        __typename
+        ... on LikeType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+          }
+        }
+        ... on RepostType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+          }
+        }
       }
     }
   `,

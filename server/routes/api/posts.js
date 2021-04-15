@@ -74,18 +74,27 @@ router.post('/audio', upload.any(), async (req, res, next) => {
 })
 
 router.post('/video', upload.any(), async (req, res, next) => {
+  console.log(req.files)
   const url = req.protocol + '://' + req.get('host')
   
-  function createVideo(f) {
-    let video = new Video({
-      url: url + '/uploads/video/' + f.filename,
-      created: Date.now(),
-    })
-    return video.save()
+  function createVideo(req) {
+    if (req.files) {
+      let video = new Video({
+        url: url + '/uploads/video/' + req.files[0].filename,
+        created: Date.now(),
+      })
+      return video.save()
+    } else {
+      let video = new Video({
+        url: url + '/uploads/video/' + req.body.params.url,
+        created: Date.now()
+      })
+      return video.save()
+    }
   }
 
   Promise
-    .all([createVideo(req.files[0])])
+    .all([createVideo(req)])
     .then(data => res.send(data))
     .catch(err => {
       console.log(`Error on image post promise: ${err}`)

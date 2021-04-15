@@ -104,6 +104,20 @@ const mutation = new GraphQLObjectType({
         }
       }
     },
+    deletePost: {
+      type: GraphQLID,
+      args: {
+        postId: { type: GraphQLID }
+      },
+      resolve(_, { postId }) {
+        var recastPostId = mongoose.Types.ObjectId(postId)
+        return Promise.all([
+          Post.deleteOne({ _id: recastPostId }),
+          Like.deleteMany({ post: recastPostId }),
+          Repost.deleteOne({ _id: recastPostId }),
+          Repost.deleteMany({ post: recastPostId })
+        ]).then(([ogPost, like, repost, reposts]) => (postId))}
+    },
     likePost: {
       type: LikeType,
       args: {
@@ -172,29 +186,23 @@ const mutation = new GraphQLObjectType({
     },
     repost: {
       type: RepostType,
-      args: { 
-        postId: { type: GraphQLID },
-        repostCaption: { type: GraphQLString },
-        user: { type: GraphQLString },
-        repostedFrom: { type: GraphQLString },
-        postKind: { type: GraphQLString }
+      args: {
+        repostData: { type: GraphQLJSONObject }
       },
       resolve(parentValue, {
-        postId, repostCaption,
-        user, repostedFrom,
-        postKind
+        repostData
       }) {
         var repost = new Repost();
         
         return Promise.all([
-          User.findOne({ blogName: user }),
-          User.findOne({ blogName: repostedFrom }),
+          User.findOne({ blogName: repostData.user }),
+          User.findOne({ blogName: repostData.repostedFrom }),
         ]).then(([reposter, reposted]) => {
-          repost.post = postId
+          repost.post = repostData.postId
           repost.user = reposter._id
           repost.repostedFrom = reposted._id
-          repost.repostCaption = repostCaption
-          repost.onModel = postKind
+          repost.repostCaption = repostData.repostCaption
+          repost.onModel = repostData.postKind
           return Promise.all(
             ([repost.save()])).then(([repost]) => repost)
         })

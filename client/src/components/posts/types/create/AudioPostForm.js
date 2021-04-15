@@ -10,7 +10,7 @@ import Tags from '../../util/components/forms/Tags';
 import PostCreateUtil from '../../util/functions/post_create_util.js';
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
-const { bodyPost, audioPost, updateCache } = PostCreateUtil;
+const { bodyPost, audioPost, updateCacheCreate } = PostCreateUtil;
 
 const AudioPostForm = () => {
   let audioFile = useRef({});
@@ -34,7 +34,7 @@ const AudioPostForm = () => {
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
         
-      updateCache(client, createPost, currentUser, query)
+      updateCacheCreate(client, createPost, currentUser, query)
     },
     onCompleted() {
       resetInputs();
@@ -132,7 +132,6 @@ const AudioPostForm = () => {
         setRender={setRender}
         errMessage={errMessage}
         setErrMessage={setErrMessage}
-        formInputId={formInputId}
       />
 
       <Tags

@@ -13,6 +13,7 @@ const TextPostInput = ({
         onChange={e => setTitle(title = e.target.value)}
       />
       <div
+          id='mainTextInput'
           className='textEditor'
           contentEditable={true}
           value={main}
