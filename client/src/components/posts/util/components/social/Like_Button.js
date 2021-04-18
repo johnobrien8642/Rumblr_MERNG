@@ -2,59 +2,83 @@ import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
 import Mutations from '../../../../../graphql/mutations'
+import Queries from '../../../../../graphql/queries'
+import PostCreateUtil from '../../functions/post_create_util.js'
 const { LIKE_POST, UNLIKE_POST } = Mutations;
+const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
+const { updateCacheLike, updateCacheUnlike } = PostCreateUtil;
 
 const LikeButton = ({ 
   post, liked, 
-  refetchDoesUserLikePost,
-  refetchNotes
+  refetchDoesUserLikePost
 }) => {
   var initial = liked ? true : false
 
   let [status, setStatus] = useState(initial)
 
   useEffect(() => {
-    refetchNotes()
     refetchDoesUserLikePost()
   })
 
-  let [likePost] = useMutation(LIKE_POST)
+  let [likePost] = useMutation(LIKE_POST, {
+    update(client, { data }) {
+      const { likePost } = data,
+      query = FETCH_LIKES_REPOSTS_AND_COMMENTS
 
-  let [unlikePost] = useMutation(UNLIKE_POST)
+      updateCacheLike(
+        client, likePost,
+        post, query
+      )
+    }
+  })
+
+  let [unlikePost] = useMutation(UNLIKE_POST, {
+    update(client, { data }) {
+      const { unlikePost } = data,
+      query = FETCH_LIKES_REPOSTS_AND_COMMENTS
+
+      updateCacheUnlike(
+        client, unlikePost,
+        post, liked, query
+      )
+    }
+  })
   
   if (status) {
     return (
-      <button
-      type='button'
-      onClick={() => {
-        unlikePost({
-          variables: {
-            likeId: liked._id
-          }
-        })
-        setStatus(status = false)
-      }}
-      >
-        UnLike
-      </button>
+      <img
+        className='likeBtn'
+        src="https://img.icons8.com/material-rounded/24/000000/like--v1.png"
+        alt=''
+        onClick={() => {
+          unlikePost({
+            variables: {
+              likeId: liked._id
+            }
+          })
+
+          setStatus(status = false)
+        }}
+      />
     )
   } else {
     return (
-      <button
-      type='button'
-      onClick={() => {
-        likePost({
-          variables: {
-            postId: post._id,
-            user: Cookies.get('currentUser'),
-            postKind: post.kind
-          }
-        })
-        setStatus(status = true)
-      }}
-      >
-        Like
-      </button>
+      <img
+        className='likeBtn'
+        src="https://img.icons8.com/material-outlined/24/000000/like--v1.png"
+        alt=''
+        onClick={() => {
+          likePost({
+            variables: {
+              postId: post._id,
+              user: Cookies.get('currentUser'),
+              postKind: post.kind
+            }
+          })
+
+          setStatus(status = true)
+        }}
+      />
     )
   }
 }

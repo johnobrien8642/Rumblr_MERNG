@@ -11,7 +11,8 @@ const { DELETE_POST } = Mutations;
 const { updateCacheDelete } = PostCreateUtil;
 
 const PostOptions = ({ 
-  post, refetchNotes 
+  post, refetchNotes, notesCount,
+  active, setActive, toggleNotes
 }) => {
   
   var postId
@@ -30,7 +31,7 @@ const PostOptions = ({
       var query = FETCH_USER_FEED
 
       updateCacheDelete(
-        client, deletePost,
+        client, post, deletePost,
         currentUser, query
       )
     }
@@ -48,34 +49,136 @@ const PostOptions = ({
 
   const { doesUserLikePost } = data;
 
-  return (
-    <div>
-      <Link
-        to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
-      >
-        Repost
-      </Link>
-      <LikeButton
-        post={post}
-        liked={doesUserLikePost}
-        refetchNotes={refetchNotes}
-        refetchDoesUserLikePost={refetch}
-      />
+  if (post.user.blogName === Cookies.get('currentUser')) {
+    return (
+      <div>
+        <div
+          className='notesBtn'
+          onClick={() => {
+            toggleNotes(active, setActive)
+          }}
+        >
+          {notesCount} Notes
+        </div>
+  
+        <img
+          className='addCommentBtn'
+          src="https://img.icons8.com/windows/32/000000/speech-bubble--v1.png"
+          alt=''
+          onClick={() => {
+            toggleNotes()
+          }}
+        />
+  
+        <Link
+          to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
+        >
+          <img 
+            src="https://img.icons8.com/material-outlined/24/000000/retweet.png"
+            alt=''
+          />
+        </Link>
+  
+  
+        <LikeButton
+          post={post}
+          liked={doesUserLikePost}
+          refetchDoesUserLikePost={refetch}
+          refetchNotes={refetchNotes}
+        />
+        
+        <img
+          className='deletePostBtn'
+          src="https://img.icons8.com/metro/26/000000/delete.png"
+          alt=''
+          onClick={() => {
+            deletePost({
+              variables: {
+                postId: post._id
+              }
+            })
+          }}
+        />
+  
+        <Link
+          to={`/dashboard/update/${post._id}/${post.kind}`}
+        >
+          <img
+            className='editPostBtn'
+            src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+            alt=''
+          />
+        </Link>
+      </div>
+    )
+  } else {
+    return (
+      <div>
+        <div
+          className='notesBtn'
+          onClick={() => {
+            toggleNotes(active, setActive)
+          }}
+        >
+          {notesCount} Notes
+        </div>
+  
+        <img
+          className='addCommentBtn'
+          src="https://img.icons8.com/windows/32/000000/speech-bubble--v1.png"
+          alt=''
+          onClick={() => {
+            toggleNotes()
+          }}
+        />
+  
+        <Link
+          to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
+        >
+          <img 
+            src="https://img.icons8.com/material-outlined/24/000000/retweet.png"
+            alt=''
+          />
+        </Link>
+  
+  
+        <LikeButton
+          post={post}
+          liked={doesUserLikePost}
+          refetchDoesUserLikePost={refetch}
+        />
+      </div>
+    )
+  }
+
+  // return (
+  //   <div>
+  //     <Link
+  //       to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
+  //     >
+  //       Repost
+  //     </Link>
+  //     <LikeButton
+  //       post={post}
+  //       liked={doesUserLikePost}
+  //       refetchNotes={refetchNotes}
+  //       refetchDoesUserLikePost={refetch}
+  //     />
       
-      <img
-        className='deletePostBtn'
-        src="https://img.icons8.com/metro/26/000000/delete.png"
-        alt=''
-        onClick={() => {
-          deletePost({
-            variables: {
-              postId: post._id
-            }
-          })
-        }}
-      />
-    </div>
-  )
+  //     <img
+  //       className='deletePostBtn'
+  //       src="https://img.icons8.com/metro/26/000000/delete.png"
+  //       alt=''
+  //       onClick={() => {
+  //         deletePost({
+  //           variables: {
+  //             postId: post._id
+  //           }
+  //         })
+  //       }}
+  //     />
+  //   </div>
+  // )
 }
 
 export default withRouter(PostOptions);

@@ -2,12 +2,13 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const ImageSchema = new Schema({
-  url: {
+  src: {
     type: String,
     required: true
   },
   displayIdx: {
-    type: Number
+    type: Number,
+    default: null
   },
   createdAt: {
     type: Date,

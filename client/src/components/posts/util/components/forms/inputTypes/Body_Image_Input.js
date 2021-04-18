@@ -1,11 +1,12 @@
 import React from 'react';
 import PostCreateUtil from '../../../functions/post_create_util.js'
-const { previewBodyImages } = PostCreateUtil;
+const { previewBodyImages, previewLink } = PostCreateUtil;
 
 const BodyImageInput = ({
   formId, body, 
   bodyImageFiles,
   setBodyImageFiles,
+  render, setRender,
   errMessage, setErrMessage
 }) => {
 
@@ -24,9 +25,22 @@ const BodyImageInput = ({
                 setBodyImageFiles,
                 setErrMessage, errMessage,
               )
+
               document.getElementById(`${formId}`).reset()
             }}
           />
+          <textarea
+            placeholder='Paste a url...'
+            onChange={e => {
+              var newLinkObj = previewLink(e)
+              
+              if (newLinkObj) {
+                body.current.push(newLinkObj)
+                setRender(render + 1)
+                e.target.value = ''
+              }
+            }}
+          ></textarea>
     </React.Fragment>
   )
 }

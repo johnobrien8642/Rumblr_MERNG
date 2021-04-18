@@ -88,6 +88,25 @@ const Mutations = {
       }
     }
   `,
+  COMMENT_POST: gql`
+  mutation CommentPost($commentData: JSONObject) {
+    comment(commentData: $commentData) {
+      _id
+      content
+      user {
+        _id
+        blogName
+      }
+    }
+  }
+`,
+DELETE_COMMENT: gql`
+  mutation deleteComment($commentId: ID) {
+    deleteComment(commentId: $commentId) {
+      _id
+    }
+  }
+`
 };
 
 export default Mutations;

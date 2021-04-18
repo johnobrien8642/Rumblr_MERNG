@@ -8,8 +8,9 @@ const QueryFragments = {
     descriptions
     descriptionImages {
       _id
-      url
+      src
       kind
+      displayIdx
     }
     tags {
       _id
@@ -22,7 +23,8 @@ const QueryFragments = {
     _id
     mainImages {
       _id
-      url
+      src
+      kind
     }
   `,
   TEXT_POST:`

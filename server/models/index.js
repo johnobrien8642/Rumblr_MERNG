@@ -4,6 +4,7 @@ import Audio from './posts/util/Audio.js';
 import Video from './posts/util/Video.js';
 import Tag from './posts/util/Tag.js';
 import Like from './posts/util/Like.js';
+import Comment from './posts/util/Comment.js';
 import Repost from './posts/util/Repost.js';
 import Follow from './posts/util/Follow.js';
 import Post from './posts/types/Post.js';
@@ -22,6 +23,7 @@ const models = {
   Video,
   Tag,
   Like,
+  Comment,
   Repost,
   Follow,
   Post,

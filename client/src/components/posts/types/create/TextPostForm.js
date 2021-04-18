@@ -29,9 +29,7 @@ const TextPostForm = () => {
 
   useEffect(() => {
     body.current.forEach((obj, i) => {
-      if (obj.kind === 'text') {
-        obj.displayIdx = i
-      }
+      obj.displayIdx = i
     })
   })
 
@@ -64,6 +62,7 @@ const TextPostForm = () => {
     setErrMessage(errMessage = '');
   }
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -73,23 +72,32 @@ const TextPostForm = () => {
       var file2 = bodyImageFiles[i2];
       bodyImagesFormData.append('images', file2);
     }
-
+  
     Promise.all([
       bodyPost(bodyImagesFormData)
     ]).then(
-      ([bodyObjs]) => {
-        let cleanedBody = bodyObjs.map((obj) => {
-          delete obj.__v
-          return obj
+      ([bodyUploads]) => {
+
+        var textOnly = body.current.filter(obj => obj.srcType === 'text')
+
+        //reinsert mainUpload files
+        //at index and reset displayIdx
+        var i1 = 0
+        body.current.forEach((obj, i) => {
+          var bodyUpload = bodyUploads[i1]
+
+          if (obj.srcType === 'newImgFile') {
+            bodyUpload.displayIdx = i
+            body.current.splice(i, 1, bodyUpload)
+            i1++
+          }
         })
         
         var instanceData = {};
         instanceData.title = title;
         instanceData.main = main;
-        instanceData.descriptions = body.current.filter(obj =>
-          obj.kind !== 'img'
-        )
-        instanceData.descriptionImages = cleanedBody;
+        instanceData.descriptions = textOnly
+        instanceData.descriptionImages = body.current.filter(obj => obj.srcType !== 'text');
         instanceData.user = Cookies.get('currentUser');
         instanceData.tags = tags;
         instanceData.kind = 'TextPost'
@@ -115,7 +123,7 @@ const TextPostForm = () => {
         encType={'multipart/form-data'}
       >
 
-      <TextPostInput 
+    <TextPostInput 
         title={title}
         setTitle={setTitle}
         main={main}

@@ -213,9 +213,9 @@ const Queries = {
       }
     }
   `,
-  FETCH_LIKES_AND_REPOSTS: gql`
-    query FetchLikesAndReposts($postId: ID) {
-      fetchLikesAndReposts(postId: $postId) {
+  FETCH_LIKES_REPOSTS_AND_COMMENTS: gql`
+  query FetchLikesRepostsAndComments($postId: ID) {
+    fetchLikesRepostsAndComments(postId: $postId) {
         __typename
         ... on LikeType {
           _id
@@ -228,6 +228,20 @@ const Queries = {
         ... on RepostType {
           _id
           kind
+          repostCaption
+          user {
+            _id
+            blogName
+          }
+          repostedFrom {
+            _id
+            blogName
+          }
+        }
+        ... on CommentType {
+          _id
+          kind
+          content
           user {
             _id
             blogName

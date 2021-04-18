@@ -78,7 +78,6 @@ const postTags = (post) => {
 
 const postBody = (post) => {
   var data = demeterPost(post)
-
   var descriptionArr = [...data.descriptionImages]
   
   data.descriptions.forEach((obj, i) => {
@@ -99,7 +98,7 @@ const postBody = (post) => {
       <React.Fragment>
         <div>
           {data.mainImages.map((mainImg, i) => {
-            return <img key={i} src={`${mainImg.url}`} alt={'usefilename'} />
+            return <img key={i} src={`${mainImg.src}`} alt={'usefilename'} />
           })}
         </div>
         <p>{data.description}</p>
@@ -177,19 +176,20 @@ const demeterPost = (post) => {
 }
 
 const displayDescription = (descriptionArr) => {
+  
   return (
     <div>
       {descriptionArr.map((obj, i) => {
         switch(obj.kind) {
           case 'text':
             return (
-              <div 
+              <div
                 key={i}
                 dangerouslySetInnerHTML={{ __html: obj.content }}
               />
             )
           case 'Image':
-            return <img key={i} src={`${obj.url}`} alt={'usefilename'} />
+            return <img key={i} src={`${obj.src}`} alt={'usefilename'} />
           default:
             return 'no keys matched postBody PhotoPost'
         }

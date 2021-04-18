@@ -6,6 +6,7 @@ const PhotoPostInput = ({
   formId, main, 
   mainImageFiles,
   setMainImageFiles,
+  render, setRender,
   errMessage,
   setErrMessage
 }) => {
@@ -35,6 +36,8 @@ const PhotoPostInput = ({
         main={main}
         mainImageFiles={mainImageFiles}
         setMainImageFiles={setMainImageFiles}
+        render={render}
+        setRender={setRender}
         errMessage={errMessage}
         setErrMessage={setErrMessage}
       />

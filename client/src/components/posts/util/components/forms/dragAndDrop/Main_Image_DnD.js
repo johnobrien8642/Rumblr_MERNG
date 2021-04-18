@@ -1,6 +1,6 @@
 import React from 'react'
 import PostCreateUtil from '../../../functions/post_create_util.js'
-const { removeBodyObj, drag, 
+const { removeMainObj, drag, 
         onDropMain, allowDrop } = PostCreateUtil;
 
 const MainImageDnD = ({
@@ -13,10 +13,9 @@ const MainImageDnD = ({
     <div
       onDrop={e => {
           var sortedMainImageFiles = onDropMain(
-            e, i, main,
-            mainImageFiles
+            e, i, main, mainImageFiles
           )
-          
+    
           setMainImageFiles(mainImageFiles = [...sortedMainImageFiles])
         }
       }
@@ -27,8 +26,8 @@ const MainImageDnD = ({
     >
       <button 
         type='button' 
-        onClick={() => removeBodyObj(
-            i, img.kind, main,
+        onClick={() => removeMainObj(
+            img.arrPos, img.srcType, main,
             setMainImageFiles, 
             mainImageFiles
           )

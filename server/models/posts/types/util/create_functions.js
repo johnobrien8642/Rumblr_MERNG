@@ -8,6 +8,7 @@ const AudioPost = mongoose.model('AudioPost')
 const VideoPost = mongoose.model('VideoPost')
 const User = mongoose.model('User')
 const Tag = mongoose.model('Tag')
+const Image = mongoose.model('Image')
 
 const createTextPost = ({
   title, main,
@@ -41,29 +42,72 @@ const createTextPost = ({
       }
     })
   }
-  
-  descriptionImages.forEach((img, i) => {
-    post.descriptionImages.push(img._id)
-  })
+
+  const createImagesFromLinks = async (imageLinks) => {
+    return Promise.all(imageLinks.map(link => {
+          return asyncImageLink(link)
+        }
+      )
+    )
+  }
+
+  const asyncImageLink = async (link) => {
+    var img = new Image()
+    img.src = link.src
+    img.displayIdx = link.displayIdx
+
+    return img.save().then(img => {
+      return img
+    })
+  }
+
+  const updateUploadDispIdx = async (uploads) => {
+    return Promise.all(uploads.map(upload => {
+      return asyncUpdateUpload(upload)
+    }))
+  }
+
+  const asyncUpdateUpload = async (upload) => {
+    return Image.findById(upload._id).then(img => {
+      img.displayIdx = upload.displayIdx
+      return img.save().then(img => {
+        return img
+      })
+    })
+  }
+
+  var uploads = descriptionImages.filter(obj => obj._id !== null)
+  var imageLinks = descriptionImages.filter(obj => obj.srcType === 'newImgLink')
   
   return Promise.all([
+    createImagesFromLinks(imageLinks),
+    updateUploadDispIdx(uploads),
     getTagArr(tags, post),
     User.findOne({ blogName: user })
   ]).then(
-    ([tags, user]) => {
+    ([linkImages, updatedUploadImgs, tags, user]) => {
       post.title = title
       post.main = main
+
+      var allImgObjs = [...linkImages, ...updatedUploadImgs]
+      allImgObjs.sort((a, b) => a.displayIdx - b.displayIdx)
+
+      allImgObjs.forEach(obj => {
+        post.descriptionImages.push(obj._id)
+      })
+  
       descriptions.forEach((obj, i) => {
         post.descriptions.push(obj)
       })
+
       post.user = user._id
 
       tags.forEach((t, i) => {
         post.tags.push(t._id)
       })
 
-      return Promise.all([post.save(), user.save()]).then(
-        ([post, user])=> (post)
+      return Promise.all([post.save()]).then(
+        ([post])=> (post)
       )
     }
   )
@@ -101,20 +145,82 @@ const createPhotoPost = ({
         }
       })
     }
+
+    const createImagesFromLinks = async (imageLinks) => {
+      return Promise.all(imageLinks.map(link => {
+            return asyncImageLink(link)
+          }
+        )
+      )
+    }
   
-    mainImages.forEach((img, i) => {
-      post.mainImages.push(img._id)
-    })
+    const asyncImageLink = async (link) => {
+      var img = new Image()
+      img.src = link.src
+      img.displayIdx = link.displayIdx
   
-    descriptionImages.forEach((img, i) => {
-      post.descriptionImages.push(img._id)
-    })
+      return img.save().then(img => {
+        return img
+      })
+    }
+  
+    const updateUploadDispIdx = async (uploads) => {
+      return Promise.all(uploads.map(upload => {
+        return asyncUpdateUpload(upload)
+      }))
+    }
+  
+    const asyncUpdateUpload = async (upload) => {
+      return Image.findById(upload._id).then(img => {
+        img.displayIdx = upload.displayIdx
+        return img.save().then(img => {
+          return img
+        })
+      })
+    }
+
+    var mainUploads = mainImages.filter(obj => obj._id !== null)
+    var mainImageLinks = mainImages.filter(obj => obj.srcType === 'newImgLink')
+    var bodyUploads = descriptionImages.filter(obj => obj._id !== null)
+    var bodyImageLinks = descriptionImages.filter(obj => obj.srcType === 'newImgLink')
     
     return Promise.all([
+      createImagesFromLinks(mainImageLinks),
+      createImagesFromLinks(bodyImageLinks),
+      updateUploadDispIdx(mainUploads),
+      updateUploadDispIdx(bodyUploads),
       getTagArr(tags, post), 
       User.findOne({ blogName: user })
     ]).then(
-      ([tags, user]) => {
+      ([
+        mainLinkImages,
+        bodyLinkImages,
+        updatedMainUploadImgs,
+        updatedBodyUploadImgs,
+        tags, 
+        user
+      ]) => {
+        var allMainImgObjs = [
+          ...mainLinkImages,
+          ...updatedMainUploadImgs,
+        ]
+
+        var allBodyImgObjs = [
+          ...bodyLinkImages,
+          ...updatedBodyUploadImgs,
+        ]
+
+        allMainImgObjs.sort((a, b) => a.displayIdx - b.displayIdx)
+        allBodyImgObjs.sort((a, b) => a.displayIdx - b.displayIdx)
+
+        allMainImgObjs.forEach(obj => {
+          post.mainImages.push(obj._id)
+        })
+
+        allBodyImgObjs.forEach(obj => {
+          post.descriptionImages.push(obj._id)
+        })
+
         descriptions.forEach((obj, i) => {
           post.descriptions.push(obj)
         })
@@ -124,8 +230,8 @@ const createPhotoPost = ({
           post.tags.push(t._id)
         })
   
-        return Promise.all([post.save(), user.save()]).then(
-          ([post, user])=> (post)
+        return Promise.all([post.save()]).then(
+          ([post])=> (post)
         )
       }
     )

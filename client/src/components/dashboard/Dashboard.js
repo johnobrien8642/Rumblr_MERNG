@@ -8,7 +8,7 @@ const Dashboard = props => {
 
   return(
     <div>
-      <PostNav />
+      <PostNav props={props} />
       <Route 
         exact path={`${props.match.path}/repost/:blogName/:postId/:typename`}
         component={RepostForm}

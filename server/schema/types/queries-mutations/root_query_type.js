@@ -11,7 +11,7 @@ import TagType from '../objects/posts/util/tag_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
 import UserAndTagInputType from '../inputs/user_and_tag_input_type.js'
 import AnyPostType from '../unions/any_post_type.js'
-import LikeAndRepostType from '../unions/like_and_repost_type.js'
+import LikeRepostAndCommentType from '../unions/like_repost_and_comment_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
 const User = mongoose.model('User');
@@ -316,8 +316,8 @@ const RootQueryType = new GraphQLObjectType({
         ]).then(res => res)
       }
     },
-    fetchLikesAndReposts: {
-      type: new GraphQLList(LikeAndRepostType),
+    fetchLikesRepostsAndComments: {
+      type: new GraphQLList(LikeRepostAndCommentType),
       args: { postId: { type: GraphQLID } },
       resolve(parentValue, { postId }) {
         var recastPostId = mongoose.Types.ObjectId(postId)
@@ -329,6 +329,14 @@ const RootQueryType = new GraphQLObjectType({
               localField: '_id',
               foreignField: 'post',
               as: 'likes'
+            }
+          },
+          {
+            $lookup: {
+              from: 'comments',
+              localField: '_id',
+              foreignField: 'post',
+              as: 'comments'
             }
           },
           {
@@ -353,7 +361,7 @@ const RootQueryType = new GraphQLObjectType({
           { $addFields: { 
               notes: { 
                 $concatArrays: [ 
-                  "$likes", "$reposts"
+                  "$likes", "$reposts", "$comments"
                 ] 
               } 
             } 

@@ -37,9 +37,8 @@ router.post('/images', upload.any(), async (req, res, next) => {
   
   function createImg(f, i) {
     let img = new Image({
-      url: url + '/uploads/images/' + f.filename,
+      src: url + '/uploads/images/' + f.filename,
       created: Date.now(),
-      displayIdx: i
     })
     return img.save()
   }
@@ -50,7 +49,7 @@ router.post('/images', upload.any(), async (req, res, next) => {
     .all(promises)
     .then(data => res.send(data))
     .catch(err => {
-      console.log(`Error on image post promise: ${err}`)
+      console.log(`Error posts/api/images: ${err}`)
     })
 })
 

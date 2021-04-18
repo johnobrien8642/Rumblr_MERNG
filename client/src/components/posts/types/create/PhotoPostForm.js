@@ -30,10 +30,11 @@ const PhotoPostForm = () => {
   let history = useHistory();
 
   useEffect(() => {
-   body.current.forEach((obj, i) => {
-     if (obj.kind === 'text') {
+   main.current.forEach((obj, i) => {
       obj.displayIdx = i
-     }
+   })
+   body.current.forEach((obj, i) => {
+      obj.displayIdx = i
    })
   })
 
@@ -88,21 +89,37 @@ const PhotoPostForm = () => {
       mainPost(mainImagesFormData), 
       bodyPost(bodyImagesFormData)
     ]).then(
-      ([mainObjs, bodyObjs]) => {
-        let cleanedMain = mainObjs.map((obj) => {
-          delete obj.__v
-          return obj
+      ([mainUploads, bodyUploads]) => {
+        
+        var textOnly = body.current.filter(obj => obj.srcType === 'text')
+      
+        //reinsert mainUpload files
+        //at index and reset displayIdx
+        var i3 = 0
+        main.current.forEach((obj, i) => {
+          var mainUpload = mainUploads[i3]
+          if (obj.srcType === 'newImgFile') {
+            mainUpload.displayIdx = i
+            main.current.splice(i, 1, mainUpload)
+            i3++
+          }
         })
 
-        let cleanedBody = bodyObjs.map((obj) => {
-          delete obj.__v
-          return obj
+        var i4 = 0
+        body.current.forEach((obj, i) => {
+          var bodyUpload = bodyUploads[i4]
+          if (obj.srcType === 'newImgFile') {
+            bodyUpload.displayIdx = i
+            body.current.splice(i, 1, bodyUpload)
+            i4++
+          }
         })
+
     
         var instanceData = {};
-        instanceData.mainImages = cleanedMain;
-        instanceData.descriptions = body.current.filter(obj => obj.kind !== 'img')
-        instanceData.descriptionImages = cleanedBody;
+        instanceData.mainImages = main.current.filter(obj => obj.srcType !== 'text');
+        instanceData.descriptions = textOnly;
+        instanceData.descriptionImages = body.current.filter(obj => obj.srcType !== 'text');
         instanceData.tags = tags;
         instanceData.user = Cookies.get('currentUser');
         instanceData.kind = 'PhotoPost';
@@ -134,6 +151,8 @@ const PhotoPostForm = () => {
           main={main}
           mainImageFiles={mainImageFiles}
           setMainImageFiles={setMainImageFiles}
+          render={render}
+          setRender={setRender}
           errMessage={errMessage}
           setErrMessage={setErrMessage}
         />

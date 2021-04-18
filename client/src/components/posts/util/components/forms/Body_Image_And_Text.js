@@ -18,8 +18,7 @@ const BodyImageAndText = ({
     className={'bodyPreview'}
   >
         {body.current.map((obj, i) => {
-          switch(obj.kind) {
-            case 'img':
+          if (obj.srcType === 'newImgFile' || obj.srcType === 'newImgLink') {
               return (
                 <React.Fragment
                   key={i}
@@ -33,7 +32,7 @@ const BodyImageAndText = ({
                   />
                 </React.Fragment>
               )
-            case 'text':
+            } else if (obj.srcType === 'text') {
               return (
                 <React.Fragment
                   key={i}
@@ -49,8 +48,10 @@ const BodyImageAndText = ({
                   />
                 </React.Fragment>
               )
-              default:
-                return 'no types matched draggable body'  
+          } else {
+            return (
+              <div></div>
+            )
           }
         })}
 
@@ -61,6 +62,8 @@ const BodyImageAndText = ({
             body={body}
             bodyImageFiles={bodyImageFiles}
             setBodyImageFiles={setBodyImageFiles}
+            render={render}
+            setRender={setRender}
             errMessage={errMessage}
             setErrMessage={setErrMessage}
           />

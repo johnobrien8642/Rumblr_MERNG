@@ -28,7 +28,7 @@ const BodyImageDnD = ({
       <button 
         type='button' 
         onClick={() => removeBodyObj(
-            i, img.kind, body,
+            img.arrPos, img.srcType, body,
             setBodyImageFiles, 
             bodyImageFiles
           )

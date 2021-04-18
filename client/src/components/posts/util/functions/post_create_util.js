@@ -29,9 +29,11 @@ const previewMainImages = (
       var imgObj = {};
       imgObj.src = reader.result
       imgObj.alt = file.name
-      imgObj.kind = 'img'
-      imgObj.arrPos = i
-      file.arrPos = i
+      imgObj.srcType = 'newImgFile'
+      imgObj._id = null
+      imgObj.arrPos = mainImageFiles.length
+      file.arrPos = mainImageFiles.length
+
 
       main.current.push(imgObj)
       setMainImageFiles(mainImageFiles = [...mainImageFiles, file])
@@ -73,13 +75,13 @@ const previewBodyImages = (
       var imgObj = {};
       imgObj.src = reader.result
       imgObj.alt = file.name
-      imgObj.kind = 'img'
-      imgObj.arrPos = i
-      file.arrPos = i
+      imgObj.srcType = 'newImgFile'
+      imgObj._id = null
+      imgObj.arrPos = bodyImageFiles.length
+      file.arrPos = bodyImageFiles.length
 
       body.current.push(imgObj)
       setBodyImageFiles(bodyImageFiles = [...bodyImageFiles, file])
-
     }
 
     reader.readAsDataURL(file);
@@ -90,6 +92,21 @@ const previewBodyImages = (
     files.forEach((f, i) => {
       readAndPreview(f, i)
     });
+  }
+}
+
+const previewLink = (
+  e
+) => {
+  if (Validator.isURL(e.target.value)) {
+    var imgObj = {}
+    imgObj.src = e.target.value
+    imgObj.alt = ''
+    imgObj._id = null
+    imgObj.kind = 'Image'
+    imgObj.srcType = 'newImgLink'
+
+    return imgObj
   }
 }
 
@@ -149,37 +166,96 @@ const previewVideoLink = (
 //remove objs
 
 const removeMainObj = (
-    i, kind, main, 
-    setMainImageFiles, 
+    imgArrPos, srcType, main, 
+    setMainImageFiles,
     mainImageFiles
   ) => {
-    main.current.splice(i, 1)
 
-  if (mainImageFiles.length === 1) {
+  main.current.forEach((obj, i) => {
+    if (obj.arrPos === imgArrPos) {
+      main.current.splice(i, 1)
+    }
+  })
+
+  if (srcType === 'newImgFile' && mainImageFiles.length === 1) {
 
     setMainImageFiles(mainImageFiles = [])
 
   } else {
+    var mainImageFileDup = [...mainImageFiles]
 
-    setMainImageFiles(mainImageFiles.splice(i, 1))
+    //use arrPos key to find correct
+    //image file to delete
+    mainImageFileDup.forEach((file, i) => {
+      if (file.arrPos === imgArrPos) {
+        mainImageFileDup.splice(i, 1)
+      }
+    })
+
+    //remap arrPos key for bodyImageFiles and newImgFile
+    //in main.current, this ensures consistent
+    //drag and drop if file is deleted
+    //and uploading a new one
+    mainImageFileDup.forEach((f, i) => {
+      f.arrPos = i
+    })
+    
+    var i2 = 0
+    main.current.forEach((obj, i) => {
+      if (obj.srcType === 'newImgFile') {
+        obj.arrPos = i2
+        i2++
+      }
+    })
+
+    setMainImageFiles(mainImageFiles = mainImageFileDup)
 
   }
 }
 
 const removeBodyObj = (
-    i, kind, body, 
+    imgArrPos, srcType, body,
     setBodyImageFiles, 
     bodyImageFiles
   ) => {
-  body.current.splice(i, 1)
+  body.current.forEach((obj, i) => {
+    if (obj.arrPos === imgArrPos) {
+      body.current.splice(i, 1)
+    }
+  })
 
-  if (kind === 'img' && bodyImageFiles.length === 1) {
+  if (srcType === 'newImgFile' && bodyImageFiles.length === 1) {
 
     setBodyImageFiles(bodyImageFiles = [])
 
   } else {
+    var bodyImageFileDup = [...bodyImageFiles]
 
-    setBodyImageFiles(bodyImageFiles.splice(i, 1))
+    //use arrPos key to find correct
+    //image file to delete
+    bodyImageFileDup.forEach((file, i) => {
+      if (file.arrPos === imgArrPos) {
+        bodyImageFileDup.splice(i, 1)
+      }
+    })
+
+    //remap arrPos key for bodyImageFiles and newImgFile
+    //in body.current, this ensures consistent
+    //drag and drop if file is deleted
+    //and uploading a new one
+    bodyImageFileDup.forEach((f, i) => {
+      f.arrPos = i
+    })
+    
+    var i2 = 0
+    body.current.forEach((obj, i) => {
+      if (obj.srcType === 'newImgFile') {
+        obj.arrPos = i2
+        i2++
+      }
+    })
+
+    setBodyImageFiles(bodyImageFiles = bodyImageFileDup)
 
   }
 }
@@ -275,13 +351,13 @@ const onDropBody = (
   let obj = e.dataTransfer.getData('obj')
   let parsedObj = JSON.parse(obj)
   
-  if (parsedObj.kind === 'img') {
+  if (parsedObj.srcType === 'newImgFile') {
 
     body.current.splice(oldIdx, 1)
     body.current.splice(i, 0, parsedObj)
 
     let sortedArrBody = [];
-    let filteredBody = body.current.filter(obj => obj.kind === 'img');
+    let filteredBody = body.current.filter(obj => obj.srcType === 'newImgFile');
 
     bodyImageFiles.forEach((file) => {
       filteredBody.forEach((obj, i) => {
@@ -293,7 +369,7 @@ const onDropBody = (
     
     return sortedArrBody
 
-  } else if (parsedObj.kind === 'text') {
+  } else {
     body.current.splice(oldIdx, 1)
     body.current.splice(i, 0, parsedObj)
     
@@ -309,13 +385,15 @@ const onDropMain = (
   var obj = e.dataTransfer.getData('obj')
   var parsedObj = JSON.parse(obj)
 
-  if (parsedObj.kind === 'img') {
-
+  if (parsedObj.srcType === 'newImgFile') {
+    //if we're dragging and dropping a file upload
+    //the main.current needs to tell mainImageFiles
+    //how it should be ordered 
     main.current.splice(oldIdx, 1)
     main.current.splice(i, 0, parsedObj)
   
     let sortedArrMain = [];
-    let filteredMain = main.current.filter(obj => obj.kind === 'img');
+    let filteredMain = main.current.filter(obj => obj.srcType === 'newImgFile');
     
     mainImageFiles.forEach((file) => {
       filteredMain.forEach((obj, i) => {
@@ -326,7 +404,11 @@ const onDropMain = (
     })
 
     return sortedArrMain
+  } else {
+    main.current.splice(oldIdx, 1)
+    main.current.splice(i, 0, parsedObj)
 
+    return [...mainImageFiles]
   }
 }
 
@@ -439,7 +521,7 @@ const updateCacheCreate = (
 }
 
 const updateCacheDelete = (
-  client, deletePost,
+  client, post, deletePost,
   currentUser, query
 ) => {
   var readFeed = client.readQuery({
@@ -451,14 +533,7 @@ const updateCacheDelete = (
 
   var { fetchUserFeed } = readFeed;
 
-  var newPostArr = fetchUserFeed.filter(post => {
-      if (post._id !== deletePost._id) {
-        return false
-      } else {
-        return true
-      }
-    }
-  )
+  var newPostArr = fetchUserFeed.filter(post1 => post1._id !== post._id)
 
   client.writeQuery({
     query: query,
@@ -471,8 +546,70 @@ const updateCacheDelete = (
   })
 }
 
+const updateCacheLike = (
+  client, likePost,
+  post, query
+) => {
+  
+  var readFeed = client.readQuery({
+    query: query,
+    variables: {
+      postId: post._id
+    }
+  })
+  
+  var { fetchLikesRepostsAndComments } = readFeed;
+  
+  var newPostArr = [...fetchLikesRepostsAndComments, likePost]
+  
+  client.writeQuery({
+    query: query,
+    variables: {
+      postId: post._id
+    },
+    data: {
+      fetchLikesRepostsAndComments: newPostArr
+    }
+  })
+}
+
+const updateCacheUnlike = (
+  client, unlikePost,
+  post, liked, query
+) => {
+
+  var readFeed = client.readQuery({
+    query: query,
+    variables: {
+      postId: post._id
+    }
+  })
+  
+  var { fetchLikesRepostsAndComments } = readFeed;
+  
+  var newPostArr = fetchLikesRepostsAndComments.filter(item => {
+      if (item._id === liked._id) {
+        return false
+      } else {
+        return true
+      }
+    }
+  )
+  
+  client.writeQuery({
+    query: query,
+    variables: {
+      postId: post._id
+    },
+    data: {
+      fetchLikesRepostsAndComments: newPostArr
+    }
+  })
+}
+
 const PostCreateUtil = { 
   previewMainImages, previewBodyImages, 
+  previewLink,
   previewAudio, previewVideoFile, 
   previewVideoLink, removeMainObj,
   removeBodyObj, removeAudioObj,
@@ -482,7 +619,8 @@ const PostCreateUtil = {
   removeLinkTitleAndDesc,
   fetchUrlMetadata, mainPost, bodyPost,
   audioPost, videoPost, updateCacheCreate,
-  updateCacheDelete
+  updateCacheDelete, updateCacheLike, 
+  updateCacheUnlike
 };
-
+ 
 export default PostCreateUtil;

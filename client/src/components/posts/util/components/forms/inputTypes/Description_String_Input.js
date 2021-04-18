@@ -16,6 +16,7 @@ const DescriptionStringInput = ({
           if (e.key === 'Enter' && description !== '') {
             var textObj = {
               kind: 'text',
+              srcType: 'text',
               content: description,
               displayIdx: body.current.length
             }
