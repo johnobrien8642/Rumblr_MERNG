@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactPlayer from 'react-player';
-import PostCreateUtil from '../../../functions/post_create_util.js'
+import PostFormUtil from '../../../functions/post_form_util.js'
 const { previewVideoFile, previewVideoLink, 
-        removeVideoObj } = PostCreateUtil;
+        removeVideoObj } = PostFormUtil;
 
 const VideoInput = ({
   formId, videoFile, 

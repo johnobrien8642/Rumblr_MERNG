@@ -5,10 +5,10 @@ import { Link, withRouter } from 'react-router-dom';
 import LikeButton from './Like_Button'
 import Queries from '../../../../../graphql/queries';
 import Mutations from '../../../../../graphql/mutations';
-import PostCreateUtil from '../../functions/post_create_util.js'
+import PostFormUtil from '../../functions/post_form_util.js'
 const { DOES_USER_LIKE_POST, FETCH_USER_FEED } = Queries;
 const { DELETE_POST } = Mutations;
-const { updateCacheDelete } = PostCreateUtil;
+const { updateCacheDelete } = PostFormUtil;
 
 const PostOptions = ({ 
   post, refetchNotes, notesCount,

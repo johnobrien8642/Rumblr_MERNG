@@ -1,9 +1,9 @@
 import React from 'react';
-import PostCreateUtil from '../../functions/post_create_util.js'
-const { removeLinkSiteNameAndImage } = PostCreateUtil;
+import PostFormUtil from '../../functions/post_form_util.js'
+const { removeLinkSiteNameAndImage } = PostFormUtil;
 
 const LinkNameAndImage = ({
-  link, showNameAndUrl, 
+  link, showNameAndUrl,
   setShowNameAndUrl,
   siteName, setSiteName,
   imageUrl, setImageUrl

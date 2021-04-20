@@ -7,13 +7,16 @@ import Queries from '../../../../graphql/queries.js';
 import ChatPostInput from '../../util/components/forms/inputTypes/Chat_Post_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
-import PostCreateUtil from '../../util/functions/post_create_util.js';
-const { bodyPost, updateCacheCreate } = PostCreateUtil;
+import PostFormUtil from '../../util/functions/post_form_util.js';
+const { bodyPost, updateCacheCreate,
+        handleFormData, stripAllImgs,
+        handleUploadedFiles, resetDisplayIdx } = PostFormUtil;
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const ChatPostForm = () => {
   let chat = useRef('')
+
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -27,11 +30,7 @@ const ChatPostForm = () => {
   let history = useHistory();
 
   useEffect(() => {
-    body.current.forEach((obj, i) => {
-      if (obj.kind === 'text') {
-        obj.displayIdx = i
-      }
-    })
+    resetDisplayIdx(body)
   })
 
   let [createPost] = useMutation(CREATE_POST, {
@@ -65,32 +64,20 @@ const ChatPostForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    var bodyImagesFormData = new FormData();
-
-    for (var i2 = 0; i2 < bodyImageFiles.length; i2++) {
-      var file2 = bodyImageFiles[i2];
-      bodyImagesFormData.append('photos', file2);
-    }
+    var bodyImagesFormData = handleFormData(bodyImageFiles)
 
     Promise.all([
       bodyPost(bodyImagesFormData)
     ]).then(
-      ([bodyObjs]) => {
-        console.log(bodyObjs)
-        let cleanedBody = bodyObjs.map((obj) => {
-          delete obj.__v
-          return obj
-        })
+      ([bodyUploads]) => {
         
-        var instanceData = {};
-        instanceData.chat = chat.current;
-        instanceData.descriptions = body.current.filter(obj =>
-          obj.kind !== 'img'
-        )
-        instanceData.descriptionImages = cleanedBody;
-        instanceData.user = Cookies.get('currentUser');
-        instanceData.tags = tags;
-        instanceData.kind = 'ChatPost'
+        var instanceData = {
+          statics: { chat: chat.current },
+          descriptions: stripAllImgs(body),
+          descriptionImages: handleUploadedFiles(body, bodyUploads),
+          user: Cookies.get('currentUser'),
+          tags, kind: 'ChatPost'
+        };
         
         createPost({
           variables: {
@@ -145,6 +132,13 @@ const ChatPostForm = () => {
         Post
       </button>
       </form>
+      <div
+        onClick={() => {
+          history.push('/')
+        }}
+      >
+        Close
+      </div>
     </div>
   )
 }

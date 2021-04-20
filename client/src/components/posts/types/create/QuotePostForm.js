@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
@@ -7,8 +7,10 @@ import Queries from '../../../../graphql/queries.js';
 import QuotePostInput from '../../util/components/forms/inputTypes/Quote_Post_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
-import PostCreateUtil from '../../util/functions/post_create_util.js';
-const { bodyPost, updateCacheCreate } = PostCreateUtil;
+import PostFormUtil from '../../util/functions/post_form_util.js'
+const { bodyPost, updateCacheCreate,
+        handleFormData, stripAllImgs,
+        handleUploadedFiles, resetDisplayIdx } = PostFormUtil;
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -26,6 +28,10 @@ const QuotePostForm = () => {
   let formId = 'quotePostForm'
   const formInputId = 'quotePostInput'
   let history = useHistory();
+
+  useEffect(() => {
+    resetDisplayIdx(body)
+  })
 
   let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
@@ -58,30 +64,20 @@ const QuotePostForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    var bodyImagesFormData = new FormData();
-
-    for (var i2 = 0; i2 < bodyImageFiles.length; i2++) {
-      var file2 = bodyImageFiles[i2];
-      bodyImagesFormData.append('images', file2);
-    }
+    var bodyImagesFormData = handleFormData(bodyImageFiles)
 
     Promise.all([
       bodyPost(bodyImagesFormData)
     ]).then(
-      ([bodyObjs]) => {
-        let cleanedBody = bodyObjs.map((obj) => {
-          delete obj.__v
-          return obj
-        })
-
-        var instanceData = {};
-        instanceData.quote = quote;
-        instanceData.source = source;
-        instanceData.descriptions = body.current.filter(obj => obj.kind !== 'img')
-        instanceData.descriptionImages = cleanedBody;
-        instanceData.tags = tags;
-        instanceData.user = Cookies.get('currentUser');
-        instanceData.kind = 'QuotePost';
+      ([bodyUploads]) => {
+        
+        var instanceData = {
+          statics: { quote, source },
+          descriptions: stripAllImgs(body),
+          descriptionImages: handleUploadedFiles(body, bodyUploads),
+          user: Cookies.get('currentUser'),
+          tags, kind: 'QuotePost'
+        };
         
         createPost({
           variables: {
@@ -139,6 +135,13 @@ const QuotePostForm = () => {
         Post
       </button>
       </form>
+      <div
+        onClick={() => {
+          history.push('/')
+        }}
+      >
+        Close
+      </div>
     </div>
   )
 }

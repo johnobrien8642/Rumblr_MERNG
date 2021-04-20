@@ -7,11 +7,11 @@ import Queries from '../../../../graphql/queries.js';
 import VideoInput from '../../util/components/forms/inputTypes/Video_Input';
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text';
 import Tags from '../../util/components/forms/Tags';
-import PostCreateUtil from '../../util/functions/post_create_util.js';
+import PostFormUtil from '../../util/functions/post_form_util.js';
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 const { bodyPost, videoPost, 
-        updateCacheCreate } = PostCreateUtil;
+        updateCacheCreate } = PostFormUtil;
 
 const VideoPostForm = () => {
   let videoFile = useRef('');
@@ -148,6 +148,13 @@ const VideoPostForm = () => {
         Post
       </button>
       </form>
+      <div
+        onClick={() => {
+          history.push('/')
+        }}
+      >
+        Close
+      </div>
     </div>
   )
 }

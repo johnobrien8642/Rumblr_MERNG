@@ -1,24 +1,13 @@
 import graphql from 'graphql';
-import { GraphQLJSON, GraphQLJSONObject } from 'graphql-type-json';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
-import keys from '../../../../config/keys.js'
-import Cookies from 'js-cookie';
 import UserType from '../objects/user_type.js';
-import TextPostType from '../objects/posts/types/text_post_type.js'
-import PhotoPostType from '../objects/posts/types/photo_post_type.js';
-import ImageType from '../objects/posts/util/image_type.js';
-import TagType from '../objects/posts/util/tag_type.js';
-import ImageInputType from '../inputs/image_input_type.js';
-import UserAndTagType from '../unions/user_and_tag_type.js';
 import AuthService from '../../../services/auth_util.js';
 import RepostType from '../objects/posts/util/repost_type.js';
 import LikeType from '../objects/posts/util/like_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
 import AnyPostType from '../unions/any_post_type.js'
-import CreateFunctions from '../../../models/posts/types/util/create_functions.js'
-const TextPost = mongoose.model('TextPost');
-const PhotoPost = mongoose.model('PhotoPost');
+import createPost from '../../../models/posts/types/util/create_function.js'
 const Post = mongoose.model('Post');
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
@@ -27,10 +16,6 @@ const Like = mongoose.model('Like');
 const Follow = mongoose.model('Follow');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
-const { createPhotoPost, createTextPost,
-        createQuotePost, createLinkPost,
-        createChatPost, createAudioPost,
-        createVideoPost } = CreateFunctions;
 
 const mutation = new GraphQLObjectType({
   name: 'Mutations',
@@ -84,24 +69,7 @@ const mutation = new GraphQLObjectType({
         instanceData: { type: GraphQLJSONObject },
       },
       resolve(_, { instanceData }) {
-        switch(instanceData.kind) {
-          case 'TextPost':
-            return createTextPost(instanceData)
-          case 'PhotoPost':
-            return createPhotoPost(instanceData)
-          case 'QuotePost':
-            return createQuotePost(instanceData)
-          case 'LinkPost':
-            return createLinkPost(instanceData)
-          case 'ChatPost':
-            return createChatPost(instanceData)
-          case 'AudioPost':
-            return createAudioPost(instanceData)
-          case 'VideoPost':
-            return createVideoPost(instanceData)
-          default:
-            console.log('no types matched in createPost')
-        }
+        return createPost(instanceData)
       }
     },
     deletePost: {

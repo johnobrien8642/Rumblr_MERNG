@@ -5,7 +5,7 @@ import Validator from 'validator';
 
 const previewMainImages = (
   e, main,
-  mainImageFiles, 
+  mainImageFiles,
   setMainImageFiles,
   setErrMessage,
   errMessage,
@@ -120,7 +120,6 @@ const previewAudio = (
   var reader = new FileReader();
 
   reader.onloadend = () => {
-    // console.log(file)
     mm.parseBlob(file).then(meta => {
       const { common } = meta;
       audioObj.current.src = reader.result
@@ -214,12 +213,12 @@ const removeMainObj = (
 }
 
 const removeBodyObj = (
-    imgArrPos, srcType, body,
+    imgArrPosOrBodyIdx, srcType, body,
     setBodyImageFiles, 
     bodyImageFiles
   ) => {
   body.current.forEach((obj, i) => {
-    if (obj.arrPos === imgArrPos) {
+    if (obj.arrPos === imgArrPosOrBodyIdx) {
       body.current.splice(i, 1)
     }
   })
@@ -228,13 +227,13 @@ const removeBodyObj = (
 
     setBodyImageFiles(bodyImageFiles = [])
 
-  } else {
+  } else if (srcType === 'newImgFile') {
     var bodyImageFileDup = [...bodyImageFiles]
 
     //use arrPos key to find correct
     //image file to delete
     bodyImageFileDup.forEach((file, i) => {
-      if (file.arrPos === imgArrPos) {
+      if (file.arrPos === imgArrPosOrBodyIdx) {
         bodyImageFileDup.splice(i, 1)
       }
     })
@@ -257,6 +256,8 @@ const removeBodyObj = (
 
     setBodyImageFiles(bodyImageFiles = bodyImageFileDup)
 
+  } else if (srcType === 'text') {
+    body.current.splice(imgArrPosOrBodyIdx, 1)
   }
 }
 
@@ -532,7 +533,7 @@ const updateCacheDelete = (
   })
 
   var { fetchUserFeed } = readFeed;
-
+  
   var newPostArr = fetchUserFeed.filter(post1 => post1._id !== post._id)
 
   client.writeQuery({
@@ -607,6 +608,53 @@ const updateCacheUnlike = (
   })
 }
 
+//submit functions
+
+const handleFormData = (
+  imageFileArr
+) => {
+  var formData = new FormData();
+
+  for (var i = 0; i < imageFileArr.length; i++) {
+    var file2 = imageFileArr[i];
+    formData.append('images', file2);
+  }
+
+  return formData
+}
+
+const stripAllImgs = (refArray) => {
+  return refArray.current.filter(obj => obj.srcType === 'text')
+}
+
+const handleUploadedFiles = (
+  refArray,
+  uploads
+) => {
+  //reinsert mainUpload files
+  //at index and reset displayIdx
+
+  var refArrayDup = [...refArray.current]
+
+  var i1 = 0
+  refArrayDup.forEach((obj, i) => {
+    var upload = uploads[i1]
+    if (obj.srcType === 'newImgFile') {
+      upload.displayIdx = i
+      refArrayDup.splice(i, 1, upload)
+      i1++
+    }
+  })
+  
+  return refArrayDup.filter(obj => obj.srcType !== 'text')
+}
+
+const resetDisplayIdx = (refArr) => {
+  refArr.current.forEach((obj, i) => {
+    obj.displayIdx = i
+  })
+}
+
 const PostCreateUtil = { 
   previewMainImages, previewBodyImages, 
   previewLink,
@@ -620,7 +668,9 @@ const PostCreateUtil = {
   fetchUrlMetadata, mainPost, bodyPost,
   audioPost, videoPost, updateCacheCreate,
   updateCacheDelete, updateCacheLike, 
-  updateCacheUnlike
+  updateCacheUnlike, handleFormData,
+  stripAllImgs, handleUploadedFiles,
+  resetDisplayIdx
 };
  
 export default PostCreateUtil;

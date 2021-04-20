@@ -7,18 +7,20 @@ import Queries from '../../../../graphql/queries.js';
 import TextPostInput from '../../util/components/forms/inputTypes/Text_Post_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
-import PostCreateUtil from '../../util/functions/post_create_util.js';
-const { bodyPost, updateCacheCreate } = PostCreateUtil;
+import PostFormUtil from '../../util/functions/post_form_util.js';
+const { bodyPost, updateCacheCreate,
+        handleFormData, stripAllImgs,
+        handleUploadedFiles, resetDisplayIdx } = PostFormUtil;
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const TextPostForm = () => {
   let [title, setTitle] = useState('');
   let [main, setMain] = useState('')
+
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
-  let bodyImages = useRef([]);
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
@@ -28,9 +30,7 @@ const TextPostForm = () => {
   let history = useHistory();
 
   useEffect(() => {
-    body.current.forEach((obj, i) => {
-      obj.displayIdx = i
-    })
+    resetDisplayIdx(body)
   })
 
   let [createPost] = useMutation(CREATE_POST, {
@@ -56,7 +56,6 @@ const TextPostForm = () => {
     setMain(main = '');
     body.current = []
     setBodyImageFiles(bodyImageFiles = []);
-    bodyImages.current = [];
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');
@@ -65,42 +64,21 @@ const TextPostForm = () => {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    var bodyImagesFormData = new FormData();
-
-    for (var i2 = 0; i2 < bodyImageFiles.length; i2++) {
-      var file2 = bodyImageFiles[i2];
-      bodyImagesFormData.append('images', file2);
-    }
+  
+    var bodyImagesFormData = handleFormData(bodyImageFiles)
   
     Promise.all([
       bodyPost(bodyImagesFormData)
     ]).then(
       ([bodyUploads]) => {
-
-        var textOnly = body.current.filter(obj => obj.srcType === 'text')
-
-        //reinsert mainUpload files
-        //at index and reset displayIdx
-        var i1 = 0
-        body.current.forEach((obj, i) => {
-          var bodyUpload = bodyUploads[i1]
-
-          if (obj.srcType === 'newImgFile') {
-            bodyUpload.displayIdx = i
-            body.current.splice(i, 1, bodyUpload)
-            i1++
-          }
-        })
         
-        var instanceData = {};
-        instanceData.title = title;
-        instanceData.main = main;
-        instanceData.descriptions = textOnly
-        instanceData.descriptionImages = body.current.filter(obj => obj.srcType !== 'text');
-        instanceData.user = Cookies.get('currentUser');
-        instanceData.tags = tags;
-        instanceData.kind = 'TextPost'
+        var instanceData = {
+          statics: { title, main },
+          descriptions: stripAllImgs(body),
+          descriptionImages: handleUploadedFiles(body, bodyUploads),
+          user: Cookies.get('currentUser'),
+          tags, kind: 'TextPost'
+        }
         
         createPost({
           variables: {
@@ -123,7 +101,8 @@ const TextPostForm = () => {
         encType={'multipart/form-data'}
       >
 
-    <TextPostInput 
+      <TextPostInput
+        formInputId={formInputId}
         title={title}
         setTitle={setTitle}
         main={main}
@@ -158,6 +137,13 @@ const TextPostForm = () => {
         Post
       </button>
       </form>
+      <div
+        onClick={() => {
+          history.push('/')
+        }}
+      >
+        Close
+      </div>
     </div>
   )
 }

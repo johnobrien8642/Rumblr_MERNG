@@ -1,7 +1,7 @@
 import React from 'react';
-import PostCreateUtil from '../../functions/post_create_util.js'
+import PostFormUtil from '../../functions/post_form_util.js'
 import MatchedTagResults from './Matched_Tag_Results'
-const { handleTagInput, handleFoundTag } = PostCreateUtil;
+const { handleTagInput, handleFoundTag } = PostFormUtil;
 
 const Tags = ({
   tags, setTags,

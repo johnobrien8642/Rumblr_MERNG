@@ -1,15 +1,14 @@
 import React from 'react';
-import PostCreateUtil from '../../../functions/post_create_util.js'
-const { previewMainImages, previewLink } = PostCreateUtil;
+import PostFormUtil from '../../../functions/post_form_util.js'
+const { previewMainImages, previewLink } = PostFormUtil;
 
 const MainImageInput = ({
-  formId, main, 
+  formId, main,
   mainImageFiles,
   setMainImageFiles,
   render, setRender,
   errMessage, setErrMessage
 }) => {
-
   return (
     <React.Fragment>
       <h2>Main Images</h2>

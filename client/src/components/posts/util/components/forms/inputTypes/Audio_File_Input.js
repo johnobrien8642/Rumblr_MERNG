@@ -1,8 +1,8 @@
 import React from 'react';
 import AudioPlayer from 'react-h5-audio-player';
 import * as mm from 'music-metadata-browser';
-import PostCreateUtil from '../../../functions/post_create_util.js'
-const { previewAudio, removeAudioObj } = PostCreateUtil;
+import PostFormUtil from '../../../functions/post_form_util.js'
+const { previewAudio, removeAudioObj } = PostFormUtil;
 
 const AudioFileInput = ({
   formId, audioFile, 

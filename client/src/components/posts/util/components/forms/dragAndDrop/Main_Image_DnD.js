@@ -1,7 +1,7 @@
 import React from 'react'
-import PostCreateUtil from '../../../functions/post_create_util.js'
+import PostFormUtil from '../../../functions/post_form_util.js'
 const { removeMainObj, drag, 
-        onDropMain, allowDrop } = PostCreateUtil;
+        onDropMain, allowDrop } = PostFormUtil;
 
 const MainImageDnD = ({
   i, img, main, 

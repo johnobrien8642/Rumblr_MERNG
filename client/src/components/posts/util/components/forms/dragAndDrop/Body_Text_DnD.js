@@ -1,7 +1,7 @@
 import React from 'react'
-import PostCreateUtil from '../../../functions/post_create_util.js'
+import PostFormUtil from '../../../functions/post_form_util.js'
 const { removeBodyObj, drag, 
-        onDropBody, allowDrop } = PostCreateUtil;
+        onDropBody, allowDrop } = PostFormUtil;
 
 const BodyTextDnD = ({
   i, text, body,
@@ -24,13 +24,17 @@ const BodyTextDnD = ({
       className='draggable'
       draggable='true'
     >
-      <button 
-        type='button' 
-        onClick={() => removeBodyObj(
-            i, text.kind, body,
+      <button
+        type='button'
+        onClick={() => {
+          removeBodyObj(
+            i, text.srcType, body,
             setBodyImageFiles,
             bodyImageFiles
           )
+          
+          setRender(render + 1)
+        }
         }
       >
         X

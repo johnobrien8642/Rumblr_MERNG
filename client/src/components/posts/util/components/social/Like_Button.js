@@ -3,10 +3,10 @@ import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
 import Mutations from '../../../../../graphql/mutations'
 import Queries from '../../../../../graphql/queries'
-import PostCreateUtil from '../../functions/post_create_util.js'
+import PostFormUtil from '../../functions/post_form_util.js'
 const { LIKE_POST, UNLIKE_POST } = Mutations;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
-const { updateCacheLike, updateCacheUnlike } = PostCreateUtil;
+const { updateCacheLike, updateCacheUnlike } = PostFormUtil;
 
 const LikeButton = ({ 
   post, liked, 

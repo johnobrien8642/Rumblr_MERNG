@@ -11,13 +11,11 @@ const LinkPreview = ({
   setLinkDescription, resetLink
 }) => {
   let [input, setInput] = useState('');
-  let [showNameAndUrl, setShowNameAndUrl] = useState(true)
+  let [showNameAndUrl, setShowNameAndUrl] = useState(imageUrl)
   let [showTitleAndLinkDescription, 
         setShowTitleAndLinkDescription] = useState(true)
 
-  useEffect(() => {
-    setValidLink()
-
+  useEffect(() => {  
     if (!showNameAndUrl && !showTitleAndLinkDescription) {
       resetLink()
       resetInput()
@@ -27,13 +25,6 @@ const LinkPreview = ({
   const resetInput = () => {
     setShowNameAndUrl(showNameAndUrl = true)
     setShowTitleAndLinkDescription(showTitleAndLinkDescription = true)
-  }
-
-  const setValidLink = () => {
-    if (Validator.isURL(input)) {
-      setLink(link = input)
-      setInput(input = '')
-    }
   }
 
   if (result) {
@@ -68,6 +59,9 @@ const LinkPreview = ({
             placeholder='Type or paste a URL'
             onChange={e => {
                 setInput(input = e.target.value)
+                if (Validator.isURL(input)) {
+                  setLink(link = input)
+                }
               }
             }
         ></textarea>
