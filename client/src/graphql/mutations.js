@@ -74,8 +74,8 @@ const Mutations = {
     }
   `,
   DELETE_POST: gql`
-    mutation deletePost($postId: ID ) {
-      deletePost(postId: $postId)
+    mutation deletePost($post: JSONObject ) {
+      deletePost(post: $post)
     }
   `,
   CREATE_REPOST: gql`

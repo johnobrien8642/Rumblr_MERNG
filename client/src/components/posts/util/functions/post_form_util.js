@@ -295,10 +295,14 @@ const removeAudioObj = (
 
 const removeVideoObj = (
   videoObj, videoFile,
-  active, setActive
+  active, setActive,
+  isLink, setIsLink
 ) => {
   videoObj.current = {}
   videoFile.current = {}
+  if (isLink) {
+    setIsLink(isLink = false)
+  }
   setActive(active = false)
 }
 
@@ -470,9 +474,10 @@ const audioPost = (
 
 const videoPost = (
   videoFileFormData,
-  videoObj
+  videoObj,
+  isLink
 ) => {
-  if (videoObj.current) {
+  if (isLink) {
     return axios.post('/api/posts/video', {
       params: {
         url: videoObj.current

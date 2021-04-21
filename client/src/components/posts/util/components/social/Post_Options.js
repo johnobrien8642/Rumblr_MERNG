@@ -94,7 +94,7 @@ const PostOptions = ({
           onClick={() => {
             deletePost({
               variables: {
-                postId: post._id
+                post: post
               }
             })
           }}

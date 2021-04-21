@@ -9,6 +9,7 @@ const QueryFragments = {
     descriptionImages {
       _id
       src
+      path
       kind
       displayIdx
     }
@@ -25,6 +26,7 @@ const QueryFragments = {
       _id
       src
       kind
+      path
     }
   `,
   TEXT_POST:`
@@ -50,6 +52,7 @@ const QueryFragments = {
     audioFile {
       _id
       url
+      path
     }
     audioMeta
   `,
@@ -58,6 +61,7 @@ const QueryFragments = {
     videoLink {
       _id
       url
+      path
     }
   `,
 }

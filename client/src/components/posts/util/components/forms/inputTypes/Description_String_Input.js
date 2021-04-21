@@ -28,7 +28,7 @@ const DescriptionStringInput = ({
         //eslint-disable-next-line
         setDescription(description = innerHTML)
       }
-    }, 50)
+  }, 50)
     
     return function cleanup() {
       bodyEditor1.removeEventListener('keydown', hearKey, true)

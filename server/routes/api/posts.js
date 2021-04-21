@@ -39,6 +39,7 @@ router.post('/images', upload.any(), async (req, res, next) => {
     let img = new Image({
       src: url + '/uploads/images/' + f.filename,
       created: Date.now(),
+      path: f.path
     })
     return img.save()
   }
@@ -60,6 +61,7 @@ router.post('/audio', upload.any(), async (req, res, next) => {
     let audio = new Audio({
       url: url + '/uploads/audio/' + f.filename,
       created: Date.now(),
+      path: f.path
     })
     return audio.save()
   }
@@ -73,14 +75,14 @@ router.post('/audio', upload.any(), async (req, res, next) => {
 })
 
 router.post('/video', upload.any(), async (req, res, next) => {
-  console.log(req.files)
   const url = req.protocol + '://' + req.get('host')
-  
+  console.log(req.files)
   function createVideo(req) {
     if (req.files) {
       let video = new Video({
         url: url + '/uploads/video/' + req.files[0].filename,
         created: Date.now(),
+        path: req.files[0].path
       })
       return video.save()
     } else {

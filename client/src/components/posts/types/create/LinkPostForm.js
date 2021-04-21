@@ -108,11 +108,13 @@ const LinkPostForm = () => {
       setPastLink(pastLink = link)
       fetchUrlMetadata(link).then(res => {
         if (res.data.success === true) {
-          setResult(result = res)
-          setSiteName(siteName = res.data.ogSiteName || '')
           if (res.data.hasOwnProperty('ogImage')) {
+            setResult(result = res)
+            setSiteName(siteName = res.data.ogSiteName || '')
             setImageUrl(imageUrl = res.data.ogImage.url)
           } else {
+            setResult(result = res)
+            setSiteName(siteName = res.data.ogSiteName || '')
             setImageUrl(imageUrl = '')
           }
           setTitle(title = res.data.ogTitle)

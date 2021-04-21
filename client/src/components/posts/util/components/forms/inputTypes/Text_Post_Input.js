@@ -31,7 +31,7 @@ const TextPostInput = ({
         //eslint-disable-next-line
         setMain(main = innerHTML)
       }
-    }, 100)
+    }, 50)
 
     return function cleanup() {
       bodyEditor1.removeEventListener('keydown', hearKey, true)

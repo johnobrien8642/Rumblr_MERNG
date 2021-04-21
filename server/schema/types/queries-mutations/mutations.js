@@ -8,6 +8,7 @@ import LikeType from '../objects/posts/util/like_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
 import AnyPostType from '../unions/any_post_type.js'
 import createPost from '../../../models/posts/types/util/create_function.js'
+import deletePost from '../../../models/posts/types/util/delete_function_util.js'
 const Post = mongoose.model('Post');
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
@@ -75,16 +76,11 @@ const mutation = new GraphQLObjectType({
     deletePost: {
       type: GraphQLID,
       args: {
-        postId: { type: GraphQLID }
+        post: { type: GraphQLJSONObject }
       },
-      resolve(_, { postId }) {
-        var recastPostId = mongoose.Types.ObjectId(postId)
-        return Promise.all([
-          Post.deleteOne({ _id: recastPostId }),
-          Like.deleteMany({ post: recastPostId }),
-          Repost.deleteOne({ _id: recastPostId }),
-          Repost.deleteMany({ post: recastPostId })
-        ]).then(([ogPost, like, repost, reposts]) => (postId))}
+      resolve(_, { post }) {
+        return deletePost(post)
+      }
     },
     likePost: {
       type: LikeType,

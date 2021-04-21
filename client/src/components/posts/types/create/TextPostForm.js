@@ -132,7 +132,7 @@ const TextPostForm = () => {
 
       <button
         type='submit'
-        disabled={!main}
+        disabled={!title && !main}
       >
         Post
       </button>

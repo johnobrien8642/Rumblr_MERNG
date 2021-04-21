@@ -22,7 +22,6 @@ const AudioPostForm = () => {
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
-  let bodyImages = useRef([]);
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
@@ -53,9 +52,11 @@ const AudioPostForm = () => {
   });
 
   const resetInputs = () => {
+    audioFile.current = {};
+    audioObj.current = {};
     setBodyImageFiles(bodyImageFiles = []);
-    bodyImages.current = [];
     body.current = [];
+    setDescription(description = '');
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');

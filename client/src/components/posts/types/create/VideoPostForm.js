@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
@@ -8,19 +8,22 @@ import VideoInput from '../../util/components/forms/inputTypes/Video_Input';
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text';
 import Tags from '../../util/components/forms/Tags';
 import PostFormUtil from '../../util/functions/post_form_util.js';
+const { bodyPost, updateCacheCreate,
+        videoPost, handleFormData, 
+        stripAllImgs, handleUploadedFiles, 
+        resetDisplayIdx } = PostFormUtil;
 const { CREATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
-const { bodyPost, videoPost, 
-        updateCacheCreate } = PostFormUtil;
+
 
 const VideoPostForm = () => {
   let videoFile = useRef('');
   let videoObj = useRef('');
   let [active, setActive] = useState(false)
+  let [isLink, setIsLink] = useState(false)
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
-  let bodyImages = useRef([]);
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
@@ -28,6 +31,10 @@ const VideoPostForm = () => {
   const formId = 'videoPostForm';
   const formInputId = 'videoPostInput'
   let history = useHistory();
+
+  useEffect(() => {
+    resetDisplayIdx(body)
+  })
 
   let [createPost] = useMutation(CREATE_POST, {
     update(client, { data }){
@@ -51,8 +58,8 @@ const VideoPostForm = () => {
     videoFile.current = '';
     setActive(active = false);
     setBodyImageFiles(bodyImageFiles = []);
-    bodyImages.current = [];
     body.current = [];
+    setDescription(description = '');
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');
@@ -62,34 +69,28 @@ const VideoPostForm = () => {
     e.preventDefault();
     
     var videoFileFormData = new FormData();
-    var bodyImagesFormData = new FormData();
-
+    
     if (videoFile.current) {
       videoFileFormData.append('video', videoFile.current)
     }
 
-    for (var i2 = 0; i2 < bodyImageFiles.length; i2++) {
-      var file2 = bodyImageFiles[i2];
-      bodyImagesFormData.append('images', file2);
-    }
+    var bodyImagesFormData = handleFormData(bodyImageFiles)
 
     Promise.all([
       bodyPost(bodyImagesFormData),
       videoPost(videoFileFormData, videoObj)
     ]).then(
-      ([bodyObjs, video]) => {
-        let cleanedBody = bodyObjs.map((obj) => {
-          delete obj.__v
-          return obj
-        })
+      ([bodyUploads, video]) => {
 
-        var instanceData = {};
-        instanceData.videoLink = video[0]._id
-        instanceData.descriptions = body.current.filter(obj => obj.kind !== 'img')
-        instanceData.descriptionImages = cleanedBody;
-        instanceData.tags = tags;
-        instanceData.user = Cookies.get('currentUser');
-        instanceData.kind = 'VideoPost';
+        var instanceData = {
+          statics: { 
+            videoLink: video[0]._id 
+          },
+          descriptions: stripAllImgs(body),
+          descriptionImages: handleUploadedFiles(body, bodyUploads),
+          user: Cookies.get('currentUser'),
+          tags, kind: 'VideoPost'
+        };
         
         createPost({
           variables: {
@@ -118,6 +119,8 @@ const VideoPostForm = () => {
         setActive={setActive}
         videoObj={videoObj}
         videoFile={videoFile}
+        isLink={isLink}
+        setIsLink={setIsLink}
       />
     
       <BodyImageAndText

@@ -6,7 +6,8 @@ const { previewVideoFile, previewVideoLink,
 
 const VideoInput = ({
   formId, videoFile, 
-  videoObj, active, setActive
+  videoObj, active, setActive,
+  isLink, setIsLink
 }) => {
   if (active) {
     return (
@@ -15,7 +16,8 @@ const VideoInput = ({
           type='button'
           onClick={() => removeVideoObj(
             videoObj, videoFile,
-            active, setActive
+            active, setActive,
+            isLink, setIsLink
           )}
         >
           X
@@ -49,6 +51,8 @@ const VideoInput = ({
               e, videoObj,
               active, setActive
             )
+
+            setIsLink(isLink = true)
           }}
         ></textarea>
       </div>

@@ -187,6 +187,12 @@ const handleStatics = async (statics, post, user) => {
       var { audioFileId, audioMeta } = statics;
       post.audioFile = audioFileId
       post.audioMeta = audioMeta
+      post.user = user._id
+      break
+    case 'VideoPost':
+      var { videoLink } = statics;
+      post.videoLink = videoLink
+      post.user = user._id
       break
     default:
       return

@@ -6,6 +6,9 @@ const VideoSchema = new Schema({
     type: String,
     required: true
   },
+  path: {
+    type: String
+  },
   createdAt: {
     type: Date,
     default: Date.now
