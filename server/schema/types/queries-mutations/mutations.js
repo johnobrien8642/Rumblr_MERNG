@@ -7,8 +7,10 @@ import RepostType from '../objects/posts/util/repost_type.js';
 import LikeType from '../objects/posts/util/like_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
 import AnyPostType from '../unions/any_post_type.js'
-import createPost from '../../../models/posts/types/util/create_function.js'
-import deletePost from '../../../models/posts/types/util/delete_function_util.js'
+import createOrUpdatePost from '../../../models/posts/types/util/create_or_update_function.js'
+import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function_util.js'
+const { deletePost } = DeleteFunctionUtil;
+
 const Post = mongoose.model('Post');
 const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
@@ -64,13 +66,13 @@ const mutation = new GraphQLObjectType({
         return AuthService.verify(args)
       }
     },
-    createPost: {
+    createOrUpdatePost: {
       type: AnyPostType,
       args: {
         instanceData: { type: GraphQLJSONObject },
       },
       resolve(_, { instanceData }) {
-        return createPost(instanceData)
+        return createOrUpdatePost(instanceData)
       }
     },
     deletePost: {

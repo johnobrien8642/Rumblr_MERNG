@@ -7,9 +7,13 @@ import Queries from '../../../../graphql/queries';
 const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
 
-const PostShow = ({ post, repost }) => {
+const PostShow = ({ 
+  post, repost,
+  update, setUpdate,
+  toggleUpdate
+}) => {
   let [active, setActive] = useState(false)
-
+  
   let { loading, error, data } = useQuery(FETCH_LIKES_REPOSTS_AND_COMMENTS, {
     variables: {
       postId: post._id
@@ -41,6 +45,9 @@ const PostShow = ({ post, repost }) => {
             active={active}
             setActive={setActive}
             toggleNotes={toggleNotes}
+            update={update}
+            setUpdate={setUpdate}
+            toggleUpdate={toggleUpdate}
           />
         </React.Fragment>
       )

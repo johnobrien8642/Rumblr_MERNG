@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import PostShow from '../posts/types/show/PostShow.js'
+import PostUpdateOrShow from '../posts/types/showOrUpdate/PostUpdateOrShow.js'
 import Cookies from 'js-cookie';
 import Queries from '../../graphql/queries';
 import FeedUtil from '../posts/util/functions/feed_util.js'
 const { FETCH_USER_FEED, FETCH_TAG_FEED } = Queries;
 const { header } = FeedUtil;
 
-const Feed = ({ tag, user }) => {
+const Feed = ({ 
+  tag, user 
+}) => {
+  let [update, setUpdate] = useState(false)
+
+  const toggleUpdate = () => {
+    if (update) {
+      setUpdate(update = false)
+    } else { 
+      setUpdate(update = true)
+    }
+  }
+
   let query;
   if (user) {
     query = FETCH_USER_FEED;
@@ -41,7 +53,12 @@ const Feed = ({ tag, user }) => {
               className='post'
               key={post._id}
             >
-              <PostShow post={post} idx={i} />
+              <PostUpdateOrShow
+                post={post}
+                update={update}
+                setUpdate={setUpdate}
+                toggleUpdate={toggleUpdate}
+              />
             </div>
           )
         })}

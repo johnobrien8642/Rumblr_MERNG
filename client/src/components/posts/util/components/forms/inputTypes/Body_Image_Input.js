@@ -15,6 +15,7 @@ const BodyImageInput = ({
       <h2>Body Images</h2>
         <p>{errMessage}</p>
           <input
+            id='bodyFileInput'
             type='file'
             multiple
             name='image'
@@ -26,7 +27,7 @@ const BodyImageInput = ({
                 setErrMessage, errMessage,
               )
 
-              document.getElementById(`${formId}`).reset()
+              document.querySelector('#bodyFileInput').value = ''
             }}
           />
           <textarea

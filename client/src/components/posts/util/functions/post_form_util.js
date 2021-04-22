@@ -165,28 +165,29 @@ const previewVideoLink = (
 //remove objs
 
 const removeMainObj = (
-    imgArrPos, srcType, main, 
+    srcType, main, 
     setMainImageFiles,
-    mainImageFiles
+    mainImageFiles,
+    objsToClean,
+    mainIdx, optionalArrPos
   ) => {
 
-  main.current.forEach((obj, i) => {
-    if (obj.arrPos === imgArrPos) {
-      main.current.splice(i, 1)
-    }
-  })
+  var plucked = main.current.splice(mainIdx, 1)
+  if (srcType === 'oldImgUpload' || srcType === 'oldImgLink') {
+    objsToClean.current.push(plucked[0])
+  }
 
   if (srcType === 'newImgFile' && mainImageFiles.length === 1) {
 
     setMainImageFiles(mainImageFiles = [])
 
-  } else {
+  } else if (srcType === 'newImgFile') {
     var mainImageFileDup = [...mainImageFiles]
 
     //use arrPos key to find correct
     //image file to delete
     mainImageFileDup.forEach((file, i) => {
-      if (file.arrPos === imgArrPos) {
+      if (file.arrPos === optionalArrPos) {
         mainImageFileDup.splice(i, 1)
       }
     })
@@ -213,15 +214,17 @@ const removeMainObj = (
 }
 
 const removeBodyObj = (
-    imgArrPosOrBodyIdx, srcType, body,
+    srcType, body,
     setBodyImageFiles, 
-    bodyImageFiles
+    bodyImageFiles,
+    objsToClean, bodyIdx,
+    optionalArrPos
   ) => {
-  body.current.forEach((obj, i) => {
-    if (obj.arrPos === imgArrPosOrBodyIdx) {
-      body.current.splice(i, 1)
-    }
-  })
+  
+  var plucked = body.current.splice(bodyIdx, 1)
+  if (srcType === 'oldImgUpload' || srcType === 'oldImgLink') {
+    objsToClean.current.push(plucked[0])
+  }
 
   if (srcType === 'newImgFile' && bodyImageFiles.length === 1) {
 
@@ -233,15 +236,15 @@ const removeBodyObj = (
     //use arrPos key to find correct
     //image file to delete
     bodyImageFileDup.forEach((file, i) => {
-      if (file.arrPos === imgArrPosOrBodyIdx) {
+      if (file.arrPos === optionalArrPos) {
         bodyImageFileDup.splice(i, 1)
       }
     })
 
     //remap arrPos key for bodyImageFiles and newImgFile
     //in body.current, this ensures consistent
-    //drag and drop if file is deleted
-    //and uploading a new one
+    //drag and drop in the case of an image
+    //being removed and then a new image added
     bodyImageFileDup.forEach((f, i) => {
       f.arrPos = i
     })
@@ -256,9 +259,12 @@ const removeBodyObj = (
 
     setBodyImageFiles(bodyImageFiles = bodyImageFileDup)
 
-  } else if (srcType === 'text') {
-    body.current.splice(imgArrPosOrBodyIdx, 1)
   }
+}
+
+const removeTag = (i, tags, setTags) => {
+  var filtered = tags.filter((t, i2) => i !== i2)
+  setTags(tags = filtered)
 }
 
 const removeLinkSiteNameAndImage = (
@@ -526,6 +532,38 @@ const updateCacheCreate = (
   })
 }
 
+const updateCacheUpdate = (
+  client, updatePost,
+  currentUser, query
+) => {
+  var readQuery = client.readQuery({
+    query: query,
+    variables: {
+      query: currentUser
+    }
+  })
+  
+  var { fetchUserFeed } = readQuery;
+  
+  var newPostArr = [...fetchUserFeed]
+  
+  fetchUserFeed.forEach((p, i) => {
+    if (updatePost._id === p._id) {
+      newPostArr.splice(i, 1, updatePost)
+    }
+  })
+  
+  client.writeQuery({
+    query: query,
+    variables: {
+      query: currentUser
+    },
+    data: {
+      fetchUserFeed: newPostArr
+    }
+  })
+}
+
 const updateCacheDelete = (
   client, post, deletePost,
   currentUser, query
@@ -629,7 +667,16 @@ const handleFormData = (
 }
 
 const stripAllImgs = (refArray) => {
-  return refArray.current.filter(obj => obj.srcType === 'text')
+  return refArray.current.filter(obj => {
+    if (
+      obj.srcType === 'text' ||
+      obj.srcType === 'oldText'
+    ) {
+      return true
+    } else {
+      return false
+    }
+  })
 }
 
 const handleUploadedFiles = (
@@ -660,22 +707,34 @@ const resetDisplayIdx = (refArr) => {
   })
 }
 
+//update helper
+
+const isUpdate = (post) => {
+  if (post) {
+    return true
+  } else {
+    return false
+  }
+}
+
 const PostCreateUtil = { 
   previewMainImages, previewBodyImages, 
   previewLink,
   previewAudio, previewVideoFile, 
   previewVideoLink, removeMainObj,
   removeBodyObj, removeAudioObj,
-  removeVideoObj, handleTagInput, handleFoundTag, 
+  removeVideoObj, removeTag, 
+  handleTagInput, handleFoundTag, 
   drag, onDropBody, onDropMain, allowDrop, 
   removeLinkSiteNameAndImage,
   removeLinkTitleAndDesc,
   fetchUrlMetadata, mainPost, bodyPost,
   audioPost, videoPost, updateCacheCreate,
-  updateCacheDelete, updateCacheLike, 
-  updateCacheUnlike, handleFormData,
-  stripAllImgs, handleUploadedFiles,
-  resetDisplayIdx
+  updateCacheUpdate, updateCacheDelete, 
+  updateCacheLike, updateCacheUnlike, 
+  handleFormData, stripAllImgs, 
+  handleUploadedFiles,
+  resetDisplayIdx, isUpdate
 };
  
 export default PostCreateUtil;

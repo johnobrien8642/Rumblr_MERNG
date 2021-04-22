@@ -9,15 +9,21 @@ import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js';
 const { bodyPost, updateCacheCreate,
-        handleFormData, stripAllImgs,
-        handleUploadedFiles, resetDisplayIdx } = PostFormUtil;
-const { CREATE_POST } = Mutations;
+        updateCacheUpdate, handleFormData, 
+        stripAllImgs, handleUploadedFiles, 
+        resetDisplayIdx } = PostFormUtil;
+const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
-const TextPostForm = () => {
+const TextPostForm = ({
+  post, update,
+  setUpdate
+}) => {
   let [title, setTitle] = useState('');
-  let [main, setMain] = useState('')
+  let [main, setMain] = useState('');
+  let mainRef = useRef('');
 
+  let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -33,17 +39,25 @@ const TextPostForm = () => {
     resetDisplayIdx(body)
   })
 
-  let [createPost] = useMutation(CREATE_POST, {
+  let [createOrUpdatePost] = useMutation(CREATE_OR_UPDATE_POST, {
     update(client, { data }){
-    const { createPost } = data;
+    const { createOrUpdatePost } = data;
     var currentUser = Cookies.get('currentUser')
     var query = FETCH_USER_FEED
-    
-    updateCacheCreate(client, createPost, currentUser, query)
+      
+      if (post) {
+        updateCacheUpdate(client, createOrUpdatePost, currentUser, query)
+      } else {
+        updateCacheCreate(client, createOrUpdatePost, currentUser, query)
+      }
     },
     onCompleted() {
       resetInputs();
-      history.push('/dashboard');
+      if (post) {
+        setUpdate(update = false)
+      } else {
+        history.push('/dashboard');
+      }
     },
     onError(error) {
       console.log(error)
@@ -52,6 +66,7 @@ const TextPostForm = () => {
 
   const resetInputs = () => {
     document.querySelector('#mainTextInput').innerHTML = ''
+    objsToClean.current = [];
     setTitle(title = '');
     setMain(main = '');
     body.current = []
@@ -61,7 +76,6 @@ const TextPostForm = () => {
     setErrMessage(errMessage = '');
   }
 
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -77,10 +91,12 @@ const TextPostForm = () => {
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           user: Cookies.get('currentUser'),
-          tags, kind: 'TextPost'
+          tags, kind: 'TextPost',
+          objsToClean: objsToClean.current,
+          postId: post ? post._id : null
         }
         
-        createPost({
+        createOrUpdatePost({
           variables: {
             instanceData: instanceData
           }
@@ -88,10 +104,10 @@ const TextPostForm = () => {
       }
     )
   }
-  
+
   return (
     <div
-      className='postForm'
+      className={post ? '' : 'postForm'}
     >
       <h1>TextPost</h1>
       <form
@@ -102,16 +118,24 @@ const TextPostForm = () => {
       >
 
       <TextPostInput
+        post={post}
+        update={update}
         formInputId={formInputId}
         title={title}
         setTitle={setTitle}
         main={main}
         setMain={setMain}
+        mainRef={mainRef}
+        render={render}
+        setRender={setRender}
       />
 
       <BodyImageAndText
+        post={post}
+        update={update}
         formId={formId}
         formInputId={formInputId}
+        objsToClean={objsToClean}
         body={body}
         bodyImageFiles={bodyImageFiles}
         setBodyImageFiles={setBodyImageFiles}
@@ -124,6 +148,7 @@ const TextPostForm = () => {
       />
 
       <Tags
+        post={post}
         tag={tag}
         setTag={setTag}
         tags={tags}
@@ -134,7 +159,7 @@ const TextPostForm = () => {
         type='submit'
         disabled={!title && !main}
       >
-        Post
+        {post ? 'update' : 'post'}
       </button>
       </form>
       <div

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { NetworkStatus, useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
-import PostShow from '../posts/types/show/PostShow'
+import PostShow from '../posts/types/showOrUpdate/PostShow'
 import Queries from '../../graphql/queries';
 const { FETCH_USER_LIKES } = Queries;
 

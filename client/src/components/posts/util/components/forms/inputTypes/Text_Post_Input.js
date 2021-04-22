@@ -1,14 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import tinymce from 'tinymce';
+import PostUpdateUtil from '../../../functions/post_update_util.js';
+const { reassembleTextPostStatics } = PostUpdateUtil;
 
 const TextPostInput = ({
-  formInputId, title, 
-  setTitle,
-  main, setMain
+  post, formInputId, 
+  title, setTitle,
+  main, setMain,
+  mainRef,
+  render, setRender
 }) => {
-  let key = useRef('');
-
+  
   useEffect(() => {
+    if (post) {
+      reassembleTextPostStatics(
+        post, title, setTitle, 
+        main, setMain
+      )
+
+      setRender(render + 1)
+    }
+    
     tinymce.init({
       selector: '.mainTextEditor',
       plugins: 'autolink link',
@@ -18,24 +30,25 @@ const TextPostInput = ({
       inline: true
     })
 
-    var bodyEditor1 = document.querySelector('.bodyTextEditor')
-    var hearKey = bodyEditor1.addEventListener('keydown', function(e) {
-      key.current = e.key
-    })
+    // var bodyEditor1 = document.querySelector('.mainTextEditor')
+    // var hearKey = bodyEditor1.addEventListener('keydown', function(e) {
+    //   key.current = e.key
+    // })
 
     const interval = setInterval(() => {
-      var bodyEditor2 = document.querySelector('.bodyTextEditor')
+      var bodyEditor2 = document.querySelector('.mainTextEditor')
       var innerHTML = bodyEditor2.innerHTML
       
-      if (main !== innerHTML) {
+      if (mainRef.current !== innerHTML) {
         //eslint-disable-next-line
         setMain(main = innerHTML)
       }
     }, 50)
 
     return function cleanup() {
-      bodyEditor1.removeEventListener('keydown', hearKey, true)
+      // bodyEditor1.removeEventListener('keydown', hearKey, true)
       clearInterval(interval)
+      // tinymce.remove()
     }
   }, [])
 
@@ -52,7 +65,11 @@ const TextPostInput = ({
           contentEditable={true}
           value={main}
           placeholder='Your text here...'
-          onInput={e => setMain(main = e.target.innerHTML)}
+          onInput={e => {
+            // mainRef.current = e.target.innerHTML
+            console.log(e.target.innerHTML)
+            setMain(main = e.target.innerHTML)
+          }}
       ></div>
     </div>
   )

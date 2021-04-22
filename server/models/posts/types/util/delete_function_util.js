@@ -95,4 +95,8 @@ const deletePost = async (post) => {
   }
 }
 
-export default deletePost;
+const DeleteFunctionUtil = {
+  cleanupImages, deletePost
+}
+
+export default DeleteFunctionUtil;

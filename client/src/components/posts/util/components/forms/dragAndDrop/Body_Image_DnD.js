@@ -4,16 +4,18 @@ const { removeBodyObj, drag,
         onDropBody, allowDrop } = PostFormUtil;
 
 const BodyImageDnD = ({
-  i, img, body, 
-  setBodyImageFiles, 
-  bodyImageFiles
+  bodyIdx, img, body, 
+  setBodyImageFiles,
+  bodyImageFiles,
+  render, setRender,
+  objsToClean
 }) => {
 
   return (
     <div
       onDrop={e => {
           var sortedBodyImageFiles = onDropBody(
-            e, i, body,
+            e, bodyIdx, body,
             bodyImageFiles
           )
           
@@ -21,18 +23,22 @@ const BodyImageDnD = ({
         }
       }
       draggable='true'
-      onDragStart={e => drag(e, i, JSON.stringify(img))}
+      onDragStart={e => drag(e, bodyIdx, JSON.stringify(img))}
       onDragOver={e => allowDrop(e)}
       className='draggable'
     >
       <button 
         type='button' 
-        onClick={() => removeBodyObj(
-            img.arrPos, img.srcType, body,
+        onClick={() => {
+          removeBodyObj(
+            img.srcType, body,
             setBodyImageFiles, 
-            bodyImageFiles
+            bodyImageFiles,
+            objsToClean, bodyIdx, img.arrPos
           )
-        }
+
+          setRender(render + 1)
+        }}
       >
         X
       </button>

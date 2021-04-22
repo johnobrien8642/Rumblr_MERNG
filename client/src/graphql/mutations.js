@@ -65,9 +65,9 @@ const Mutations = {
       }
     }
   `,
-  CREATE_POST: gql`
-    mutation CreatePost($instanceData: JSONObject ) {
-      createPost(instanceData: $instanceData) {
+  CREATE_OR_UPDATE_POST: gql`
+    mutation CreateOrUpdatePost($instanceData: JSONObject ) {
+      createOrUpdatePost(instanceData: $instanceData) {
         __typename
        ${ALL_POSTS}
       }

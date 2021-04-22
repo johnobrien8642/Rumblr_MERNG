@@ -23,10 +23,6 @@ b {
   cursor: pointer;
 }
 
-.draggable:hover {
-  cursor: pointer
-}
-
 .chatText {
   border: 1px solid black;
   height: 200px;
@@ -50,4 +46,42 @@ b {
 
 .deletePostBtn:hover {
   cursor: pointer;
+}
+
+.backBtn:hover {
+  cursor: pointer;
+}
+
+.editPostBtn:hover {
+  cursor: pointer;
+}
+
+.commentBubbleBtn:hover {
+  cursor: pointer;
+}
+
+.likeBtn:hover {
+  cursor: pointer;
+}
+
+.removeTag:hover {
+  cursor: pointer;
+}
+
+.textDnDContent:hover {
+  cursor: text
+}
+
+// .textDnDContent {
+//   width: fit-content;
+//   height: 50px;
+// }
+
+.draggable:hover {
+  cursor: pointer
+}
+
+.draggable {
+  cursor: pointer;
+  width: 100%;
 }

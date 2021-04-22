@@ -98,10 +98,18 @@ const asyncUpdateUpload = async (upload) => {
 
 //filtering
 
-const returnUploadsOnly = (imgArr) => {
-  // console.log('Return Uploads')
-  // console.log(imgArr)
-  return imgArr.filter(obj => obj._id !== null)
+const returnInstancesOnly = (imgArr) => {
+  return imgArr.filter(obj => {
+    if (
+      obj.srcType !== 'text' &&
+      obj.srcType !== 'oldText' &&
+      obj._id !== null
+    ) {
+      return true
+    } else {
+      return false
+    }
+  })
 }
 
 const returnNewImageLinksOnly = (imgArr) => {
@@ -111,6 +119,7 @@ const returnNewImageLinksOnly = (imgArr) => {
 }
 
 //handle instance assembly
+
 
 const allImgObjsSorted = (linkImgs, updatedUploadImgs) => {
   return [...linkImgs, ...updatedUploadImgs].sort((a, b) => 
@@ -142,57 +151,58 @@ const pushTags = (tags, post) => {
   })
 }
 
-const handleStatics = async (statics, post, user) => {
+const handleStatics = async (statics, instance, user) => {
 
-  switch(post.kind) {
+  switch(instance.kind) {
     case 'TextPost':
       var { title, main } = statics
-      post.title = title
-      post.main = main
-      post.user = user._id
+      instance.title = title
+      instance.main = main
+      instance.user = user._id
       break
     case 'PhotoPost':
       var { mainImages } = statics
-      post.user = user._id
+      instance.mainImages = [];
+      instance.user = user._id;
       
-      var uploads = returnUploadsOnly(mainImages)
+      var uploads = returnInstancesOnly(mainImages)
       var imageLinks = returnNewImageLinksOnly(mainImages)
 
-      var updatedUploadImgs = await returnUploadsOnly(uploads, asyncUpdateUpload)
+      var updatedUploadImgs = await updateUploadDispIdx(uploads, asyncUpdateUpload)
       var linkImages = await createImagesFromLinks(imageLinks, asyncImageLink)
       
       var readyMainImgs = allImgObjsSorted(
         linkImages, updatedUploadImgs
       )
     
-      pushMainImgObjs(readyMainImgs, post)
+      pushMainImgObjs(readyMainImgs, instance)
       break
     case 'QuotePost':
       var { quote, source } = statics
-      post.user = user._id
-      post.quote = quote
-      post.source = source
+      instance.quote = quote
+      instance.source = source
+      instance.user = user._id
       break
     case 'LinkPost':
       var { linkObj } = statics;
-      post.user = user._id
-      post.linkObj = linkObj
+      instance.user = user._id
+      instance.linkObj = linkObj
       break
     case 'ChatPost':
       var { chat } = statics;
-      post.user = user._id
-      post.chat = chat
+      instance.user = user._id
+      instance.chat = chat
       break
     case 'AudioPost':
       var { audioFileId, audioMeta } = statics;
-      post.audioFile = audioFileId
-      post.audioMeta = audioMeta
-      post.user = user._id
+      instance.audioFile = audioFileId
+      instance.audioMeta = audioMeta
+      instance.user = user._id
       break
     case 'VideoPost':
       var { videoLink } = statics;
-      post.videoLink = videoLink
-      post.user = user._id
+      instance.videoLink = videoLink
+      instance.user = user._id
       break
     default:
       return
@@ -207,10 +217,13 @@ const CreateFunctionUtil = {
   asyncImageLink,
   updateUploadDispIdx,
   asyncUpdateUpload,
-  returnUploadsOnly, returnNewImageLinksOnly,
-  allImgObjsSorted, pushDescriptionImgObjs,
+  returnInstancesOnly, 
+  returnNewImageLinksOnly,
+  allImgObjsSorted,
+  pushDescriptionImgObjs,
   pushMainImgObjs,
-  pushDescriptions, pushTags, handleStatics,
+  pushDescriptions, pushTags, 
+  handleStatics,
   createInstance
 }
 

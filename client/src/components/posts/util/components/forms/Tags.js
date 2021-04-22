@@ -1,21 +1,40 @@
-import React from 'react';
-import PostFormUtil from '../../functions/post_form_util.js'
+import React, { useEffect } from 'react';
 import MatchedTagResults from './Matched_Tag_Results'
-const { handleTagInput, handleFoundTag } = PostFormUtil;
+import PostUpdateUtil from '../../functions/post_update_util.js'
+import PostFormUtil from '../../functions/post_form_util.js'
+const { pushTags } = PostUpdateUtil;
+const { handleTagInput, handleFoundTag, removeTag } = PostFormUtil;
 
 const Tags = ({
-  tags, setTags,
+  post, tags, 
+  setTags,
   tag, setTag
 }) => {
 
+  useEffect(() => {
+    if (post) {
+      pushTags(post.tags, tags, setTags)
+    }  
+    //eslint-disable-next-line
+  }, [])
+
+
   return (
-    <div
-      
-    >
+    <div>
       {tags.map((tag, i) => {
         return (
-          <div key={i}>
+          <div 
+            key={i}
+          >
             {tag}
+            <span
+              className='removeTag'
+              onClick={() => {
+                removeTag(i, tags, setTags)
+              }}
+            >
+              X
+            </span>
           </div>
         )
       })}

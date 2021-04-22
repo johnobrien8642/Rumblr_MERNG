@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import MainImageDnD from '../../forms/dragAndDrop/Main_Image_DnD'
 import MainImageInput from '../../forms/inputTypes/Main_Image_Input'
+import PostUpdateUtil from '../../../functions/post_update_util.js'
+const { reassemblePhotoPostMain } = PostUpdateUtil;
 
 const PhotoPostInput = ({
-  formId, main, 
+  post, formId, main,
   mainImageFiles,
   setMainImageFiles,
   render, setRender,
+  objsToClean,
   errMessage,
   setErrMessage
 }) => {
+
+  useEffect(() => {
+    if (post) {
+      reassemblePhotoPostMain(main, post.mainImages)
+      setRender(render + 1)
+    }
+  }, [])
 
   return (
     <div
@@ -21,11 +31,14 @@ const PhotoPostInput = ({
           key={i}
         >
           <MainImageDnD 
-            i={i}
+            mainIdx={i}
             img={obj}
             main={main}
             mainImageFiles={mainImageFiles}
             setMainImageFiles={setMainImageFiles}
+            objsToClean={objsToClean}
+            render={render}
+            setRender={setRender}
           />
         </React.Fragment>
         )

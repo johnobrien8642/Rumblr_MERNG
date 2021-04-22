@@ -1,10 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import tinymce from 'tinymce'
+import tinymce from 'tinymce';
+import randomstring from 'randomstring';
+
 const DescriptionStringInput = ({
   body, description, 
-  setDescription, formInputId
+  setDescription, formInputId,
+  update
 }) => {
-  let key = useRef('')
+  let key = useRef('');
   
   useEffect(() => {
     tinymce.init({
@@ -28,13 +31,14 @@ const DescriptionStringInput = ({
         //eslint-disable-next-line
         setDescription(description = innerHTML)
       }
-  }, 50)
+    }, 50)
     
     return function cleanup() {
       bodyEditor1.removeEventListener('keydown', hearKey, true)
       clearInterval(interval)
+      tinymce.remove()
     }
-  }, [formInputId])
+  }, [formInputId, update])
 
   return (
     <React.Fragment>
@@ -55,11 +59,15 @@ const DescriptionStringInput = ({
               kind: 'text',
               srcType: 'text',
               content: description,
-              displayIdx: body.current.length
+              displayIdx: body.current.length,
+              uniqId: randomstring.generate({
+                length: 12,
+                charset: 'alphabetic'
+              })
             }
             
             body.current.push(textObj)
-            // key.current = ''
+            key.current = ''
             document.querySelector(`#${formInputId}`).innerHTML = ''
             setDescription(description = '')
           }

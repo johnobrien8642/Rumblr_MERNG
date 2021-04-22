@@ -4,34 +4,41 @@ const { removeMainObj, drag,
         onDropMain, allowDrop } = PostFormUtil;
 
 const MainImageDnD = ({
-  i, img, main, 
+  mainIdx, img, main, 
   setMainImageFiles, 
-  mainImageFiles
+  mainImageFiles,
+  objsToClean,
+  render, setRender
 }) => {
 
   return (
     <div
       onDrop={e => {
           var sortedMainImageFiles = onDropMain(
-            e, i, main, mainImageFiles
+            e, mainIdx, main, mainImageFiles
           )
     
           setMainImageFiles(mainImageFiles = [...sortedMainImageFiles])
         }
       }
       draggable='true'
-      onDragStart={e => drag(e, i, JSON.stringify(img))}
+      onDragStart={e => drag(e, mainIdx, JSON.stringify(img))}
       onDragOver={e => allowDrop(e)}
       className='draggable'
     >
       <button 
         type='button' 
-        onClick={() => removeMainObj(
-            img.arrPos, img.srcType, main,
-            setMainImageFiles, 
-            mainImageFiles
+        onClick={() => {
+          removeMainObj(
+            img.srcType, main,
+            setMainImageFiles,
+            mainImageFiles,
+            objsToClean,
+            mainIdx, img.arrPos
           )
-        }
+
+          setRender(render + 1)
+        }}
       >
         X
       </button>

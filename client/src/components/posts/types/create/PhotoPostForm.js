@@ -8,17 +8,23 @@ import PhotoPostInput from '../../util/components/forms/inputTypes/Photo_Post_In
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
-const { bodyPost, mainPost, updateCacheCreate,
+const { bodyPost, mainPost, 
+        updateCacheCreate,
+        updateCacheUpdate,
         handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx } = PostFormUtil;
-const { CREATE_POST } = Mutations;
+const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 
-const PhotoPostForm = () => {
+const PhotoPostForm = ({
+  post, update,
+  setUpdate
+}) => {
   let [mainImageFiles, setMainImageFiles] = useState([]);
   let main = useRef([]);
 
+  let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -35,17 +41,25 @@ const PhotoPostForm = () => {
     resetDisplayIdx(body)
   })
 
-  let [createPost] = useMutation(CREATE_POST, {
+  let [createOrUpdatePost] = useMutation(CREATE_OR_UPDATE_POST, {
     update(client, { data }){
-      const { createPost } = data;
+      const { createOrUpdatePost } = data;
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
       
-      updateCacheCreate(client, createPost, currentUser, query)
+      if (post) {
+        updateCacheUpdate(client, createOrUpdatePost, currentUser, query)
+      } else {
+        updateCacheCreate(client, createOrUpdatePost, currentUser, query)
+      }
     },
     onCompleted() {
       resetInputs();
-      history.push('/dashboard');
+      if (post) {
+        setUpdate(update = false)
+      } else {
+        history.push('/dashboard');
+      }
     },
     onError(error) {
       console.log(error)
@@ -80,10 +94,12 @@ const PhotoPostForm = () => {
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           user: Cookies.get('currentUser'),
-          tags, kind: 'PhotoPost'
+          tags, kind: 'PhotoPost',
+          objsToClean: objsToClean.current,
+          postId: post ? post._id : null
         }
         
-        createPost({
+        createOrUpdatePost({
           variables: {
             instanceData: instanceData
           }
@@ -94,7 +110,7 @@ const PhotoPostForm = () => {
 
   return (
     <div
-      className='postForm'
+      className={post ? '' : 'postForm'}
     >
       <h1>PhotoPost</h1>
       <form
@@ -105,8 +121,11 @@ const PhotoPostForm = () => {
       >
       
         <PhotoPostInput
+          post={post}
+          update={update}
           formId={formId}
           formInputId={formInputId}
+          objsToClean={objsToClean}
           main={main}
           mainImageFiles={mainImageFiles}
           setMainImageFiles={setMainImageFiles}
@@ -117,8 +136,11 @@ const PhotoPostForm = () => {
         />
 
         <BodyImageAndText
+          post={post}
+          update={update}
           formId={formId}
           formInputId={formInputId}
+          objsToClean={objsToClean}
           body={body}
           bodyImageFiles={bodyImageFiles}
           setBodyImageFiles={setBodyImageFiles}
@@ -131,6 +153,7 @@ const PhotoPostForm = () => {
         />
 
         <Tags
+          post={post}
           tag={tag}
           setTag={setTag}
           tags={tags}
@@ -145,7 +168,7 @@ const PhotoPostForm = () => {
             bodyImageFiles.length === 0
           }
         >
-          Post
+          {post ? 'update': 'post'}
         </button>
       </form>
       <div

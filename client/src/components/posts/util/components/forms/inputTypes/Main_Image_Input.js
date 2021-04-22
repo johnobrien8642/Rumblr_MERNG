@@ -14,6 +14,7 @@ const MainImageInput = ({
       <h2>Main Images</h2>
         <p>{errMessage}</p>
           <input
+            id='mainFileInput'
             type='file'
             multiple
             name='image'
@@ -24,7 +25,8 @@ const MainImageInput = ({
                 setMainImageFiles,
                 setErrMessage, errMessage,
               )
-              document.getElementById(`${formId}`).reset()
+              
+              document.querySelector('#mainFileInput').value = ''
             }}
           />
           <textarea

@@ -1,50 +1,76 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import BodyImageDnD from './dragAndDrop/Body_Image_DnD'
 import BodyTextDnD from '../forms/dragAndDrop/Body_Text_DnD'
 import BodyImageInput from './inputTypes/Body_Image_Input';
 import DescriptionStringInput from './inputTypes/Description_String_Input';
+import PostUpdateUtil from '../../functions/post_update_util.js';
+const { reassembleBody } = PostUpdateUtil;
 
 const BodyImageAndText = ({
-  formId, formInputId, 
+  post, formId, update,
+  formInputId, objsToClean,
   body, bodyImageFiles,
   setBodyImageFiles, description,
-  setDescription, render, 
-  setRender, errMessage, 
+  setDescription, render,
+  setRender, errMessage,
   setErrMessage
 }) => {
+
+  useEffect(() => {
+    if (post) {
+      //eslint-disable-next-line
+      reassembleBody(body, post.descriptionImages, post.descriptions)
+      setRender(render + 1)
+    }
+    //eslint-disable-next-line
+  }, [])
   
   return(
   <div
     className={'bodyPreview'}
   >
         {body.current.map((obj, i) => {
-          if (obj.srcType === 'newImgFile' || obj.srcType === 'newImgLink') {
+          if (
+              obj.srcType === 'newImgFile' ||
+              obj.srcType === 'newImgLink' ||
+              obj.srcType === 'oldImgUpload' ||
+              obj.srcType === 'oldImgLink'
+            ) {
               return (
                 <React.Fragment
                   key={i}
                 >
                   <BodyImageDnD
-                    i={i}
+                    bodyIdx={i}
                     img={obj}
                     body={body}
                     bodyImageFiles={bodyImageFiles}
-                    setBodyImageFiles={setBodyImageFiles}            
+                    setBodyImageFiles={setBodyImageFiles}
+                    render={render}
+                    setRender={setRender}
+                    objsToClean={objsToClean}          
                   />
                 </React.Fragment>
               )
-            } else if (obj.srcType === 'text') {
+            } else if (
+                obj.srcType === 'text' ||
+                obj.srcType === 'oldText'
+              ) {
               return (
                 <React.Fragment
                   key={i}
                 >
                   <BodyTextDnD
-                    i={i}
+                    bodyIdx={i}
+                    update={update}
+                    formInputId={formInputId}
                     text={obj}
                     body={body}
                     bodyImageFiles={bodyImageFiles}
                     setBodyImageFiles={setBodyImageFiles}
                     render={render}
                     setRender={setRender}
+                    objsToClean={objsToClean}
                   />
                 </React.Fragment>
               )
@@ -70,6 +96,7 @@ const BodyImageAndText = ({
 
           <DescriptionStringInput
             body={body}
+            update={update}
             description={description}
             setDescription={setDescription}
             formInputId={formInputId}
