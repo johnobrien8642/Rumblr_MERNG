@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PostUpdate from '../showOrUpdate/PostUpdate';
 import PostShow from '../showOrUpdate/PostShow';
 
 const PostUpdateOrShow = ({
-  post,
-  update,
-  setUpdate,
-  toggleUpdate
+  post
 }) => {
+  let [update, setUpdate] = useState(false)
+
+  const toggleUpdate = () => {
+    if (update) {
+      setUpdate(update = false)
+    } else { 
+      setUpdate(update = true)
+    }
+  }
 
   if (update) {
     return (

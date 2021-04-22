@@ -9,14 +9,18 @@ import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
 const { bodyPost, updateCacheCreate,
+        updateCacheUpdate,
         handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx, 
         fetchUrlMetadata } = PostFormUtil;
-const { CREATE_POST } = Mutations;
+const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 
-const LinkPostForm = () => {
+const LinkPostForm = ({
+  post, update,
+  setUpdate
+}) => {
   let [link, setLink] = useState('');
   let [pastLink, setPastLink] = useState('')
   let [siteName, setSiteName] = useState('');
@@ -24,6 +28,8 @@ const LinkPostForm = () => {
   let [title, setTitle] = useState('');
   let [linkDescription, setLinkDescription] = useState('');
   let [result, setResult] = useState('');
+
+  let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
@@ -39,17 +45,25 @@ const LinkPostForm = () => {
     resetDisplayIdx(body)
   })
 
-  let [createPost] = useMutation(CREATE_POST, {
+  let [createOrUpdatePost] = useMutation(CREATE_OR_UPDATE_POST, {
     update(client, { data }){
-      const { createPost } = data;
+      const { createOrUpdatePost } = data;
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
       
-      updateCacheCreate(client, createPost, currentUser, query)
+      if (post) {
+        updateCacheUpdate(client, createOrUpdatePost, currentUser, query)
+      } else {
+        updateCacheCreate(client, createOrUpdatePost, currentUser, query)
+      }
     },
     onCompleted() {
       resetInputs();
-      history.push('/dashboard');
+      if (post) {
+        setUpdate(update = false)
+      } else {
+        history.push('/dashboard');
+      }
     },
     onError(error) {
       console.log(error)
@@ -91,10 +105,12 @@ const LinkPostForm = () => {
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           user: Cookies.get('currentUser'),
-          tags, kind: 'LinkPost'
+          tags, kind: 'LinkPost',
+          objsToClean: objsToClean.current,
+          postId: post ? post._id : null
         };
         
-        createPost({
+        createOrUpdatePost({
           variables: {
             instanceData: instanceData
           }
@@ -109,16 +125,18 @@ const LinkPostForm = () => {
       fetchUrlMetadata(link).then(res => {
         if (res.data.success === true) {
           if (res.data.hasOwnProperty('ogImage')) {
-            setResult(result = res)
             setSiteName(siteName = res.data.ogSiteName || '')
             setImageUrl(imageUrl = res.data.ogImage.url)
-          } else {
+            setTitle(title = res.data.ogTitle)
+            setLinkDescription(linkDescription = res.data.ogDescription)
             setResult(result = res)
+          } else {
             setSiteName(siteName = res.data.ogSiteName || '')
             setImageUrl(imageUrl = '')
+            setTitle(title = res.data.ogTitle)
+            setLinkDescription(linkDescription = res.data.ogDescription)
+            setResult(result = res)
           }
-          setTitle(title = res.data.ogTitle)
-          setLinkDescription(linkDescription = res.data.ogDescription)
         }
       })
     }
@@ -132,7 +150,7 @@ const LinkPostForm = () => {
   
   return (
     <div
-      className='postForm'
+      className={post ? '' : 'postForm'}
     >
       <h1>LinkPost</h1>
       <form
@@ -145,6 +163,8 @@ const LinkPostForm = () => {
       {handleLinkPreview()}
       
       <LinkPreview
+        post={post}
+        update={update}
         link={link}
         setLink={setLink}
         pastLink={pastLink}
@@ -162,8 +182,11 @@ const LinkPostForm = () => {
       />
 
       <BodyImageAndText
+        post={post}
+        update={update}
         formId={formId}
         formInputId={formInputId}
+        objsToClean={objsToClean}
         body={body}
         bodyImageFiles={bodyImageFiles}
         setBodyImageFiles={setBodyImageFiles}
@@ -176,6 +199,7 @@ const LinkPostForm = () => {
       />
 
       <Tags
+        post={post}
         tag={tag}
         setTag={setTag}
         tags={tags}
@@ -186,7 +210,7 @@ const LinkPostForm = () => {
         type='submit'
         disabled={!result}
       >
-        Post
+        {post ? 'update' : 'post'}
       </button>
       </form>
       <div

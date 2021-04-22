@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
 import PostUpdateOrShow from '../posts/types/showOrUpdate/PostUpdateOrShow.js'
 import Cookies from 'js-cookie';
@@ -10,15 +10,6 @@ const { header } = FeedUtil;
 const Feed = ({ 
   tag, user 
 }) => {
-  let [update, setUpdate] = useState(false)
-
-  const toggleUpdate = () => {
-    if (update) {
-      setUpdate(update = false)
-    } else { 
-      setUpdate(update = true)
-    }
-  }
 
   let query;
   if (user) {
@@ -53,12 +44,7 @@ const Feed = ({
               className='post'
               key={post._id}
             >
-              <PostUpdateOrShow
-                post={post}
-                update={update}
-                setUpdate={setUpdate}
-                toggleUpdate={toggleUpdate}
-              />
+              <PostUpdateOrShow post={post} />
             </div>
           )
         })}

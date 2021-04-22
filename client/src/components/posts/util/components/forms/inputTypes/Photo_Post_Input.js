@@ -19,6 +19,7 @@ const PhotoPostInput = ({
       reassemblePhotoPostMain(main, post.mainImages)
       setRender(render + 1)
     }
+    //eslint-disable-next-line
   }, [])
 
   return (

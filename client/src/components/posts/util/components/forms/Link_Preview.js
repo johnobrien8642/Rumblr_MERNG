@@ -4,23 +4,40 @@ import LinkNameAndImage from '../forms/Link_Name_And_Image'
 import LinkTitleAndDesc from '../forms/Link_Title_And_Desc'
 
 const LinkPreview = ({ 
-  link, setLink, result,
+  post, link, setLink, result,
   siteName, setSiteName,
   imageUrl, setImageUrl, setTitle,
   title, linkDescription,
   setLinkDescription, resetLink
 }) => {
   let [input, setInput] = useState('');
-  let [showNameAndUrl, setShowNameAndUrl] = useState(imageUrl)
+  let [showNameAndUrl, setShowNameAndUrl] = useState(true)
   let [showTitleAndLinkDescription, 
         setShowTitleAndLinkDescription] = useState(true)
 
-  useEffect(() => {  
+  useEffect(() => {
+    
+    if (post) {
+      const { linkObj } = post;
+      //eslint-disable-next-line
+      setLink(link = linkObj.link)
+      //eslint-disable-next-line
+      setSiteName(siteName = linkObj.siteName)
+      //eslint-disable-next-line
+      setImageUrl(imageUrl = linkObj.imageUrl)
+      //eslint-disable-next-line
+      setTitle(title = linkObj.title)
+      //eslint-disable-next-line
+      setLinkDescription(linkDescription = linkObj.linkDescription)
+    }
+
+
     if (!showNameAndUrl && !showTitleAndLinkDescription) {
       resetLink()
       resetInput()
     }
-  })
+    //eslint-disable-next-line
+  }, [])
 
   const resetInput = () => {
     setShowNameAndUrl(showNameAndUrl = true)

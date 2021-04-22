@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const QuotePostInput = ({
-  quote, setQuote,
+  post, quote, setQuote,
   source, setSource
 }) => {
+  
+  useEffect(() => {
+    if (post) {
+      //eslint-disable-next-line
+      setQuote(quote = post.quote)
+      //eslint-disable-next-line
+      setSource(source = post.source)
+    }
+  }, [])
 
   return (
     <div>

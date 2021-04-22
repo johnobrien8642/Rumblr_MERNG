@@ -90,8 +90,9 @@ const QuotePostForm = ({
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           user: Cookies.get('currentUser'),
+          tags, kind: 'QuotePost',
           objsToClean: objsToClean.current,
-          tags, kind: 'QuotePost'
+          postId: post ? post._id : null
         };
         
         createOrUpdatePost({
@@ -105,7 +106,7 @@ const QuotePostForm = ({
   
   return (
     <div
-      className='postForm'
+      className={post ? '' : 'postForm'}
     >
       <h1>QuotePost</h1>
       <form
@@ -129,6 +130,7 @@ const QuotePostForm = ({
         update={update}
         formId={formId}
         formInputId={formInputId}
+        objsToClean={objsToClean}
         body={body}
         bodyImageFiles={bodyImageFiles}
         setBodyImageFiles={setBodyImageFiles}
@@ -152,7 +154,7 @@ const QuotePostForm = ({
         type='submit'
         disabled={!quote}
       >
-        Post
+        {post ? 'update' : 'post'}
       </button>
       </form>
       <div
