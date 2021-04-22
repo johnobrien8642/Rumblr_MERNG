@@ -84,3 +84,7 @@ b {
   cursor: pointer;
   width: 100%;
 }
+
+[contentEditable=true]:empty:not(:focus):before{
+  content:attr("<strong>Brother Muzone:</strong> Well we can't stand out here all night...<br><br><strong> Omar Little:</strong> I suppose we can't...<br><br><strong> Brother Muzone:</strong> A man has to have a code.<br><br><strong> Omar Little:</strong> Oh indeed...");
+}

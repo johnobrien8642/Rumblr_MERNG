@@ -118,6 +118,18 @@ const returnNewImageLinksOnly = (imgArr) => {
   return imgArr.filter(obj => obj.srcType === 'newImgLink')
 }
 
+const returnImageInstancesOnly = (objsToClean) => {
+  return objsToClean.filter(obj => obj.kind === 'Image')
+}
+
+const returnAudioInstancesOnly = (objsToClean) => {
+  return objsToClean.filter(obj => obj.kind === 'Audio')
+}
+
+const returnVideoInstancesOnly = (objsToClean) => {
+  return objsToClean.filter(obj => obj.kind === 'Video')
+}
+
 //handle instance assembly
 
 
@@ -189,6 +201,7 @@ const handleStatics = async (statics, instance, user) => {
       instance.linkObj = linkObj
       break
     case 'ChatPost':
+      instance.chat = ''
       var { chat } = statics;
       instance.user = user._id
       instance.chat = chat
@@ -219,6 +232,9 @@ const CreateFunctionUtil = {
   asyncUpdateUpload,
   returnInstancesOnly, 
   returnNewImageLinksOnly,
+  returnAudioInstancesOnly,
+  returnImageInstancesOnly,
+  returnVideoInstancesOnly,
   allImgObjsSorted,
   pushDescriptionImgObjs,
   pushMainImgObjs,

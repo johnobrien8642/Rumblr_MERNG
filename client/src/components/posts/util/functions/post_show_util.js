@@ -83,7 +83,7 @@ const postBody = (post) => {
   data.descriptions.forEach((obj, i) => {
     descriptionArr.splice(obj.displayIdx, 0, obj)
   })
-  
+  console.log(post)
   if (data.kind === 'TextPost') {
     return (
       <React.Fragment>

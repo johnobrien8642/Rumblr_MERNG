@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const ChatPostInput = ({
-  chat, setChat,
-  line, setLine
+  post, chat
 }) => {
+  let [placeholder, setPlaceholder] = useState("<strong>Brother Muzone:</strong> Well we can't stand out here all night...<br><br><strong> Omar Little:</strong> I suppose we can't...<br><br><strong> Brother Muzone:</strong> A man has to have a code.<br><br><strong> Omar Little:</strong> Oh indeed...")
 
   useEffect(() => {
+    if (post) {
+      chat.current = post.chat
+      document.querySelector('.chatText').innerHTML = post.chat
+    }
+
     var firstSpace = document.createTextNode(' ')
     var chatDiv = document.querySelector('.chatText')
     chatDiv.appendChild(firstSpace)
+    //eslint-disable-next-line
   }, [])
 
   const regexChat = () => {
@@ -39,7 +45,9 @@ const ChatPostInput = ({
 
         chat.current = e.target.innerHTML
       }}
-      
+      onFocus={() => {
+        setPlaceholder(placeholder = '')
+      }}
       onKeyDown={e => {
         if (e.key === 'Enter') {
           if (window.getSelection) {
@@ -55,12 +63,14 @@ const ChatPostInput = ({
             range.setEndAfter(br2);
             range.collapse(false);
             range.insertNode((suffixNode = document.createTextNode(' ')));
+            range.collapse(true)
             range.setStartAfter(suffixNode);
             selection.removeAllRanges();
             selection.addRange(range);
           }
         }
       }}
+      dangerouslySetInnerHTML={{ __html: placeholder }}
     >
     </div>
   )

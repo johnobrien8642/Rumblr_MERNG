@@ -111,23 +111,38 @@ const previewLink = (
 }
 
 const previewAudio = (
-  e, mm, audioObj, 
-  audioFile, 
-  active, setActive
+  e,
+  mm,
+  audioFile,
+  setAudioFile,
+  title,
+  setTitle,
+  artist,
+  setArtist,
+  album,
+  setAlbum,
+  src,
+  setSrc,
+  active,
+  setActive,
+  objsToClean,
+  post
 ) => {
   const file = e.currentTarget.files[0]
-
+  
   var reader = new FileReader();
 
   reader.onloadend = () => {
+    if (post) {
+      objsToClean.current.push(post.audioFile)
+    }
     mm.parseBlob(file).then(meta => {
       const { common } = meta;
-      audioObj.current.src = reader.result
-      audioObj.current.album = common.album || ''
-      audioObj.current.artist = common.artist || ''
-      audioObj.current.title = common.title || ''
-      audioObj.current.kind = 'audioObj'
-      audioFile.current = file
+      setTitle(title = common.title || '') 
+      setArtist(artist = common.artist || '') 
+      setAlbum(album = common.album || '') 
+      setSrc(src = reader.result)
+      setAudioFile(audioFile = file)
       setActive(active = true)
     })
   }

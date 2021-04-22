@@ -58,12 +58,14 @@ router.post('/audio', upload.any(), async (req, res, next) => {
   const url = req.protocol + '://' + req.get('host')
   
   function createAudio(f) {
-    let audio = new Audio({
-      url: url + '/uploads/audio/' + f.filename,
-      created: Date.now(),
-      path: f.path
-    })
-    return audio.save()
+    if (f !== undefined) {
+      let audio = new Audio({
+        url: url + '/uploads/audio/' + f.filename,
+        created: Date.now(),
+        path: f.path
+      })
+      return audio.save()
+    }
   }
 
   Promise

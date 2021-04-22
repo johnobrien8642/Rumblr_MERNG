@@ -53,6 +53,7 @@ const QueryFragments = {
       _id
       url
       path
+      kind
     }
     audioMeta
   `,
@@ -62,6 +63,7 @@ const QueryFragments = {
       _id
       url
       path
+      kind
     }
   `,
 }

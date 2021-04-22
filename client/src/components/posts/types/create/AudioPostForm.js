@@ -11,7 +11,7 @@ import PostFormUtil from '../../util/functions/post_form_util.js';
 const { bodyPost, updateCacheCreate,
         updateCacheUpdate,
         handleFormData, stripAllImgs,
-        audioPost, handleUploadedFiles, 
+        audioPost, handleUploadedFiles,
         resetDisplayIdx } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
@@ -20,8 +20,15 @@ const AudioPostForm = ({
   post, update,
   setUpdate
 }) => {
-  let audioFile = useRef({});
-  let audioObj = useRef({})
+  // let audioFile = useRef({});
+  let [audioFile, setAudioFile] = useState('');
+  // let audioObj = useRef({});
+  let [title, setTitle] = useState('');
+  let [artist, setArtist] = useState('');
+  let [album, setAlbum] = useState('');
+  let [src, setSrc] = useState('');
+
+
   let [active, setActive] = useState(false)
 
   let objsToClean = useRef([]);
@@ -67,7 +74,11 @@ const AudioPostForm = ({
 
   const resetInputs = () => {
     audioFile.current = {};
-    audioObj.current = {};
+    setTitle(title = '') 
+    setArtist(artist = '') 
+    setAlbum(album = '') 
+    setSrc(src = '')
+    setAudioFile(audioFile = '')
     setBodyImageFiles(bodyImageFiles = []);
     body.current = [];
     setDescription(description = '');
@@ -76,12 +87,15 @@ const AudioPostForm = ({
     setErrMessage(errMessage = '');
   }
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    var audioFileFormData = new FormData();
-    audioFileFormData.append('audio', audioFile.current)
-    
+
+    if (audioFile) {
+      var audioFileFormData = new FormData();
+      audioFileFormData.append('audio', audioFile)
+    }
+  
     var bodyImagesFormData = handleFormData(bodyImageFiles)
   
     Promise.all([
@@ -89,11 +103,10 @@ const AudioPostForm = ({
       audioPost(audioFileFormData)
     ]).then(
       ([bodyUploads, audio]) => {
-        var { title, artist, album } = audioObj.current
 
         var instanceData = {
           statics: {
-            audioFileId: audio[0]._id,
+            audioFileId: audio[0] ? audio[0]._id : post.audioFile._id,
               audioMeta: {
                 title, artist, album
               }
@@ -114,10 +127,10 @@ const AudioPostForm = ({
       }
     )
   }
-  
+
   return (
     <div
-      className='postForm'
+      className={post ? '' : 'postForm'}
     >
       <h1>AudioPost</h1>
       <form
@@ -131,10 +144,21 @@ const AudioPostForm = ({
         post={post}
         update={update}
         formId={formId}
+        objsToClean={objsToClean}
         audioFile={audioFile}
-        audioObj={audioObj}
+        setAudioFile={setAudioFile}
+        title={title}
+        setTitle={setTitle}
+        artist={artist}
+        setArtist={setArtist}
+        album={album}
+        setAlbum={setAlbum}
+        src={src}
+        setSrc={setSrc}
         active={active}
         setActive={setActive}
+        render={render}
+        setRender={setRender}
       />
 
       <BodyImageAndText
@@ -164,7 +188,7 @@ const AudioPostForm = ({
 
       <button
         type='submit'
-        disabled={!audioFile.current}
+        disabled={!audioFile}
       >
         {post ? 'update' : 'post'}
       </button>

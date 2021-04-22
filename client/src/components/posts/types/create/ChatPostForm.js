@@ -105,7 +105,7 @@ const ChatPostForm = ({
   
   return (
     <div
-      className='postForm'
+      className={post ? '' : 'postForm'}
     >
       <h1>ChatPost</h1>
       <form
@@ -150,7 +150,7 @@ const ChatPostForm = ({
         type='submit'
         disabled={!chat}
       >
-        Post
+        {post ? 'update' : 'post'}
       </button>
       </form>
       <div

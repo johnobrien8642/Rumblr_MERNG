@@ -7,10 +7,13 @@ const { getTagArr, asyncTag, findOrCreateTag,
         createImagesFromLinks, asyncImageLink,
         updateUploadDispIdx, asyncUpdateUpload,
         returnInstancesOnly, returnNewImageLinksOnly,
+        returnImageInstancesOnly, returnAudioInstancesOnly,
+        returnVideoInstancesOnly,
         allImgObjsSorted, pushDescriptionImgObjs,
         pushDescriptions, pushTags, handleStatics,
         createInstance } = CreateOrUpdateFunctionUtil;
-const { cleanupImages } = DeleteFunctionUtil;
+const { cleanupImages, cleanupAudio, 
+        cleanupVideo } = DeleteFunctionUtil;
 
 const createOrUpdatePost = ({
   statics,
@@ -24,6 +27,10 @@ const createOrUpdatePost = ({
   
   var uploads = returnInstancesOnly(descriptionImages)
   var imageLinks = returnNewImageLinksOnly(descriptionImages)
+
+  var imgsToClean = returnImageInstancesOnly(objsToClean)
+  var audioToClean = returnAudioInstancesOnly(objsToClean)
+  var videoToClean = returnVideoInstancesOnly(objsToClean)
   
   return Promise.all([
     updateUploadDispIdx(uploads, asyncUpdateUpload),
@@ -31,11 +38,14 @@ const createOrUpdatePost = ({
     getTagArr(tags, asyncTag, findOrCreateTag),
     User.findOne({ blogName: user }),
     Post.findById(postId),
-    cleanupImages(objsToClean),
+    cleanupImages(imgsToClean),
+    cleanupAudio(audioToClean),
+    cleanupVideo(videoToClean)
   ]).then(
     ([updatedUploads, linkImages, 
       tags, user, fetchedPost, 
-      cleanedImages]) => {
+      cleanedImages, cleanedAudio,
+      cleanupVideo]) => {
       
       if (update) {
         var instance = fetchedPost

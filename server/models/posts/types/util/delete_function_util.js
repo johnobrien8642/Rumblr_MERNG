@@ -32,24 +32,29 @@ const cleanupImages = async (imageArr) => {
   })
 }
 
-const cleanupAudio = async (audioObj) => {
-  Promise.all([
-    fs.unlink(audioObj.path, () => {}),
-    Audio.deleteOne({ _id: audioObj._id })
-  ])
+const cleanupAudio = async (audioObjs) => {
+  audioObjs.forEach(obj => {
+    Promise.all([
+      fs.unlink(obj.path, () => {}),
+      Audio.deleteOne({ _id: obj._id })
+    ])
+  })
 }
 
-const cleanupVideo = async (videoObj) => {
-  if (videoObj.path) {
-    Promise.all([
-      fs.unlink(videoObj.path, () => {}),
-      Video.deleteOne({ _id: videoObj._id })
+const cleanupVideo = async (videoObjs) => {
+
+  videoObjs.forEach(obj => {
+    if (obj.path) {
+      Promise.all([
+        fs.unlink(obj.path, () => {}),
+        Video.deleteOne({ _id: obj._id })
+      ])
+    } else {
+      Promise.all([
+        Video.deleteOne({ _id: obj._id })
     ])
-  } else {
-    Promise.all([
-      Video.deleteOne({ _id: videoObj._id })
-    ])
-  }
+    }
+  })
 }
 
 const deletePost = async (post) => {
@@ -79,7 +84,7 @@ const deletePost = async (post) => {
   ) {
     return Promise.all([
       cleanupImages(post.descriptionImages),
-      cleanupAudio(post.audioFile)      
+      cleanupAudio([post.audioFile])      
     ]).then(() => {
       handlePostDelete(post)
     })
@@ -88,7 +93,7 @@ const deletePost = async (post) => {
   ) {
     return Promise.all([
       cleanupImages(post.descriptionImages),
-      cleanupVideo(post.videoLink)      
+      cleanupVideo([post.videoLink])      
     ]).then(() => {
       handlePostDelete(post)
     })
@@ -96,7 +101,8 @@ const deletePost = async (post) => {
 }
 
 const DeleteFunctionUtil = {
-  cleanupImages, deletePost
+  cleanupImages, cleanupAudio, 
+  cleanupVideo, deletePost
 }
 
 export default DeleteFunctionUtil;
