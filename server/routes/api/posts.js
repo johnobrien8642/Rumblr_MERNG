@@ -78,7 +78,7 @@ router.post('/audio', upload.any(), async (req, res, next) => {
 
 router.post('/video', upload.any(), async (req, res, next) => {
   const url = req.protocol + '://' + req.get('host')
-  console.log(req.files)
+  
   function createVideo(req) {
     if (req.files) {
       let video = new Video({

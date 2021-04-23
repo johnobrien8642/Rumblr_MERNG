@@ -134,8 +134,9 @@ const previewAudio = (
 
   reader.onloadend = () => {
     if (post) {
-      objsToClean.current.push(post.audioFile)
+      objsToClean.current = [post.audioFile]
     }
+
     mm.parseBlob(file).then(meta => {
       const { common } = meta;
       setTitle(title = common.title || '') 
@@ -151,27 +152,52 @@ const previewAudio = (
 }
 
 const previewVideoFile = (
-  e, videoObj, 
+  e,
+  post,
+  videoObj,
+  setVideoObj,
   videoFile,
-  active, setActive
+  setVideoFile,
+  active, 
+  setActive,
+  objsToClean
 ) => {
   const file = e.currentTarget.files[0]
   const videoPath = URL.createObjectURL(file)
 
-  videoFile.current = file
-  videoObj.current = videoPath
+  if (post) {
+    objsToClean.current = [post.videoLink]
+  }
+
+  setVideoFile(videoFile = file)
+  setVideoObj(videoObj = videoPath)
   setActive(active = true)
 }
 
 const previewVideoLink = (
-  e, videoObj,
-  active, setActive
+  e,
+  post,
+  videoObj,
+  setVideoObj,
+  videoFile,
+  setVideoFile,
+  active, 
+  setActive,
+  objsToClean
 ) => {
   if (Validator.isURL(e.target.value)) {
     var matched = new RegExp(/youtube|vimeo|twitch|dailymotion/)
 
     if (matched) {
-      videoObj.current = e.target.value
+      if (post) {
+        objsToClean.current = [post.videoLink]
+      }
+
+      if (videoFile) {
+        setVideoFile(videoFile = '')
+      }
+
+      setVideoObj(videoObj = e.target.value)
       setActive(active = true)
     }
   }
@@ -306,21 +332,42 @@ const removeLinkTitleAndDesc = (
 }
 
 const removeAudioObj = (
-  audioObj, audioFile,
-  active, setActive
+  post,
+  audioObj,
+  setAudioObj,
+  audioFile,
+  setAudioFile,
+  active, 
+  setActive,
+  objsToClean
 ) => {
-  audioObj.current = {}
-  audioFile.current = {}
+  if (post) {
+    objsToClean.current = [post.audioLink]
+  }
+
+  setAudioObj(audioObj = {})
+  setAudioFile(audioFile = {})
   setActive(active = false)
 }
 
 const removeVideoObj = (
-  videoObj, videoFile,
-  active, setActive,
-  isLink, setIsLink
+  post,
+  videoObj,
+  setVideoObj,
+  videoFile,
+  setVideoFile,
+  active, 
+  setActive,
+  isLink,
+  setIsLink,
+  objsToClean
 ) => {
-  videoObj.current = {}
-  videoFile.current = {}
+  if (post) {
+    objsToClean.current = [post.videoLink]
+  }
+
+  setVideoObj(videoObj = {})
+  setVideoFile(videoFile = {})
   if (isLink) {
     setIsLink(isLink = false)
   }
@@ -501,7 +548,7 @@ const videoPost = (
   if (isLink) {
     return axios.post('/api/posts/video', {
       params: {
-        url: videoObj.current
+        url: videoObj
       }
     }).then(videoRes => {
       let videoObj = videoRes.data

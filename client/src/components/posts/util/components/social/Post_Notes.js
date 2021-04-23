@@ -16,7 +16,6 @@ const PostNotes = ({
     update(client, { data }) {
       let { comment } = data;
       let query = FETCH_LIKES_REPOSTS_AND_COMMENTS;
-      // var currentUser = Cookies.get('currentUser')
       
       var readFeed = client.readQuery({
         query: query,

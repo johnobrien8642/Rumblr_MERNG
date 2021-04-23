@@ -21,11 +21,11 @@ const VideoPostForm = ({
   post, update,
   setUpdate
 }) => {
-  let videoFile = useRef('');
-  let videoObj = useRef('');
-  let [active, setActive] = useState(false)
+  let [videoFile, setVideoFile] = useState('');
+  let [videoObj, setVideoObj] = useState('');
   let [isLink, setIsLink] = useState(false)
-
+  
+  let [active, setActive] = useState(false)
   let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
@@ -68,8 +68,8 @@ const VideoPostForm = ({
   });
 
   const resetInputs = () => {
-    videoObj.current = '';
-    videoFile.current = '';
+    setVideoObj(videoObj = '');
+    setVideoFile(videoFile = '');
     setActive(active = false);
     setBodyImageFiles(bodyImageFiles = []);
     body.current = [];
@@ -84,15 +84,15 @@ const VideoPostForm = ({
     
     var videoFileFormData = new FormData();
     
-    if (videoFile.current) {
-      videoFileFormData.append('video', videoFile.current)
+    if (videoFile) {
+      videoFileFormData.append('video', videoFile)
     }
 
     var bodyImagesFormData = handleFormData(bodyImageFiles)
 
     Promise.all([
       bodyPost(bodyImagesFormData),
-      videoPost(videoFileFormData, videoObj)
+      videoPost(videoFileFormData, videoObj, isLink)
     ]).then(
       ([bodyUploads, video]) => {
 
@@ -134,9 +134,12 @@ const VideoPostForm = ({
         update={update}
         formId={formId}
         active={active}
+        objsToClean={objsToClean}
         setActive={setActive}
         videoObj={videoObj}
+        setVideoObj={setVideoObj}
         videoFile={videoFile}
+        setVideoFile={setVideoFile}
         isLink={isLink}
         setIsLink={setIsLink}
       />
@@ -146,6 +149,7 @@ const VideoPostForm = ({
         update={update}
         formId={formId}
         formInputId={formInputId}
+        objsToClean={objsToClean}
         body={body}
         bodyImageFiles={bodyImageFiles}
         setBodyImageFiles={setBodyImageFiles}
@@ -167,7 +171,7 @@ const VideoPostForm = ({
 
       <button
         type='submit'
-        disabled={!videoObj.current}
+        disabled={!videoObj}
       >
         {post ? 'update' : 'post'}
       </button>

@@ -6,6 +6,7 @@ import AuthService from '../../../services/auth_util.js';
 import RepostType from '../objects/posts/util/repost_type.js';
 import LikeType from '../objects/posts/util/like_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
+import CommentType from '../objects/posts/util/comment_type.js'
 import AnyPostType from '../unions/any_post_type.js'
 import createOrUpdatePost from '../../../models/posts/types/util/create_or_update_function.js'
 import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function_util.js'
@@ -16,6 +17,7 @@ const User = mongoose.model('User');
 const Tag = mongoose.model('Tag');
 const Repost = mongoose.model('Repost');
 const Like = mongoose.model('Like');
+const Comment = mongoose.model('Comment')
 const Follow = mongoose.model('Follow');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
@@ -172,6 +174,43 @@ const mutation = new GraphQLObjectType({
           return Promise.all(
             ([repost.save()])).then(([repost]) => repost)
         })
+      }
+    },
+    comment: {
+      type: CommentType,
+      args: {
+        commentData: { type: GraphQLJSONObject }
+      },
+      resolve(parentValue, {
+        commentData
+      }) {
+        var { user, postId, content, kind } = commentData;
+        var comment = new Comment();
+
+        return Promise.all([
+          User.findOne({ blogName: user })
+        ]).then(([user]) => {
+          comment.user = user._id
+          comment.post = postId
+          comment.content = content
+          comment.onModel = kind
+
+          return Promise.all([comment.save()])
+            .then(([comment]) => comment)
+        })
+      }
+    },
+    deleteComment: {
+      type: CommentType,
+      args: {
+        commentId: { type: GraphQLID }
+      },
+      resolve(parentValue, {
+        commentId
+      }) {
+        return Promise.all([
+          Comment.deleteOne({ _id: commentId })
+        ])
       }
     }
   })

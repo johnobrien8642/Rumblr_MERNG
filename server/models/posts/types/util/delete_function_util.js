@@ -3,6 +3,7 @@ import fs from 'fs';
 const Post = mongoose.model('Post');
 const Repost = mongoose.model('Repost');
 const Like = mongoose.model('Like');
+const Comment = mongoose.model('Comment')
 const Image = mongoose.model('Image');
 const Audio = mongoose.model('Audio');
 const Video = mongoose.model('Video');
@@ -11,6 +12,7 @@ const handlePostDelete = async (post) => {
   return Promise.all([
     Post.deleteOne({ _id: post._id }),
     Like.deleteMany({ post: post._id }),
+    Comment.deleteMany({ post: post._id }),
     Repost.deleteOne({ _id: post._id }),
     Repost.deleteMany({ post: post._id })
   ]).then(() => post._id)
@@ -97,6 +99,10 @@ const deletePost = async (post) => {
     ]).then(() => {
       handlePostDelete(post)
     })
+  } else if (
+    post.kind === 'Repost'
+  ) {
+    await handlePostDelete(post)
   }
 }
 

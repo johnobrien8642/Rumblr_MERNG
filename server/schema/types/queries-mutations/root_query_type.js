@@ -367,7 +367,8 @@ const RootQueryType = new GraphQLObjectType({
             } 
           },
           { $unwind: "$notes" },
-          { $replaceRoot: { "newRoot": "$notes" } }
+          { $replaceRoot: { "newRoot": "$notes" } },
+          { $sort: { "createdAt": 1 } }
         ]).then(res => res)
       }
     },

@@ -84,8 +84,14 @@ const AudioFileInput = ({
           disabled={update ? true : false}
           onClick={() =>  {
             removeAudioObj(
-              audioObj, audioFile,
-              active, setActive
+              post,
+              audioObj,
+              setAudioObj,
+              audioFile,
+              setAudioFile,
+              active, 
+              setActive,
+              objsToClean
             )
           }}
         >
