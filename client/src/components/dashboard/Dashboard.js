@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 import PostNav from '../nav/Posts_Nav';
 import Feed from '../feeds/Feed.js';
 import RepostForm from '../posts/util/components/social/RepostForm';
+import Cookies from 'js-cookie';
 
 const Dashboard = props => {
 
@@ -13,7 +14,7 @@ const Dashboard = props => {
         exact path={`${props.match.path}/repost/:blogName/:postId/:typename`}
         component={RepostForm}
       />
-      <Feed />
+      <Feed currentUser={Cookies.get('currentUser')} />
     </div>
   )
 }

@@ -276,6 +276,48 @@ const RootQueryType = new GraphQLObjectType({
           })
       }
     },
+    fetchUserBlog: {
+      type: GraphQLList(AnyPostType),
+      args: {
+        query: { type: GraphQLString },
+        cursorId: { type: GraphQLString }
+      },
+      resolve(parentValue, { query, cursorId }) {
+        return User.findOne({ blogName: query })
+          .then(user => {
+            var recastPostId;
+            recastPostId = mongoose.Types.ObjectId(cursorId)
+                
+            return Post.aggregate([
+              { 
+                $lookup: {
+                  from: 'posts',
+                  let: { userId: user._id, cursor: recastPostId },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            { $lt: [ "$_id", "$$cursor" ] },
+                            { $eq: [ "$user", "$$userId"] },
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  as: 'posts'
+                }
+              },
+              { $unwind: '$posts' },
+              { $replaceRoot: { "newRoot": "$posts" } },
+              { $sort: { "createdAt": -1 } },
+              { $limit: 1 }
+            ]).then(res => {
+              return res
+            })
+          })
+      }
+    },
     fetchFollowedUsers: {
       type: GraphQLList(FollowType),
       args: {

@@ -1,38 +1,35 @@
 import React, { useEffect, useRef } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import PostUpdateOrShow from '../posts/types/showOrUpdate/PostUpdateOrShow.js'
 import Cookies from 'js-cookie';
 import Queries from '../../graphql/queries';
 import InfiniteScroll from './util/Infinite_Scroll.js';
 import FeedUtil from '../posts/util/functions/feed_util.js'
-const { FETCH_USER_FEED, FETCH_TAG_FEED } = Queries;
-const { updateCacheInfScroll, handleData } = FeedUtil;
+const { FETCH_USER_FEED, FETCH_TAG_FEED, FETCH_USER_BLOG } = Queries;
+const { updateCacheInfScroll, handleData, setQuery } = FeedUtil;
 
 const Feed = ({
-  user, tag
+  user, tag, currentUser
 }) => {
-  let feedArr = useRef([])
+  const history = useHistory();
+  let feedArr = useRef([]);
   let fetchMoreDiv = useRef(null);
   let cursorId = useRef(null);
-  let query = useRef(Cookies.get('currentUser'))
-  let gqlQuery = useRef(FETCH_USER_FEED)
-  let endOfPosts = useRef(false)
+  let query = useRef(user ? user.blogName : tag ? tag.title.slice(1) : Cookies.get('currentUser'));
+  let gqlQuery = useRef(user ? FETCH_USER_BLOG : tag ? FETCH_TAG_FEED : FETCH_USER_FEED);
+  let endOfPosts = useRef(false);
   const client = useApolloClient();
 
   useEffect(() => {
-
+    setQuery(
+      currentUser, user, tag, 
+      query, gqlQuery, Queries
+    )
     return () => {
       document.removeEventListener('scroll', scroll)
     }
-  }, [])
-
-  if (tag) {
-    query.current = tag.title.slice(1)
-    gqlQuery.current = FETCH_TAG_FEED
-  } else if (user) {
-    query.current = user.blogName
-  }
-
+  })
   
   let { loading, error, data } = useQuery(gqlQuery.current, {
     variables: {
@@ -40,7 +37,7 @@ const Feed = ({
       cursorId: null
     },
   })
-
+  
   var scroll = document.addEventListener('scroll', function(event) {
     fetchMoreDiv.current = document.querySelector('#fetchMore')
     var el = fetchMoreDiv.current.getBoundingClientRect()
@@ -60,7 +57,7 @@ const Feed = ({
         if (res.loading) return 'Loading...';
         
         updateCacheInfScroll(
-          res, client, query.current, 
+          res, client, query.current,
           gqlQuery.current, cursorId
         )
 
@@ -70,7 +67,7 @@ const Feed = ({
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
-  
+
   handleData(data, feedArr, cursorId, endOfPosts)
 
   return(
@@ -95,7 +92,6 @@ const Feed = ({
         <div
           id='fetchMore'
         >
-          {endOfPosts.current ? "You're all caught up" : ""}
         </div>
     </div>
   )

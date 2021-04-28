@@ -97,20 +97,27 @@ const Queries = {
     }
   `,
   FETCH_USER_BLOG: gql`
-    query fetchUserBlog($query: String) {
-      user(query: $query) {
-        _id
-        blogName
-        posts {
+    query fetchUserBlog($query: String, $cursorId: String) {
+      fetchUserBlog(query: $query, cursorId: $cursorId) {
           __typename
-          ${ALL_POSTS}
-        }
-        reposts {
-          post {
-            __typename
-            ${ALL_POSTS}
+          ... on RepostType {
+            _id
+            kind
+            user {
+              _id
+              blogName
+            }
+            repostedFrom {
+              _id
+              blogName
+            }
+            repostCaption
+            post {
+              __typename
+              ${ALL_POSTS}
+            }
           }
-        }
+        ${ALL_POSTS}
       }
     }
   `,
