@@ -19,9 +19,9 @@ const App = () => {
     <div className="App">
       <Nav />
       <Switch>
-        <AuthRoute path='/dashboard' component={Dashboard} />
-        <Route exact path='/view/blog/:blogName' component={UserBlogShow} />
-        <Route exact path='/view/tag/:tagTitle' component={TagFeed} />
+        <AuthRoute exact path={'/dashboard'} component={Dashboard} />
+        <AuthRoute exact path={'/view/tag/:tagTitle'} component={TagFeed} />
+        <AuthRoute exact path={'/view/blog/:blogName'} component={UserBlogShow} />
         <Route exact path='/likes' component={UserPostLikesFeed} />
         <Route exact path='/following' component={UserFollowingFeed} />
         <Route exact path='/login' component={Login} />

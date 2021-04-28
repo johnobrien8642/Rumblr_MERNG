@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-// import PostCreateUtil from './util/post_create_util.js'
-// const { createPhotoPost } = PostCreateUtil;
 
 const options = { discriminatorKey: 'kind' }
 

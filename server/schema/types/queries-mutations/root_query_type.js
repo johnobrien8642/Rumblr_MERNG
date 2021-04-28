@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongodb from 'mongodb';
 import graphql from 'graphql';
 import jwt from 'jsonwebtoken';
 import keys from '../../../../config/keys.js'
@@ -21,9 +22,10 @@ const Tag = mongoose.model('Tag');
 const Like = mongoose.model('Like');
 const Repost = mongoose.model('Repost');
 const Follow = mongoose.model('Follow');
-
+const { ObjectID } = mongodb;
 const { GraphQLObjectType, GraphQLList,
-        GraphQLString, GraphQLID, GraphQLBoolean } = graphql;
+        GraphQLString, GraphQLID, GraphQLBoolean,
+        GraphQLInt } = graphql;
 
 const RootQueryType = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -226,41 +228,52 @@ const RootQueryType = new GraphQLObjectType({
     },
     fetchUserFeed: {
       type: new GraphQLList(AnyPostType),
-      args: { query: { type: GraphQLString } },
-      resolve(_, { query }) {
-        return Promise.all([
-          User.aggregate([
-              { $match: { blogName: query } },
-              { $lookup: {
-                  from: 'posts',
-                  localField: '_id',
-                  foreignField: 'user',
-                  as: 'posts'
-                }
-              },
-              { $unwind: "$posts" },
-              { $replaceRoot: { "newRoot": "$posts" } },
-            ],
-          ),
-          User.aggregate([
-              { $match: { blogName: query } },
-              { $lookup: {
-                  from: 'posts',
-                  localField: 'userFollowing',
-                  foreignField: 'user',
-                  as: 'userFollowingPosts'
-                }
-              },
-              { $unwind: "$userFollowingPosts" },
-              { $replaceRoot: { "newRoot": "$userFollowingPosts" } },
-            ],
-          ),
-        ]).then(([posts, userFollowingPosts]) => {
-          var allPosts = [...posts, ...userFollowingPosts]
-          return allPosts.sort((a, b) => {
-            return b.createdAt.getTime() - a.createdAt.getTime()
+      args: { 
+        query: { type: GraphQLString },
+        cursorId: { type: GraphQLString }
+      },
+      resolve(_, { query, cursorId }) {
+        
+        return User.findOne({ blogName: query })
+          .then(user => {
+            return Follow.find({ user: user, onModel: 'User' })
+              .then(follows => {
+                var recastPostId;
+                recastPostId = mongoose.Types.ObjectId(cursorId)
+                
+                return Post.aggregate([
+                  { 
+                    $lookup: {
+                      from: 'posts',
+                      let: { userId: user._id, follows: follows, cursor: recastPostId },
+                      pipeline: [
+                        {
+                          $match: {
+                            $expr: {
+                              $and: [
+                                { $lt: [ "$_id", "$$cursor" ] },
+                                  { $or: [
+                                    { $eq: [ "$user", "$$userId"] },
+                                    { user: { $in: [ "$user", "$$follows"] } }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ],
+                      as: 'posts'
+                    }
+                  },
+                  { $unwind: '$posts' },
+                  { $replaceRoot: { "newRoot": "$posts" } },
+                  { $sort: { "createdAt": -1 } },
+                  { $limit: 1 }
+                ]).then(res => {
+                  return res
+                })
+              })
           })
-        })    
       }
     },
     fetchFollowedUsers: {
@@ -297,7 +310,10 @@ const RootQueryType = new GraphQLObjectType({
     },
     fetchTagFeed: {
       type: new GraphQLList(AnyPostType),
-      args: { query: { type: GraphQLString } },
+      args: { 
+        query: { type: GraphQLString },
+        cursorId: { type: GraphQLString }
+      },
       resolve(_, { query }) {
         var hashedQuery = '#' + query
 
@@ -349,7 +365,7 @@ const RootQueryType = new GraphQLObjectType({
                       $and: 
                       [
                         { $eq: [ "$post", "$$postId" ] },
-                        { $eq: [ "$kind", "$$postKind" ]}
+                        { $eq: [ "$kind", "$$postKind" ] }
                       ]
                     }
                   }
@@ -374,9 +390,9 @@ const RootQueryType = new GraphQLObjectType({
     },
     user: {
       type: UserType,
-      args: { blogName: { type: GraphQLString } },
-      resolve(parentValue, { blogName }) {
-        return User.findOne({ blogName: blogName })
+      args: { query: { type: GraphQLString } },
+      resolve(parentValue, { query }) {
+        return User.findOne({ blogName: query })
       }
     },
     users: {
@@ -388,10 +404,10 @@ const RootQueryType = new GraphQLObjectType({
     post: {
       type: AnyPostType,
       args: { 
-        postId: { type: GraphQLID }
+        query: { type: GraphQLID }
       },
-      resolve(parentValue, { postId }) {
-        return Post.findById(postId)
+      resolve(parentValue, { query }) {
+        return Post.findById(query)
       }
     },
     image: {
@@ -415,9 +431,9 @@ const RootQueryType = new GraphQLObjectType({
     },
     tag: {
       type: TagType,
-      args: { tagTitle: { type: GraphQLString } },
-      resolve(_, {tagTitle}) {
-        return Tag.findOne({ title: tagTitle })
+      args: { query: { type: GraphQLString } },
+      resolve(_, { query }) {
+        return Tag.findOne({ title: query })
       }
     },
     like: {

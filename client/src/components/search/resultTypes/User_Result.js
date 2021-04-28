@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 const { DOES_USER_FOLLOW_USER } = Queries;
 
 const UserResult = ({ user, activate }) => {
+
   let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_USER, {
     variables: {
       user: Cookies.get('currentUser'),

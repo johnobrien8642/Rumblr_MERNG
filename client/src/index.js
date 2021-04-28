@@ -48,14 +48,29 @@ const client = new ApolloClient({
       Query: {
        fields: {
          fetchLikesRepostsAndComments: {
-           merge(existing = [], incoming = []) {
+           merge: (existing = [], incoming = []) => {
              return incoming
            }
         },
         fetchUserFeed: {
-          merge(existing = [], incoming = []) {
-            return incoming
-          }
+          keyArgs: ['query'],
+            merge: (existing = [], incoming = []) => {
+            const elements = [...existing, ...incoming].reduce((array, current) => {
+              return array.map(i => i.__ref).includes(current.__ref) ? array : [...array, current];
+            }, []);
+            
+            return elements
+          },
+        },
+        fetchTagFeed: {
+          keyArgs: ['query'],
+            merge: (existing = [], incoming = []) => {
+            const elements = [...existing, ...incoming].reduce((array, current) => {
+              return array.map(i => i.__ref).includes(current.__ref) ? array : [...array, current];
+            }, []);
+            
+            return elements
+          },
         }
       }
     }

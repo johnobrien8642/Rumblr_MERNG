@@ -13,7 +13,7 @@ const Nav = () => {
   if (data.isLoggedIn) {
     return (
       <div>
-        <Link to='/'><span>R</span></Link>
+        <Link to='/dashboard'><span>R</span></Link>
         <Search />
         <Link to='/dashboard'>Home</Link>
         <UserDetails />

@@ -66,8 +66,6 @@ const TextPostInput = ({
           value={main}
           placeholder='Your text here...'
           onInput={e => {
-            // mainRef.current = e.target.innerHTML
-            console.log(e.target.innerHTML)
             setMain(main = e.target.innerHTML)
           }}
       ></div>

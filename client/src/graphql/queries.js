@@ -4,8 +4,8 @@ const { ALL_POSTS } = AllPostQueryFragment;
 
 const Queries = {
   FETCH_USER_FEED: gql`
-    query FetchUserFeed($query: String) {
-      fetchUserFeed(query: $query) {
+    query FetchUserFeed($query: String, $cursorId: String) {
+      fetchUserFeed(query: $query, cursorId: $cursorId) {
         __typename
         ... on RepostType {
           _id
@@ -29,16 +29,16 @@ const Queries = {
     }
   `,
   FETCH_TAG_FEED: gql`
-    query FetchUserFeed($query: String) {
-      fetchTagFeed(query: $query) {
+    query FetchTagFeed($query: String, $cursorId: String) {
+      fetchTagFeed(query: $query, cursorId: $cursorId) {
         __typename
         ${ALL_POSTS}
       }
     }
   `,
   FETCH_USER: gql`
-    query fetchUser($blogName: String) {
-      user(blogName: $blogName) {
+    query fetchUser($query: String) {
+      user(query: $query) {
         _id
         blogName
         blogDescription
@@ -86,8 +86,8 @@ const Queries = {
     }
   `,
   FETCH_CURRENT_USER_BLOG: gql`
-    query fetchUserBlog($blogName: String) {
-      user(blogName: $blogName) {
+    query fetchUserBlog($query: String) {
+      user(query: $query) {
         _id
         posts {
           __typename
@@ -97,8 +97,8 @@ const Queries = {
     }
   `,
   FETCH_USER_BLOG: gql`
-    query fetchUserBlog($blogName: String) {
-      user(blogName: $blogName) {
+    query fetchUserBlog($query: String) {
+      user(query: $query) {
         _id
         blogName
         posts {
@@ -115,8 +115,8 @@ const Queries = {
     }
   `,
   FETCH_USER_DETAILS_COUNTS: gql`
-    query FetchUserDetailsCounts($blogName: String) {
-      user(blogName: $blogName) {
+    query FetchUserDetailsCounts($query: String) {
+      user(query: $query) {
         _id
         blogName
         userFollowCount
@@ -125,8 +125,8 @@ const Queries = {
     }
   `,
   FETCH_USER_DETAILS: gql`
-    query fetchUserDetails($blogName: String) {
-      user(blogName: $blogName) {
+    query fetchUserDetails($query: String) {
+      user(query: $query) {
         _id
         blogname
         userFollows {
@@ -144,8 +144,8 @@ const Queries = {
     }
   `,
   FETCH_USER_FOLLOWED_TAGS: gql`
-    query fetchUserAndFollowedTags($blogName: String) {
-      user(blogName: $blogName) {
+    query fetchUserAndFollowedTags($query: String) {
+      user(query: $query) {
         _id
         tagFollows {
           _id
@@ -206,8 +206,8 @@ const Queries = {
     }
   `,
   FETCH_TAG: gql`
-    query FetchTag($tagTitle: String) {
-      tag(tagTitle: $tagTitle) {
+    query FetchTag($query: String) {
+      tag(query: $query) {
         _id
         title
       }

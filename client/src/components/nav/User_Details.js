@@ -11,7 +11,7 @@ const UserDetails = () => {
 
   let { loading, error, data } = useQuery(FETCH_USER_DETAILS_COUNTS, {
     variables: {
-      blogName: Cookies.get('currentUser')
+      query: Cookies.get('currentUser')
     },
     pollInterval: active ? 300 : 0
   })

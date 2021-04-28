@@ -9,7 +9,7 @@ const FollowedTags = ({active}) => {
 
   let { loading, error, data } = useQuery(FETCH_USER_FOLLOWED_TAGS, {
     variables: {
-      blogName: Cookies.get('currentUser')
+      query: Cookies.get('currentUser')
     }
   })
 

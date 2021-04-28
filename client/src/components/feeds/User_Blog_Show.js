@@ -10,12 +10,12 @@ const UserBlogShow = () => {
   let { blogName } = useParams();
   let { loading, error, data, } = useQuery(FETCH_USER, {
     variables: {
-      blogName: blogName
+      query: blogName
     }
   })
 
   if (loading) return 'Loading...';
-  if (error) return `Error: ${error}`;
+if (error) return `Error: ${error}`;
 
   const { user } = data;
 

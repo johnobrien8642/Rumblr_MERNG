@@ -9,7 +9,6 @@ import AudioPostForm from '../posts/types/create/AudioPostForm'
 import VideoPostForm from '../posts/types/create/VideoPostForm'
 
 const PostNav = ({ props }) => {
-  
   return(
     <div>
       <Link
