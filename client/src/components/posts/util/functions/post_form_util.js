@@ -581,8 +581,8 @@ const updateCacheCreate = (
   
   var { fetchUserFeed } = readQuery;
   
-  var newPostArr = [createPost, ...fetchUserFeed]
-  
+  var newPostArr = [{ __typename: 'createPost' }, createPost, ...fetchUserFeed]
+
   client.writeQuery({
     query: query,
     variables: {
@@ -628,28 +628,55 @@ const updateCacheUpdate = (
 
 const updateCacheDelete = (
   client, post, deletePost,
-  currentUser, query
+  currentUser, query, userOrTag
 ) => {
   var readFeed = client.readQuery({
     query: query,
     variables: {
-      query: currentUser
+      query: userOrTag ? userOrTag : currentUser
     }
   })
 
-  var { fetchUserFeed } = readFeed;
-  
-  var newPostArr = fetchUserFeed.filter(post1 => post1._id !== post._id)
+  if (readFeed) {
+    var { fetchUserFeed, fetchTagFeed, fetchUserBlog } = readFeed;
 
-  client.writeQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    },
-    data: {
-      fetchUserFeed: newPostArr
+    var newPostArr
+    if (fetchUserFeed) {
+      newPostArr = fetchUserFeed.filter(post1 => post1._id !== post._id)
+      
+      client.writeQuery({
+        query: query,
+        variables: {
+          query: currentUser
+        },
+        data: {
+          fetchUserFeed: [{ __typename: 'deletePost' }, ...newPostArr]
+        }
+      })
+    } else if (fetchTagFeed) {
+      newPostArr = fetchTagFeed.filter(post1 => post1._id !== post._id)
+      client.writeQuery({
+        query: query,
+        variables: {
+          query: userOrTag
+        },
+        data: {
+          fetchTagFeed: [{ __typename: 'deletePost' }, ...newPostArr]
+        }
+      })
+    } else if (fetchUserBlog) {
+      newPostArr = fetchUserBlog.filter(post1 => post1._id !== post._id)
+      client.writeQuery({
+        query: query,
+        variables: {
+          query: userOrTag
+        },
+        data: {
+          fetchUserBlog: [{ __typename: 'deletePost' }, ...newPostArr]
+        }
+      })
     }
-  })
+  } 
 }
 
 const updateCacheLike = (

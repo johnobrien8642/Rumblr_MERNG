@@ -1,17 +1,15 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import LinkPreview from '../../util/components/forms/Link_Preview'
-import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
-const { bodyPost, updateCacheCreate,
+import TextAndImageInput from '../../util/components/forms/inputTypes/Text_And_Image_Input.js';
+const { updateCacheCreate,
         updateCacheUpdate,
-        handleFormData, stripAllImgs,
-        handleUploadedFiles, resetDisplayIdx, 
         fetchUrlMetadata } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
@@ -30,20 +28,11 @@ const LinkPostForm = ({
   let [result, setResult] = useState('');
 
   let objsToClean = useRef([]);
-  let [description, setDescription] = useState('');
-  let [bodyImageFiles, setBodyImageFiles] = useState([]);
-  let body = useRef([]);
+  let [textAndImage, setTextAndImage] = useState('');
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
-  let [errMessage, setErrMessage] = useState('');
-  let [render, setRender] = useState(0);
   const formId = 'linkPostForm';
-  const formInputId = 'linkPostInput';
   let history = useHistory();
-
-  useEffect(() => {
-    resetDisplayIdx(body)
-  })
 
   let [createOrUpdatePost] = useMutation(CREATE_OR_UPDATE_POST, {
     update(client, { data }){
@@ -78,45 +67,33 @@ const LinkPostForm = ({
     setSiteName(siteName = '');
     setImageUrl(imageUrl = '');
     setLinkDescription(linkDescription = '');
-    setBodyImageFiles(bodyImageFiles = []);
-    body.current = [];
+    setTextAndImage(textAndImage = '')
     setTag(tag = '');
     setTags(tags = []);
-    setErrMessage(errMessage = '');
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    var bodyImagesFormData = handleFormData(bodyImageFiles)
-
-    Promise.all([
-      bodyPost(bodyImagesFormData)
-    ]).then(
-      ([bodyUploads]) => {
           
-        var instanceData = {
-          statics: {
-            linkObj: {
-              link, siteName, imageUrl,
-              title, linkDescription
-            }
-          },
-          descriptions: stripAllImgs(body),
-          descriptionImages: handleUploadedFiles(body, bodyUploads),
-          user: Cookies.get('currentUser'),
-          tags, kind: 'LinkPost',
-          objsToClean: objsToClean.current,
-          postId: post ? post._id : null
-        };
-        
-        createOrUpdatePost({
-          variables: {
-            instanceData: instanceData
-          }
-        })
+    var instanceData = {
+      statics: {
+        linkObj: {
+          link, siteName, imageUrl,
+          title, linkDescription
+        }
+      },
+      body: textAndImage,
+      user: Cookies.get('currentUser'),
+      tags, kind: 'LinkPost',
+      objsToClean: objsToClean.current,
+      postId: post ? post._id : null
+    };
+    
+    createOrUpdatePost({
+      variables: {
+        instanceData: instanceData
       }
-    )
+    })
   }
   
   const handleLinkPreview = () => {
@@ -181,21 +158,9 @@ const LinkPostForm = ({
         resetLink={resetLink}
       />
 
-      <BodyImageAndText
-        post={post}
-        update={update}
-        formId={formId}
-        formInputId={formInputId}
-        objsToClean={objsToClean}
-        body={body}
-        bodyImageFiles={bodyImageFiles}
-        setBodyImageFiles={setBodyImageFiles}
-        description={description}
-        setDescription={setDescription}
-        render={render}
-        setRender={setRender}
-        errMessage={errMessage}
-        setErrMessage={setErrMessage}
+      <TextAndImageInput 
+        textAndImage={textAndImage}
+        setTextAndImage={setTextAndImage}
       />
 
       <Tags

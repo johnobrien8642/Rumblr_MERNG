@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Nav from '../components/nav/Nav'
 import Dashboard from './dashboard/Dashboard';
@@ -19,9 +19,9 @@ const App = () => {
     <div className="App">
       <Nav />
       <Switch>
-        <AuthRoute exact path={'/dashboard'} component={Dashboard} />
-        <AuthRoute exact path={'/view/tag/:tagTitle'} component={TagFeed} />
-        <AuthRoute exact path={'/view/blog/:blogName'} component={UserBlogShow} />
+        <AuthRoute path={'/dashboard'} component={Dashboard} />
+        <AuthRoute path={'/view/tag/:tagTitle'} component={TagFeed} />
+        <AuthRoute path={'/view/blog/:blogName'} component={UserBlogShow} />
         <Route exact path='/likes' component={UserPostLikesFeed} />
         <Route exact path='/following' component={UserFollowingFeed} />
         <Route exact path='/login' component={Login} />

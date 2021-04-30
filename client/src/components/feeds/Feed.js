@@ -16,6 +16,7 @@ const Feed = ({
   let feedArr = useRef([]);
   let fetchMoreDiv = useRef(null);
   let cursorId = useRef(null);
+  let feedType = useRef(user ? 'fetchUserBlog' : tag ? 'fetchTagFeed' : 'fetchUserFeed'); 
   let query = useRef(user ? user.blogName : tag ? tag.title.slice(1) : Cookies.get('currentUser'));
   let gqlQuery = useRef(user ? FETCH_USER_BLOG : tag ? FETCH_TAG_FEED : FETCH_USER_FEED);
   let endOfPosts = useRef(false);
@@ -40,34 +41,39 @@ const Feed = ({
   
   var scroll = document.addEventListener('scroll', function(event) {
     fetchMoreDiv.current = document.querySelector('#fetchMore')
-    var el = fetchMoreDiv.current.getBoundingClientRect()
-    var elTop = el.top
-    var elBottom = el.bottom
-    var innerHeight = window.innerHeight
-    
-    if (elTop >= 0 && elBottom <= innerHeight) {
-      client.query({
-        query: gqlQuery.current,
-        variables: {
-          query: query.current,
-          cursorId: cursorId.current
-        },
-        fetchPolicy: 'no-cache'
-      }).then(res => {
-        if (res.loading) return 'Loading...';
-        
-        updateCacheInfScroll(
-          res, client, query.current,
-          gqlQuery.current, cursorId
-        )
 
-      })
+    if (fetchMoreDiv.current) {
+      var el = fetchMoreDiv.current.getBoundingClientRect()
+  
+      var elTop = el.top
+      var elBottom = el.bottom
+      var innerHeight = window.innerHeight
+  
+      if (elTop >= 0 && elBottom <= innerHeight) {
+        client.query({
+          query: gqlQuery.current,
+          variables: {
+            query: query.current,
+            cursorId: cursorId.current
+          },
+          fetchPolicy: 'no-cache'
+        }).then(res => {
+          if (res.loading) return 'Loading...';
+          
+          updateCacheInfScroll(
+            res, client, query.current,
+            gqlQuery.current, cursorId
+          )
+  
+        })
+      }
     }
+
   })
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
-
+  
   handleData(data, feedArr, cursorId, endOfPosts)
 
   return(
@@ -81,6 +87,9 @@ const Feed = ({
             >
               <PostUpdateOrShow
                 post={post}
+                user={user}
+                tag={tag}
+                feedType={feedType}
               />
             </div>
           )
@@ -92,6 +101,7 @@ const Feed = ({
         <div
           id='fetchMore'
         >
+          {endOfPosts ? "You're all caught up" : ""}
         </div>
     </div>
   )

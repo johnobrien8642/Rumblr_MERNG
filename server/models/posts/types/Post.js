@@ -8,23 +8,19 @@ const PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  descriptions: [ 
-    {
-      kind: String,
-      content: String,
-      displayIdx: Number
-    }
-  ],
-  descriptionImages: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Image'
-    }
-  ],
+  body: {
+    type: String,
+  },
   tags: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Tag'
+    }
+  ],
+  mentions: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
     }
   ],
   createdAt: {

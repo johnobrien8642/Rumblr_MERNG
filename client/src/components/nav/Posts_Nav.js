@@ -115,58 +115,30 @@ const PostNav = ({ props }) => {
           exact path={`${props.match.path}/new/text`} 
           component={TextPostForm} 
         />
-        {/* <Route 
-          exact path={`${props.match.path}/update/:postId/TextPost`} 
-          component={TextPostUpdate} 
-        /> */}
         <Route 
           exact path={`${props.match.path}/new/photo`} 
           component={PhotoPostForm} 
         />
-        {/* <Route 
-          exact path={`${props.match.path}/update/:postId/PhotoPost`} 
-          component={PhotoPostUpdate} 
-        /> */}
         <Route 
           exact path={`${props.match.path}/new/quote`} 
           component={QuotePostForm} 
         />
-        {/* <Route 
-          exact path={`${props.match.path}/update/:postId/QuotePost`} 
-          component={QuotePostUpdate} 
-        /> */}
         <Route 
           exact path={`${props.match.path}/new/link`} 
           component={LinkPostForm} 
         />
-        {/* <Route 
-          exact path={`${props.match.path}/update/:postId/LinkPost`} 
-          component={LinkPostUpdate} 
-        /> */}
         <Route 
           exact path={`${props.match.path}/new/chat`} 
           component={ChatPostForm} 
         />
-        {/* <Route 
-          exact path={`${props.match.path}/update/:postId/ChatPost`} 
-          component={ChatPostUpdate} 
-        /> */}
         <Route
           exact path={`${props.match.path}/new/audio`} 
           component={AudioPostForm}
         />
-        {/* <Route 
-          exact path={`${props.match.path}/update/:postId/AudioPost`} 
-          component={AudioPostUpdate}
-        /> */}
         <Route 
           exact path={`${props.match.path}/new/video`} 
           component={VideoPostForm}
         />
-        {/* <Route 
-          exact path={`${props.match.path}/update/:postId/VideoPost`} 
-          component={VideoPostUpdate}
-        /> */}
       </Switch>
     </div>
   )

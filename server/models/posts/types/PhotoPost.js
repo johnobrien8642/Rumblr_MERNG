@@ -6,12 +6,9 @@ const options = { discriminatorKey: 'kind' }
 
 const PhotoPost = Post.discriminator('PhotoPost',
   new Schema({
-    mainImages: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Image'
-      }
-    ],
+    mainImages: {
+      type: String
+    }
   }), options)
 
 export default PhotoPost;

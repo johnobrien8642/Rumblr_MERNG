@@ -12,23 +12,8 @@ const PhotoPostType = new GraphQLObjectType({
   name: 'PhotoPostType',
   fields: () => ({
     _id: { type: GraphQLID },
-    mainImages: { 
-      type: new GraphQLList(ImageType),
-      resolve(parentValue) {
-        return Post.findById(parentValue._id)
-          .populate('mainImages')
-          .then(post => post.mainImages)
-      }
-    },
-    descriptions: { type: GraphQLList(GraphQLJSONObject) },
-    descriptionImages: { 
-      type: new GraphQLList(ImageType),
-      resolve(parentValue) {
-        return Post.findById(parentValue._id)
-          .populate('descriptionImages')
-          .then(post => post.descriptionImages)
-      }
-    },
+    mainImages: { type: GraphQLString },
+    body: { type: GraphQLString },
     user: {
       type: UserType,
       resolve(parentValue) {

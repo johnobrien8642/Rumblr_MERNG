@@ -33,14 +33,6 @@ const UserType = new GraphQLObjectType({
           .then(user => user.posts)
       }
     },
-    reposts: {
-      type: new GraphQLList(RepostType),
-      resolve(parentValue) {
-        return User.findById(parentValue._id)
-          .populate('reposts')
-          .then(user => user.reposts)
-      }
-    },
     tagFollows: {
       type: new GraphQLList(TagType),
       resolve(parentValue) {
@@ -55,30 +47,6 @@ const UserType = new GraphQLObjectType({
         return User.findById(parentValue._id)
         .populate('userFollowing')
         .then(user => user.userFollowing)
-      }
-    },
-    likes: { 
-      type: GraphQLList(LikeType),
-      resolve(parentValue) {
-        return User.findById(parentValue._id)
-        .populate('likes')
-        .then(user => user.likes)
-      }
-    },
-    likedPosts: { 
-      type: GraphQLList(AnyPostType),
-      resolve(parentValue) {
-        return User.findById(parentValue._id)
-        .populate('likedPosts')
-        .then(user => user.likedPosts)
-      }
-    },
-    followers: { 
-      type: GraphQLList(UserType),
-      resolve(parentValue) {
-        return User.findById(parentValue._id)
-          .populate('followers')
-          .then(user => user.followers)
       }
     },
     userFollowCount: {

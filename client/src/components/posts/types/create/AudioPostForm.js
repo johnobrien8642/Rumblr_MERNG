@@ -1,18 +1,16 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import AudioFileInput from '../../util/components/forms/inputTypes/Audio_File_Input';
-import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text';
+import TextAndImageInput from '../../util/components/forms/inputTypes/Text_And_Image_Input';
 import Tags from '../../util/components/forms/Tags';
 import PostFormUtil from '../../util/functions/post_form_util.js';
-const { bodyPost, updateCacheCreate,
+const { updateCacheCreate,
         updateCacheUpdate,
-        handleFormData, stripAllImgs,
-        audioPost, handleUploadedFiles,
-        resetDisplayIdx } = PostFormUtil;
+        audioPost } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -30,23 +28,14 @@ const AudioPostForm = ({
 
 
   let [active, setActive] = useState(false)
-
   let objsToClean = useRef([]);
-  let [description, setDescription] = useState('');
-  let [bodyImageFiles, setBodyImageFiles] = useState([]);
-  let body = useRef([]);
+  let [textAndImage, setTextAndImage] = useState('');
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
-  let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   const formId = 'audioPostForm';
-  const formInputId = 'audioPostInput'
   let history = useHistory();
   
-  useEffect(() => {
-    resetDisplayIdx(body)
-  })
-
   let [createOrUpdatePost] = useMutation(CREATE_OR_UPDATE_POST, {
     update(client, { data }){
       const { createOrUpdatePost } = data;
@@ -79,12 +68,9 @@ const AudioPostForm = ({
     setAlbum(album = '') 
     setSrc(src = '')
     setAudioFile(audioFile = '')
-    setBodyImageFiles(bodyImageFiles = []);
-    body.current = [];
-    setDescription(description = '');
+    setTextAndImage(textAndImage = '');
     setTag(tag = '');
     setTags(tags = []);
-    setErrMessage(errMessage = '');
   }
 
 
@@ -96,13 +82,10 @@ const AudioPostForm = ({
       audioFileFormData.append('audio', audioFile)
     }
   
-    var bodyImagesFormData = handleFormData(bodyImageFiles)
-  
     Promise.all([
-      bodyPost(bodyImagesFormData),
       audioPost(audioFileFormData)
     ]).then(
-      ([bodyUploads, audio]) => {
+      ([audio]) => {
 
         var instanceData = {
           statics: {
@@ -111,8 +94,7 @@ const AudioPostForm = ({
                 title, artist, album
               }
           },
-          descriptions: stripAllImgs(body),
-          descriptionImages: handleUploadedFiles(body, bodyUploads),
+          body: textAndImage,
           user: Cookies.get('currentUser'),
           tags, kind: 'AudioPost',
           objsToClean: objsToClean.current,
@@ -161,21 +143,9 @@ const AudioPostForm = ({
         setRender={setRender}
       />
 
-      <BodyImageAndText
-        post={post}
-        update={update}
-        formId={formId}
-        formInputId={formInputId}
-        objsToClean={objsToClean}
-        body={body}
-        bodyImageFiles={bodyImageFiles}
-        setBodyImageFiles={setBodyImageFiles}
-        description={description}
-        setDescription={setDescription}
-        render={render}
-        setRender={setRender}
-        errMessage={errMessage}
-        setErrMessage={setErrMessage}
+      <TextAndImageInput 
+        textAndImage={textAndImage}
+        setTextAndImage={setTextAndImage}
       />
 
       <Tags

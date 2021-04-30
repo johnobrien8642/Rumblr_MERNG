@@ -87,18 +87,22 @@ const updateCacheInfScroll = (
 }
 
 const handleData = (data, feedArr, cursorId, endOfPosts) => {
-  const { fetchUserFeed, fetchTagFeed, fetchUserBlog } = data
 
-  if (fetchUserFeed) {
-    feedArr.current = fetchUserFeed
-  } else if (fetchTagFeed) {
-    feedArr.current = fetchTagFeed
-  } else if (fetchUserBlog) {
-    feedArr.current = fetchUserBlog
+  if (data) {
+    const { fetchUserFeed, fetchTagFeed, fetchUserBlog } = data
+    if (fetchUserFeed) {
+      feedArr.current = fetchUserFeed
+    } else if (fetchTagFeed) {
+      feedArr.current = fetchTagFeed
+    } else if (fetchUserBlog) {
+      feedArr.current = fetchUserBlog
+    }
+    
+    endOfPosts.current = feedArr.current.length === 0 ? true : false
+    if (feedArr.current.length > 0) {
+      cursorId.current = feedArr.current[feedArr.current.length - 1]._id
+    }
   }
-  
-  endOfPosts.current = feedArr.current.length === 0 ? true : false
-  cursorId.current = feedArr.current[feedArr.current.length - 1]._id
 }
 
 const setQuery = (
@@ -119,9 +123,6 @@ const setQuery = (
   }
 
 }
-
-
-
 
 const FeedUtil = { header, updateCacheInfScroll, handleData, setQuery }
 

@@ -1,17 +1,10 @@
 
 const QueryFragments = {
   POST:`
+    body
     user {
       _id
       blogName
-    }
-    descriptions
-    descriptionImages {
-      _id
-      src
-      path
-      kind
-      displayIdx
     }
     tags {
       _id
@@ -22,17 +15,12 @@ const QueryFragments = {
   `,
   PHOTO_POST:`
     _id
-    mainImages {
-      _id
-      src
-      kind
-      path
-    }
+    mainImages
   `,
   TEXT_POST:`
     _id
     title
-    main
+    body
   `,
   QUOTE_POST:`
     _id

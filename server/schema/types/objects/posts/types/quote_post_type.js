@@ -14,21 +14,13 @@ const QuotePostType = new GraphQLObjectType({
     _id: { type: GraphQLID },
     quote: { type: GraphQLString },
     source: { type: GraphQLString },
+    body: { type: GraphQLString },
     user: {
       type: UserType,
       resolve(parentValue) {
         return Post.findById(parentValue._id)
           .populate('user')
           .then(post => post.user)
-      }
-    },
-    descriptions: { type: GraphQLList(GraphQLJSONObject) },
-    descriptionImages: {
-      type: new GraphQLList(ImageType),
-      resolve(parentValue) {
-        return Post.findById(parentValue._id)
-          .populate('descriptionImages')
-          .then(post => post.descriptionImages)
       }
     },
     tags: {

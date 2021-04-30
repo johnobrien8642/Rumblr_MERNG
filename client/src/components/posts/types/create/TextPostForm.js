@@ -1,17 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import TextPostInput from '../../util/components/forms/inputTypes/Text_Post_Input'
-import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js';
-const { bodyPost, updateCacheCreate,
-        updateCacheUpdate, handleFormData, 
-        stripAllImgs, handleUploadedFiles, 
-        resetDisplayIdx } = PostFormUtil;
+const { updateCacheCreate, updateCacheUpdate } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -21,23 +17,13 @@ const TextPostForm = ({
 }) => {
   let [title, setTitle] = useState('');
   let [main, setMain] = useState('');
-  let mainRef = useRef('');
 
   let objsToClean = useRef([]);
-  let [description, setDescription] = useState('');
-  let [bodyImageFiles, setBodyImageFiles] = useState([]);
-  let body = useRef([]);
+  let [textAndImage, setTextAndImage] = useState('');
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
-  let [errMessage, setErrMessage] = useState('');
-  let [render, setRender] = useState(0);
   const formId = 'textPostForm'
-  const formInputId = 'textPostInput'
   let history = useHistory();
-
-  useEffect(() => {
-    resetDisplayIdx(body)
-  })
 
   let [createOrUpdatePost] = useMutation(CREATE_OR_UPDATE_POST, {
     update(client, { data }){
@@ -65,44 +51,30 @@ const TextPostForm = ({
   });
 
   const resetInputs = () => {
-    document.querySelector('#mainTextInput').innerHTML = ''
     objsToClean.current = [];
     setTitle(title = '');
     setMain(main = '');
-    body.current = []
-    setBodyImageFiles(bodyImageFiles = []);
     setTag(tag = '');
     setTags(tags = []);
-    setErrMessage(errMessage = '');
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    var bodyImagesFormData = handleFormData(bodyImageFiles)
-  
-    Promise.all([
-      bodyPost(bodyImagesFormData)
-    ]).then(
-      ([bodyUploads]) => {
         
-        var instanceData = {
-          statics: { title, main },
-          descriptions: stripAllImgs(body),
-          descriptionImages: handleUploadedFiles(body, bodyUploads),
-          user: Cookies.get('currentUser'),
-          tags, kind: 'TextPost',
-          objsToClean: objsToClean.current,
-          postId: post ? post._id : null
-        }
-        
-        createOrUpdatePost({
-          variables: {
-            instanceData: instanceData
-          }
-        })
+    var instanceData = {
+      statics: { title },
+      body: textAndImage,
+      user: Cookies.get('currentUser'),
+      tags, kind: 'TextPost',
+      objsToClean: objsToClean.current,
+      postId: post ? post._id : null
+    }
+    
+    createOrUpdatePost({
+      variables: {
+        instanceData: instanceData
       }
-    )
+    })
   }
 
   return (
@@ -120,31 +92,10 @@ const TextPostForm = ({
       <TextPostInput
         post={post}
         update={update}
-        formInputId={formInputId}
         title={title}
         setTitle={setTitle}
-        main={main}
-        setMain={setMain}
-        mainRef={mainRef}
-        render={render}
-        setRender={setRender}
-      />
-
-      <BodyImageAndText
-        post={post}
-        update={update}
-        formId={formId}
-        formInputId={formInputId}
-        objsToClean={objsToClean}
-        body={body}
-        bodyImageFiles={bodyImageFiles}
-        setBodyImageFiles={setBodyImageFiles}
-        description={description}
-        setDescription={setDescription}
-        render={render}
-        setRender={setRender}
-        errMessage={errMessage}
-        setErrMessage={setErrMessage}
+        textAndImage={textAndImage}
+        setTextAndImage={setTextAndImage}
       />
 
       <Tags
@@ -157,7 +108,7 @@ const TextPostForm = ({
 
       <button
         type='submit'
-        disabled={!title && !main}
+        disabled={!title && !textAndImage}
       >
         {post ? 'update' : 'post'}
       </button>

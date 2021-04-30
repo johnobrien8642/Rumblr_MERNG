@@ -75,12 +75,12 @@ const RootQueryType = new GraphQLObjectType({
         let query = {};
         query.title = new RegExp(filter);
         
-        const tags = async (query) => {
+        const users = async (query) => {
           return await Tag.find(query).exec()
         }
 
-        return Promise.all([tags(query)]).then(([tags]) => {
-          return [...tags]
+        return Promise.all([users(query)]).then(([users]) => {
+          return [...users]
         })
       }
     },
@@ -428,6 +428,25 @@ const RootQueryType = new GraphQLObjectType({
           { $replaceRoot: { "newRoot": "$notes" } },
           { $sort: { "createdAt": 1 } }
         ]).then(res => res)
+      }
+    },
+    fetchUsersForMentions: {
+      type: GraphQLList(UserType),
+      args: { filter: { type: GraphQLString } },
+      resolve(parentValue, { filter }) {
+        if (filter === '') {
+          return [];
+        }
+        let query = {};
+        query.blogName = new RegExp(filter);
+        
+        const users = async (query) => {
+          return await User.find(query).limit(7).exec()
+        }
+
+        return Promise.all([users(query)]).then(([users]) => {
+          return [...users]
+        }) 
       }
     },
     user: {

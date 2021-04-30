@@ -10,10 +10,6 @@ const TextPost = Post.discriminator('TextPost',
       type: String,
       default: ''
     },
-    main: {
-      type: String,
-      default: ''
-    },
   }), options)
 
 export default TextPost;

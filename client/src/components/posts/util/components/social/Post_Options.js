@@ -6,14 +6,15 @@ import LikeButton from './Like_Button'
 import Queries from '../../../../../graphql/queries';
 import Mutations from '../../../../../graphql/mutations';
 import PostFormUtil from '../../functions/post_form_util.js'
-const { DOES_USER_LIKE_POST, FETCH_USER_FEED } = Queries;
+const { DOES_USER_LIKE_POST, FETCH_USER_FEED, FETCH_TAG_FEED, FETCH_USER_BLOG } = Queries;
 const { DELETE_POST } = Mutations;
 const { updateCacheDelete } = PostFormUtil;
 
 const PostOptions = ({ 
-  post, refetchNotes, notesCount,
+  post, tag, user, refetchNotes, notesCount,
   active, setActive, toggleNotes,
-  update, setUpdate, toggleUpdate
+  update, setUpdate, toggleUpdate,
+  feedType
 }) => {
   
   var postId
@@ -29,11 +30,12 @@ const PostOptions = ({
     update(client, { data }) {
       const { deletePost } = data;
       var currentUser = Cookies.get('currentUser')
-      var query = FETCH_USER_FEED
+      var gqlQuery = feedType === 'fetchUserFeed' ? FETCH_USER_FEED : feedType === 'fetchTagFeed' ? FETCH_TAG_FEED : feedType === 'fetchUserBlog' ? FETCH_USER_BLOG : FETCH_USER_FEED
+      var userOrTag = user ? user : tag
 
       updateCacheDelete(
         client, post, deletePost,
-        currentUser, query
+        currentUser, gqlQuery, userOrTag
       )
     }
   })

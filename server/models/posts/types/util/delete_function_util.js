@@ -18,22 +18,6 @@ const handlePostDelete = async (post) => {
   ]).then(() => post._id)
 }
 
-
-const cleanupImages = async (imageArr) => {
-  return imageArr.forEach(img => {
-    if (img.path) {
-      Promise.all([
-        fs.unlink(img.path, () => {}),
-        Image.deleteOne({ _id: img._id })
-      ])
-    } else {
-      Promise.all([
-        Image.deleteOne({ _id: img._id })
-      ])
-    }
-  })
-}
-
 const cleanupAudio = async (audioObjs) => {
   audioObjs.forEach(obj => {
     Promise.all([
@@ -67,25 +51,17 @@ const deletePost = async (post) => {
       post.kind === 'LinkPost' ||
       post.kind === 'ChatPost'
     ) {
-      return Promise.all([
-        cleanupImages(post.descriptionImages)
-      ]).then(() => {
-        handlePostDelete(post)
-      })
+      
+    handlePostDelete(post)
+
   } else if (
     post.kind === 'PhotoPost'
   ) {
-    return Promise.all([
-      cleanupImages(post.mainImages),
-      cleanupImages(post.descriptionImages)
-    ]).then(() => {
-      handlePostDelete(post)
-    })
+    handlePostDelete(post)
   } else if (
     post.kind === 'AudioPost'
   ) {
     return Promise.all([
-      cleanupImages(post.descriptionImages),
       cleanupAudio([post.audioFile])      
     ]).then(() => {
       handlePostDelete(post)
@@ -94,7 +70,6 @@ const deletePost = async (post) => {
     post.kind === 'VideoPost'
   ) {
     return Promise.all([
-      cleanupImages(post.descriptionImages),
       cleanupVideo([post.videoLink])      
     ]).then(() => {
       handlePostDelete(post)
@@ -107,7 +82,7 @@ const deletePost = async (post) => {
 }
 
 const DeleteFunctionUtil = {
-  cleanupImages, cleanupAudio, 
+  cleanupAudio, 
   cleanupVideo, deletePost
 }
 

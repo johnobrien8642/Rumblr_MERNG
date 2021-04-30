@@ -18,6 +18,7 @@ const UserDetails = () => {
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error.message}`
+  
   let { user } = data;
 
   if (active) {

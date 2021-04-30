@@ -55,17 +55,26 @@ const client = new ApolloClient({
         fetchUserFeed: {
           keyArgs: ['query'],
             merge: (existing = [], incoming = []) => {
-            const elements = [...existing, ...incoming].reduce((array, current) => {
-              return array.map(i => i.__ref).includes(current.__ref) ? array : [...array, current];
-            }, []);
+
+            //post_form_util.js #updateCacheCreate and #updateCacheDelete,
+            //object with __typename is added to the beginning of the array.
+            //This tells merge function that we are adding or deleting a
+            //post and would like the incoming array returned.
+            if (incoming.length > 0 && "__typename" in incoming[0]) {
+              return incoming.slice(1, incoming.length)
+            } else {
+              const elements = [...existing, ...incoming].reduce((array, current) => {
+                return array.map(i => i.__ref).includes(current.__ref) ? array : [...array, current];
+              }, []);
             
-            return elements
-          },
+              return elements
+            }
+          }
         },
         fetchTagFeed: {
           keyArgs: ['query'],
             merge: (existing = [], incoming = []) => {
-            const elements = [...existing, ...incoming].reduce((array, current) => {
+            const elements =  [...existing, ...incoming].reduce((array, current) => {
               return array.map(i => i.__ref).includes(current.__ref) ? array : [...array, current];
             }, []);
             

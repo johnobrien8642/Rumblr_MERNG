@@ -30,15 +30,7 @@ const AudioPostType = new GraphQLObjectType({
           .then(post => post.user)
       }
     },
-    descriptions: { type: GraphQLList(GraphQLJSONObject) },
-    descriptionImages: {
-      type: new GraphQLList(ImageType),
-      resolve(parentValue) {
-        return Post.findById(parentValue._id)
-          .populate('descriptionImages')
-          .then(post => post.descriptionImages)
-      }
-    },
+    body: { type: GraphQLString },
     tags: {
       type: new GraphQLList(TagType),
       resolve(parentValue) {

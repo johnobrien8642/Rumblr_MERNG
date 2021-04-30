@@ -8,9 +8,11 @@ const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
 
 const PostShow = ({ 
-  post, repost,
-  update, setUpdate,
-  toggleUpdate
+  post, tag, user, 
+  repost, update, 
+  setUpdate,
+  toggleUpdate,
+  feedType
 }) => {
   let [active, setActive] = useState(false)
   
@@ -41,6 +43,8 @@ const PostShow = ({
       
           <PostOptions
             post={post}
+            tag={tag}
+            user={user}
             notesCount={data.fetchLikesRepostsAndComments.length}
             active={active}
             setActive={setActive}
@@ -48,6 +52,7 @@ const PostShow = ({
             update={update}
             setUpdate={setUpdate}
             toggleUpdate={toggleUpdate}
+            feedType={feedType}
           />
         </React.Fragment>
       )

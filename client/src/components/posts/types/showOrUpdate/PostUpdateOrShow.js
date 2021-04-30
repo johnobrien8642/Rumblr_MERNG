@@ -3,7 +3,10 @@ import PostUpdate from '../showOrUpdate/PostUpdate';
 import PostShow from '../showOrUpdate/PostShow';
 
 const PostUpdateOrShow = ({
-  post
+  post,
+  user,
+  tag,
+  feedType
 }) => {
   let [update, setUpdate] = useState(false)
 
@@ -28,9 +31,12 @@ const PostUpdateOrShow = ({
     return (
       <PostShow
         post={post}
+        tag={tag}
+        user={user}
         update={update}
         setUpdate={setUpdate}
         toggleUpdate={toggleUpdate}
+        feedType={feedType}
       />
     )
   }

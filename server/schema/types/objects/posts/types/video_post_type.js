@@ -1,6 +1,5 @@
 import graphql from 'graphql';
 import mongoose from 'mongoose';
-import ImageType from '../util/image_type.js';
 import TagType from '../util/tag_type.js';
 import UserType from '../../user_type.js';
 import VideoType from '../util/video_type.js';
@@ -22,21 +21,13 @@ const VideoPostType = new GraphQLObjectType({
       }
     },
     audioMeta: { type: GraphQLJSONObject },
+    body: { type: GraphQLString },
     user: {
       type: UserType,
       resolve(parentValue) {
         return Post.findById(parentValue._id)
           .populate('user')
           .then(post => post.user)
-      }
-    },
-    descriptions: { type: GraphQLList(GraphQLJSONObject) },
-    descriptionImages: {
-      type: new GraphQLList(ImageType),
-      resolve(parentValue) {
-        return Post.findById(parentValue._id)
-          .populate('descriptionImages')
-          .then(post => post.descriptionImages)
       }
     },
     tags: {

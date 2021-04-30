@@ -5,6 +5,7 @@ b {
 .postForm {
   border: 1px solid black;
   width: fit-content;
+  margin: 20px;
 }
 
 .post {
@@ -95,3 +96,25 @@ b {
   width: 50px;
   margin-bottom: 50px;
 }
+
+.ck-editor__editable {
+  min-height: 200px;
+  width: 500px;
+}
+
+.ck p {
+  padding-right: 30px;
+}
+
+.ck.ck-block-toolbar-button {
+  transform: translateX(515px);
+}
+
+.ck.ck-block-toolbar-button .ck.ck-icon {
+  background-image: url('../statics//iconfinder_plus_3325019.svg');
+  background-position: center;
+}
+
+
+
+
