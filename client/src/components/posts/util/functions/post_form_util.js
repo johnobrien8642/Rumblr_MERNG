@@ -715,6 +715,32 @@ const updateCacheUnlike = (
 
 //submit functions
 
+const handleMentions = (body, stripAllImgs) => {
+  var descContent = stripAllImgs(body).map(d => d.content)
+  var mentions = descContent.reduce((array, string) => {
+    var regexMention = new RegExp(/@\w+/, 'gm')
+    return array.concat(string.match(regexMention))
+  }, [])
+
+  return Array.from(new Set(mentions))
+}
+
+const discardMentions = (post, mentions, objsToClean) => {
+  if (post) {
+    var oldMentions = post.mentions.map(m => ({
+      _id: m._id,
+      mention: '@' + m.mention,
+      kind: 'Mention'
+    }))
+
+    oldMentions.forEach(oldM => {
+      if (!mentions.includes(oldM.mention)) {
+        objsToClean.current.push(oldM)
+      }
+    })
+  }
+}
+
 const handleFormData = (
   imageFileArr
 ) => {
@@ -854,6 +880,7 @@ const PostCreateUtil = {
   updateCacheLike, updateCacheUnlike, 
   handleFormData, stripAllImgs, 
   handleUploadedFiles,
+  handleMentions, discardMentions,
   resetDisplayIdx, isUpdate,
   MentionCustomization
 };

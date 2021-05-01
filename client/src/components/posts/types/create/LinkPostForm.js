@@ -12,7 +12,8 @@ const { bodyPost, updateCacheCreate,
         updateCacheUpdate,
         handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx, 
-        fetchUrlMetadata } = PostFormUtil;
+        fetchUrlMetadata, handleMentions, 
+        discardMentions  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -94,6 +95,10 @@ const LinkPostForm = ({
       bodyPost(bodyImagesFormData)
     ]).then(
       ([bodyUploads]) => {
+
+        var mentions = handleMentions(body, stripAllImgs)
+        
+        discardMentions(post, mentions, objsToClean)
           
         var instanceData = {
           statics: {
@@ -104,10 +109,11 @@ const LinkPostForm = ({
           },
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
+          mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'LinkPost',
           objsToClean: objsToClean.current,
-          postId: post ? post._id : null
+          post: post ? post : null
         };
         
         createOrUpdatePost({

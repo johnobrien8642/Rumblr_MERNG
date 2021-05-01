@@ -42,7 +42,10 @@ const DescriptionStringInput = ({
             }).then(res => {
               return res.data.fetchUsersForMentions.map(u => ({
                 id: '@' + u.blogName,
-                actualId: u._id
+                actualId: randomstring.generate({
+                  length: 12,
+                  charset: 'alphabetic'
+                })
               }))
             })
           },

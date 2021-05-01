@@ -12,7 +12,8 @@ const { bodyPost, mainPost,
         updateCacheCreate,
         updateCacheUpdate,
         handleFormData, stripAllImgs,
-        handleUploadedFiles, resetDisplayIdx } = PostFormUtil;
+        handleUploadedFiles, resetDisplayIdx,
+        handleMentions, discardMentions  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -89,14 +90,19 @@ const PhotoPostForm = ({
     ]).then(
       ([mainUploads, bodyUploads]) => {
 
+        var mentions = handleMentions(body, stripAllImgs)
+        
+        discardMentions(post, mentions, objsToClean)
+
         var instanceData = {
           statics: { mainImages: handleUploadedFiles(main, mainUploads) },
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
+          mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'PhotoPost',
           objsToClean: objsToClean.current,
-          postId: post ? post._id : null
+          post: post ? post : null
         }
         
         createOrUpdatePost({

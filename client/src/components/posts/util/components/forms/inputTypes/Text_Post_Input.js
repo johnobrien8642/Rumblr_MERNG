@@ -3,8 +3,14 @@ import PostUpdateUtil from '../../../functions/post_update_util.js';
 const { reassembleTextPostStatics } = PostUpdateUtil;
 
 const TextPostInput = ({
-  title, setTitle,
+  post, title, setTitle,
 }) => {
+
+  useEffect(() => {
+    if (post) {
+      reassembleTextPostStatics(post, title, setTitle)
+    }
+  }, [])
 
   return (
     <div>

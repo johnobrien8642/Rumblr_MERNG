@@ -12,7 +12,8 @@ import PostFormUtil from '../../util/functions/post_form_util.js';
 const { bodyPost, updateCacheCreate,
         updateCacheUpdate, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
-        resetDisplayIdx, handleTagInput } = PostFormUtil;
+        resetDisplayIdx, handleTagInput,
+        handleMentions, discardMentions } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -86,21 +87,19 @@ const TextPostForm = ({
     ]).then(
       ([bodyUploads]) => {
 
-        var descContent = stripAllImgs(body).map(d => d.content)
-        var mentions = descContent.reduce((array, string) => {
-          var regexMention = new RegExp(/@\w+/, 'gm')
-          return array.concat(string.match(regexMention))
-        }, [])
+        var mentions = handleMentions(body, stripAllImgs)
         
+        discardMentions(post, mentions, objsToClean)
+      
         var instanceData = {
           statics: { title, main },
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
-          mentions: Array.from(new Set(mentions)),
+          mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'TextPost',
           objsToClean: objsToClean.current,
-          postId: post ? post._id : null
+          post: post ? post : null
         }
         
         createOrUpdatePost({

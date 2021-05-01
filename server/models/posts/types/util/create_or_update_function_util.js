@@ -66,9 +66,8 @@ const findOrCreateTag = async (t, user) => {
 
 //handle mentions
 
-const handleMentions = async (tags, asyncMention, findOrCreateMention, user, post) => {
-  console.log(post)
-  return Promise.all(tags.map((m, i) => {
+const handleMentions = async (mentions, asyncMention, findOrCreateMention, user, post) => {
+  return Promise.all(mentions.map((m, i) => {
         return asyncMention(m, findOrCreateMention, user, post)
       }
     )
@@ -157,9 +156,11 @@ const returnInstancesOnly = (imgArr) => {
 }
 
 const returnNewImageLinksOnly = (imgArr) => {
-  // console.log('Return New Image Links')
-  // console.log(imgArr)
   return imgArr.filter(obj => obj.srcType === 'newImgLink')
+}
+
+const returnMentionInstancesOnly = (objsToClean) => {
+  return objsToClean.filter(obj => obj.kind === 'Mention')
 }
 
 const returnImageInstancesOnly = (objsToClean) => {
@@ -207,9 +208,37 @@ const pushTags = (tags, post) => {
 }
 
 const pushMentions = (mentions, post) => {
-  mentions.forEach((t, i) => {
-    post.mentions.push(t._id)
+  mentions.forEach((m, i) => {
+    post.mentions.push(m._id)
   })
+}
+
+const markModified = (instance, update) => {
+  if (update) {
+    if (
+      instance.kind === 'TextPost' ||
+      instance.kind === 'QuotePost' ||
+      instance.kind === 'LinkPost' ||
+      instance.kind === 'ChatPost' ||
+      instance.kind === 'AudioPost' ||
+      instance.kind === 'VideoPost'
+    
+    ) {
+      instance.markModified('descriptions')
+      instance.markModified('descriptionImages')
+      instance.markModified('tags')
+      instance.markModified('mentions')
+
+    } else if(
+      instance.kind === 'PhotoPost'
+    ) {
+      instance.markModified('mainImages')
+      instance.markModified('descriptions')
+      instance.markModified('descriptionImages')
+      instance.markModified('tags')
+      instance.markModified('mentions')
+    }
+  }
 }
 
 const handleStatics = async (statics, instance, user) => {
@@ -284,6 +313,7 @@ const CreateFunctionUtil = {
   asyncUpdateUpload,
   returnInstancesOnly, 
   returnNewImageLinksOnly,
+  returnMentionInstancesOnly,
   returnAudioInstancesOnly,
   returnImageInstancesOnly,
   returnVideoInstancesOnly,
@@ -292,7 +322,8 @@ const CreateFunctionUtil = {
   pushMainImgObjs,
   pushDescriptions,
   pushTags,
-  pushMentions, 
+  pushMentions,
+  markModified,
   handleStatics,
   createInstance
 }

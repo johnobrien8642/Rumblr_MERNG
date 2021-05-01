@@ -37,13 +37,9 @@ const pushTags = (postTags, tags, setTags) => {
 }
 
 const reassembleTextPostStatics = (
-  post, title,
-  setTitle, main,
-  setMain
+  post, title, setTitle
 ) => {
-  document.querySelector('.mainTextEditor').innerHTML = post.main
   setTitle(title = post.title)
-  setMain(main = post.main)
 }
 
 const PostUpdateUtil = {

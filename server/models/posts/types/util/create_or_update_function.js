@@ -9,12 +9,12 @@ const { getTagArr, asyncTag, findOrCreateTag,
         updateUploadDispIdx, asyncUpdateUpload,
         returnInstancesOnly, returnNewImageLinksOnly,
         returnImageInstancesOnly, returnAudioInstancesOnly,
-        returnVideoInstancesOnly,
+        returnVideoInstancesOnly, returnMentionInstancesOnly,
         allImgObjsSorted, pushDescriptionImgObjs,
         pushDescriptions, pushTags, pushMentions, 
-        handleStatics, createInstance } = CreateOrUpdateFunctionUtil;
+        markModified, handleStatics, createInstance } = CreateOrUpdateFunctionUtil;
 const { cleanupImages, cleanupAudio, 
-        cleanupVideo } = DeleteFunctionUtil;
+        cleanupVideo, cleanupMention } = DeleteFunctionUtil;
 
 const createOrUpdatePost = ({
   statics,
@@ -23,9 +23,9 @@ const createOrUpdatePost = ({
   mentions,
   user, tags, kind,
   objsToClean,
-  postId
+  post
 }) => {
-  var update = postId ? true : false
+  var update = post ? true : false
   
   var uploads = returnInstancesOnly(descriptionImages)
   var imageLinks = returnNewImageLinksOnly(descriptionImages)
@@ -33,26 +33,26 @@ const createOrUpdatePost = ({
   var imgsToClean = returnImageInstancesOnly(objsToClean)
   var audioToClean = returnAudioInstancesOnly(objsToClean)
   var videoToClean = returnVideoInstancesOnly(objsToClean)
-  // var mentionsToClean = returnMentionInstancesOnly(objsToClean)
+  var mentionsToClean = returnMentionInstancesOnly(objsToClean)
   
   return Promise.all([
     updateUploadDispIdx(uploads, asyncUpdateUpload),
     createImagesFromLinks(imageLinks, asyncImageLink),
     getTagArr(tags, asyncTag, findOrCreateTag, user),
-    // handleMentions(mentions, asyncMention, findOrCreateMention, user),
     User.findOne({ blogName: user }),
-    Post.findById(postId),
+    Post.findById(post._id),
     cleanupImages(imgsToClean),
     cleanupAudio(audioToClean),
-    cleanupVideo(videoToClean)
+    cleanupVideo(videoToClean),
+    cleanupMention(mentionsToClean)
   ]).then(
     ([updatedUploads, linkImages,
-      tags, user, fetchedPost,
+      tags, user, foundPost,
       cleanedImages, cleanedAudio,
-      cleanupVideo]) => {
+      cleanupVideo, cleanupMention]) => {
       
       if (update) {
-        var instance = fetchedPost
+        var instance = foundPost
         instance.descriptions = []
         instance.descriptionImages = []
         instance.tags = []
@@ -72,12 +72,17 @@ const createOrUpdatePost = ({
         pushDescriptions(descriptions, instance)
   
         pushTags(tags, instance)
-
+        
         return handleMentions(
           mentions, asyncMention,
           findOrCreateMention, user,
           instance
-        ).then(() => {
+          ).then(mentions => {
+    
+          pushMentions(mentions, instance)
+          
+          markModified(instance, update)
+
           return Promise.all([instance.save()]).then(
             ([instance])=> (instance)
           )

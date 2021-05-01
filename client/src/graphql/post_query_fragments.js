@@ -17,6 +17,17 @@ const QueryFragments = {
       _id
       title
     }
+    mentions {
+      _id
+      user {
+        _id
+        blogName
+      }
+      mention {
+        _id
+        blogName
+      }
+    }
     createdAt
     kind
   `,

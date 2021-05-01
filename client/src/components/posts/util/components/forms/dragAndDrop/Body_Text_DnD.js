@@ -1,10 +1,11 @@
 import React from 'react';
+import randomstring from 'randomstring';
 import { useApolloClient } from '@apollo/client';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
-import { CKEditor } from '@ckeditor/ckeditor5-react'
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import DOMPurify from 'dompurify';
 import PostFormUtil from '../../../functions/post_form_util.js';
-import Queries from '../../../../../../graphql/queries.js'
+import Queries from '../../../../../../graphql/queries.js';
 const { FETCH_USERS_FOR_MENTIONS } = Queries;
 const { removeBodyObj, drag, 
         onDropBody, allowDrop, MentionCustomization } = PostFormUtil;
@@ -43,7 +44,10 @@ const BodyTextDnD = ({
             }).then(res => {
               return res.data.fetchUsersForMentions.map(u => ({
                 id: '@' + u.blogName,
-                actualId: u._id
+                actualId: randomstring.generate({
+                  length: 12,
+                  charset: 'alphabetic'
+                })
               }))
             })
           },

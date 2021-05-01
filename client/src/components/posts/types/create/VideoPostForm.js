@@ -12,7 +12,8 @@ const { bodyPost, updateCacheCreate,
         updateCacheUpdate,
         videoPost, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
-        resetDisplayIdx } = PostFormUtil;
+        resetDisplayIdx, handleMentions, 
+        discardMentions  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -96,16 +97,21 @@ const VideoPostForm = ({
     ]).then(
       ([bodyUploads, video]) => {
 
+        var mentions = handleMentions(body, stripAllImgs)
+        
+        discardMentions(post, mentions, objsToClean)
+
         var instanceData = {
           statics: { 
             videoLink: video[0]._id 
           },
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
+          mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'VideoPost',
           objsToClean: objsToClean.current,
-          postId: post ? post._id : null
+          post: post ? post : null
         };
         
         createOrUpdatePost({

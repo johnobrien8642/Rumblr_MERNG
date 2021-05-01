@@ -12,7 +12,8 @@ const { bodyPost, updateCacheCreate,
         updateCacheUpdate,
         handleFormData, stripAllImgs,
         audioPost, handleUploadedFiles,
-        resetDisplayIdx } = PostFormUtil;
+        resetDisplayIdx, handleMentions, 
+        discardMentions  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -104,6 +105,10 @@ const AudioPostForm = ({
     ]).then(
       ([bodyUploads, audio]) => {
 
+        var mentions = handleMentions(body, stripAllImgs)
+        
+        discardMentions(post, mentions, objsToClean)
+
         var instanceData = {
           statics: {
             audioFileId: audio[0] ? audio[0]._id : post.audioFile._id,
@@ -113,10 +118,11 @@ const AudioPostForm = ({
           },
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
+          mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'AudioPost',
           objsToClean: objsToClean.current,
-          postId: post ? post._id : null
+          post: post ? post : null
         };
         
         createOrUpdatePost({

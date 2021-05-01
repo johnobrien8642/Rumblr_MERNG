@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import UserType from '../../user_type.js';
 import ImageType from '../util/image_type.js';
 import TagType from '../util/tag_type.js';
+import MentionType from '../util/mention_type.js';
 const Post = mongoose.model('Post');
 const { GraphQLList, GraphQLID, 
         GraphQLString, GraphQLObjectType } = graphql;
@@ -37,6 +38,14 @@ const QuotePostType = new GraphQLObjectType({
         return Post.findById(parentValue._id)
           .populate('tags')
           .then(post => post.tags)
+      }
+    },
+    mentions: {
+      type: new GraphQLList(MentionType),
+      resolve(parentValue) {
+        return Post.findById(parentValue._id)
+          .populate('mentions')
+          .then(post => post.mentions)
       }
     },
     createdAt: { type: GraphQLString },

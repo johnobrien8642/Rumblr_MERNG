@@ -7,12 +7,15 @@ const Comment = mongoose.model('Comment')
 const Image = mongoose.model('Image');
 const Audio = mongoose.model('Audio');
 const Video = mongoose.model('Video');
+const Mention = mongoose.model('Mention');
+
 
 const handlePostDelete = async (post) => {
   return Promise.all([
     Post.deleteOne({ _id: post._id }),
     Like.deleteMany({ post: post._id }),
     Comment.deleteMany({ post: post._id }),
+    Mention.deleteMany({ post: post._id }),
     Repost.deleteOne({ _id: post._id }),
     Repost.deleteMany({ post: post._id })
   ]).then(() => post._id)
@@ -44,7 +47,6 @@ const cleanupAudio = async (audioObjs) => {
 }
 
 const cleanupVideo = async (videoObjs) => {
-
   videoObjs.forEach(obj => {
     if (obj.path) {
       Promise.all([
@@ -56,6 +58,14 @@ const cleanupVideo = async (videoObjs) => {
         Video.deleteOne({ _id: obj._id })
     ])
     }
+  })
+}
+
+const cleanupMention = async (mentionObjs) => {
+  mentionObjs.forEach(obj => {
+    Promise.all([
+      Mention.deleteOne({ _id: obj._id })
+    ])
   })
 }
 
@@ -108,7 +118,8 @@ const deletePost = async (post) => {
 
 const DeleteFunctionUtil = {
   cleanupImages, cleanupAudio, 
-  cleanupVideo, deletePost
+  cleanupVideo, cleanupMention, 
+  deletePost
 }
 
 export default DeleteFunctionUtil;

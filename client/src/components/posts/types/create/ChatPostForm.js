@@ -11,7 +11,8 @@ import PostFormUtil from '../../util/functions/post_form_util.js';
 const { bodyPost, updateCacheCreate,
         updateCacheUpdate,
         handleFormData, stripAllImgs,
-        handleUploadedFiles, resetDisplayIdx } = PostFormUtil;
+        handleUploadedFiles, resetDisplayIdx,
+        handleMentions, discardMentions  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -83,15 +84,20 @@ const ChatPostForm = ({
       bodyPost(bodyImagesFormData)
     ]).then(
       ([bodyUploads]) => {
+
+        var mentions = handleMentions(body, stripAllImgs)
+        
+        discardMentions(post, mentions, objsToClean)
         
         var instanceData = {
           statics: { chat: chat.current },
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
+          mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'ChatPost',
           objsToClean: objsToClean.current,
-          postId: post ? post._id : null
+          post: post ? post : null
         };
         
         createOrUpdatePost({

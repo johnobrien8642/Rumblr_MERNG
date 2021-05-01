@@ -5,7 +5,7 @@ const MentionSchema = new Schema({
   mention: {
     type: Schema.Types.ObjectId,
     ref: 'User'
-  },
+},
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User'
