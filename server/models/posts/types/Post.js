@@ -27,6 +27,12 @@ const PostSchema = new Schema({
       ref: 'Tag'
     }
   ],
+  mentions: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Mention'
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now

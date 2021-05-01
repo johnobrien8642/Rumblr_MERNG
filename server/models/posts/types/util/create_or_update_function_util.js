@@ -7,6 +7,8 @@ const ChatPost = mongoose.model('ChatPost')
 const AudioPost = mongoose.model('AudioPost')
 const VideoPost = mongoose.model('VideoPost')
 const Tag = mongoose.model('Tag')
+const User = mongoose.model('User')
+const Mention = mongoose.model('Mention')
 const Image = mongoose.model('Image')
 
 //create instance
@@ -34,30 +36,72 @@ const createInstance = (kind) => {
 
 //handle tags
 
-const getTagArr = async (tags, asyncTag, findOrCreateTag) => {
+const getTagArr = async (tags, asyncTag, findOrCreateTag, user) => {
   return Promise.all(tags.map((t, i) => {
-        return asyncTag(t, findOrCreateTag)
+        return asyncTag(t, findOrCreateTag, user)
       }
     )
   )
 }
 
-const asyncTag = async (t, findOrCreateTag) => {
-  return findOrCreateTag(t)
+const asyncTag = async (t, findOrCreateTag, user) => {
+  return findOrCreateTag(t, user)
 }
 
-const findOrCreateTag = async (t) => {
-  return Tag.findOne({ title: t }).then(tagFound => {
-    if (tagFound) {
-      return tagFound
-    } else {
-      var newTag = new Tag({ title: t })
-      return newTag.save().then(tag => {
-        return tag
-      })
-    }
+const findOrCreateTag = async (t, user) => {
+  return User.findOne({ blogName: user })
+    .then(user => {
+      return Tag.findOne({ title: t }).then(tagFound => {
+        if (tagFound) {
+          return tagFound
+        } else {
+          var newTag = new Tag({ title: t, user: user._id })
+          return newTag.save().then(tag => {
+            return tag
+          })
+        }
+    })
   })
 }
+
+//handle mentions
+
+const handleMentions = async (tags, asyncMention, findOrCreateMention, user, post) => {
+  console.log(post)
+  return Promise.all(tags.map((m, i) => {
+        return asyncMention(m, findOrCreateMention, user, post)
+      }
+    )
+  )
+}
+
+const asyncMention = async (m, findOrCreateMention, user, post) => {
+  return findOrCreateMention(m, user, post)
+}
+
+const findOrCreateMention = async (m, user, post) => {
+  return User.findOne({ blogName: m.slice(1) })
+    .then(mentioned => {
+      return Mention.findOne({ mention: mentioned._id, user: user._id })
+        .then(mentionFound => {
+          if (mentionFound) {
+            return mentionFound
+          } else {
+            var newMention = new Mention({ 
+              mention: mentioned._id,
+              user: user._id,
+              post: post._id,
+              onModel: post.kind
+            })
+
+            return newMention.save().then(mention => {
+              return mention
+            })
+          }
+    })
+  })
+}
+
 
 //handle image links
 
@@ -132,7 +176,6 @@ const returnVideoInstancesOnly = (objsToClean) => {
 
 //handle instance assembly
 
-
 const allImgObjsSorted = (linkImgs, updatedUploadImgs) => {
   return [...linkImgs, ...updatedUploadImgs].sort((a, b) => 
     a.displayIdx - b.displayIdx
@@ -160,6 +203,12 @@ const pushDescriptions = (descriptions, post) => {
 const pushTags = (tags, post) => {
   tags.forEach((t, i) => {
     post.tags.push(t._id)
+  })
+}
+
+const pushMentions = (mentions, post) => {
+  mentions.forEach((t, i) => {
+    post.mentions.push(t._id)
   })
 }
 
@@ -226,6 +275,9 @@ const handleStatics = async (statics, instance, user) => {
 const CreateFunctionUtil = {
   getTagArr, asyncTag,
   findOrCreateTag,
+  handleMentions,
+  asyncMention,
+  findOrCreateMention,
   createImagesFromLinks,
   asyncImageLink,
   updateUploadDispIdx,
@@ -238,7 +290,9 @@ const CreateFunctionUtil = {
   allImgObjsSorted,
   pushDescriptionImgObjs,
   pushMainImgObjs,
-  pushDescriptions, pushTags, 
+  pushDescriptions,
+  pushTags,
+  pushMentions, 
   handleStatics,
   createInstance
 }

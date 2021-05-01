@@ -3,15 +3,16 @@ const User = mongoose.model('User')
 const Post = mongoose.model('Post')
 import CreateOrUpdateFunctionUtil from './create_or_update_function_util.js'
 import DeleteFunctionUtil from './delete_function_util.js'
-const { getTagArr, asyncTag, findOrCreateTag, 
+const { getTagArr, asyncTag, findOrCreateTag,
+        handleMentions, asyncMention, findOrCreateMention,
         createImagesFromLinks, asyncImageLink,
         updateUploadDispIdx, asyncUpdateUpload,
         returnInstancesOnly, returnNewImageLinksOnly,
         returnImageInstancesOnly, returnAudioInstancesOnly,
         returnVideoInstancesOnly,
         allImgObjsSorted, pushDescriptionImgObjs,
-        pushDescriptions, pushTags, handleStatics,
-        createInstance } = CreateOrUpdateFunctionUtil;
+        pushDescriptions, pushTags, pushMentions, 
+        handleStatics, createInstance } = CreateOrUpdateFunctionUtil;
 const { cleanupImages, cleanupAudio, 
         cleanupVideo } = DeleteFunctionUtil;
 
@@ -19,6 +20,7 @@ const createOrUpdatePost = ({
   statics,
   descriptions,
   descriptionImages,
+  mentions,
   user, tags, kind,
   objsToClean,
   postId
@@ -31,19 +33,21 @@ const createOrUpdatePost = ({
   var imgsToClean = returnImageInstancesOnly(objsToClean)
   var audioToClean = returnAudioInstancesOnly(objsToClean)
   var videoToClean = returnVideoInstancesOnly(objsToClean)
+  // var mentionsToClean = returnMentionInstancesOnly(objsToClean)
   
   return Promise.all([
     updateUploadDispIdx(uploads, asyncUpdateUpload),
     createImagesFromLinks(imageLinks, asyncImageLink),
-    getTagArr(tags, asyncTag, findOrCreateTag),
+    getTagArr(tags, asyncTag, findOrCreateTag, user),
+    // handleMentions(mentions, asyncMention, findOrCreateMention, user),
     User.findOne({ blogName: user }),
     Post.findById(postId),
     cleanupImages(imgsToClean),
     cleanupAudio(audioToClean),
     cleanupVideo(videoToClean)
   ]).then(
-    ([updatedUploads, linkImages, 
-      tags, user, fetchedPost, 
+    ([updatedUploads, linkImages,
+      tags, user, fetchedPost,
       cleanedImages, cleanedAudio,
       cleanupVideo]) => {
       
@@ -52,6 +56,7 @@ const createOrUpdatePost = ({
         instance.descriptions = []
         instance.descriptionImages = []
         instance.tags = []
+        instance.mentions = []
       } else {
         var instance = createInstance(kind)
       }
@@ -67,10 +72,16 @@ const createOrUpdatePost = ({
         pushDescriptions(descriptions, instance)
   
         pushTags(tags, instance)
-        
-        return Promise.all([instance.save()]).then(
-          ([instance])=> (instance)
-        )
+
+        return handleMentions(
+          mentions, asyncMention,
+          findOrCreateMention, user,
+          instance
+        ).then(() => {
+          return Promise.all([instance.save()]).then(
+            ([instance])=> (instance)
+          )
+        })        
       })
 
     }

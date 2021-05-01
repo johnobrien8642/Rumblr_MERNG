@@ -3,6 +3,7 @@ import Image from './posts/util/Image.js';
 import Audio from './posts/util/Audio.js';
 import Video from './posts/util/Video.js';
 import Tag from './posts/util/Tag.js';
+import Mention from './posts/util/Mention.js';
 import Like from './posts/util/Like.js';
 import Comment from './posts/util/Comment.js';
 import Repost from './posts/util/Repost.js';

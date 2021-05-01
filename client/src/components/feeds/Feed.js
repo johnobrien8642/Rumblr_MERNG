@@ -20,10 +20,44 @@ const Feed = ({
   const client = useApolloClient();
 
   useEffect(() => {
+    
+    var scroll = document.addEventListener('scroll', function(event) {
+      fetchMoreDiv.current = document.querySelector('#fetchMore')
+  
+      if (fetchMoreDiv.current) {
+        var el = fetchMoreDiv.current.getBoundingClientRect()
+    
+        var elTop = el.top
+        var elBottom = el.bottom
+        var innerHeight = window.innerHeight
+
+        if (elTop >= 0 && elBottom <= innerHeight) {
+          
+          client.query({
+            query: gqlQuery.current,
+            variables: {
+              query: query.current,
+              cursorId: cursorId.current
+            },
+            fetchPolicy: 'no-cache'
+            
+          }).then(res => {
+            if (res.loading) return 'Loading...';
+            
+            updateCacheInfScroll(
+              res, client, query.current,
+              gqlQuery.current, cursorId
+            )
+    
+          })
+        }
+      }
+    })
 
     return () => {
       document.removeEventListener('scroll', scroll)
     }
+    //eslint-disable-next-line
   }, [])
 
   if (tag) {
@@ -41,36 +75,6 @@ const Feed = ({
     },
   })
 
-  var scroll = document.addEventListener('scroll', function(event) {
-    fetchMoreDiv.current = document.querySelector('#fetchMore')
-    
-    if (fetchMoreDiv.current) {
-      var el = fetchMoreDiv.current.getBoundingClientRect()
-  
-      var elTop = el.top
-      var elBottom = el.bottom
-      var innerHeight = window.innerHeight
-  
-      if (elTop >= 0 && elBottom <= innerHeight) {
-        client.query({
-          query: gqlQuery.current,
-          variables: {
-            query: query.current,
-            cursorId: cursorId.current
-          },
-          fetchPolicy: 'no-cache'
-        }).then(res => {
-          if (res.loading) return 'Loading...';
-          
-          updateCacheInfScroll(
-            res, client, query.current,
-            gqlQuery.current, cursorId
-          )
-  
-        })
-      }
-    }
-  })
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;

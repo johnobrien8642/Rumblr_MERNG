@@ -12,7 +12,7 @@ import PostFormUtil from '../../util/functions/post_form_util.js';
 const { bodyPost, updateCacheCreate,
         updateCacheUpdate, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
-        resetDisplayIdx } = PostFormUtil;
+        resetDisplayIdx, handleTagInput } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -22,7 +22,6 @@ const TextPostForm = ({
 }) => {
   let [title, setTitle] = useState('');
   let [main, setMain] = useState('');
-  let mainRef = useRef('');
 
   let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
@@ -179,6 +178,13 @@ const TextPostForm = ({
             body.current.push(textObj)
 
             setDescription(description = '')
+          }
+
+          if (tag) {
+            handleTagInput(
+              tag, setTag,
+              tags, setTags
+            )
           }
         }}
       >

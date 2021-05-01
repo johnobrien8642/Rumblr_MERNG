@@ -3,7 +3,6 @@ import { useApolloClient } from '@apollo/client';
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import DOMPurify from 'dompurify';
-import randomstring from 'randomstring';
 import PostFormUtil from '../../../functions/post_form_util.js';
 import Queries from '../../../../../../graphql/queries.js'
 const { FETCH_USERS_FOR_MENTIONS } = Queries;
@@ -19,7 +18,7 @@ const BodyTextDnD = ({
   render, setRender,
 }) => {
   const client = useApolloClient();
-  
+
   const editorConfiguration = {
     extraPlugins: [MentionCustomization],
     balloonToolbar: [

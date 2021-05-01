@@ -1,25 +1,22 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const RepostSchema = new Schema({
+const MentionSchema = new Schema({
+  mention: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  post: {
-    type: Schema.Types.ObjectId,
-    refPath: 'onModel'
-  },
-  repostedFrom: {
-    type: Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  repostCaption: {
-    type: String
-  },
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  post: {
+    type: Schema.Types.ObjectId,
+    refPath: 'onModel'
   },
   onModel: {
     type: String,
@@ -34,12 +31,18 @@ const RepostSchema = new Schema({
       'VideoPost',
     ]
   },
+  // followerCount: {
+  //   type: Number
+  // },
+  // heat: {
+  //   type: Number
+  // },
   kind: {
     type: String,
-    default: 'Repost'
-  },
+    default: 'Mention'
+  }
 })
 
-const Repost = mongoose.model('Repost', RepostSchema, 'posts');
+const Mention = mongoose.model('Mention', MentionSchema, 'mentions');
 
-export default Repost;
+export default Mention;

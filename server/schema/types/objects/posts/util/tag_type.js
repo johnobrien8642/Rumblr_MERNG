@@ -23,62 +23,46 @@ const TagType = new GraphQLObjectType({
           .then(tag => tag.user)
       }
     },
-    posts: {
-      type: new GraphQLList(AnyPostType),
-      resolve(parentValue) {
-        return Tag.findById(parentValue._id)
-          .populate('posts')
-          .then(tag => tag.posts)
-      }
-    },
-    followers: {
-      type: new GraphQLList(UserType),
-      resolve(parentValue) {
-        return Tag.findById(parentValue._id)
-          .populate('followers')
-          .then(tag => tag.followers)
-      }
-    },
-    popularity: {
-      type: GraphQLFloat,
-      resolve(parentValue) {
-        return Tag.aggregate([
-          { $match: { _id: parentValue._id } },
-            { $project: { 
-              followers: { 
-                $size: '$followers'
-              }, 
-              posts: { 
-                $size: '$posts'
-              } 
-            } 
-          }
-        ]).then(res => {
-          return (
-            (res[0].followers + res[0].posts) / 2
-          )
-        })
-      }
-    },
-    heat: {
-      type: GraphQLInt,
-      resolve(parentValue) {
-        return Tag.findById(parentValue._id)
-          .populate({
-            path: 'posts',
-            options: {
-              sort: { created: -1 }
-            }
-          })
-          .then(tag => {
-            tag.posts.filter(p => 
-              p.createdAt.getTime() > (
-                new Date().getTime() - (24*60*60*1000)
-              )
-            ).length
-          })
-      }
-    },
+    // popularity: {
+    //   type: GraphQLFloat,
+    //   resolve(parentValue) {
+    //     return Tag.aggregate([
+    //       { $match: { _id: parentValue._id } },
+    //         { $project: { 
+    //           followers: { 
+    //             $size: '$followers'
+    //           }, 
+    //           posts: { 
+    //             $size: '$posts'
+    //           } 
+    //         } 
+    //       }
+    //     ]).then(res => {
+    //       return (
+    //         (res[0].followers + res[0].posts) / 2
+    //       )
+    //     })
+    //   }
+    // },
+    // heat: {
+    //   type: GraphQLInt,
+    //   resolve(parentValue) {
+    //     return Tag.findById(parentValue._id)
+    //       .populate({
+    //         path: 'posts',
+    //         options: {
+    //           sort: { created: -1 }
+    //         }
+    //       })
+    //       .then(tag => {
+    //         tag.posts.filter(p => 
+    //           p.createdAt.getTime() > (
+    //             new Date().getTime() - (24*60*60*1000)
+    //           )
+    //         ).length
+    //       })
+    //   }
+    // },
   })
 })
 

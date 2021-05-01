@@ -3,7 +3,8 @@ import MatchedTagResults from './Matched_Tag_Results'
 import PostUpdateUtil from '../../functions/post_update_util.js'
 import PostFormUtil from '../../functions/post_form_util.js'
 const { pushTags } = PostUpdateUtil;
-const { handleTagInput, handleFoundTag, removeTag } = PostFormUtil;
+const { handleTagInput, handleFoundTag,
+        removeTag } = PostFormUtil;
 
 const Tags = ({
   post, tags, 
@@ -17,7 +18,6 @@ const Tags = ({
     }  
     //eslint-disable-next-line
   }, [])
-
 
   return (
     <div>
@@ -46,7 +46,7 @@ const Tags = ({
         onChange={e => setTag(tag = e.target.value)}
         onKeyDown={e => {
           if (
-            (e.key === 'Enter' && tag) || 
+            (e.key === 'Enter' && tag) ||
             (e.key === '#' && tag)
           ) {
             handleTagInput(

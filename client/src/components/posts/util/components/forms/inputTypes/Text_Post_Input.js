@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import tinymce from 'tinymce';
 import PostUpdateUtil from '../../../functions/post_update_util.js';
 const { reassembleTextPostStatics } = PostUpdateUtil;
 
