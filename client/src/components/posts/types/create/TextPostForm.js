@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import randomstring from 'randomstring';
 import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
@@ -52,10 +53,11 @@ const TextPostForm = ({
       }
     },
     onCompleted() {
-      resetInputs();
       if (post) {
         setUpdate(update = false)
+        resetInputs();
       } else {
+        resetInputs();
         history.push('/dashboard');
       }
     },
@@ -65,7 +67,6 @@ const TextPostForm = ({
   });
 
   const resetInputs = () => {
-    document.querySelector('#mainTextInput').innerHTML = ''
     objsToClean.current = [];
     setTitle(title = '');
     setMain(main = '');
@@ -85,11 +86,18 @@ const TextPostForm = ({
       bodyPost(bodyImagesFormData)
     ]).then(
       ([bodyUploads]) => {
+
+        var descContent = stripAllImgs(body).map(d => d.content)
+        var mentions = descContent.reduce((array, string) => {
+          var regexMention = new RegExp(/@\w+/, 'gm')
+          return array.concat(string.match(regexMention))
+        }, [])
         
         var instanceData = {
           statics: { title, main },
           descriptions: stripAllImgs(body),
           descriptionImages: handleUploadedFiles(body, bodyUploads),
+          mentions: Array.from(new Set(mentions)),
           user: Cookies.get('currentUser'),
           tags, kind: 'TextPost',
           objsToClean: objsToClean.current,
@@ -123,9 +131,6 @@ const TextPostForm = ({
         formInputId={formInputId}
         title={title}
         setTitle={setTitle}
-        main={main}
-        setMain={setMain}
-        mainRef={mainRef}
         render={render}
         setRender={setRender}
       />
@@ -157,7 +162,25 @@ const TextPostForm = ({
 
       <button
         type='submit'
-        disabled={!title && !main}
+        disabled={!title && body.current.length === 0 && !description}
+        onClick={() => {
+          if (description) {
+            var textObj = {
+              kind: 'text',
+              srcType: 'text',
+              content: description,
+              displayIdx: body.current.length,
+              uniqId: randomstring.generate({
+                length: 12,
+                charset: 'alphabetic'
+              })
+            }
+            
+            body.current.push(textObj)
+
+            setDescription(description = '')
+          }
+        }}
       >
         {post ? 'update' : 'post'}
       </button>

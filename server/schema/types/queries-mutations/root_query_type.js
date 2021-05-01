@@ -388,6 +388,25 @@ const RootQueryType = new GraphQLObjectType({
         ]).then(res => res)
       }
     },
+    fetchUsersForMentions: {
+      type: GraphQLList(UserType),
+      args: { filter: { type: GraphQLString } },
+      resolve(parentValue, { filter }) {
+        if (filter === '') {
+          return [];
+        }
+        let query = {};
+        query.blogName = new RegExp(filter);
+        
+        const users = async (query) => {
+          return await User.find(query).limit(7).exec()
+        }
+
+        return Promise.all([users(query)]).then(([users]) => {
+          return [...users]
+        }) 
+      }
+    },
     user: {
       type: UserType,
       args: { query: { type: GraphQLString } },

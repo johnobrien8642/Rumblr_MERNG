@@ -250,6 +250,15 @@ const Queries = {
       }
     }
   `,
+  FETCH_USERS_FOR_MENTIONS: gql`
+    query FetchUsersForMentions($filter: String) {
+      fetchUsersForMentions(filter: $filter) {
+        _id
+        blogName
+        blogDescription
+      }
+    }
+  `,
   DOES_USER_LIKE_POST: gql`
     query DoesUserLikePost($user: String, $postId: ID) {
       doesUserLikePost(user: $user, postId: $postId) {

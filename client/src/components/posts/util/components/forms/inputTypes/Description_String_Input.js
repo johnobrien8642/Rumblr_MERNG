@@ -1,78 +1,87 @@
-import React, { useEffect, useRef } from 'react';
-import tinymce from 'tinymce';
+import React from 'react';
+import { useApolloClient } from '@apollo/client';
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import randomstring from 'randomstring';
+import Queries from '../../../../../../graphql/queries.js'
+import PostFormUtil from '../../../functions/post_form_util.js'
+const { MentionCustomization } = PostFormUtil;
+const { FETCH_USERS_FOR_MENTIONS } = Queries;
+
 
 const DescriptionStringInput = ({
-  body, description, 
-  setDescription, formInputId,
+  body, 
+  setDescription, 
+  description,
   update
 }) => {
-  let key = useRef('');
-  
-  useEffect(() => {
-    tinymce.init({
-      selector: '.bodyTextEditor',
-      plugins: 'autolink link',
-      toolbar: 'bold italic underline link',
-      menubar: 'insert format',
-      inline: true,
-    })
+  const client = useApolloClient();
 
-    var bodyEditor1 = document.querySelector('.bodyTextEditor')
-    var hearKey = bodyEditor1.addEventListener('keydown', function(e) {
-      key.current = e.key
-    })
-
-    const interval = setInterval(() => {
-      var bodyEditor2 = document.querySelector('.bodyTextEditor')
-      var innerHTML = bodyEditor2.innerHTML
-      
-      if (description !== innerHTML) {
-        //eslint-disable-next-line
-        setDescription(description = innerHTML)
-      }
-    }, 50)
-    
-    return function cleanup() {
-      bodyEditor1.removeEventListener('keydown', hearKey, true)
-      clearInterval(interval)
-      tinymce.remove()
+  const editorConfiguration = {
+    extraPlugins: [MentionCustomization],
+    placeholder: 'Write a description...',
+    balloonToolbar: [
+      'bold',
+      'italic',
+      'underline',
+      'link',
+      'blockQuote',
+      'undo',
+      'redo'
+    ],
+    mention: {
+      feeds: [
+        {
+          marker: '@',
+          feed: query => {
+            return client.query({
+              query: FETCH_USERS_FOR_MENTIONS,
+              variables: {
+                filter: query
+              }
+            }).then(res => {
+              return res.data.fetchUsersForMentions.map(u => ({
+                id: '@' + u.blogName,
+                actualId: u._id
+              }))
+            })
+          },
+          minimumCharacters: 1
+        }
+      ]
     }
-  }, [formInputId, update])
+  }
 
   return (
     <React.Fragment>
-      <div
-        id={formInputId}
-        className='bodyTextEditor'
-        contentEditable={true}
-        placeholder='Write a description...'
-        value={description}
-        onInput={e => {
-          if (key.current !== 'Enter') {
-            setDescription(description = e.target.innerHTML)
-          }
+      <CKEditor
+        editor={ Editor }
+        config={
+          editorConfiguration 
+        }
+        onChange={(e, editor) => {
+          setDescription(description = editor.getData())
         }}
-        onKeyDown={e => {
-          if (e.key === 'Enter' && description !== '') {
-            var textObj = {
-              kind: 'text',
-              srcType: 'text',
-              content: description,
-              displayIdx: body.current.length,
-              uniqId: randomstring.generate({
-                length: 12,
-                charset: 'alphabetic'
-              })
+        onReady={(editor, description) => {
+          editor.editing.view.document.on('keydown', (evt, data) => {
+            if (data.domEvent.key === 'Enter' && editor.getData()) {
+              var textObj = {
+                kind: 'text',
+                srcType: 'text',
+                content: editor.getData(),
+                displayIdx: body.current.length,
+                uniqId: randomstring.generate({
+                  length: 12,
+                  charset: 'alphabetic'
+                })
+              }
+              
+              body.current.push(textObj)
+              editor.setData('<p class="ck-placeholder" data-placeholder="Write a description..."><br data-cke-filler="true"></p>')
             }
-            
-            body.current.push(textObj)
-            key.current = ''
-            document.querySelector(`#${formInputId}`).innerHTML = ''
-            setDescription(description = '')
-          }
+          })
         }}
-      ></div>
+      />
     </React.Fragment>
   )
 }

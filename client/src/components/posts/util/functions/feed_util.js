@@ -54,7 +54,9 @@ const updateCacheInfScroll = (
     }
   })
   
-  cursorId.current = newData.length > 0 ? newData[newData.length - 1]._id : null
+  if (newData) {
+    cursorId.current = newData.length > 0 ? newData[newData.length - 1]._id : null
+  }
 }
 
 const handleData = (data, feedArr, cursorId, endOfPosts) => {
@@ -67,7 +69,9 @@ const handleData = (data, feedArr, cursorId, endOfPosts) => {
   }
   
   endOfPosts.current = feedArr.current.length === 0 ? true : false
-  cursorId.current = feedArr.current[feedArr.current.length - 1]._id
+  if (feedArr.current.length > 0) {
+    cursorId.current = feedArr.current[feedArr.current.length - 1]._id
+  }
 }
 
 const FeedUtil = { header, updateCacheInfScroll, handleData }

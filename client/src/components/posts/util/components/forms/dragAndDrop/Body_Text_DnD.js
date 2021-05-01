@@ -1,69 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import tinymce from 'tinymce';
+import React from 'react';
+import { useApolloClient } from '@apollo/client';
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
+import { CKEditor } from '@ckeditor/ckeditor5-react'
+import DOMPurify from 'dompurify';
+import randomstring from 'randomstring';
 import PostFormUtil from '../../../functions/post_form_util.js';
+import Queries from '../../../../../../graphql/queries.js'
+const { FETCH_USERS_FOR_MENTIONS } = Queries;
 const { removeBodyObj, drag, 
-        onDropBody, allowDrop } = PostFormUtil;
+        onDropBody, allowDrop, MentionCustomization } = PostFormUtil;
 
 const BodyTextDnD = ({
-  bodyIdx, formInputId, 
+  bodyIdx,
   text, body,
   bodyImageFiles,
   setBodyImageFiles,
   objsToClean,
   render, setRender,
 }) => {
-  let [html, setHTML] = useState(text.content)
-
-
-  useEffect(() => {
-    tinymce.init({
-      selector: `#${text.uniqId}`,
-      plugins: 'autolink link',
-      toolbar: 'bold italic underline link',
-      menubar: 'insert format',
-      inline: true,
-    })
-
-    const interval = setInterval(() => {
-      var bodyEditor2 = document.querySelector(`#${text.uniqId}`)
-      var innerHTML = bodyEditor2.innerHTML
-      if (html !== innerHTML) {
-        //eslint-disable-next-line
-        setHTML(html = innerHTML)
-
-        body.current[bodyIdx].content = innerHTML
-
-        if (window.getSelection) {
-          var range = document.createRange();
-          range.selectNodeContents(bodyEditor2)
-          range.collapse(false);
-          var sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-        }
-      }
-    }, 100)
-    
-    return function cleanup() {
-      clearInterval(interval)
-    }
-
-  }, [formInputId])
-
+  const client = useApolloClient();
   
-  const toggleEdit = () => {
-    var editable = document
-      .querySelector(`#${text.uniqId}`)
-      .getAttribute('contentEditable')
-
-    if (editable === true) {
-      document
-        .querySelector(`#${text.uniqId}`)
-        .setAttribute('contentEditable', 'false')
-    } else {
-      document
-        .querySelector(`#${text.uniqId}`)
-        .setAttribute('contentEditable', 'true')
+  const editorConfiguration = {
+    extraPlugins: [MentionCustomization],
+    balloonToolbar: [
+      'bold',
+      'italic',
+      'underline',
+      'link',
+      'blockQuote',
+      'undo',
+      'redo'
+    ],
+    mention: {
+      feeds: [
+        {
+          marker: '@',
+          feed: query => {
+            return client.query({
+              query: FETCH_USERS_FOR_MENTIONS,
+              variables: {
+                filter: query
+              }
+            }).then(res => {
+              return res.data.fetchUsersForMentions.map(u => ({
+                id: '@' + u.blogName,
+                actualId: u._id
+              }))
+            })
+          },
+          minimumCharacters: 1
+        }
+      ]
     }
   }
 
@@ -82,19 +69,27 @@ const BodyTextDnD = ({
       onDragOver={e => allowDrop(e)}
       draggable='true'
     >
-      <div
-        className='textDnDContent'
-        contentEditable={false}
-        id={`${text.uniqId}`}
-        onClick={() => {
-          toggleEdit()
+      <CKEditor
+        editor={ Editor }
+        config={ editorConfiguration }
+        data={DOMPurify.sanitize(text.content)}
+        onChange={(e, editor) => {
+          body.current[bodyIdx].content = editor.getData()
         }}
-        onInput={e => {
-          setHTML(html = e.currentTarget.outerHTML)
+        onBlur={() => {
+          if (body.current[bodyIdx].content === '') {
+            removeBodyObj(
+              text.srcType, body,
+              setBodyImageFiles,
+              bodyImageFiles,
+              objsToClean, bodyIdx
+            )
+
+            setRender(render + 1)
+          }
         }}
-        dangerouslySetInnerHTML={{ __html: text.content }}
       />
-      <button
+      {/* <button
         type='button'
         onClick={() => {
           removeBodyObj(
@@ -108,7 +103,7 @@ const BodyTextDnD = ({
         }}
       >
         X
-      </button>
+      </button> */}
     </div>
   )
 }

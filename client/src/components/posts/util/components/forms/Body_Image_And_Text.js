@@ -29,7 +29,7 @@ const BodyImageAndText = ({
   <div
     className={'bodyPreview'}
   >
-        {body.current.map((obj, i) => {
+      {body.current.map((obj, i) => {
           if (
               obj.srcType === 'newImgFile' ||
               obj.srcType === 'newImgLink' ||
@@ -79,10 +79,9 @@ const BodyImageAndText = ({
               <div></div>
             )
           }
-        })}
+      })}
 
-
-        <div>
+      <div>
           <BodyImageInput
             formId={formId}
             body={body}

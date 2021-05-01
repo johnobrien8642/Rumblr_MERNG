@@ -12,36 +12,34 @@ const BodyImageInput = ({
 
   return (
     <React.Fragment>
-      <h2>Body Images</h2>
-        <p>{errMessage}</p>
-          <input
-            id='bodyFileInput'
-            type='file'
-            multiple
-            name='image'
-            accept='.png, .jpg, jpeg'
-            onChange={e => {
-              previewBodyImages(
-                e, body, bodyImageFiles,
-                setBodyImageFiles,
-                setErrMessage, errMessage,
-              )
-
-              document.querySelector('#bodyFileInput').value = ''
-            }}
-          />
-          <textarea
-            placeholder='Paste a url...'
-            onChange={e => {
-              var newLinkObj = previewLink(e)
-              
-              if (newLinkObj) {
-                body.current.push(newLinkObj)
-                setRender(render + 1)
-                e.target.value = ''
-              }
-            }}
-          ></textarea>
+      <p>{errMessage}</p>
+        <input
+          id='bodyFileInput'
+          type='file'
+          multiple
+          name='image'
+          accept='.png, .jpg, jpeg'
+          onChange={e => {
+            previewBodyImages(
+              e, body, bodyImageFiles,
+              setBodyImageFiles,
+              setErrMessage, errMessage,
+            )
+            document.querySelector('#bodyFileInput').value = ''
+          }}
+        />
+        <textarea
+          placeholder='Paste a url...'
+          onChange={e => {
+            var newLinkObj = previewLink(e)
+            
+            if (newLinkObj) {
+              body.current.push(newLinkObj)
+              setRender(render + 1)
+              e.target.value = ''
+            }
+          }}
+        ></textarea>
     </React.Fragment>
   )
 }
