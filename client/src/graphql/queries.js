@@ -36,15 +36,6 @@ const Queries = {
       }
     }
   `,
-  FETCH_USER: gql`
-    query fetchUser($query: String) {
-      user(query: $query) {
-        _id
-        blogName
-        blogDescription
-      }
-    }
-  `,
   FETCH_USER_LIKES: gql`
     query FetchUserLikes($user: String) {
       fetchUserLikes(user: $user) {
@@ -119,6 +110,10 @@ const Queries = {
       user(query: $query) {
         _id
         blogName
+        blogDescription
+        email
+        filteredTags
+        filteredPostContent
         userFollowCount
         totalLikeCount
       }
@@ -285,6 +280,18 @@ const Queries = {
        isLoggedIn @client
      } 
     `,
+  FETCH_USER: gql`
+    query fetchUser($query: String) {
+      user(query: $query) {
+        _id
+        blogName
+        blogDescription
+        filteredTags
+        filteredPostContent
+        email
+      }
+    }
+  `,
 }
 
 export default Queries;

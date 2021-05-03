@@ -23,7 +23,7 @@ const register = async (data, ctx) => {
   if (existingUser) {
     throw new Error('Account already exists with that email')
   }
-
+  
   const hashedPW = await bcrypt.hash(password, 10)
 
   //// Uncomment for email auth
@@ -38,6 +38,7 @@ const register = async (data, ctx) => {
     blogDescription: blogDescription,
     email: email,
     password: hashedPW,
+    oldPasswords: [hashedPW]
     // emailAuthToken: emailAuthToken //Uncomment for email auth
     },
     err => {

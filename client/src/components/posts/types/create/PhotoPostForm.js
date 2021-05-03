@@ -8,12 +8,13 @@ import PhotoPostInput from '../../util/components/forms/inputTypes/Photo_Post_In
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
-const { bodyPost, mainPost, 
-        updateCacheCreate,
-        updateCacheUpdate,
+import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+const { postCreate, postUpdate } = UpdateCacheUtil;
+const { bodyPost, mainPost,
         handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
-        handleMentions, discardMentions  } = PostFormUtil;
+        handleMentions, discardMentions,
+        handleAllTextPhotoPost  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -29,6 +30,7 @@ const PhotoPostForm = ({
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
+  let allText = useRef('');
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
@@ -49,9 +51,9 @@ const PhotoPostForm = ({
       var query = FETCH_USER_FEED
       
       if (post) {
-        updateCacheUpdate(client, createOrUpdatePost, currentUser, query)
+        postUpdate(client, createOrUpdatePost, currentUser, query)
       } else {
-        updateCacheCreate(client, createOrUpdatePost, currentUser, query)
+        postCreate(client, createOrUpdatePost, currentUser, query)
       }
     },
     onCompleted() {
@@ -73,6 +75,7 @@ const PhotoPostForm = ({
     setDescription(description = '');
     body.current = [];
     main.current = [];
+    allText.current = '';
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');
@@ -94,15 +97,20 @@ const PhotoPostForm = ({
         
         discardMentions(post, mentions, objsToClean)
 
+        var descriptions = stripAllImgs(body)
+
+        handleAllTextPhotoPost(allText, descriptions)
+
         var instanceData = {
-          statics: { mainImages: handleUploadedFiles(main, mainUploads) },
-          descriptions: stripAllImgs(body),
+          variants: { mainImages: handleUploadedFiles(main, mainUploads) },
+          allText: allText.current,
+          descriptions: descriptions,
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'PhotoPost',
           objsToClean: objsToClean.current,
-          post: post ? post : null
+          postId: post ? post._id : null
         }
         
         createOrUpdatePost({

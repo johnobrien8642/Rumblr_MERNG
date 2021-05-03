@@ -89,24 +89,71 @@ const Mutations = {
     }
   `,
   COMMENT_POST: gql`
-  mutation CommentPost($commentData: JSONObject) {
-    comment(commentData: $commentData) {
-      _id
-      content
-      user {
+    mutation CommentPost($commentData: JSONObject) {
+      comment(commentData: $commentData) {
         _id
+        content
+        user {
+          _id
+          blogName
+        }
+      }
+    }
+  `,
+  DELETE_COMMENT: gql`
+    mutation deleteComment($commentId: ID) {
+      deleteComment(commentId: $commentId) {
+        _id
+      }
+    }
+  `,
+  UPDATE_USER_EMAIL: gql`
+    mutation UpdateUserEmail($email: String, $password: String, $user: String) {
+      updateUserEmail(email: $email, password: $password, user: $user) {
+        _id
+        email
         blogName
       }
     }
-  }
-`,
-DELETE_COMMENT: gql`
-  mutation deleteComment($commentId: ID) {
-    deleteComment(commentId: $commentId) {
-      _id
+  `,
+  UPDATE_USER_PASSWORD: gql`
+    mutation UpdateUserPassword($currentPW: String, $newPassword: String, $user: String) {
+      updateUserPassword(currentPW: $currentPW, newPassword: $newPassword, user: $user) {
+        _id
+        email
+        blogName
+      }
     }
-  }
-`
+  `,
+  ADD_FILTER_TAG: gql`
+    mutation AddFilterTag($tag: String, $user: String) {
+      addFilterTag(tag: $tag, user: $user) {
+        filteredTags
+      }
+    }
+  `,
+  DELETE_FILTER_TAG: gql`
+    mutation DeleteFilterTag($tag: String, $user: String) {
+      deleteFilterTag(tag: $tag, user: $user) {
+        filteredTags
+      }
+    }
+  `,
+  ADD_FILTER_POST_CONTENT: gql`
+    mutation AddFilterPostContent($postContent: String, $user: String) {
+      addFilterPostContent(postContent: $postContent, user: $user) {
+        filteredPostContent
+      }
+    }
+  `,
+  DELETE_FILTER_POST_CONTENT: gql`
+    mutation DeleteFilterPostContent($postContent: String, $user: String) {
+      deleteFilterPostContent(postContent: $postContent, user: $user) {
+        filteredPostContent
+      }
+    }
+  `,
+
 };
 
 export default Mutations;

@@ -1,4 +1,6 @@
 import graphql from 'graphql';
+import bcrypt from 'bcryptjs';
+import Validator from 'validator';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import mongoose from 'mongoose';
 import UserType from '../objects/user_type.js';
@@ -6,10 +8,10 @@ import AuthService from '../../../services/auth_util.js';
 import RepostType from '../objects/posts/util/repost_type.js';
 import LikeType from '../objects/posts/util/like_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
-import CommentType from '../objects/posts/util/comment_type.js'
-import AnyPostType from '../unions/any_post_type.js'
-import createOrUpdatePost from '../../../models/posts/types/util/create_or_update_function.js'
-import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function_util.js'
+import CommentType from '../objects/posts/util/comment_type.js';
+import AnyPostType from '../unions/any_post_type.js';
+import createOrUpdatePost from '../../../models/posts/types/util/create_or_update_function.js';
+import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function_util.js';
 const { deletePost } = DeleteFunctionUtil;
 
 const Post = mongoose.model('Post');
@@ -212,8 +214,157 @@ const mutation = new GraphQLObjectType({
           Comment.deleteOne({ _id: commentId })
         ])
       }
+    },
+    updateUserEmail: {
+      type: UserType,
+      args: {
+        email: { type: GraphQLString },
+        password: { type: GraphQLString },
+        user: { type: GraphQLString }
+      },
+      resolve(parentValue, {
+        email, password, user
+      }) {
+        return User.findOne({ blogName: user })
+          .then(user => {
+            if (bcrypt.compareSync(password, user.password)) {
+              if (Validator.isURL(email)) {
+                return User.findOne({ email: email })
+                  .then(userExists => {
+                    if (!userExists) {
+                      user.email = email
+                      return user.save()
+                        .then(user => user)
+                    } else {
+                      return new Error('This email already exists')
+                    }
+                  })
+              }
+            }
+          })
+      }
+    },
+    updateUserPassword: {
+      type: UserType,
+      args: {
+        currentPW: { type: GraphQLString },
+        newPassword: { type: GraphQLString },
+        user: { type: GraphQLString }
+      },
+      resolve(parentValue, {
+        currentPW, newPassword, user
+      }) {
+        if (!Validator.isLength(newPassword, { min: 7, max: 33})) {
+          return new Error("Password length must be between 8 and 32 characters")
+        }
+
+        return User.findOne({ blogName: user })
+          .then(user => {
+            if (bcrypt.compareSync(currentPW, user.password)) {
+              var alreadyUsed = false
+
+              user.oldPasswords.forEach(oldPw => {
+                if (bcrypt.compareSync(newPassword, oldPw)) {
+                  alreadyUsed = true
+                }
+              })
+
+              if (!alreadyUsed) {
+                return bcrypt.hash(newPassword, 10)
+                  .then(newHash => {
+                    user.oldPasswords.push(user.password)
+                    user.password = newHash
+                  })
+              } else {
+                throw new Error("Choose a password you haven't used before")
+              }
+            }
+          })
+      }
+    },
+    addFilterTag: {
+      type: UserType,
+      args: { 
+        tag: { type: GraphQLString },
+        user: { type: GraphQLString }
+      },
+      resolve(parentValue, { tag, user }) {
+        return User.findOne({ blogName: user })
+          .then(user => {
+      
+            user.filteredTags.push(tag)
+            
+            var uniqArr = new Set(user.filteredTags)
+
+            user.filteredTags = Array.from(uniqArr)
+
+            return user.save()
+              .then(user => user)
+        })
+      }
+    },
+    deleteFilterTag: {
+      type: UserType,
+      args: { 
+        tag: { type: GraphQLString },
+        user: { type: GraphQLString }
+      },
+      resolve(parentValue, { tag, user }) {
+        return User.findOne({ blogName: user })
+        .then(user => {
+
+          var filtered = user.filteredTags.filter(t => t !== tag)
+
+          user.filteredTags = filtered
+
+          return user.save()
+            .then(user => user)
+      })
+      }
+    },
+    addFilterPostContent: {
+      type: UserType,
+      args: { 
+        postContent: { type: GraphQLString },
+        user: { type: GraphQLString }
+      },
+      resolve(parentValue, { postContent, user }) {
+        return User.findOne({ blogName: user })
+          .then(user => {
+
+            user.filteredPostContent.push(postContent)
+            
+            var uniqArr = new Set(user.filteredPostContent)
+
+            user.filteredPostContent = Array.from(uniqArr)
+
+            return user.save()
+              .then(user => user)
+        })
+      }
+    },
+    deleteFilterPostContent: {
+      type: UserType,
+      args: { 
+        postContent: { type: GraphQLString },
+        user: { type: GraphQLString }
+      },
+      resolve(parentValue, { postContent, user }) {
+        return User.findOne({ blogName: user })
+        .then(user => {
+
+          var filtered = user.filteredPostContent.filter(pc => pc !== postContent)
+
+          user.filteredPostContent = filtered
+
+          return user.save()
+            .then(user => user)
+      })
+      }
     }
   })
 })
+
+'password'
 
 export default mutation;

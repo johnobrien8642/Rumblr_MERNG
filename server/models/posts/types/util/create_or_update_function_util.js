@@ -79,7 +79,7 @@ const asyncMention = async (m, findOrCreateMention, user, post) => {
 }
 
 const findOrCreateMention = async (m, user, post) => {
-  return User.findOne({ blogName: m.slice(1) })
+  return User.findOne({ blogName: m ? m.slice(1) : null })
     .then(mentioned => {
       return Mention.findOne({ mention: mentioned._id, user: user._id })
         .then(mentionFound => {
@@ -196,6 +196,7 @@ const pushMainImgObjs = (objArr, post) => {
 }
 
 const pushDescriptions = (descriptions, post) => {
+
   descriptions.forEach((obj, i) => {
     post.descriptions.push(obj)
   })
@@ -203,7 +204,8 @@ const pushDescriptions = (descriptions, post) => {
 
 const pushTags = (tags, post) => {
   tags.forEach((t, i) => {
-    post.tags.push(t._id)
+    post.tagIds.push(t._id)
+    post.tagTitles += t.title
   })
 }
 
@@ -241,17 +243,16 @@ const markModified = (instance, update) => {
   }
 }
 
-const handleStatics = async (statics, instance, user) => {
+const handleVariants = async (variants, instance, user) => {
 
   switch(instance.kind) {
     case 'TextPost':
-      var { title, main } = statics
+      var { title } = variants
       instance.title = title
-      instance.main = main
       instance.user = user._id
       break
     case 'PhotoPost':
-      var { mainImages } = statics
+      var { mainImages } = variants
       instance.mainImages = [];
       instance.user = user._id;
       
@@ -268,30 +269,30 @@ const handleStatics = async (statics, instance, user) => {
       pushMainImgObjs(readyMainImgs, instance)
       break
     case 'QuotePost':
-      var { quote, source } = statics
+      var { quote, source } = variants
       instance.quote = quote
       instance.source = source
       instance.user = user._id
       break
     case 'LinkPost':
-      var { linkObj } = statics;
+      var { linkObj } = variants;
       instance.user = user._id
       instance.linkObj = linkObj
       break
     case 'ChatPost':
       instance.chat = ''
-      var { chat } = statics;
+      var { chat } = variants;
       instance.user = user._id
       instance.chat = chat
       break
     case 'AudioPost':
-      var { audioFileId, audioMeta } = statics;
+      var { audioFileId, audioMeta } = variants;
       instance.audioFile = audioFileId
       instance.audioMeta = audioMeta
       instance.user = user._id
       break
     case 'VideoPost':
-      var { videoLink } = statics;
+      var { videoLink } = variants;
       instance.videoLink = videoLink
       instance.user = user._id
       break
@@ -300,6 +301,18 @@ const handleStatics = async (statics, instance, user) => {
   }
 }
 
+const resetFoundPost = (instance) => {
+  instance.allText = ''
+  instance.descriptions = []
+  instance.descriptionImages = []
+  instance.tagIds = []
+  instance.tagTitles = ''
+  instance.mentions = []
+}
+
+const handleAllText = (allText, instance) => {
+  instance.allText = allText
+}
 
 const CreateFunctionUtil = {
   getTagArr, asyncTag,
@@ -324,8 +337,10 @@ const CreateFunctionUtil = {
   pushTags,
   pushMentions,
   markModified,
-  handleStatics,
-  createInstance
+  handleVariants,
+  createInstance,
+  resetFoundPost,
+  handleAllText
 }
 
 export default CreateFunctionUtil;

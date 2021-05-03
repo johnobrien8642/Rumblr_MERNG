@@ -15,6 +15,7 @@ const BodyImageInput = ({
       <p>{errMessage}</p>
         <input
           id='bodyFileInput'
+          tabIndex={-1}
           type='file'
           multiple
           name='image'
@@ -29,6 +30,7 @@ const BodyImageInput = ({
           }}
         />
         <textarea
+          tabIndex={-1}
           placeholder='Paste a url...'
           onChange={e => {
             var newLinkObj = previewLink(e)

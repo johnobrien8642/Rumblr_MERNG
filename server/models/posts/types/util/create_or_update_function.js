@@ -12,20 +12,22 @@ const { getTagArr, asyncTag, findOrCreateTag,
         returnVideoInstancesOnly, returnMentionInstancesOnly,
         allImgObjsSorted, pushDescriptionImgObjs,
         pushDescriptions, pushTags, pushMentions, 
-        markModified, handleStatics, createInstance } = CreateOrUpdateFunctionUtil;
+        markModified, handleVariants, createInstance, 
+        resetFoundPost, handleAllText } = CreateOrUpdateFunctionUtil;
 const { cleanupImages, cleanupAudio, 
         cleanupVideo, cleanupMention } = DeleteFunctionUtil;
 
 const createOrUpdatePost = ({
-  statics,
+  variants,
+  allText,
   descriptions,
   descriptionImages,
   mentions,
   user, tags, kind,
   objsToClean,
-  post
+  postId
 }) => {
-  var update = post ? true : false
+  var update = postId ? true : false
   
   var uploads = returnInstancesOnly(descriptionImages)
   var imageLinks = returnNewImageLinksOnly(descriptionImages)
@@ -40,7 +42,7 @@ const createOrUpdatePost = ({
     createImagesFromLinks(imageLinks, asyncImageLink),
     getTagArr(tags, asyncTag, findOrCreateTag, user),
     User.findOne({ blogName: user }),
-    Post.findById(post._id),
+    Post.findById(postId),
     cleanupImages(imgsToClean),
     cleanupAudio(audioToClean),
     cleanupVideo(videoToClean),
@@ -53,30 +55,29 @@ const createOrUpdatePost = ({
       
       if (update) {
         var instance = foundPost
-        instance.descriptions = []
-        instance.descriptionImages = []
-        instance.tags = []
-        instance.mentions = []
+        resetFoundPost(instance)
       } else {
         var instance = createInstance(kind)
       }
       
-      return handleStatics(statics, instance, user).then(() => {
+      return handleVariants(variants, instance, user).then(() => {
+
+        handleAllText(allText, instance)
         
+        pushDescriptions(descriptions, instance)
+
         var readyDescriptionImgs = allImgObjsSorted(
           linkImages, updatedUploads
         )
     
         pushDescriptionImgObjs(readyDescriptionImgs, instance)
   
-        pushDescriptions(descriptions, instance)
-  
         pushTags(tags, instance)
         
         return handleMentions(
-          mentions, asyncMention,
-          findOrCreateMention, user,
-          instance
+            mentions, asyncMention,
+            findOrCreateMention, user,
+            instance
           ).then(mentions => {
     
           pushMentions(mentions, instance)

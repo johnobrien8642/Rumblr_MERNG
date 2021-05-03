@@ -9,11 +9,13 @@ import TextPostInput from '../../util/components/forms/inputTypes/Text_Post_Inpu
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js';
-const { bodyPost, updateCacheCreate,
-        updateCacheUpdate, handleFormData, 
+import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+const { postCreate, postUpdate } = UpdateCacheUtil;
+const { bodyPost, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
         resetDisplayIdx, handleTagInput,
-        handleMentions, discardMentions } = PostFormUtil;
+        handleAllTextTextPost, handleMentions, 
+        discardMentions } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -22,12 +24,12 @@ const TextPostForm = ({
   setUpdate
 }) => {
   let [title, setTitle] = useState('');
-  let [main, setMain] = useState('');
 
   let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
+  let allText = useRef('');
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
@@ -47,9 +49,9 @@ const TextPostForm = ({
     var query = FETCH_USER_FEED
       
       if (post) {
-        updateCacheUpdate(client, createOrUpdatePost, currentUser, query)
+        postUpdate(client, createOrUpdatePost, currentUser, query)
       } else {
-        updateCacheCreate(client, createOrUpdatePost, currentUser, query)
+        postCreate(client, createOrUpdatePost, currentUser, query)
       }
     },
     onCompleted() {
@@ -69,8 +71,8 @@ const TextPostForm = ({
   const resetInputs = () => {
     objsToClean.current = [];
     setTitle(title = '');
-    setMain(main = '');
     body.current = []
+    allText.current = '';
     setBodyImageFiles(bodyImageFiles = []);
     setTag(tag = '');
     setTags(tags = []);
@@ -90,16 +92,21 @@ const TextPostForm = ({
         var mentions = handleMentions(body, stripAllImgs)
         
         discardMentions(post, mentions, objsToClean)
-      
+
+        var descriptions = stripAllImgs(body)
+
+        handleAllTextTextPost(allText, descriptions, title)
+
         var instanceData = {
-          statics: { title, main },
-          descriptions: stripAllImgs(body),
+          variants: { title },
+          allText: allText.current,
+          descriptions: descriptions,
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'TextPost',
           objsToClean: objsToClean.current,
-          post: post ? post : null
+          postId: post ? post._id : null
         }
         
         createOrUpdatePost({

@@ -8,6 +8,9 @@ const PostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
+  allText: {
+    type: String
+  },
   descriptions: [ 
     {
       kind: String,
@@ -21,12 +24,15 @@ const PostSchema = new Schema({
       ref: 'Image'
     }
   ],
-  tags: [
+  tagIds: [
     {
       type: Schema.Types.ObjectId,
       ref: 'Tag'
     }
   ],
+  tagTitles: {
+    type: String
+  },
   mentions: [
     {
       type: Schema.Types.ObjectId,

@@ -8,12 +8,12 @@ import LinkPreview from '../../util/components/forms/Link_Preview'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
-const { bodyPost, updateCacheCreate,
-        updateCacheUpdate,
-        handleFormData, stripAllImgs,
+import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+const { postCreate, postUpdate } = UpdateCacheUtil;
+const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx, 
         fetchUrlMetadata, handleMentions, 
-        discardMentions  } = PostFormUtil;
+        discardMentions, handleAllTextLinkPost } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -34,6 +34,7 @@ const LinkPostForm = ({
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
+  let allText = useRef('');
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
@@ -53,9 +54,9 @@ const LinkPostForm = ({
       var query = FETCH_USER_FEED
       
       if (post) {
-        updateCacheUpdate(client, createOrUpdatePost, currentUser, query)
+        postUpdate(client, createOrUpdatePost, currentUser, query)
       } else {
-        updateCacheCreate(client, createOrUpdatePost, currentUser, query)
+        postCreate(client, createOrUpdatePost, currentUser, query)
       }
     },
     onCompleted() {
@@ -81,6 +82,7 @@ const LinkPostForm = ({
     setLinkDescription(linkDescription = '');
     setBodyImageFiles(bodyImageFiles = []);
     body.current = [];
+    allText.current = '';
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');
@@ -99,21 +101,28 @@ const LinkPostForm = ({
         var mentions = handleMentions(body, stripAllImgs)
         
         discardMentions(post, mentions, objsToClean)
+
+        var descriptions = stripAllImgs(body)
+        
+        var linkObj = {
+          link, siteName, imageUrl,
+          title, linkDescription
+        }
+
+        handleAllTextLinkPost(allText, descriptions, linkObj)
           
         var instanceData = {
-          statics: {
-            linkObj: {
-              link, siteName, imageUrl,
-              title, linkDescription
-            }
+          variants: {
+            linkObj: linkObj
           },
-          descriptions: stripAllImgs(body),
+          allText: allText.current,
+          descriptions: descriptions,
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'LinkPost',
           objsToClean: objsToClean.current,
-          post: post ? post : null
+          postId: post ? post._id : null
         };
         
         createOrUpdatePost({

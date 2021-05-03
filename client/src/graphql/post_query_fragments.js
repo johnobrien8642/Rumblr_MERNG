@@ -13,10 +13,11 @@ const QueryFragments = {
       kind
       displayIdx
     }
-    tags {
+    tagIds {
       _id
       title
     }
+    tagTitles
     mentions {
       _id
       user {

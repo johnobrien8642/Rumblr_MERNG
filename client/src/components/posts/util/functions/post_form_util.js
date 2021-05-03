@@ -568,150 +568,186 @@ const videoPost = (
 
 //apollo cache
 
-const updateCacheCreate = (
-  client, createPost,
-  currentUser, query
-) => {
-  var readQuery = client.readQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    }
-  })
+// const updateCacheCreate = (
+//   client, createPost,
+//   currentUser, query
+// ) => {
+//   var readQuery = client.readQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     }
+//   })
   
-  var { fetchUserFeed } = readQuery;
+//   var { fetchUserFeed } = readQuery;
   
-  var newPostArr = [{ __typename: 'createPost' }, createPost, ...fetchUserFeed]
+//   var newPostArr = [{ __typename: 'createPost' }, createPost, ...fetchUserFeed]
   
-  client.writeQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    },
-    data: {
-      fetchUserFeed: newPostArr
-    }
-  })
-}
+//   client.writeQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     },
+//     data: {
+//       fetchUserFeed: newPostArr
+//     }
+//   })
+// }
 
-const updateCacheUpdate = (
-  client, updatePost,
-  currentUser, query
-) => {
-  var readQuery = client.readQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    }
-  })
+// const updateCacheUpdate = (
+//   client, updatePost,
+//   currentUser, query
+// ) => {
+//   var readQuery = client.readQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     }
+//   })
   
-  var { fetchUserFeed } = readQuery;
+//   var { fetchUserFeed } = readQuery;
   
-  var newPostArr = [...fetchUserFeed]
+//   var newPostArr = [...fetchUserFeed]
   
-  fetchUserFeed.forEach((p, i) => {
-    if (updatePost._id === p._id) {
-      newPostArr.splice(i, 1, updatePost)
-    }
-  })
+//   fetchUserFeed.forEach((p, i) => {
+//     if (updatePost._id === p._id) {
+//       newPostArr.splice(i, 1, updatePost)
+//     }
+//   })
   
-  client.writeQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    },
-    data: {
-      fetchUserFeed: newPostArr
-    }
-  })
-}
+//   client.writeQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     },
+//     data: {
+//       fetchUserFeed: newPostArr
+//     }
+//   })
+// }
 
-const updateCacheDelete = (
-  client, post, deletePost,
-  currentUser, query
-) => {
-  var readFeed = client.readQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    }
-  })
+// const updateCacheDelete = (
+//   client, post, deletePost,
+//   currentUser, query
+// ) => {
+//   var readFeed = client.readQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     }
+//   })
 
-  var { fetchUserFeed } = readFeed;
+//   var { fetchUserFeed } = readFeed;
   
-  var newPostArr = fetchUserFeed.filter(post1 => post1._id !== post._id)
+//   var newPostArr = fetchUserFeed.filter(post1 => post1._id !== post._id)
 
-  client.writeQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    },
-    data: {
-      fetchUserFeed: [{ __typename: 'deletePost' }, ...newPostArr]
-    }
-  })
-}
+//   client.writeQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     },
+//     data: {
+//       fetchUserFeed: [{ __typename: 'deletePost' }, ...newPostArr]
+//     }
+//   })
+// }
 
-const updateCacheLike = (
-  client, likePost,
-  post, query
-) => {
+// const updateCacheLike = (
+//   client, likePost,
+//   post, query
+// ) => {
   
-  var readFeed = client.readQuery({
-    query: query,
-    variables: {
-      postId: post._id
-    }
-  })
+//   var readFeed = client.readQuery({
+//     query: query,
+//     variables: {
+//       postId: post._id
+//     }
+//   })
   
-  var { fetchLikesRepostsAndComments } = readFeed;
+//   var { fetchLikesRepostsAndComments } = readFeed;
   
-  var newPostArr = [...fetchLikesRepostsAndComments, likePost]
+//   var newPostArr = [...fetchLikesRepostsAndComments, likePost]
   
-  client.writeQuery({
-    query: query,
-    variables: {
-      postId: post._id
-    },
-    data: {
-      fetchLikesRepostsAndComments: newPostArr
-    }
-  })
-}
+//   client.writeQuery({
+//     query: query,
+//     variables: {
+//       postId: post._id
+//     },
+//     data: {
+//       fetchLikesRepostsAndComments: newPostArr
+//     }
+//   })
+// }
 
-const updateCacheUnlike = (
-  client, unlikePost,
-  post, liked, query
-) => {
+// const updateCacheUnlike = (
+//   client, unlikePost,
+//   post, liked, query
+// ) => {
 
-  var readFeed = client.readQuery({
-    query: query,
-    variables: {
-      postId: post._id
-    }
-  })
+//   var readFeed = client.readQuery({
+//     query: query,
+//     variables: {
+//       postId: post._id
+//     }
+//   })
   
-  var { fetchLikesRepostsAndComments } = readFeed;
+//   var { fetchLikesRepostsAndComments } = readFeed;
   
-  var newPostArr = fetchLikesRepostsAndComments.filter(item => {
-      if (item._id === liked._id) {
-        return false
-      } else {
-        return true
-      }
-    }
-  )
+//   var newPostArr = fetchLikesRepostsAndComments.filter(item => {
+//       if (item._id === liked._id) {
+//         return false
+//       } else {
+//         return true
+//       }
+//     }
+//   )
   
-  client.writeQuery({
-    query: query,
-    variables: {
-      postId: post._id
-    },
-    data: {
-      fetchLikesRepostsAndComments: newPostArr
-    }
-  })
-}
+//   client.writeQuery({
+//     query: query,
+//     variables: {
+//       postId: post._id
+//     },
+//     data: {
+//       fetchLikesRepostsAndComments: newPostArr
+//     }
+//   })
+// }
+
+// const updateCacheAddFilterTag = (
+//   client, addFilterTag,
+//   currentUser, query
+// ) => {
+  
+//   client.writeQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     },
+//     data: {
+//       user: {
+//         filteredTags: addFilterTag.filteredTags
+//       }
+//     }
+//   })
+// }
+
+// const updateCacheDeleteFilterTag = (
+//   client, addFilterTag,
+//   currentUser, query
+// ) => {
+  
+//   client.writeQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     },
+//     data: {
+//       user: {
+//         filteredTags: addFilterTag.filteredTags
+//       }
+//     }
+//   })
+// }
 
 //submit functions
 
@@ -721,8 +757,13 @@ const handleMentions = (body, stripAllImgs) => {
     var regexMention = new RegExp(/@\w+/, 'gm')
     return array.concat(string.match(regexMention))
   }, [])
+  
+  if (mentions[0] !== null) {
+    return Array.from(new Set(mentions))
+  } else {
+    return []
+  }
 
-  return Array.from(new Set(mentions))
 }
 
 const discardMentions = (post, mentions, objsToClean) => {
@@ -788,6 +829,88 @@ const handleUploadedFiles = (
   
   return refArrayDup.filter(obj => obj.srcType !== 'text')
 }
+
+const handleAllTextAudioPost = (allText, descriptions, title, artist, album) => {
+
+  descriptions.forEach(d => {
+    var span = document.createElement('span')
+    span.innerHTML = d.content
+    allText.current += span.textContent
+  })
+
+  allText.current += title + ' ' + artist + ' ' + album
+}
+
+const handleAllTextTextPost = (allText, descriptions, title) => {
+
+  descriptions.forEach(d => {
+    var span = document.createElement('span')
+    span.innerHTML = d.content
+    allText.current += span.textContent
+  })
+  
+  allText.current += title
+}
+
+const handleAllTextChatPost = (allText, descriptions, chat) => {
+
+  descriptions.forEach(d => {
+    var span = document.createElement('span')
+    span.innerHTML = d.content
+    allText.current += span.textContent
+  })
+
+  var span2 = document.createElement('span')
+  span2.innerHTML = chat.current
+
+  allText.current += span2.textContent
+}
+
+const handleAllTextLinkPost = (allText, descriptions, linkObj) => {
+
+  descriptions.forEach(d => {
+    var span = document.createElement('span')
+    span.innerHTML = d.content
+    allText.current += span.textContent
+  })
+
+  Object.values(linkObj).forEach(string => {
+    allText.current += string
+  })
+}
+
+const handleAllTextPhotoPost = (allText, descriptions) => {
+
+  descriptions.forEach(d => {
+    var span = document.createElement('span')
+    span.innerHTML = d.content
+    allText.current += span.textContent
+  })
+}
+
+const handleAllTextQuotePost = (allText, descriptions, quote, source) => {
+
+  descriptions.forEach(d => {
+    var span = document.createElement('span')
+    span.innerHTML = d.content
+    allText.current += span.textContent
+  })
+
+  allText.current += quote
+  allText.current += source
+}
+
+const handleAllTextVideoPost = (allText, descriptions) => {
+
+  descriptions.forEach(d => {
+    var span = document.createElement('span')
+    span.innerHTML = d.content
+    allText.current += span.textContent
+  })
+}
+
+
+//display idx helper
 
 const resetDisplayIdx = (refArr) => {
   refArr.current.forEach((obj, i) => {
@@ -875,14 +998,24 @@ const PostCreateUtil = {
   removeLinkSiteNameAndImage,
   removeLinkTitleAndDesc,
   fetchUrlMetadata, mainPost, bodyPost,
-  audioPost, videoPost, updateCacheCreate,
-  updateCacheUpdate, updateCacheDelete, 
-  updateCacheLike, updateCacheUnlike, 
+  audioPost, videoPost, 
+  // updateCacheCreate,
+  // updateCacheUpdate, updateCacheDelete, 
+  // updateCacheLike, updateCacheUnlike,
+  // updateCacheAddFilterTag,
+  // updateCacheDeleteFilterTag, 
   handleFormData, stripAllImgs, 
   handleUploadedFiles,
   handleMentions, discardMentions,
-  resetDisplayIdx, isUpdate,
-  MentionCustomization
+  handleAllTextAudioPost, 
+  handleAllTextTextPost,
+  handleAllTextChatPost,
+  handleAllTextLinkPost,
+  handleAllTextPhotoPost,
+  handleAllTextQuotePost,
+  handleAllTextVideoPost,
+  resetDisplayIdx,
+  isUpdate, MentionCustomization
 };
  
 export default PostCreateUtil;

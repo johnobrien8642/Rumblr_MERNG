@@ -8,12 +8,12 @@ import AudioFileInput from '../../util/components/forms/inputTypes/Audio_File_In
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text';
 import Tags from '../../util/components/forms/Tags';
 import PostFormUtil from '../../util/functions/post_form_util.js';
-const { bodyPost, updateCacheCreate,
-        updateCacheUpdate,
-        handleFormData, stripAllImgs,
+import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+const { postCreate, postUpdate } = UpdateCacheUtil;
+const { bodyPost, handleFormData, stripAllImgs,
         audioPost, handleUploadedFiles,
         resetDisplayIdx, handleMentions, 
-        discardMentions  } = PostFormUtil;
+        discardMentions, handleAllTextAudioPost  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -33,9 +33,10 @@ const AudioPostForm = ({
   let [active, setActive] = useState(false)
 
   let objsToClean = useRef([]);
+  let body = useRef([]);
+  let allText = useRef([]);
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
-  let body = useRef([]);
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
@@ -55,9 +56,9 @@ const AudioPostForm = ({
       var query = FETCH_USER_FEED
       
       if (post) {
-        updateCacheUpdate(client, createOrUpdatePost, currentUser, query)
+        postUpdate(client, createOrUpdatePost, currentUser, query)
       } else {
-        updateCacheCreate(client, createOrUpdatePost, currentUser, query)
+        postCreate(client, createOrUpdatePost, currentUser, query)
       }
     },
     onCompleted() {
@@ -82,6 +83,7 @@ const AudioPostForm = ({
     setAudioFile(audioFile = '')
     setBodyImageFiles(bodyImageFiles = []);
     body.current = [];
+    allText.current = '';
     setDescription(description = '');
     setTag(tag = '');
     setTags(tags = []);
@@ -104,25 +106,30 @@ const AudioPostForm = ({
       audioPost(audioFileFormData)
     ]).then(
       ([bodyUploads, audio]) => {
-
+        
         var mentions = handleMentions(body, stripAllImgs)
         
         discardMentions(post, mentions, objsToClean)
 
+        var descriptions = stripAllImgs(body)
+
+        handleAllTextAudioPost(allText, descriptions, title, artist, album)
+
         var instanceData = {
-          statics: {
+          variants: {
             audioFileId: audio[0] ? audio[0]._id : post.audioFile._id,
               audioMeta: {
                 title, artist, album
               }
           },
-          descriptions: stripAllImgs(body),
+          allText: allText.current,
+          descriptions: descriptions,
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'AudioPost',
           objsToClean: objsToClean.current,
-          post: post ? post : null
+          postId: post ? post._id : null
         };
         
         createOrUpdatePost({

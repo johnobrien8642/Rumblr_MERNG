@@ -9,6 +9,7 @@ import TagFeed from './feeds/Tag_Feed';
 import UserPostLikesFeed from './feeds/User_Post_Likes_Feed';
 import UserFollowingFeed from './feeds/User_Following_Feed';
 import UserBlogShow from './feeds/User_Blog_Show';
+import UserSettings from './user/User_Settings';
 import AuthRoute from '../util/route_util';
 import 'react-h5-audio-player/lib/styles.css';
 import './../stylesheets/application.scss';
@@ -22,6 +23,7 @@ const App = () => {
         <AuthRoute path={'/dashboard'} component={Dashboard} />
         <AuthRoute path={'/view/tag/:tagTitle'} component={TagFeed} />
         <AuthRoute path={'/view/blog/:blogName'} component={UserBlogShow} />
+        <AuthRoute exact path={'/settings/account'} component={UserSettings} />
         <Route exact path='/likes' component={UserPostLikesFeed} />
         <Route exact path='/following' component={UserFollowingFeed} />
         <Route exact path='/login' component={Login} />

@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import { Link } from 'react-router-dom';
 import AudioPlayer from 'react-h5-audio-player';
 import ReactPlayer from 'react-player';
@@ -55,10 +56,10 @@ const repostFooter = (post) => {
 
 const postTags = (post) => {
   var data = demeterPost(post)
-
+  
   return (
   <div>
-    {data.tags.map((tag, i) => {
+    {data.tagIds.map((tag, i) => {
       var cleanedTitle = tag.title.slice(1)
       return (
         <div 
@@ -74,7 +75,7 @@ const postTags = (post) => {
     })}
     </div>
   )
-  }
+}
 
 const postBody = (post) => {
   var data = demeterPost(post)
@@ -88,7 +89,7 @@ const postBody = (post) => {
     return (
       <React.Fragment>
         <h3>{data.title}</h3>
-        <div dangerouslySetInnerHTML={{ __html: data.main }} />
+        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.main) }} />
         {displayDescription(descriptionArr)}
       </React.Fragment>
     )
@@ -135,7 +136,7 @@ const postBody = (post) => {
     return (
       <React.Fragment>
         <div 
-          dangerouslySetInnerHTML={{__html: data.chat}}
+          dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(data.chat)}}
         />
         {displayDescription(descriptionArr)}
       </React.Fragment>
@@ -176,7 +177,6 @@ const demeterPost = (post) => {
 }
 
 const displayDescription = (descriptionArr) => {
-  
   return (
     <div>
       {descriptionArr.map((obj, i) => {
@@ -185,7 +185,7 @@ const displayDescription = (descriptionArr) => {
             return (
               <div
                 key={i}
-                dangerouslySetInnerHTML={{ __html: obj.content }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(obj.content) }}
               />
             )
           case 'Image':

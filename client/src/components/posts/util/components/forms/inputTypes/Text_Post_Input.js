@@ -10,6 +10,7 @@ const TextPostInput = ({
     if (post) {
       reassembleTextPostStatics(post, title, setTitle)
     }
+    //eslint-disable-next-line
   }, [])
 
   return (

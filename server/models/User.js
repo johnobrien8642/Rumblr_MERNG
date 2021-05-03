@@ -13,6 +13,11 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  oldPasswords: [
+    {
+      type: String
+    }
+  ],
   password: {
     type: String,
     required: true,
@@ -31,6 +36,16 @@ const UserSchema = new Schema({
     {
       type: Schema.Types.ObjectId,
       ref: 'Tag'
+    }
+  ],
+  filteredTags: [
+    {
+      type: String
+    }
+  ],
+  filteredPostContent: [
+    {
+      type: String
     }
   ],
   //// Uncomment both below for email auth

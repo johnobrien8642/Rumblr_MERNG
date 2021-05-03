@@ -57,6 +57,12 @@ const UserType = new GraphQLObjectType({
         .then(user => user.userFollowing)
       }
     },
+    filteredTags: {
+      type: GraphQLList(GraphQLString)
+    },
+    filteredPostContent: {
+      type: GraphQLList(GraphQLString)
+    },
     likes: { 
       type: GraphQLList(LikeType),
       resolve(parentValue) {

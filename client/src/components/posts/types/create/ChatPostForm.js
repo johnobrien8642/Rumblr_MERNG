@@ -8,11 +8,12 @@ import ChatPostInput from '../../util/components/forms/inputTypes/Chat_Post_Inpu
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js';
-const { bodyPost, updateCacheCreate,
-        updateCacheUpdate,
-        handleFormData, stripAllImgs,
+import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+const { postCreate, postUpdate } = UpdateCacheUtil;
+const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
-        handleMentions, discardMentions  } = PostFormUtil;
+        handleMentions, discardMentions,
+        handleAllTextChatPost  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -26,6 +27,7 @@ const ChatPostForm = ({
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
   let body = useRef([]);
+  let allText = useRef('');
   let bodyImages = useRef([]);
   let [tag, setTag] = useState('');
   let [tags, setTags] = useState([]);
@@ -46,9 +48,9 @@ const ChatPostForm = ({
       var query = FETCH_USER_FEED
       
       if (post) {
-        updateCacheUpdate(client, createOrUpdatePost, currentUser, query)
+        postUpdate(client, createOrUpdatePost, currentUser, query)
       } else {
-        updateCacheCreate(client, createOrUpdatePost, currentUser, query)
+        postCreate(client, createOrUpdatePost, currentUser, query)
       }
     },
     onCompleted() {
@@ -66,8 +68,9 @@ const ChatPostForm = ({
 
   const resetInputs = () => {
     chat.current = '';
-    setDescription(description = '')
-    body.current = []
+    setDescription(description = '');
+    body.current = [];
+    allText.current = '';
     setBodyImageFiles(bodyImageFiles = []);
     bodyImages.current = [];
     setTag(tag = '');
@@ -89,15 +92,20 @@ const ChatPostForm = ({
         
         discardMentions(post, mentions, objsToClean)
         
+        var descriptions = stripAllImgs(body)
+
+        handleAllTextChatPost(allText, descriptions, chat)
+        
         var instanceData = {
-          statics: { chat: chat.current },
-          descriptions: stripAllImgs(body),
+          variants: { chat: chat.current },
+          allText: allText.current,
+          descriptions: descriptions,
           descriptionImages: handleUploadedFiles(body, bodyUploads),
           mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'ChatPost',
           objsToClean: objsToClean.current,
-          post: post ? post : null
+          postId: post ? post._id : null
         };
         
         createOrUpdatePost({

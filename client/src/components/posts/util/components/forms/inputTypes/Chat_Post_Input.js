@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import DOMPurify from 'dompurify';
 
 const ChatPostInput = ({
   post, chat
@@ -70,7 +71,7 @@ const ChatPostInput = ({
           }
         }
       }}
-      dangerouslySetInnerHTML={{ __html: placeholder }}
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(placeholder) }}
     >
     </div>
   )

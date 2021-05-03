@@ -15,6 +15,7 @@ import AnyPostType from '../unions/any_post_type.js'
 import LikeRepostAndCommentType from '../unions/like_repost_and_comment_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
+import RootQueryTypeUtil from './util/root_query_type_util.js';
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
 const Image = mongoose.model('Image');
@@ -26,6 +27,8 @@ const { ObjectID } = mongodb;
 const { GraphQLObjectType, GraphQLList,
         GraphQLString, GraphQLID, GraphQLBoolean,
         GraphQLInt } = graphql;
+const { handleFilterTagRegex, 
+        handleFilterPostContentRegex } = RootQueryTypeUtil;
 
 const RootQueryType = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -235,9 +238,24 @@ const RootQueryType = new GraphQLObjectType({
       resolve(_, { query, cursorId }) {
         
         return User.findOne({ blogName: query })
+          .populate('tagFollows')
           .then(user => {
             return Follow.find({ user: user, onModel: 'User' })
               .then(follows => {
+                
+                
+                var filteredTagRegex = handleFilterTagRegex(user)
+                // if (user.filteredTags.length > 1) {
+                //   regexStr1 = user.filteredTags.join('|')
+                //   filteredTagRegex = new RegExp(regexStr1, 'gm')
+                // } else if (user.filteredTags.length === 1) {
+                //   filteredTagRegex = new RegExp(user.filteredTags[0], 'gm')
+                // }
+
+                var filteredPostContentRegex = handleFilterPostContentRegex(user)
+           
+                var followIds = follows.map(f => mongoose.Types.ObjectId(f.follows))
+
                 var recastPostId;
                 recastPostId = mongoose.Types.ObjectId(cursorId)
                 
@@ -245,16 +263,40 @@ const RootQueryType = new GraphQLObjectType({
                   { 
                     $lookup: {
                       from: 'posts',
-                      let: { userId: user._id, follows: follows, cursor: recastPostId },
+                      let: { 
+                        userId: user._id,
+                        follows: followIds,
+                        cursor: recastPostId,
+                        filteredTagRegex: filteredTagRegex,
+                        filteredPostContentRegex: filteredPostContentRegex
+                      },
                       pipeline: [
                         {
                           $match: {
                             $expr: {
                               $and: [
                                 { $lt: [ "$_id", "$$cursor" ] },
+                                { $not: [
+                                      {
+                                        $regexMatch: {
+                                          input: "$tagTitles",
+                                          regex: "$$filteredTagRegex"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                { $not: [
+                                      {
+                                        $regexMatch: {
+                                          input: "$allText",
+                                          regex: "$$filteredPostContentRegex"
+                                        }
+                                      }
+                                    ]
+                                  },
                                   { $or: [
-                                    { $eq: [ "$user", "$$userId"] },
-                                    { user: { $in: [ "$user", "$$follows"] } }
+                                    { $eq: [ "$user", "$$userId" ] },
+                                    { $in: [ "$user", "$$follows" ] },
                                   ]
                                 }
                               ]
