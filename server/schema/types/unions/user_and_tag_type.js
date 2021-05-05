@@ -8,7 +8,7 @@ const Tag = mongoose.model('Tag');
 
 const UserAndTagType = new GraphQLUnionType({
   name: 'UserAndTagType',
-  types: [ UserType, TagType ],
+  types: () => ( [ UserType, TagType ] ),
   resolveType(value) {
     if (value instanceof User) {
       return UserType

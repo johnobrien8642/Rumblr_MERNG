@@ -15,8 +15,8 @@ const register = async (data, ctx) => {
   if (!isValid) {
     throw new Error(message)
   }
-
   const { blogName, blogDescription, email, password } = data;
+  console.log(blogDescription)
 
   const existingUser = await User.findOne({ email })
 

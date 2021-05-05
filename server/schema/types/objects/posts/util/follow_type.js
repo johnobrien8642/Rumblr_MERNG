@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import graphql from 'graphql';
+import graphql, { GraphQLInt } from 'graphql';
 import UserType from '../../user_type.js';
 import UserAndTagType from '../../../unions/user_and_tag_type.js';
 const Follow = mongoose.model('Follow');
@@ -11,6 +11,7 @@ const FollowType = new GraphQLObjectType({
   name: 'FollowType',
   fields: () => ({
     _id: { type: GraphQLID },
+    kind: { type: GraphQLString },
     user: {
       type: UserType,
       resolve(parentValue) {

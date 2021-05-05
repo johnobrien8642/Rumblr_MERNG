@@ -69,7 +69,8 @@ const Register = () => {
             variables: { 
               email: email, 
               blogName: blogName,
-              password: password 
+              password: password,
+              blogDescription: blogDescription
             }
           })
         }}

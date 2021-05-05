@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 
 const { DOES_USER_FOLLOW_USER } = Queries;
 
-const UserResult = ({ user, activate }) => {
+const UserResult = ({ user, active, setActive }) => {
 
   let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_USER, {
     variables: {
@@ -29,9 +29,14 @@ const UserResult = ({ user, activate }) => {
     <React.Fragment>
       <Link 
         to={`/view/blog/${user.blogName}`}
-        onClick={activate}
+        onClick={() => {
+          if (active) {
+            setActive(active = false)
+          }
+        }}
       >
-        {user.blogName}
+        <h3>{user.blogName}</h3>
+        <p>{user.blogDescription}</p>
       </Link>
       <FollowButton 
         user={user} 

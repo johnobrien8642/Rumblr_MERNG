@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Link } from 'react-router-dom';
 import Logout from '../auth/Logout.js'
@@ -7,25 +7,46 @@ import Cookies from 'js-cookie';
 const { FETCH_USER_DETAILS_COUNTS } = Queries;
 
 const UserDetails = ({
-  active, setActive
+  navActive, setNavActive
 }) => {
+  let [active, setActive] = useState(false)
 
-  let { loading, error, data } = useQuery(FETCH_USER_DETAILS_COUNTS, {
+  useEffect(() => {
+    document.onload = () => {
+      document.querySelector('.userDetails').focus()
+    }
+
+    return () => {
+      refetch()
+    }
+    //eslint-disable-next-line
+  }, [])
+
+  let { loading, error, data, refetch } = useQuery(FETCH_USER_DETAILS_COUNTS, {
     variables: {
       query: Cookies.get('currentUser')
     },
-    pollInterval: active ? 300 : 0
+    fetchPolicy: 'cache-and-network'
   })
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error.message}`
+
   let { user } = data;
 
-  if (active && user) {
+  if (active) {
     return (
-    <div>
+    <div
+      className='userDetails'
+      tabIndex={0}
+      onBlur={e => {
+        if (e.relatedTarget === null) {
+          setActive(active = false)
+        }
+      }}
+    >
       <button
-        onClick={() => setActive(active = false)}
+        onClick={() => setNavActive(navActive = false)}
       >
         User
       </button>
@@ -38,7 +59,7 @@ const UserDetails = ({
           <Link 
             to='/likes'
             onClick={() => {
-              setActive(active = false)
+              setNavActive(navActive = false)
             }}
           >
             <img 
@@ -53,7 +74,7 @@ const UserDetails = ({
           <Link 
             to='/following'
             onClick={() => {
-              setActive(active = false)
+              setNavActive(navActive = false)
             }}
           >
             <img 
@@ -68,7 +89,7 @@ const UserDetails = ({
           <Link 
             to='/settings/account'
             onClick={() => {
-              setActive(active = false)
+              setNavActive(navActive = false)
             }}
           >
             <img 
@@ -82,11 +103,34 @@ const UserDetails = ({
           <Link 
             to={`/view/blog/${user.blogName}`} 
             onClick={() => {
-              setActive(active = false)
+              setNavActive(navActive = false)
             }}
           >
-            {user.blogName}
+            <h3>{user.blogName}</h3>
           </Link>
+            <p>{user.blogDescription}</p>
+        </li>
+        <li>
+          <Link
+            to={`/view/blog/${user.blogName}`}
+            onClick={() => {
+              setNavActive(navActive = false)
+            }}
+          >
+            <span>Posts</span>
+            <span>{user.userPostsCount}</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to={`/blog/${user.blogName}/followers`}
+            onClick={() => {
+              setNavActive(navActive = false)
+            }}
+          >
+            <span>Followers</span>
+          </Link>
+          <span>{user.followersCount}</span>
         </li>
       </ul>
     </div>
@@ -95,7 +139,10 @@ const UserDetails = ({
     return (
       <div>
       <button
-        onClick={() => setActive(active = true)}
+        onClick={() => {
+          setActive(active = true)
+          setNavActive(navActive = true)
+        }}
       >
         User
       </button>

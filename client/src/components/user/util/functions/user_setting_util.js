@@ -18,8 +18,27 @@ const updateCacheUpdateEmail = (
 }
 
 
+const blogDescriptionCache = (
+  client, updateUserBlogDescription,
+  currentUser, query
+) => {
+  
+  client.writeQuery({
+    query: query,
+    variables: {
+      query: currentUser
+    },
+    data: {
+      user: {
+        blogDescription: updateUserBlogDescription.blogDescription
+      }
+    }
+  })
+}
+
 const UserSettingUtil = {
-  updateCacheUpdateEmail
+  updateCacheUpdateEmail,
+  blogDescriptionCache
 }
 
 export default UserSettingUtil;

@@ -49,7 +49,7 @@ const Search = () => {
           }}
         />
         <FollowedTags active={active} activate={clickActivate} />
-        <Results input={input} active={active} activate={clickActivate} />
+        <Results input={input} active={active} setActive={setActive} />
       </div>
     )
   } else {

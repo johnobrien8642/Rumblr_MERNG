@@ -53,10 +53,10 @@ const PostNotes = ({
     }
   }
 
-
   const handleSubmit = () => {
     let commentData = {}
     commentData.user = Cookies.get('currentUser')
+    commentData.postAuthorId = post.user._id
     commentData.postId = post._id
     commentData.content = content
     commentData.kind = post.kind

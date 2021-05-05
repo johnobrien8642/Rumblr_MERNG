@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import AllPostQueryFragment from './all_posts_query_fragment.js';
-const { ALL_POSTS } = AllPostQueryFragment;
+const { ALL_POSTS, ALL_POSTS_ACTIVITY } = AllPostQueryFragment;
 
 const Queries = {
   FETCH_USER_FEED: gql`
@@ -14,11 +14,18 @@ const Queries = {
             _id
             blogName
           }
+          repostTrail {
+            _id
+            blogName
+          }
+          repostCaptions {
+            _id
+            caption
+          }
           repostedFrom {
             _id
             blogName
           }
-          repostCaption
           post {
             __typename
             ${ALL_POSTS}
@@ -76,6 +83,18 @@ const Queries = {
       }
     }
   `,
+  FETCH_USER_FOLLOWERS: gql`
+    query FetchUserFollowers($query: String, $cursorId: String) {
+      fetchUserFollowers(query: $query, cursorId: $cursorId) {
+        _id
+        user {
+          _id
+          blogName
+          blogDescription
+        }
+      }
+    }
+  `,
   FETCH_CURRENT_USER_BLOG: gql`
     query fetchUserBlog($query: String) {
       user(query: $query) {
@@ -116,6 +135,8 @@ const Queries = {
         filteredPostContent
         userFollowCount
         totalLikeCount
+        followersCount
+        userPostsCount
       }
     }
   `,
@@ -176,8 +197,8 @@ const Queries = {
     }
   `,
   FETCH_POST: gql`
-    query FetchPost($postId: ID) {
-      post(postId: $postId) {
+    query FetchPost($query: ID) {
+      post(query: $query) {
         __typename
         ... on RepostType {
           _id
@@ -190,7 +211,14 @@ const Queries = {
             _id
             blogName
           }
-          repostCaption
+          repostCaptions {
+            _id
+            caption
+          }
+          repostTrail {
+            _id
+            blogName
+          }
           post {
             __typename
             ${ALL_POSTS}
@@ -223,7 +251,6 @@ const Queries = {
         ... on RepostType {
           _id
           kind
-          repostCaption
           user {
             _id
             blogName
@@ -242,6 +269,94 @@ const Queries = {
             blogName
           }
         }
+      }
+    }
+  `,
+  FETCH_ALL_ACTIVITY: gql`
+  query FetchAllUserActivity($query: String, $cursorId: String) {
+    fetchAllUserActivity(query: $query, cursorId: $cursorId) {
+        __typename
+        ... on MentionType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+          }
+          post {
+            __typename
+            ${ALL_POSTS_ACTIVITY}
+          }
+        }
+        ... on RepostType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+          }
+          repostedFrom {
+            _id
+            blogName
+          }
+          post {
+            __typename
+            ${ALL_POSTS_ACTIVITY}
+          }
+        }
+        ... on CommentType {
+          _id
+          kind
+          content
+          user {
+            _id
+            blogName
+          }
+          post {
+            __typename
+            ${ALL_POSTS_ACTIVITY}
+          }
+        }
+        ... on CommentType {
+          _id
+          kind
+          content
+          user {
+            _id
+            blogName
+          }
+          post {
+            __typename
+            ${ALL_POSTS_ACTIVITY}
+          }
+        }
+        ... on FollowType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+          }
+          follows {
+            __typename
+            ... on TagType {
+              _id
+            }
+            ... on UserType {
+              _id
+              blogName
+            }
+          }
+        }
+      }
+    }
+  `,
+  FETCH_ACTIVITY_COUNTS: gql`
+    query FetchActivityCounts($query: String, $cursorId: String) {
+      fetchActivityCounts(query: $query, cursorId: $cursorId) {
+        mentionsCount
+        repostsCount
+        commentsCount
       }
     }
   `,

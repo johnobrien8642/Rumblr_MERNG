@@ -14,9 +14,17 @@ const RepostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  repostCaption: {
-    type: String
-  },
+  repostTrail: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    },
+  ],
+  repostCaptions: [
+    {
+      caption: String
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now

@@ -4,7 +4,10 @@ import AnyPostType from '../unions/any_post_type.js'
 import TagType from '../objects/posts/util/tag_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import RepostType from '../objects/posts/util/repost_type.js'
+import FollowType from '../objects/posts/util/follow_type.js'
 const User = mongoose.model('User');
+const Follow = mongoose.model('Follow');
+const Mention = mongoose.model('Mention');
 const { GraphQLObjectType, GraphQLString,
         GraphQLList, GraphQLInt,
         GraphQLBoolean, GraphQLID } = graphql;
@@ -80,11 +83,69 @@ const UserType = new GraphQLObjectType({
       }
     },
     followers: { 
-      type: GraphQLList(UserType),
+      type: GraphQLList(FollowType),
       resolve(parentValue) {
-        return User.findById(parentValue._id)
-          .populate('followers')
-          .then(user => user.followers)
+        
+        return User.aggregate([
+          { $match: { _id: parentValue._id } },
+          { $lookup: {
+              from: 'follows',
+              localField: '_id',
+              foreignField: 'follows',
+              as: 'followers'
+            }
+          },
+          { $unwind: "$followers" },
+          { $replaceRoot: { "newRoot": "$followers" } }
+        ]).then(res => {
+          return res
+        })
+      }
+    },
+    followersCount: { 
+      type: GraphQLInt,
+      resolve(parentValue) {
+        
+        return User.aggregate([
+          { $match: { _id: parentValue._id } },
+          { $lookup: {
+              from: 'follows',
+              localField: '_id',
+              foreignField: 'follows',
+              as: 'followers'
+            }
+          },
+          {
+            $project: {
+              followersCount: { $size: "$followers"}
+            }
+          }
+        ]).then(res => {
+          return res[0].followersCount
+        })
+      }
+    },
+    userPostsCount: { 
+      type: GraphQLInt,
+      resolve(parentValue) {
+        
+        return User.aggregate([
+          { $match: { _id: parentValue._id } },
+          { $lookup: {
+              from: 'posts',
+              localField: '_id',
+              foreignField: 'user',
+              as: 'posts'
+            }
+          },
+          {
+            $project: {
+              userPostCount: { $size: "$posts"}
+            }
+          }
+        ]).then(res => {
+          return res[0].userPostsCount
+        })
       }
     },
     userFollowCount: {

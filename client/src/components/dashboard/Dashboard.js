@@ -13,7 +13,7 @@ const Dashboard = props => {
         exact path={`${props.match.path}/repost/:blogName/:postId/:typename`}
         component={RepostForm}
       />
-      <Feed />
+      <Feed user={null} />
     </div>
   )
 }

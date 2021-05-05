@@ -12,18 +12,20 @@ import TagType from '../objects/posts/util/tag_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
 import UserAndTagInputType from '../inputs/user_and_tag_input_type.js'
 import AnyPostType from '../unions/any_post_type.js'
+import AnyActivityType from '../unions/any_activity_type.js'
+import ActivityCountsType from '../objects/posts/util/activity_counts_type.js'
 import LikeRepostAndCommentType from '../unions/like_repost_and_comment_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
 import RootQueryTypeUtil from './util/root_query_type_util.js';
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
+const Repost = mongoose.model('Repost');
 const Image = mongoose.model('Image');
 const Tag = mongoose.model('Tag');
 const Like = mongoose.model('Like');
-const Repost = mongoose.model('Repost');
 const Follow = mongoose.model('Follow');
-const { ObjectID } = mongodb;
+const { ISODate } = mongodb;
 const { GraphQLObjectType, GraphQLList,
         GraphQLString, GraphQLID, GraphQLBoolean,
         GraphQLInt } = graphql;
@@ -243,15 +245,8 @@ const RootQueryType = new GraphQLObjectType({
             return Follow.find({ user: user, onModel: 'User' })
               .then(follows => {
                 
-                
                 var filteredTagRegex = handleFilterTagRegex(user)
-                // if (user.filteredTags.length > 1) {
-                //   regexStr1 = user.filteredTags.join('|')
-                //   filteredTagRegex = new RegExp(regexStr1, 'gm')
-                // } else if (user.filteredTags.length === 1) {
-                //   filteredTagRegex = new RegExp(user.filteredTags[0], 'gm')
-                // }
-
+                
                 var filteredPostContentRegex = handleFilterPostContentRegex(user)
            
                 var followIds = follows.map(f => mongoose.Types.ObjectId(f.follows))
@@ -426,7 +421,8 @@ const RootQueryType = new GraphQLObjectType({
           },
           { $unwind: "$notes" },
           { $replaceRoot: { "newRoot": "$notes" } },
-          { $sort: { "createdAt": 1 } }
+          { $sort: { "createdAt": 1 } },
+          { $limit: 5 }
         ]).then(res => res)
       }
     },
@@ -449,6 +445,229 @@ const RootQueryType = new GraphQLObjectType({
         }) 
       }
     },
+    fetchAllUserActivity: {
+      type: GraphQLList(AnyActivityType),
+      args: { 
+        query: { type: GraphQLString },
+        cursorId: { type: GraphQLString }
+      },
+      resolve(parentValue, { query, cursorId }) {
+        var recastPostId = mongoose.Types.ObjectId(cursorId)
+        
+        return User.aggregate([
+          { $match: { blogName: query } },
+          {
+            $lookup: {  
+              from: 'mentions',
+              let: { userId: '$_id', cursor: recastPostId },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and: 
+                      [
+                        { $lt: [ "$_id", "$$cursor" ] },
+                        { $eq: [ "$mention", "$$userId" ] },
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'mentions'
+            }
+          },
+          {
+            $lookup: {  
+              from: 'posts',
+              let: { userId: '$_id', cursor: recastPostId, kind: 'Repost' },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and: 
+                      [
+                        { $lt: [ "$_id", "$$cursor" ] },
+                        { $eq: [ "$repostedFrom", "$$userId" ] },
+                        { $eq: [ "$kind", "$$kind" ] },
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'reposts'
+            }
+          },
+          {
+            $lookup: {  
+              from: 'comments',
+              let: { userId: '$_id', cursor: recastPostId },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and: 
+                      [
+                        { $eq: [ "$postAuthorId", "$$userId" ] },
+                        { $lt: [ "$_id", "$$cursor" ] }
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'comments'
+            }
+          },
+          {
+            $lookup: {  
+              from: 'follows',
+              let: { userId: '$_id', cursor: recastPostId },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and: 
+                      [
+                        { $eq: [ "$follows", "$$userId" ] },
+                        { $lt: [ "$_id", "$$cursor" ] }
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'follows'
+            }
+          },
+          { $addFields: { 
+              allActivity: { 
+                $concatArrays: [ 
+                  "$mentions", "$reposts", "$comments", "$follows"
+                ] 
+              } 
+            } 
+          },
+          { $unwind: "$allActivity" },
+          { $replaceRoot: { "newRoot": "$allActivity" } },
+          { $sort: { "createdAt": 1 } },
+          { $limit: 1 }
+        ]).then(res => {
+          return res
+        })
+      }
+    },
+    fetchActivityCounts: {
+      type: ActivityCountsType,
+      args: { 
+        query: { type: GraphQLString },
+        cursorId: { type: GraphQLString }
+      },
+      resolve(parentValue, { query, cursorId }) {
+        var dateNum = parseInt(cursorId)
+        // console.log(new Date(dateNum))
+        return User.aggregate([
+          { $match: { blogName: query } },
+          {
+            $lookup: {  
+              from: 'mentions',
+              let: { userId: '$_id', cursorId: new Date(dateNum) },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and:
+                      [
+                        { $gt: [ "$createdAt", "$$cursorId"]},
+                        { $eq: [ "$mention", "$$userId" ] },
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'mentions'
+            }
+          },
+          {
+            $lookup: {  
+              from: 'posts',
+              let: { userId: '$_id', kind: 'Repost', cursorId: new Date(dateNum) },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and:
+                      [
+                        { $gt: [ "$createdAt", "$$cursorId"]},
+                        { $eq: [ "$repostedFrom", "$$userId" ] },
+                        { $eq: [ "$kind", "$$kind" ] },
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'reposts'
+            }
+          },
+          {
+            $lookup: {  
+              from: 'comments',
+              let: { userId: '$_id', cursorId: new Date(dateNum) },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and:
+                      [
+                        { $gt: [ "$createdAt", "$$cursorId"]},
+                        { $eq: [ "$user", "$$userId" ] },
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'comments'
+            }
+          },
+          {
+            $project: {
+              mentionsCount: { $size: "$mentions" },
+              repostsCount: { $size: "$reposts" },
+              commentsCount: { $size: "$comments" },
+            }
+          }
+        ]).then(res => {
+          return res[0]
+        })
+      }
+    },
+    fetchUserFollowers: {
+      type: GraphQLList(FollowType),
+      args: {
+        query: { type: GraphQLString },
+        cursorId: { type: GraphQLString }
+      },
+      resolve(parentValue, { query, cursorId }) {
+        var recastPostId = mongoose.Types.ObjectId(cursorId)
+        return User.aggregate([
+          { $match: { blogName: query } },
+          { $lookup: {
+            from: 'follows',
+            let: { userId: '$_id', cursorId: recastPostId },
+              pipeline: [
+                { $match: {
+                    $expr: {
+                      $and:
+                      [
+                        { $lt: [ "$_id", "$$cursorId"]},
+                        { $eq: [ "$follows", "$$userId" ] },
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'followers'
+            }
+          },
+          { $unwind: "$followers" },
+          { $replaceRoot: { "newRoot": "$followers" } },
+          { $sort: { "createdAt": -1 } },
+          { $limit: 1 }
+        ]).then(res => {
+          return res
+        })
+      }
+    },
     user: {
       type: UserType,
       args: { query: { type: GraphQLString } },
@@ -464,7 +683,7 @@ const RootQueryType = new GraphQLObjectType({
     },
     post: {
       type: AnyPostType,
-      args: { 
+      args: {
         query: { type: GraphQLID }
       },
       resolve(parentValue, { query }) {
@@ -504,13 +723,6 @@ const RootQueryType = new GraphQLObjectType({
         return Like.findById(_id)
       }
     },
-    repost: {
-      type: RepostType,
-      args: { _id: { type: GraphQLID } },
-      resolve(_, {_id}) {
-        return Repost.findById(_id)
-      }
-    }
   })
 })
 

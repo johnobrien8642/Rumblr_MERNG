@@ -5,13 +5,12 @@ import AudioPlayer from 'react-h5-audio-player';
 import ReactPlayer from 'react-player';
 
 const postHeader = (post) => {
-  var data = demeterPost(post)
-  
+
   if (post.kind === 'Repost') {
     return (
       <span>
-        <Link to={`/view/blog/${data.user.blogName}`}>
-          {data.user.blogName}
+        <Link to={`/view/blog/${post.user.blogName}`}>
+          {post.user.blogName}
         </Link>
         <i className="fas fa-retweet"></i>
         <Link to={`/view/blog/${post.repostedFrom.blogName}`}>
@@ -35,22 +34,32 @@ const postHeader = (post) => {
 const repostFooter = (post) => {
   var data = demeterPost(post)
   var repost = post
-
+  
   if (post.kind === 'Repost') {
     return (
-      <div>
-        <span>
-          <i className="fas fa-retweet"></i>
-          <Link to={`/view/blog/${data.user.blogName}`}>
-            {data.user.blogName}
-          </Link>
-        </span>
-        <p>{repost.repostCaption}</p> 
-      </div>
+      <ul>
+        {repost.repostTrail.map((u, i) => {
+          return (
+            <li
+              key={i}
+            >
+              <span>
+                <i className="fas fa-retweet"></i>
+                <Link to={`/view/blog/${u.blogName}`}>
+                  {u.blogName}
+                </Link>
+              </span>
+              <p>
+                {
+                  repost.repostCaptions && repost.repostCaptions[i].caption !== null ?
+                  repost.repostCaptions[i].caption : ''
+                }
+              </p>
+            </li>
+          )
+        })}
+      </ul>
     )
-  } else {
-    <div>
-    </div>
   }
 }
 

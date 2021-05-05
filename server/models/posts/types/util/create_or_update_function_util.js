@@ -81,7 +81,7 @@ const asyncMention = async (m, findOrCreateMention, user, post) => {
 const findOrCreateMention = async (m, user, post) => {
   return User.findOne({ blogName: m ? m.slice(1) : null })
     .then(mentioned => {
-      return Mention.findOne({ mention: mentioned._id, user: user._id })
+      return Mention.findOne({ mention: mentioned._id, user: user._id, post: post._id })
         .then(mentionFound => {
           if (mentionFound) {
             return mentionFound
@@ -196,7 +196,6 @@ const pushMainImgObjs = (objArr, post) => {
 }
 
 const pushDescriptions = (descriptions, post) => {
-
   descriptions.forEach((obj, i) => {
     post.descriptions.push(obj)
   })

@@ -1,5 +1,6 @@
 import React from 'react';
 import Email from './util/components/Email';
+import BlogDescription from './util/components/Blog_Description';
 import Password from './util/components/Password';
 import Filtering from './util/components/Filtering';
 import Cookies from 'js-cookie';
@@ -20,11 +21,13 @@ const UserSettings = () => {
   if (error) return `Error: ${error}`;
 
   const { user } = data
-
+  
   return (
     <div>
       <h3>Email</h3>
       <Email userEmail={user.email} />
+      <h3>Blog Description</h3>
+      <BlogDescription userBlogDescription={user.blogDescription} />
       <h3>Password</h3>
       <Password user={user} />
       <h3>Filtering</h3>

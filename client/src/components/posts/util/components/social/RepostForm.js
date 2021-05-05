@@ -12,6 +12,7 @@ const RepostForm = () => {
   let [repostCaption, setRepostCaption] = useState('');
   let { postId, typename } = useParams();
   let history = useHistory();
+
   let [repost] = useMutation(CREATE_REPOST, {
     update(client, { data }) {
       const { repost } = data;
@@ -25,7 +26,7 @@ const RepostForm = () => {
   
       var { fetchUserFeed } = readFeed;
       
-      var newPostArr = [repost, ...fetchUserFeed]
+      var newPostArr = [{ __typename: 'createPost'}, repost, ...fetchUserFeed]
 
       client.writeQuery({
         query: FETCH_USER_FEED,
@@ -48,8 +49,7 @@ const RepostForm = () => {
   
   let { loading, error, data } = useQuery(FETCH_POST, {
     variables: {
-      postId: postId,
-      type: typename
+      query: postId
     }
   })
 
@@ -57,7 +57,7 @@ const RepostForm = () => {
   if (error) return `Error: ${error}`
   
   const { post } = data;
-
+  
   const resetInputs = () => {
     setRepostCaption(repostCaption = '');
   }
@@ -66,13 +66,15 @@ const RepostForm = () => {
     var repostObj = {}
 
     if (post.kind === 'Repost') {
+      repostObj.repostId = post._id
       repostObj.postId = post.post._id
       repostObj.postKind = post.post.kind
     } else {
+      repostObj.repostId = null
       repostObj.postId = post._id
       repostObj.postKind = post.kind
     }
-
+    repostObj.previousReposter = post.kind === 'Repost' ? post.user : null
     repostObj.repostCaption = repostCaption
     repostObj.user = Cookies.get('currentUser')
     repostObj.repostedFrom = post.user.blogName
@@ -92,9 +94,9 @@ const RepostForm = () => {
           handleSubmit()
         }}
       >
-        
+
         <PostShow 
-          post={post} 
+          post={post}
         />
 
         <textarea

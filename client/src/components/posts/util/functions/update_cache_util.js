@@ -188,7 +188,7 @@ const UpdateCacheUtil = {
   postLike, 
   postUnlike,
   filterTag,
-  filterPostContent
+  filterPostContent,
 }
 
 export default UpdateCacheUtil

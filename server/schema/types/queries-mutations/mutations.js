@@ -167,11 +167,30 @@ const mutation = new GraphQLObjectType({
         return Promise.all([
           User.findOne({ blogName: repostData.user }),
           User.findOne({ blogName: repostData.repostedFrom }),
-        ]).then(([reposter, reposted]) => {
+          Post.findById(repostData.repostId)
+        ]).then(([reposter, reposted, foundPost]) => {
+        
+          var repostTrailId = 
+            repostData.previousReposter ? 
+            repostData.previousReposter._id : 
+            reposter._id
+
+          var repostCaption = 
+            repostData.repostCaption ?
+            repostData.repostCaption :
+            null
+          
+          var foundPostObj = foundPost ? foundPost.toObject() : null
+
           repost.post = repostData.postId
           repost.user = reposter._id
           repost.repostedFrom = reposted._id
-          repost.repostCaption = repostData.repostCaption
+          repost.repostTrail = foundPost ?
+            [...foundPostObj.repostTrail, repostTrailId] :
+            [repostTrailId]
+          repost.repostCaptions = foundPost ?
+            [...foundPostObj.repostCaptions, { caption: repostCaption }] :
+            [{ caption: repostCaption }]
           repost.onModel = repostData.postKind
           return Promise.all(
             ([repost.save()])).then(([repost]) => repost)
@@ -186,7 +205,7 @@ const mutation = new GraphQLObjectType({
       resolve(parentValue, {
         commentData
       }) {
-        var { user, postId, content, kind } = commentData;
+        var { user, postAuthorId, postId, content, kind } = commentData;
         var comment = new Comment();
 
         return Promise.all([
@@ -194,6 +213,7 @@ const mutation = new GraphQLObjectType({
         ]).then(([user]) => {
           comment.user = user._id
           comment.post = postId
+          comment.postAuthorId = postAuthorId
           comment.content = content
           comment.onModel = kind
 
@@ -240,6 +260,26 @@ const mutation = new GraphQLObjectType({
                     }
                   })
               }
+            }
+          })
+      }
+    },
+    updateUserBlogDescription: {
+      type: UserType,
+      args: {
+        blogDescription: { type: GraphQLString },
+        password: { type: GraphQLString },
+        user: { type: GraphQLString }
+      },
+      resolve(parentValue, {
+        blogDescription, password, user
+      }) {
+        return User.findOne({ blogName: user })
+          .then(user => {
+            if (bcrypt.compareSync(password, user.password)) {
+              user.blogDescription = blogDescription
+              return user.save()
+                .then(user => user)
             }
           })
       }

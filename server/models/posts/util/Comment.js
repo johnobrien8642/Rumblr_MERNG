@@ -13,6 +13,10 @@ const CommentSchema = new Schema({
     type: Schema.Types.ObjectId,
     refPath: 'onModel'
   },
+  postAuthorId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   createdAt: {
     type: Date,
     default: Date.now

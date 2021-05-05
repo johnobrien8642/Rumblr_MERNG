@@ -5,7 +5,6 @@ import { Link, withRouter } from 'react-router-dom';
 import LikeButton from './Like_Button'
 import Queries from '../../../../../graphql/queries';
 import Mutations from '../../../../../graphql/mutations';
-import PostFormUtil from '../../functions/post_form_util.js';
 import UpdateCacheUtil from '../../functions/update_cache_util.js';
 const { DOES_USER_LIKE_POST, FETCH_USER_FEED } = Queries;
 const { DELETE_POST } = Mutations;

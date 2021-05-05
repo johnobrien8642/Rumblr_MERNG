@@ -28,11 +28,11 @@ const MentionType = new GraphQLObjectType({
       }
     },
     post: {
-      type: new GraphQLList(AnyPostType),
+      type: AnyPostType,
       resolve(parentValue) {
         return Mention.findById(parentValue._id)
         .populate('post')
-        .then(tag => tag.post)
+        .then(mention => mention.post)
       }
     },
     kind: { type: GraphQLString },

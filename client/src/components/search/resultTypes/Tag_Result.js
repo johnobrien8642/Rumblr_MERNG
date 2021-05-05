@@ -6,7 +6,7 @@ import Queries from '../../../graphql/queries';
 import Cookies from 'js-cookie';
 const { DOES_USER_FOLLOW_TAG } = Queries;
 
-const TagResult = ({ tag, activate }) => {
+const TagResult = ({ tag, active, setActive }) => {
   let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_TAG, {
     variables: {
       user: Cookies.get('currentUser'),
@@ -29,7 +29,11 @@ const TagResult = ({ tag, activate }) => {
     <React.Fragment>
       <Link 
         to={`/view/tag/${cleanedTag}`}
-        onClick={activate}
+        onClick={() => {
+          if (active) {
+            setActive(active = false)
+          }
+        }}
       >
         {tag.title}
       </Link>

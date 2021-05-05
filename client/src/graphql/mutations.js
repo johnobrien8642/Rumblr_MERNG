@@ -116,6 +116,16 @@ const Mutations = {
       }
     }
   `,
+  UPDATE_USER_BLOG_DESCRIPTION: gql`
+    mutation UpdateUserBlogDescription($blogDescription: String, $password: String, $user: String) {
+      updateUserBlogDescription(blogDescription: $blogDescription, password: $password, user: $user) {
+        _id
+        email
+        blogName
+        blogDescription
+      }
+    }
+  `,
   UPDATE_USER_PASSWORD: gql`
     mutation UpdateUserPassword($currentPW: String, $newPassword: String, $user: String) {
       updateUserPassword(currentPW: $currentPW, newPassword: $newPassword, user: $user) {

@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
-import graphql from 'graphql';
+import graphql, { GraphQLList } from 'graphql';
 import UserType from '../../user_type.js';
 import AnyPostType from '../../../unions/any_post_type.js';
+import RepostCaptionType from '../util/repost_caption_type.js';
+import { GraphQLJSONObject } from 'graphql-type-json';
 const Repost = mongoose.model('Repost');
 const { GraphQLID, GraphQLString,
         GraphQLObjectType } = graphql;
@@ -34,7 +36,22 @@ const RepostType = new GraphQLObjectType({
           .then(repost => repost.repostedFrom)
       }
     },
-    repostCaption: { type: GraphQLString },
+    repostTrail: {
+      type: GraphQLList(UserType),
+      resolve(parentValue) {
+        return Repost.findById(parentValue._id)
+          .populate('repostTrail')
+          .then(repost => repost.repostTrail)
+      }
+    },
+    repostCaptions: { 
+      type: GraphQLList(RepostCaptionType),
+      resolve(parentValue) {
+        return Repost.findById(parentValue._id)
+          .populate('repostCaptions')
+          .then(repost => repost.repostCaptions)
+      }
+    },
     createdAt: { type: GraphQLString },
     onModel: { type: GraphQLString },
     kind: { type: GraphQLString }

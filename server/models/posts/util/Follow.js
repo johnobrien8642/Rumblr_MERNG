@@ -18,7 +18,11 @@ const FollowSchema = new Schema({
     type: String,
     required: true,
     enum: [ 'Tag', 'User' ]
-  }
+  },
+  kind: {
+    type: String,
+    default: 'Follow'
+  },
 })
 
 const Follow = mongoose.model('Follow', FollowSchema, 'follows')
