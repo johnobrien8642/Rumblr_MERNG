@@ -9,6 +9,9 @@ const { FETCH_ACTIVITY_COUNTS } = Queries;
 const Activity = ({
   navActive, setNavActive
 }) => {
+  let mentionsCount = useRef(0)
+  let repostsCount = useRef(0)
+  let commentsCount = useRef(0)
   let cursorId = useRef(new Date().getTime())
   let [active, setActive] = useState(false)
   let [tab, setTab] = useState('all');
@@ -19,16 +22,23 @@ const Activity = ({
       cursorId: cursorId.current.toString()
     }
   })
-
+  
   if (called && loading) return <p>Loading ...</p>
 
   if (!called) {
     fetchActivityCountsCB()
   }
+
+  const accumulateCounts = (data) => {
+    mentionsCount.current = mentionsCount.current + data.mentionsCount
+    repostsCount.current = repostsCount.current + data.repostsCount
+    commentsCount.current = commentsCount.current + data.commentsCount
+  }
   
   if (active) {
     const { fetchActivityCounts } = data;
     refetch()
+    accumulateCounts(fetchActivityCounts)
 
     return(
       <div
@@ -37,13 +47,17 @@ const Activity = ({
         onBlur={() => {
           var date = new Date()
           cursorId.current = date.getTime()
+          setTab(tab = 'all')
           setActive(active = false)
         }}
       >
         <Tabs
           tab={tab}
           setTab={setTab}
-          counts={fetchActivityCounts}
+          cursorId={cursorId}
+          mentionsCount={mentionsCount}
+          repostsCount={repostsCount}
+          commentsCount={commentsCount}
         />
         <Content
           tab={tab}

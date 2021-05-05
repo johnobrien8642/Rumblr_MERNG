@@ -313,38 +313,6 @@ const RootQueryType = new GraphQLObjectType({
           })
       }
     },
-    fetchFollowedUsers: {
-      type: GraphQLList(FollowType),
-      args: {
-        user: { type: GraphQLString }
-      },
-      resolve(parentValue, { user }) {
-        return User.aggregate([
-          { $match: { blogName: user } },
-          {
-            $lookup: {  
-              from: 'follows',
-              let: { user: '$_id', onModel: 'User' },
-                pipeline: [
-                  { $match: {
-                    $expr: {
-                      $and: 
-                      [
-                        { $eq: [ "$user", "$$user" ] },
-                        { $eq: [ "$onModel", "$$onModel" ]}
-                      ]
-                    }
-                  }
-                }
-              ],
-              as: 'followedUsers'
-            }
-          },
-          { $unwind: "$followedUsers" },
-          { $replaceRoot: { "newRoot": "$followedUsers" } }
-        ]).then(res => res)
-      }
-    },
     fetchTagFeed: {
       type: new GraphQLList(AnyPostType),
       args: { 
@@ -544,7 +512,7 @@ const RootQueryType = new GraphQLObjectType({
           { $unwind: "$allActivity" },
           { $replaceRoot: { "newRoot": "$allActivity" } },
           { $sort: { "createdAt": 1 } },
-          { $limit: 1 }
+          { $limit: 10 }
         ]).then(res => {
           return res
         })
@@ -643,7 +611,11 @@ const RootQueryType = new GraphQLObjectType({
           { $match: { blogName: query } },
           { $lookup: {
             from: 'follows',
-            let: { userId: '$_id', cursorId: recastPostId },
+            let: { 
+              userId: '$_id', 
+              cursorId: recastPostId, 
+              onModel: 'User'
+            },
               pipeline: [
                 { $match: {
                     $expr: {
@@ -651,6 +623,7 @@ const RootQueryType = new GraphQLObjectType({
                       [
                         { $lt: [ "$_id", "$$cursorId"]},
                         { $eq: [ "$follows", "$$userId" ] },
+                        { $eq: [ "$onModel", "$$onModel" ] }
                       ]
                     }
                   }
@@ -664,6 +637,49 @@ const RootQueryType = new GraphQLObjectType({
           { $sort: { "createdAt": -1 } },
           { $limit: 1 }
         ]).then(res => {
+          return res
+        })
+      }
+    },
+    fetchFollowedUsers: {
+      type: GraphQLList(FollowType),
+      args: {
+        query: { type: GraphQLString },
+        cursorId: { type: GraphQLString }
+      },
+      resolve(parentValue, { query, cursorId }) {
+        var recastPostId = mongoose.Types.ObjectId(cursorId)
+        return User.aggregate([
+          { $match: { blogName: query } },
+          { $lookup: {
+            from: 'follows',
+            let: { 
+              userId: '$_id', 
+              cursorId: recastPostId, 
+              onModel: 'User' 
+            },
+              pipeline: [
+                { $match: {
+                    $expr: {
+                      $and:
+                      [
+                        { $lt: [ "$_id", "$$cursorId"]},
+                        { $eq: [ "$user", "$$userId" ] },
+                        { $eq: [ "$onModel", "$$onModel" ] }
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'followed'
+            }
+          },
+          { $unwind: "$followed" },
+          { $replaceRoot: { "newRoot": "$followed" } },
+          { $sort: { "createdAt": -1 } },
+          { $limit: 1 }
+        ]).then(res => {
+          console.log(res)
           return res
         })
       }

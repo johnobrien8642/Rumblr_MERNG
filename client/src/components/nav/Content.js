@@ -17,9 +17,6 @@ const Content = ({
   let fetchMoreDiv = useRef(null);
   let cursorId = useRef(null);
   let fetchMoreDivId = useRef('#fetchMoreActivity');
-  // let queriesRef = useRef([
-  //   FETCH_ALL_ACTIVITY
-  // ]);
   let gqlQuery = useRef(FETCH_ALL_ACTIVITY)
   let query = useRef(Cookies.get('currentUser'));
   let endOfPosts = useRef(false);
@@ -47,7 +44,7 @@ const Content = ({
       query: Cookies.get('currentUser'),
       cursorId: null
     },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'cache-and-network'
   })
 
   if (loading) return 'Loading...';

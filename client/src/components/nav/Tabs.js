@@ -1,17 +1,19 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 const Tabs = ({
-  tab, setTab, counts
+  tab, setTab, 
+  mentionsCount, 
+  repostsCount, 
+  commentsCount, 
+  cursorId
 }) => {
-  let mentionsCount = useRef(counts.mentionsCount)
-  let repostsCount = useRef(counts.repostsCount)
-  let commentsCount = useRef(counts.commentsCount)
-  
+
   return(
     <div>
       <div
         className={tab === 'all' ? 'activityTabSelected' : 'activityTab'}
         onClick={() => {
+          cursorId.current = new Date().getTime()
           setTab(tab = 'all')
         }}
       >
@@ -20,6 +22,7 @@ const Tabs = ({
       <div
         className={tab === 'Mention' ? 'activityTabSelected' : 'activityTab'}
         onClick={() => {
+          cursorId.current = new Date().getTime()
           mentionsCount.current = 0
           setTab(tab = 'Mention')
         }}
@@ -30,6 +33,7 @@ const Tabs = ({
       <div
         className={tab === 'Repost' ? 'activityTabSelected' : 'activityTab'}
         onClick={() => {
+          cursorId.current = new Date().getTime()
           repostsCount.current = 0
           setTab(tab = 'Repost')
         }}
@@ -40,6 +44,7 @@ const Tabs = ({
       <div
         className={tab === 'Comment' ? 'activityTabSelected' : 'activityTab'}
         onClick={() => {
+          cursorId.current = new Date().getTime()
           commentsCount.current = 0
           setTab(tab = 'Comment')
         }}

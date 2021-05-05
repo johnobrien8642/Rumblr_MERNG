@@ -13,7 +13,7 @@ const UserFollowersFeed = () => {
   let feedArr = useRef([]);
   let fetchMoreDiv = useRef(null);
   let cursorId = useRef(null);
-  let fetchMoreDivId = useRef('#fetchMoreActivity');
+  let fetchMoreDivId = useRef('#fetchMoreFollowers');
   let gqlQuery = useRef(FETCH_USER_FOLLOWERS)
   let query = useRef(Cookies.get('currentUser'));
   let endOfPosts = useRef(false);

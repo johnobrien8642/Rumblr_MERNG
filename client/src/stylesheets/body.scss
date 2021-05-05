@@ -89,7 +89,7 @@ b {
   content:attr("<strong>Brother Muzone:</strong> Well we can't stand out here all night...<br><br><strong> Omar Little:</strong> I suppose we can't...<br><br><strong> Brother Muzone:</strong> A man has to have a code.<br><br><strong> Omar Little:</strong> Oh indeed...");
 }
 
-#fetchMoreFeed, #fetchMoreActivity {
+#fetchMoreFeed, #fetchMoreActivity, #fetchMoreFollowedUsers {
   background-color: red;
   height: 50px;
   width: 50px;
@@ -118,6 +118,11 @@ b {
 }
 
 .followerResult {
+  background-color: gray;
+  width: 300px;
+}
+
+.followedResult {
   background-color: gray;
   width: 300px;
 }

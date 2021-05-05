@@ -238,9 +238,56 @@ const updateCacheInfScrollUserFollowers = (
   }
 }
 
+const updateCacheInfScrollFollowedUsers = (
+  res, 
+  client, 
+  query, 
+  gqlQuery, 
+  cursorId
+) => {
+  
+  var readFeed  = client.readQuery({
+    query: gqlQuery,
+    variables: {
+      query: query,
+      cursorId: cursorId.current
+    },
+  })
+  
+  if (readFeed) {
+    var { fetchFollowedUsers } = readFeed;
+  }
+
+  var oldArr
+  var newData
+  var newArr
+  if (fetchFollowedUsers) {
+    oldArr = fetchFollowedUsers
+    newData = res.data.fetchFollowedUsers
+    newArr = [...oldArr, ...newData]
+    
+    client.writeQuery({
+      query: gqlQuery,
+      variables: {
+        query: query,
+        cursorId: cursorId.current
+      },
+      data: {
+        fetchFollowedUsers: newArr
+      }
+    })
+  }
+
+  if (newData) {
+    cursorId.current = newData.length > 0 ? newData[newData.length - 1]._id : null
+  }
+}
+
 const handleData = (data, feedArr, cursorId, endOfPosts) => {
   const { fetchUserFeed, fetchTagFeed, 
-          fetchAllUserActivity, fetchUserFollowers } = data
+          fetchAllUserActivity, 
+          fetchUserFollowers,
+          fetchFollowedUsers } = data
 
   if (fetchUserFeed) {
     feedArr.current = fetchUserFeed
@@ -250,6 +297,8 @@ const handleData = (data, feedArr, cursorId, endOfPosts) => {
     feedArr.current = fetchAllUserActivity
   } else if (fetchUserFollowers) {
     feedArr.current = fetchUserFollowers
+  } else if (fetchFollowedUsers) {
+    feedArr.current = fetchFollowedUsers
   }
   
   endOfPosts.current = feedArr.current.length === 0 ? true : false
@@ -276,6 +325,7 @@ const FeedUtil = {
   infiniteScroll,
   updateCacheInfScrollActivity,
   updateCacheInfScrollUserFollowers,
+  updateCacheInfScrollFollowedUsers,
   handleData, setgqlQueryAndQuery
 }
 

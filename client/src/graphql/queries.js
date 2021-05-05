@@ -68,8 +68,8 @@ const Queries = {
     }
   `,
   FETCH_FOLLOWED_USERS: gql`
-    query fetchFollowedUsers($user: String) {
-      fetchFollowedUsers(user: $user) {
+    query fetchFollowedUsers($query: String, $cursorId: String) {
+      fetchFollowedUsers(query: $query, cursorId: $cursorId) {
         _id
         follows {
           __typename
