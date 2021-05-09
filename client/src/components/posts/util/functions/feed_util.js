@@ -15,10 +15,10 @@ const header = (user, tag) => {
 }
 
 const infiniteScroll = (
-  client, 
-  updateCacheFunc, 
-  query, gqlQuery, 
-  cursorId, 
+  client,
+  updateCacheFunc,
+  query, gqlQuery,
+  cursorId,
   fetchMoreDiv,
   fetchMoreDivId
 ) => {
@@ -308,10 +308,12 @@ const handleData = (data, feedArr, cursorId, endOfPosts) => {
 }
 
 const setgqlQueryAndQuery = (
-  tag, user, 
+  tag, user,
   gqlQuery, query, 
-  FETCH_TAG_FEED
+  FETCH_TAG_FEED,
 ) => {
+
+  
   if (tag) {
     query.current = tag.title.slice(1)
     gqlQuery.current = FETCH_TAG_FEED

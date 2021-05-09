@@ -98,23 +98,36 @@ const mutation = new GraphQLObjectType({
       resolve(_, { postId, user, postKind }) {
         var like = new Like();
         
-        return User.findOne({ blogName: user })        
-          .then((user) => {
-            like.user = user._id
-            like.post = postId
-            like.onModel = postKind
-            return Promise.all(([like.save()]))
-              .then(([like]) => (like))
-          })
+        return Promise.all([
+          User.findOne({ blogName: user }),
+          Post.findById(postId)
+        ]).then(([user, foundPost]) => {
+          like.user = user._id
+          like.post = postId
+          like.onModel = postKind
+
+          foundPost.notesCount = foundPost.notesCount + 1
+          return Promise.all(([like.save(), foundPost.save()]))
+            .then(([like, post]) => (like))
+        })
       }
     },
     unlikePost: {
       type: LikeType,
       args: {
         likeId: { type: GraphQLID },
+        postId: { type: GraphQLID }
       },
-      resolve(_, { likeId }) {
-        return Like.deleteOne({ _id: likeId })
+      resolve(_, { likeId, postId }) {
+        
+        return Promise.all([
+          Post.findById(postId),
+          Like.deleteOne({ _id: likeId })
+        ]).then(([foundPost, like]) => {
+          foundPost.notesCount = foundPost.notesCount - 1
+
+          return foundPost.save().then(post => post)
+        })
       }
     },
     follow: {
@@ -125,33 +138,67 @@ const mutation = new GraphQLObjectType({
         itemKind: { type: GraphQLString }
       },
       resolve(_, { user, item, itemKind }) {
+        console.log(itemKind)
         var follow = new Follow({
           onModel: itemKind
         })
-        
+        var recastItem = mongoose.Types.ObjectId(item)
+
         return Promise.all([
           User.findOne({ blogName: user }),
-          User.findOne({ blogName: item }),
-          Tag.findOne({ title: item }),
+          User.findOne({ _id: recastItem }),
+          Tag.findOne({ _id: recastItem }),
         ]).then(([user, followsUser, tag ]) => {
           follow.user = user._id
-
+          
           if (followsUser) {
             follow.follows = followsUser._id
+            followsUser.followerCount = followsUser.followerCount + 1
           } else if (tag) {
+            tag.followerCount = tag.followerCount + 1
+            user.tagFollows.push(tag._id)
             follow.follows = tag._id
           }
-          return Promise.all(([follow.save()])).then(([follow]) => follow)
+          
+          return Promise.all([
+            follow.save(),
+            followsUser.save(),
+            user.save(),
+            tag.save()
+          ])
+            .then(([follow, followsUser, user, tag]) => follow)
         })
       }
     },
     unfollow: {
       type: FollowType,
       args: {
-        followId: { type: GraphQLID }
+        user: { type: GraphQLString },
+        followId: { type: GraphQLID },
+        item: { type: GraphQLID }
       },
-      resolve(_, { followId }) {
-        return Follow.deleteOne({ _id: followId })
+      resolve(_, { user, followId, item }) {
+        var recastItem = mongoose.Types.ObjectId(item)
+        return Promise.all([
+          User.findOne({ blogName: user }),
+          User.findOne({ _id: recastItem }),
+          Tag.findOne({ _id: recastItem }),
+        ]).then(([user, followsUser, tag]) => {
+
+          if (followsUser) {
+            followsUser.followerCount = followsUser.followerCount - 1
+          } else if (tag) {
+            tag.followerCount = tag.followerCount - 1
+            user.tagFollows = user.tagFollows.filter(id => id.toString() !== tag._id.toString())
+          }
+          
+          return Promise.all([
+            tag.save(),
+            user.save(),
+            followsUser.save(),
+            Follow.deleteOne({ _id: followId })
+          ]).then(([tag, user, followsUser, follow]) => follow)
+        })
       }
     },
     repost: {
@@ -182,18 +229,25 @@ const mutation = new GraphQLObjectType({
           
           var foundPostObj = foundPost ? foundPost.toObject() : null
 
+          repost.postId = repostData.postId
           repost.post = repostData.postId
           repost.user = reposter._id
           repost.repostedFrom = reposted._id
+          repost.onModel = repostData.postKind
+          
           repost.repostTrail = foundPost ?
             [...foundPostObj.repostTrail, repostTrailId] :
             [repostTrailId]
+
           repost.repostCaptions = foundPost ?
             [...foundPostObj.repostCaptions, { caption: repostCaption }] :
             [{ caption: repostCaption }]
-          repost.onModel = repostData.postKind
+
+
+          foundPost.notesCount = foundPost.notesCount + 1
+          
           return Promise.all(
-            ([repost.save()])).then(([repost]) => repost)
+            ([repost.save(), foundPost.save()])).then(([repost, post]) => repost)
         })
       }
     },
@@ -209,30 +263,38 @@ const mutation = new GraphQLObjectType({
         var comment = new Comment();
 
         return Promise.all([
-          User.findOne({ blogName: user })
-        ]).then(([user]) => {
+          User.findOne({ blogName: user }),
+          Post.findById(postId)
+        ]).then(([user, foundPost]) => {
           comment.user = user._id
           comment.post = postId
           comment.postAuthorId = postAuthorId
           comment.content = content
           comment.onModel = kind
 
-          return Promise.all([comment.save()])
-            .then(([comment]) => comment)
+          foundPost.notesCount = foundPost.notesCount + 1
+          return Promise.all([comment.save(), foundPost.save()])
+            .then(([comment, post]) => comment)
         })
       }
     },
     deleteComment: {
       type: CommentType,
       args: {
-        commentId: { type: GraphQLID }
+        commentId: { type: GraphQLID },
+        postId: { type: GraphQLID },
       },
       resolve(parentValue, {
-        commentId
+        commentId, postId
       }) {
         return Promise.all([
-          Comment.deleteOne({ _id: commentId })
-        ])
+          Comment.deleteOne({ _id: commentId }),
+          Post.findById(postId)
+        ]).then(([comment, foundPost]) => {
+          foundPost.notesCount = foundPost.notesCount - 1
+
+          return foundPost.save().then(post => post)
+        })
       }
     },
     updateUserEmail: {
@@ -401,7 +463,7 @@ const mutation = new GraphQLObjectType({
             .then(user => user)
       })
       }
-    }
+    },
   })
 })
 

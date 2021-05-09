@@ -1,3 +1,4 @@
+//filter regex
 
 const handleFilterTagRegex = (user) => {
   var regexStr
@@ -19,9 +20,103 @@ const handleFilterPostContentRegex = (user) => {
   }
 }
 
-const RootQueryTypeUtil = {
+//all tag post feed
+
+const asyncTagPostArr = async (
+    query, tags, 
+    likedPostIds, Post,
+    User, mongoose,
+    asyncFetchTagPosts,
+    handleFilterTagRegex,
+    handleFilterPostContentRegex) => {
+  var tagPosts = []
+  for (var i = 0; i < tags.length; i++) {
+    var posts = await asyncFetchTagPosts(
+      query, tags[i]._id, likedPostIds, 
+      Post, User, mongoose,
+      handleFilterTagRegex,
+      handleFilterPostContentRegex
+    )
+    tagPosts = [...tagPosts, ...posts]
+  }
+  return tagPosts
+}
+
+const asyncFetchTagPosts = async (
+  query, id, 
+  likedPostIds,
+  Post, User, 
+  mongoose,
   handleFilterTagRegex,
   handleFilterPostContentRegex
+) => {
+  var recastTagId = mongoose.Types.ObjectId(id)
+
+  var user = await User.findOne({ blogName: query })
+  
+  var filteredTagRegex = handleFilterTagRegex(user)
+
+  var filteredPostContentRegex = handleFilterPostContentRegex(user)
+
+  var posts = await Post.aggregate([
+    {
+      $lookup: {
+        from: 'posts',
+        let: {
+          likedPostIds: likedPostIds,
+          tagId: recastTagId,
+          filteredTagRegex: filteredTagRegex,
+          filteredPostContentRegex: filteredPostContentRegex
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $not: { $in: ["$_id", "$$likedPostIds"] } },
+                  { $not: [
+                      {
+                        $regexMatch: {
+                          input: "$tagTitles",
+                          regex: "$$filteredTagRegex"
+                        }
+                      }
+                    ]
+                  },
+                  { $not: [
+                      {
+                        $regexMatch: {
+                          input: "$allText",
+                          regex: "$$filteredPostContentRegex"
+                        }
+                      }
+                    ]
+                  },
+                  { $or: [
+                      { $in: [ "$$tagId", "$tagIds" ] },
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        as: 'posts'
+      }
+    },
+    { $unwind: '$posts' },
+    { $replaceRoot: { "newRoot": "$posts" } },
+    { $sort: { "notesHeatLastTwoDays": -1 } },
+    { $limit: 5 }
+  ])
+  return posts
+}
+
+const RootQueryTypeUtil = {
+  handleFilterTagRegex,
+  handleFilterPostContentRegex,
+  asyncFetchTagPosts,
+  asyncTagPostArr
 }
 
 export default RootQueryTypeUtil;

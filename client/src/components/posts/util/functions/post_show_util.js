@@ -3,20 +3,25 @@ import DOMPurify from 'dompurify';
 import { Link } from 'react-router-dom';
 import AudioPlayer from 'react-h5-audio-player';
 import ReactPlayer from 'react-player';
+import UserResult from '../../../search/resultTypes/User_Result';
 
-const postHeader = (post) => {
+const postHeader = (post, discover) => {
 
   if (post.kind === 'Repost') {
     return (
       <span>
         <Link to={`/view/blog/${post.user.blogName}`}>
           {post.user.blogName}
-        </Link>
+        </Link> 
         <i className="fas fa-retweet"></i>
         <Link to={`/view/blog/${post.repostedFrom.blogName}`}>
           {post.repostedFrom.blogName}
         </Link>
       </span>
+    )
+  } else if (discover) {
+    return (
+      <UserResult user={post.user} />
     )
   } else {
     return (
@@ -32,7 +37,7 @@ const postHeader = (post) => {
 }
 
 const repostFooter = (post) => {
-  var data = demeterPost(post)
+  // var data = demeterPost(post)
   var repost = post
   
   if (post.kind === 'Repost') {

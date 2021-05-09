@@ -89,7 +89,8 @@ b {
   content:attr("<strong>Brother Muzone:</strong> Well we can't stand out here all night...<br><br><strong> Omar Little:</strong> I suppose we can't...<br><br><strong> Brother Muzone:</strong> A man has to have a code.<br><br><strong> Omar Little:</strong> Oh indeed...");
 }
 
-#fetchMoreFeed, #fetchMoreActivity, #fetchMoreFollowedUsers {
+#fetchMoreFeed, #fetchMoreActivity, 
+#fetchMoreFollowedUsers, #fetchMoreFollowers {
   background-color: red;
   height: 50px;
   width: 50px;
@@ -127,3 +128,6 @@ b {
   width: 300px;
 }
 
+.searchBar {
+  width: 300px;
+}

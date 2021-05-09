@@ -47,7 +47,7 @@ const UserFollowersFeed = () => {
   if (error) return `Error: ${error}`;
   
   handleData(data, feedArr, cursorId, endOfPosts)
-  console.log(feedArr)
+  
   return(
     <div>
       <div>

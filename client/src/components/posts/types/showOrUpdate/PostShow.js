@@ -10,7 +10,8 @@ const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
 const PostShow = ({ 
   post, repost,
   update, setUpdate,
-  toggleUpdate
+  toggleUpdate,
+  discover
 }) => {
   let [active, setActive] = useState(false)
   
@@ -67,7 +68,7 @@ const PostShow = ({
     default: 
       return (
         <React.Fragment>
-          {postHeader(post)}
+          {postHeader(post, discover)}
       
           {postBody(post)}
       

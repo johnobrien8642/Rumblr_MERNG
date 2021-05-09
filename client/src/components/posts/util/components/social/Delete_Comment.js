@@ -54,7 +54,8 @@ const DeleteComment = ({
           onClick={() => {
             deleteComment({
               variables: {
-                commentId: comment._id
+                commentId: comment._id,
+                postId: post._id
               }
             })
           }}

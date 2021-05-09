@@ -44,11 +44,13 @@ const Activity = ({
       <div
         className='activity'
         tabIndex={0}
-        onBlur={() => {
-          var date = new Date()
-          cursorId.current = date.getTime()
-          setTab(tab = 'all')
-          setActive(active = false)
+        onBlur={e => {
+          if (!e.relatedTarget) {
+            var date = new Date()
+            cursorId.current = date.getTime()
+            setTab(tab = 'all')
+            setActive(active = false)
+          }
         }}
       >
         <Tabs

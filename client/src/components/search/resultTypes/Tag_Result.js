@@ -7,16 +7,20 @@ import Cookies from 'js-cookie';
 const { DOES_USER_FOLLOW_TAG } = Queries;
 
 const TagResult = ({ tag, active, setActive }) => {
+  
+  useEffect(() => {
+
+    return () => {
+      refetch()
+    }
+  })
+  
   let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_TAG, {
     variables: {
-      user: Cookies.get('currentUser'),
+      query: Cookies.get('currentUser'),
       tagId: tag._id
     }
   })
-
-  useEffect(() => {
-    refetch()
-  }, [refetch])
 
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
@@ -24,7 +28,7 @@ const TagResult = ({ tag, active, setActive }) => {
   const { doesUserFollowTag } = data;
   
   var cleanedTag = tag.title.slice(1)
-
+  
   return (
     <React.Fragment>
       <Link 
@@ -39,7 +43,7 @@ const TagResult = ({ tag, active, setActive }) => {
       </Link>
       <FollowButton
         tag={tag} 
-        follow={doesUserFollowTag}
+        followed={doesUserFollowTag}
       />
     </React.Fragment>
   )

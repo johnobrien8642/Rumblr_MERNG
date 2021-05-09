@@ -39,6 +39,14 @@ const PostSchema = new Schema({
       ref: 'Mention'
     }
   ],
+  notesCount: {
+    type: Number,
+    default: 0
+  },
+  notesHeatLastTwoDays: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: Date.now

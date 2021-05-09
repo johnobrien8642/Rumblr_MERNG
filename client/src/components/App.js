@@ -12,6 +12,7 @@ import UserBlogShow from './feeds/User_Blog_Show';
 import UserPostShow from './feeds/User_Post_Show';
 import UserFollowersFeed from './feeds/User_Followers_Feed';
 import UserSettings from './user/User_Settings';
+import Discover from './nav/Discover';
 import AuthRoute from '../util/route_util';
 import 'react-h5-audio-player/lib/styles.css';
 import './../stylesheets/application.scss';
@@ -28,6 +29,7 @@ const App = () => {
         <AuthRoute exact path={'/settings/account'} component={UserSettings} />
         <Route exact path='/blog/view/:blogName/:postId' component={UserPostShow} />
         <Route exact path='/blog/:blogName/followers' component={UserFollowersFeed} />
+        <Route exact path='/discover' component={Discover} />
         <Route exact path='/likes' component={UserPostLikesFeed} />
         <Route exact path='/following' component={UserFollowingFeed} />
         <Route exact path='/login' component={Login} />

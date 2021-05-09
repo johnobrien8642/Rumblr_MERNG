@@ -269,9 +269,9 @@ const handleVariants = async (variants, instance, user) => {
       break
     case 'QuotePost':
       var { quote, source } = variants
+      instance.user = user._id
       instance.quote = quote
       instance.source = source
-      instance.user = user._id
       break
     case 'LinkPost':
       var { linkObj } = variants;
@@ -286,14 +286,14 @@ const handleVariants = async (variants, instance, user) => {
       break
     case 'AudioPost':
       var { audioFileId, audioMeta } = variants;
+      instance.user = user._id
       instance.audioFile = audioFileId
       instance.audioMeta = audioMeta
-      instance.user = user._id
       break
     case 'VideoPost':
       var { videoLink } = variants;
-      instance.videoLink = videoLink
       instance.user = user._id
+      instance.videoLink = videoLink
       break
     default:
       return

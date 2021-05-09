@@ -23,7 +23,7 @@ const Results = ({ input, active, setActive }) => {
   if (error) return `Error: ${error.message}`;
   
   const { usersAndTags } = data;
-
+  
   if (active) {
     return (
       <div>

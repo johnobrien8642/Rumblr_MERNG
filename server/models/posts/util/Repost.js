@@ -6,6 +6,9 @@ const RepostSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
+  postId: {
+    type: Schema.Types.ObjectId
+  },
   post: {
     type: Schema.Types.ObjectId,
     refPath: 'onModel'

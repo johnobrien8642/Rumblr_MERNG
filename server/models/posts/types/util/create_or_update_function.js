@@ -17,6 +17,8 @@ const { getTagArr, asyncTag, findOrCreateTag,
 const { cleanupImages, cleanupAudio, 
         cleanupVideo, cleanupMention } = DeleteFunctionUtil;
 
+
+//Reposts are handled in mutation file in #repost        
 const createOrUpdatePost = ({
   variants,
   allText,
@@ -84,6 +86,10 @@ const createOrUpdatePost = ({
           
           markModified(instance, update)
 
+          if (update) {
+            instance.updatedAt = Date.now
+          }
+          
           return Promise.all([instance.save()]).then(
             ([instance])=> (instance)
           )

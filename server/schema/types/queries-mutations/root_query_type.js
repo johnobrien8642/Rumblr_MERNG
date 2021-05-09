@@ -25,12 +25,12 @@ const Image = mongoose.model('Image');
 const Tag = mongoose.model('Tag');
 const Like = mongoose.model('Like');
 const Follow = mongoose.model('Follow');
-const { ISODate } = mongodb;
 const { GraphQLObjectType, GraphQLList,
-        GraphQLString, GraphQLID, GraphQLBoolean,
-        GraphQLInt } = graphql;
+        GraphQLString, GraphQLID } = graphql;
 const { handleFilterTagRegex, 
-        handleFilterPostContentRegex } = RootQueryTypeUtil;
+        handleFilterPostContentRegex,
+        asyncTagPostArr,
+        asyncFetchTagPosts } = RootQueryTypeUtil;
 
 const RootQueryType = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -62,9 +62,11 @@ const RootQueryType = new GraphQLObjectType({
           User.findById(_id)
         ]).then(
             ([users, tags, user]) => {
-              var filteredTags = tags.filter(tag => 
+              
+              var filteredTags = tags.filter(tag =>
                 !user.tagFollows.includes(tag._id)
               )
+              
               return [...users, ...filteredTags]
             }
           )
@@ -195,40 +197,37 @@ const RootQueryType = new GraphQLObjectType({
     doesUserFollowTag: {
       type: FollowType,
       args: {
-        user: { type: GraphQLString },
-        tagId: { type: GraphQLID}
+        query: { type: GraphQLString },
+        tagId: { type: GraphQLID }
       },
-      resolve(_, {user, tagId}) {
-        return Promise.all(([
-          User.find({ blogName: user })
-        ])).then(user => {
-            return Promise.all(([
-              Follow
-              .aggregate([
-                {
-                  $lookup: {
-                    from: 'follows',
-                    let: { user: user._id, tagId: tagId },
-                    pipeline: [
-                        { $match: {
-                          $expr: {
-                            $and: 
-                            [
-                              { $eq: [ "$user", "$$user" ] },
-                              { $eq: [ "$follows", "$$tagId" ] }
-                            ]
-                          }
-                        }
-                      }
-                    ],
-                    as: 'follow'
+      resolve(_, { query, tagId }) {
+        var recastTagId = mongoose.Types.ObjectId(tagId)
+        
+        return User.aggregate([
+          { $match: { blogName: query } },
+          { $lookup: {
+              from: 'follows',
+              let: { userId: '$_id', tagId: recastTagId },
+              pipeline: [
+                { $match: {
+                    $expr: {
+                      $and:
+                      [
+                        { $eq: [ "$user", "$$userId" ] },
+                        { $eq: [ "$follows", "$$tagId" ] }
+                      ]
+                    }
                   }
-                },
-                { $unwind: "$follow" },
-                { $replaceRoot: { "newRoot": "$follow" } }
-              ])
-            ])).then(res => res[0][0])
-          })
+                }
+              ],
+              as: "followed"
+            }
+          },
+          { $unwind: "$followed" },
+          { $replaceRoot: { "newRoot": "$followed" } }
+        ]).then(res => {
+          return res[0]
+        })
       }
     },
     fetchUserFeed: {
@@ -327,7 +326,7 @@ const RootQueryType = new GraphQLObjectType({
               { $lookup: {
                   from: 'posts',
                   localField: '_id',
-                  foreignField: 'tags',
+                  foreignField: 'tagIds',
                   as: 'postsWithTag'
                 }
               },
@@ -526,7 +525,7 @@ const RootQueryType = new GraphQLObjectType({
       },
       resolve(parentValue, { query, cursorId }) {
         var dateNum = parseInt(cursorId)
-        // console.log(new Date(dateNum))
+        
         return User.aggregate([
           { $match: { blogName: query } },
           {
@@ -679,9 +678,70 @@ const RootQueryType = new GraphQLObjectType({
           { $sort: { "createdAt": -1 } },
           { $limit: 1 }
         ]).then(res => {
-          console.log(res)
           return res
         })
+      }
+    },
+    fetchRecommendedTags: {
+      type: GraphQLList(TagType),
+      args: {
+        query: { type: GraphQLString }
+      },
+      resolve(parentValue, { query }) {
+        return User.findOne({ blogName: query })
+          .then(user => {
+            return Tag.find({
+              '_id': { $nin: user.tagFollows }
+            })
+              .sort('followerCount')
+              .limit(8)
+          })
+      }
+    },
+    fetchAllTagFeed: {
+      type: GraphQLList(AnyPostType),
+      args: { query: { type: GraphQLString } },
+      resolve(parentValue, { query }) {
+        return User
+        .aggregate([
+          { $match: { blogName: query } },
+          {
+            $lookup: {
+              from: 'likes',
+              localField: '_id',
+              foreignField: 'user',
+              as: 'likes'
+            }
+          },
+          { $unwind: '$likes' },
+          { $replaceRoot: { "newRoot": '$likes' } }
+        ]).then(likes => {
+          var likedPostIds = likes.map(l => l.post._id)
+
+          return Tag.find()
+            .sort([
+              ['postHeatLastWeek', -1],
+              ['followerHeatLastWeek', -1],
+              ['followerCount', -1],
+            ])
+            .limit(30)
+            .then(tags => {
+              return Promise.all([
+                asyncTagPostArr(
+                  query, tags, 
+                  likedPostIds, Post,
+                  User, mongoose, 
+                  asyncFetchTagPosts,
+                  handleFilterTagRegex,
+                  handleFilterPostContentRegex
+                )
+              ]).then(res => {
+                return res[0]
+              })
+            })
+        })
+        
+
       }
     },
     user: {

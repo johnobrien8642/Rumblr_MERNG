@@ -7,28 +7,13 @@ const { IS_LOGGED_IN } = Queries;
 
 const Search = () => {
   let [input, setInput] = useState('');
+  let [followedActive, setFollowedActive] = useState(false)
   let [active, setActive] = useState('');
   
   const onBlur = (e) => {
     if (!e.relatedTarget) {
       setActive(active = false)
-    }
-  }
-
-  const clickActivate = () => {
-    if (active) {
-      setActive(active = false)
-    } else {
-      setActive(active = true)
-    }
-  }
-
-
-  const inputActivate = () => {
-    if (input) {
-      setActive(active = true)
-    } else {
-      setActive(active = false)
+      setFollowedActive(followedActive = false)
     }
   }
 
@@ -37,19 +22,32 @@ const Search = () => {
   if (data.isLoggedIn) {
     return (
       <div
+        className='searchBar'
         onBlur={e => onBlur(e)}
+        onFocus={e => {
+          if (!e.relatedTarget) {
+            setFollowedActive(active = true)
+          }
+        }}
       >
-        <input 
+        <input
           type='text'
           value={input}
           placeholder={'Search Rumblr'}
           onChange={e => {
             setInput(input = e.target.value)
-            inputActivate()
+            setFollowedActive(followedActive = false)
+            setActive(active = true)
           }}
         />
-        <FollowedTags active={active} activate={clickActivate} />
-        <Results input={input} active={active} setActive={setActive} />
+        <FollowedTags
+          followedActive={followedActive}
+        />
+        <Results 
+          input={input} 
+          active={active}
+          setActive={setActive}s
+        />
       </div>
     )
   } else {

@@ -45,8 +45,8 @@ const Mutations = {
     }
   `,
   UNLIKE_POST: gql`
-    mutation unlikePost($likeId: ID) {
-      unlikePost(likeId: $likeId) {
+    mutation unlikePost($likeId: ID, $postId: ID) {
+      unlikePost(likeId: $likeId, postId: $postId) {
         _id
       }
     }
@@ -59,8 +59,8 @@ const Mutations = {
     }
   `,
   UNFOLLOW: gql`
-    mutation Unfollow($followId: ID) {
-      unfollow(followId: $followId) {
+    mutation Unfollow($user: String, $followId: ID, $item: ID) {
+      unfollow(user: $user, followId: $followId, item: $item) {
         _id
       }
     }
@@ -101,8 +101,8 @@ const Mutations = {
     }
   `,
   DELETE_COMMENT: gql`
-    mutation deleteComment($commentId: ID) {
-      deleteComment(commentId: $commentId) {
+    mutation deleteComment($commentId: ID, $postId: ID) {
+      deleteComment(commentId: $commentId, postId: $postId) {
         _id
       }
     }
@@ -163,7 +163,6 @@ const Mutations = {
       }
     }
   `,
-
 };
 
 export default Mutations;

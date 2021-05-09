@@ -47,7 +47,7 @@ const UserFollowersFeed = () => {
   if (error) return `Error: ${error}`;
   
   handleData(data, feedArr, cursorId, endOfPosts)
-
+  
   return(
     <div>
       <div>
@@ -65,7 +65,7 @@ const UserFollowersFeed = () => {
         })}
         </div>
         <div
-          id='fetchMoreActivity'
+          id='fetchMoreFollowers'
         >
         </div>
     </div>

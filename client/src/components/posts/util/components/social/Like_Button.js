@@ -53,7 +53,8 @@ const LikeButton = ({
         onClick={() => {
           unlikePost({
             variables: {
-              likeId: liked._id
+              likeId: liked._id,
+              postId: post._id
             }
           })
 

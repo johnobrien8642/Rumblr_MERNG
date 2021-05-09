@@ -57,7 +57,7 @@ const FilterPostContentInput = ({
           >
             <input
               type='text'
-              placeholder='Filter a Tag'
+              placeholder='Filter content'
               value={postContent}
               onChange={e => {
                 setPostContent(postContent = e.target.value)

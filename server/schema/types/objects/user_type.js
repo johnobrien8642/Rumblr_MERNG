@@ -21,6 +21,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     password: { type: GraphQLString },
     token: { type: GraphQLString },
+    followerCount: { type: GraphQLInt },
     loggedIn: { type: GraphQLBoolean },
     ////Uncomment for email auth
     // authenticated: { type: GraphQLBoolean },

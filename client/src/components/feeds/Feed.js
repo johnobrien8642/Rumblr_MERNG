@@ -21,7 +21,7 @@ const Feed = ({
   const client = useApolloClient();
 
   setgqlQueryAndQuery(
-    tag, user, gqlQuery, 
+    tag, user, gqlQuery,
     query, FETCH_TAG_FEED
   )
   

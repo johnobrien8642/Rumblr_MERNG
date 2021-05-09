@@ -36,6 +36,17 @@ const Nav = () => {
           >
             Home
           </Link>
+          <Link
+            to='/discover'
+            onClick={() => {
+              setNavActive(navActive = false)
+            }}
+          >
+            <img 
+              src="https://img.icons8.com/material-outlined/48/000000/compass.png" 
+              alt='' 
+            />
+          </Link>
           <Activity
             navActive={navActive}
             setNavActive={setNavActive}

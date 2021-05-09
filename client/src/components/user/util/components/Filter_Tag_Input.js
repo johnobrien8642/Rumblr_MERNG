@@ -59,7 +59,7 @@ const FilterTagInput = ({
         >
           <input
             type='text'
-            placeholder='Filter a Tag'
+            placeholder='Filter a tag'
             value={tag}
             onChange={e => {
               setTag(tag = e.target.value)

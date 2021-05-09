@@ -11,14 +11,32 @@ const Mention = mongoose.model('Mention');
 
 
 const handlePostDelete = async (post) => {
-  return Promise.all([
-    Post.deleteOne({ _id: post._id }),
-    Like.deleteMany({ post: post._id }),
-    Comment.deleteMany({ post: post._id }),
-    Mention.deleteMany({ post: post._id }),
-    Repost.deleteOne({ _id: post._id }),
-    Repost.deleteMany({ post: post._id })
-  ]).then(() => post._id)
+
+  return Post.findById(post._id)
+    .then(foundPost => {
+
+      if (foundPost.kind === 'Repost') {
+        return Post.findById(foundPost.post._id)
+          .then(repostedPost => {
+            repostedPost.notesCount - 1
+
+            return Promise.all([
+              repostedPost.save(),
+              Post.deleteOne({ _id: post._id }),
+              Like.deleteMany({ post: post._id }),
+              Comment.deleteMany({ post: post._id }),
+              Mention.deleteMany({ post: post._id }),
+            ]).then(() => post._id)
+          })
+      } else {
+        return Promise.all([
+          Post.deleteOne({ _id: post._id }),
+          Like.deleteMany({ post: post._id }),
+          Comment.deleteMany({ post: post._id }),
+          Mention.deleteMany({ post: post._id }),
+        ]).then(() => post._id)
+      }
+    })
 }
 
 

@@ -4,36 +4,36 @@ import Cookies from 'js-cookie';
 import Mutations from '../../../../../graphql/mutations';
 const { FOLLOW, UNFOLLOW } = Mutations;
 
-const FollowButton = ({ user, tag, follow }) => {
+const FollowButton = ({ user, tag, followed }) => {
   
   var initial;
-  var TagOrUser;
+  var tagOrUser;
   var itemKind;
   var followId = useRef('')
 
   if (user) {
-    if (follow) {
+    if (followed) {
       initial = true
-      followId.current = follow._id
+      followId.current = followed._id
     } else {
       initial = false
     }
-    TagOrUser = user.blogName
+    tagOrUser = user._id
     itemKind = user.kind
   } else if (tag) {
-    if (follow) {
+    if (followed) {
       initial = true
-      followId.current = follow._id
+      followId.current = followed._id
     } else {
       initial = false
     }
-    TagOrUser = tag._id
+    tagOrUser = tag._id
     itemKind = tag.kind
   }
 
   let [status, setStatus] = useState(initial)
 
-  let [followUser] = useMutation(FOLLOW, {
+  let [follow] = useMutation(FOLLOW, {
     onCompleted({ follow }) {
       followId.current = follow._id
     },
@@ -42,21 +42,24 @@ const FollowButton = ({ user, tag, follow }) => {
     }
   });
 
-  let [unfollowUser] = useMutation(UNFOLLOW, {
+  let [unfollow] = useMutation(UNFOLLOW, {
     onError(error) {
       console.log(error.message)
     }
   });
 
+  
   if (status) {
     return (
       <React.Fragment>
         <form
           onSubmit={e => {
             e.preventDefault();
-            unfollowUser({
+            unfollow({
               variables: {
-                followId: followId.current
+                user: Cookies.get('currentUser'),
+                followId: followId.current,
+                item: tagOrUser
               }
             })
             setStatus(status = false)
@@ -72,10 +75,10 @@ const FollowButton = ({ user, tag, follow }) => {
         <form
           onSubmit={e => {
             e.preventDefault();
-            followUser({
+            follow({
               variables: {
                 user: Cookies.get('currentUser'),
-                item: TagOrUser,
+                item: tagOrUser,
                 itemKind: itemKind
               }
             })

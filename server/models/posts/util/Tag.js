@@ -14,12 +14,18 @@ const TagSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  // followerCount: {
-  //   type: Number
-  // },
-  // heat: {
-  //   type: Number
-  // },
+  followerCount: {
+    type: Number,
+    default: 0
+  },
+  followerHeatLastWeek: {
+    type: Number,
+    default: 0
+  },
+  postHeatLastWeek: {
+    type: Number,
+    default: 0
+  },
   kind: {
     type: String,
     default: 'Tag'

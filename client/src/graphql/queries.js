@@ -369,6 +369,22 @@ const Queries = {
       }
     }
   `,
+  FETCH_RECOMMENDED_TAGS: gql`
+    query FetchRecommendedTags($query: String) {
+      fetchRecommendedTags(query: $query) {
+        _id
+        title
+      }
+    }
+  `,
+  FETCH_ALL_TAG_FEED: gql`
+    query FetchAllTagFeed($query: String) {
+      fetchAllTagFeed(query: $query) {
+        __typename
+        ${ALL_POSTS}
+      }
+    }
+  `,
   DOES_USER_LIKE_POST: gql`
     query DoesUserLikePost($user: String, $postId: ID) {
       doesUserLikePost(user: $user, postId: $postId) {
@@ -384,8 +400,8 @@ const Queries = {
     }
   `,
   DOES_USER_FOLLOW_TAG: gql`
-    query DoesUserFollowTag($user: String, $tagId: ID) {
-      doesUserFollowTag(user: $user, tagId: $tagId) {
+    query DoesUserFollowTag($query: String, $tagId: ID) {
+      doesUserFollowTag(query: $query, tagId: $tagId) {
         _id
       }
     }
