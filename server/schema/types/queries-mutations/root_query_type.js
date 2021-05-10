@@ -40,37 +40,41 @@ const RootQueryType = new GraphQLObjectType({
       type: new GraphQLList(UserAndTagType),
       args: { filter: { type: UserAndTagInputType } },
       async resolve(_, { filter }, ctx) {
-        let query = filter ? {$or: SearchUtil.buildFilters(filter)} : '';
-
-        if (query.$or.length === 0) {
+        if (filter) {
+          let query = filter ? {$or: SearchUtil.buildFilters(filter)} : '';
+  
+          if (query.$or.length === 0) {
+            return []
+          }
+          
+          const users = async (query) => {
+            return await User.find(query.$or[0]).exec();
+          }
+  
+          const tags = async (query) => {
+            return await Tag.find(query.$or[1]).exec();
+          }
+          
+          const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
+          const { _id } = decoded;
+  
+          return Promise.all([
+            users(query), 
+            tags(query), 
+            User.findById(_id)
+          ]).then(
+              ([users, tags, user]) => {
+                
+                var filteredTags = tags.filter(tag =>
+                  !user.tagFollows.includes(tag._id)
+                )
+                
+                return [...users, ...filteredTags]
+              }
+            )
+        } else {
           return []
         }
-        
-        const users = async (query) => {
-          return await User.find(query.$or[0]).exec();
-        }
-
-        const tags = async (query) => {
-          return await Tag.find(query.$or[1]).exec();
-        }
-        
-        const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
-        const { _id } = decoded;
-
-        return Promise.all([
-          users(query), 
-          tags(query), 
-          User.findById(_id)
-        ]).then(
-            ([users, tags, user]) => {
-              
-              var filteredTags = tags.filter(tag =>
-                !user.tagFollows.includes(tag._id)
-              )
-              
-              return [...users, ...filteredTags]
-            }
-          )
         }
     },
     fetchMatchingTags: {

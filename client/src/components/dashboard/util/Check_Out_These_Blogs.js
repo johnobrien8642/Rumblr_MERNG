@@ -23,7 +23,9 @@ const CheckOutTheseBlogs = () => {
       <h1>Check Out These Blogs</h1>
       {fetchCheckOutTheseBlogs.map(user => {
         return (
-          <div>
+          <div
+            key={user._id}
+          >
             <UserResult user={user} />
           </div>
         )
