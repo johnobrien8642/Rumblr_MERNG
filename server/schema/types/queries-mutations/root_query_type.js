@@ -751,13 +751,17 @@ const RootQueryType = new GraphQLObjectType({
       resolve(parentValue, { query }) {
         return User.findOne({ blogName: query })
           .then(user => {
+            var filteredTagRegex = handleFilterTagRegex(user)
+
+            var filteredPostContentRegex = handleFilterPostContentRegex(user)
+
             return User.aggregate([
               {
                 $lookup: {
                   from: 'follows',
                   let: {
                     userId: mongoose.Types.ObjectId(user._id),
-                    onModel: 'User'
+                    onModel: 'User',
                   },
                   pipeline: [
                     { $match: {
@@ -765,7 +769,7 @@ const RootQueryType = new GraphQLObjectType({
                           $and:
                           [
                             { $eq: ["$user", "$$userId"] },
-                            { $eq: ["$onModel", "$$onModel"] }
+                            { $eq: ["$onModel", "$$onModel"] },
                           ]
                         }
                       }
@@ -790,7 +794,9 @@ const RootQueryType = new GraphQLObjectType({
                     from: 'posts',
                     let: {
                       userId: mongoose.Types.ObjectId(user._id),
-                      followIds: followIds
+                      followIds: followIds,
+                      filteredTagRegex: filteredTagRegex,
+                      filteredPostContentRegex: filteredPostContentRegex
                     },
                     pipeline: [
                       {
@@ -800,6 +806,24 @@ const RootQueryType = new GraphQLObjectType({
                             [
                               { $not: { $eq: ["$user", "$$userId" ] } },
                               { $not: { $in: ["$user", "$$followIds" ] } },
+                              { $not: [
+                                  {
+                                    $regexMatch: {
+                                      input: "$tagTitles",
+                                      regex: "$$filteredTagRegex"
+                                    }
+                                  }
+                                ]
+                              },
+                            { $not: [
+                                  {
+                                    $regexMatch: {
+                                      input: "$allText",
+                                      regex: "$$filteredPostContentRegex"
+                                    }
+                                  }
+                                ]
+                              },
                             ]
                           }
                         }
@@ -822,6 +846,63 @@ const RootQueryType = new GraphQLObjectType({
               })
             })
           })
+      }
+    },
+    fetchCheckOutTheseBlogs: {
+      type: GraphQLList(UserType),
+      args: {
+        query: { type: GraphQLString }
+      },
+      resolve(parentValue, { query }) {
+        
+        return User.aggregate([
+          { $match: { blogName: query } },
+          {
+            $lookup: {
+              from: 'follows',
+              let: {
+                userId: '$_id',
+                onModel: 'User',
+              },
+              pipeline: [
+                { $match: {
+                    $expr: {
+                      $and:
+                      [
+                        { $eq: ["$user", "$$userId"] },
+                        { $eq: ["$onModel", "$$onModel"] },
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'follows'
+            }
+          },
+          { $unwind: "$follows" },
+          { $replaceRoot: { "newRoot": "$follows" } },
+          {
+            $project: {
+              follows: 1
+            }
+          }
+        ]).then(follows => {
+          var followIds = follows.map(f => mongoose.Types.ObjectId(f.follows))
+          
+          return User.find({
+            '_id': { $nin: followIds },
+            'blogName': { $ne: query }
+          })
+          .sort([
+            ['postingHeatLastMonth', -1], 
+            ['followerCount', -1]
+          ])
+          .limit(4)
+          .then(users => {
+            return users
+          })
+        })
+
       }
     },
     user: {

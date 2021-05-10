@@ -10,7 +10,9 @@ import { expressCspHeader, SELF } from 'express-csp-header';
 import cors from 'cors';
 const url = 'mongodb://127.0.0.1:27017/Rumblr_MERNG';
 const { cronTagFollowerHeat, 
-        cronPostNotesHeat, cronTagPostHeat } = CronUtil;
+        cronPostNotesHeat, 
+        cronTagPostHeat,
+        cronUserPostingHeat } = CronUtil;
 
 const app = express();
 
@@ -25,6 +27,7 @@ mongoose
 cronTagFollowerHeat.start()
 cronTagPostHeat.start()
 cronPostNotesHeat.start()
+cronUserPostingHeat.start()
   
 app.use(express.json())
 app.use('/api/posts', posts);

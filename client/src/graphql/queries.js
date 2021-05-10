@@ -430,7 +430,16 @@ const Queries = {
     query FetchPostRadar($query: String) {
       fetchPostRadar(query: $query) {
         ${ALL_POSTS}
-      } 
+      }
+    }
+  `,
+  FETCH_CHECK_OUT_THESE_BLOGS: gql`
+    query FetchCheckOutTheseBlogs($query: String) {
+      fetchCheckOutTheseBlogs(query: $query) {
+        _id
+        blogName
+        blogDescription
+      }
     }
   `,
 }

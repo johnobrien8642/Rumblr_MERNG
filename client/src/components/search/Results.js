@@ -7,7 +7,7 @@ import TagResult from './resultTypes/Tag_Result';
 const { SEARCH_USERS_AND_TAGS } = Queries;
 
 const Results = ({ input, active, setActive }) => {
-
+  
   let { loading, error, data } = useQuery(SEARCH_USERS_AND_TAGS,
       { variables: {
         filter: { OR: [

@@ -52,6 +52,10 @@ const UserSchema = new Schema({
     type: Number,
     default: 0
   },
+  postingHeatLastMonth: {
+    type: Number,
+    default: 0
+  },
   //// Uncomment both below for email auth
   //// Go to server/services/auth_util/register and uncomment
   // authenticated: {

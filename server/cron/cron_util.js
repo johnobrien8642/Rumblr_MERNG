@@ -6,6 +6,7 @@ const Mention = mongoose.model('Mention');
 const Like = mongoose.model('Like');
 const Post = mongoose.model('Post');
 const Comment = mongoose.model('Comment');
+const User = mongoose.model('User');
 
 
 var cronTagFollowerHeat = cron.schedule('* 23 * * *', async () => {
@@ -52,7 +53,7 @@ var cronTagFollowerHeat = cron.schedule('* 23 * * *', async () => {
   }
 })
 
-var cronTagPostHeat = cron.schedule('*/6 * * * *', async () => {
+var cronTagPostHeat = cron.schedule('* 23 * * *', async () => {
   var allTags =  await Tag.find()
   // var allPostsPast2Days = await Post.find({ createdAt: { $gt: twoDaysAgo } })
   var aWeekAgo = new Date(new Date().setDate(new Date().getDate() - 7))
@@ -94,6 +95,56 @@ var cronTagPostHeat = cron.schedule('*/6 * * * *', async () => {
     
     tag.postHeatLastWeek = countLastWeek
     await tag.save()
+  }
+})
+
+var cronUserPostingHeat = cron.schedule('* * * * 0', async () => {
+  var thirtyDaysAgo = new Date(new Date().setDate(new Date().getDate() - 30))
+  var allUsers = await User.find({})
+  
+
+  for (var i = 0; i < allUsers.length; i++) {
+    var user = allUsers[i]
+    
+    var countLastThirtyDays =  await Post.aggregate([
+      {
+        $lookup: {
+          from: 'posts',
+          let: { 
+            thirtyDaysAgo: thirtyDaysAgo,
+            userId: mongoose.Types.ObjectId(user._id)
+          },
+          pipeline: [
+            { $match: {
+              $expr: {
+                  $and:
+                  [
+                    { $gt: ["$createdAt", "$$thirtyDaysAgo"] },
+                    { $eq: ["$user", "$$userId"] }
+                  ]
+                }
+              }
+            }
+          ],
+          as: 'posts'
+        }
+      },
+      {
+        $project: {
+          postCountLastThirtyDays: { $size: "$posts" }
+        }
+      },
+      {
+        $group: {
+          _id: '$postCountLastThirtyDays'
+        }
+      }
+    ]).then(res => {
+      return res[0]._id
+    })
+    
+    user.postingHeatLastMonth = countLastThirtyDays
+    await user.save()
   }
 })
 
@@ -249,6 +300,7 @@ const CronUtil = {
   cronTagFollowerHeat,
   cronTagPostHeat,
   cronPostNotesHeat,
+  cronUserPostingHeat
 }
 
 export default CronUtil
