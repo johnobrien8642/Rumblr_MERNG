@@ -11,7 +11,7 @@ const PostShow = ({
   post, repost,
   update, setUpdate,
   toggleUpdate,
-  discover
+  discover, radar
 }) => {
   let [active, setActive] = useState(false)
   
@@ -68,7 +68,7 @@ const PostShow = ({
     default: 
       return (
         <React.Fragment>
-          {postHeader(post, discover)}
+          {postHeader(post, discover, radar)}
       
           {postBody(post)}
       

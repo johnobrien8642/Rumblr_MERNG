@@ -5,7 +5,7 @@ import AudioPlayer from 'react-h5-audio-player';
 import ReactPlayer from 'react-player';
 import UserResult from '../../../search/resultTypes/User_Result';
 
-const postHeader = (post, discover) => {
+const postHeader = (post, discover, radar) => {
 
   if (post.kind === 'Repost') {
     return (
@@ -19,7 +19,7 @@ const postHeader = (post, discover) => {
         </Link>
       </span>
     )
-  } else if (discover) {
+  } else if (discover || radar) {
     return (
       <UserResult user={post.user} />
     )

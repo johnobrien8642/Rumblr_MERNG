@@ -154,19 +154,25 @@ const mutation = new GraphQLObjectType({
           if (followsUser) {
             follow.follows = followsUser._id
             followsUser.followerCount = followsUser.followerCount + 1
+
+            return Promise.all([
+              follow.save(),
+              followsUser.save(),
+              user.save()
+            ]).then(([follow, followsUser, user]) => follow)
+
           } else if (tag) {
             tag.followerCount = tag.followerCount + 1
+            console.log(tag._id)
             user.tagFollows.push(tag._id)
             follow.follows = tag._id
+
+            return Promise.all([
+              follow.save(),
+              user.save(),
+              tag.save()
+            ]).then(([follow, user, tag]) => follow)
           }
-          
-          return Promise.all([
-            follow.save(),
-            followsUser.save(),
-            user.save(),
-            tag.save()
-          ])
-            .then(([follow, followsUser, user, tag]) => follow)
         })
       }
     },
@@ -187,17 +193,24 @@ const mutation = new GraphQLObjectType({
 
           if (followsUser) {
             followsUser.followerCount = followsUser.followerCount - 1
+
+            return Promise.all([
+              tag.save(),
+              user.save(),
+              followsUser.save(),
+              Follow.deleteOne({ _id: followId })
+            ]).then(([tag, user, followsUser, follow]) => follow)
           } else if (tag) {
             tag.followerCount = tag.followerCount - 1
             user.tagFollows = user.tagFollows.filter(id => id.toString() !== tag._id.toString())
+
+            return Promise.all([
+              tag.save(),
+              user.save(),
+              Follow.deleteOne({ _id: followId })
+            ]).then(([tag, user, follow]) => follow)
           }
           
-          return Promise.all([
-            tag.save(),
-            user.save(),
-            followsUser.save(),
-            Follow.deleteOne({ _id: followId })
-          ]).then(([tag, user, followsUser, follow]) => follow)
         })
       }
     },
@@ -245,7 +258,7 @@ const mutation = new GraphQLObjectType({
 
 
           foundPost.notesCount = foundPost.notesCount + 1
-          
+
           return Promise.all(
             ([repost.save(), foundPost.save()])).then(([repost, post]) => repost)
         })

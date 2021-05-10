@@ -29,7 +29,10 @@ const Discover = () => {
         tag={tag}
         setTag={setTag}
       />
-      {/* <FollowedTags /> */}
+      <FollowedTags 
+        followedActive={true} 
+        discover={true} 
+      />
     </div>
       <AllTagFeed />
     </div>

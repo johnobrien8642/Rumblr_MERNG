@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Results from './Results';
 import FollowedTags from './resultTypes/Followed_Tags_Result.js';
 import Queries from '../../graphql/queries';
 const { IS_LOGGED_IN } = Queries;
 
-const Search = () => {
+const Search = ({
+  searchClose,
+  closeSearch
+}) => {
   let [input, setInput] = useState('');
   let [followedActive, setFollowedActive] = useState(false)
   let [active, setActive] = useState('');
   
+  useEffect(() => {
+    if (searchClose) {
+      //eslint-disable-next-line
+      setFollowedActive(active = false)
+      //eslint-disable-next-line
+      closeSearch(searchClose = false)
+    }
+  }, [searchClose])
+
   const onBlur = (e) => {
     if (!e.relatedTarget) {
       setActive(active = false)
@@ -25,9 +37,12 @@ const Search = () => {
         className='searchBar'
         onBlur={e => onBlur(e)}
         onFocus={e => {
-          if (!e.relatedTarget) {
-            setFollowedActive(active = true)
-          }
+            if (
+              !e.relatedTarget || 
+              e.relatedTarget.localName === 'a'
+            ) {
+              setFollowedActive(followedActive = true)
+            }
         }}
       >
         <input

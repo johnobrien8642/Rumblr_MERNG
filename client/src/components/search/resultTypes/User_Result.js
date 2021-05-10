@@ -9,16 +9,21 @@ const { DOES_USER_FOLLOW_USER } = Queries;
 
 const UserResult = ({ user, active, setActive }) => {
 
+  useEffect(() => {
+
+    return () => {
+      refetch()
+    }
+  })
+
   let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_USER, {
     variables: {
       user: Cookies.get('currentUser'),
       otherUser: user.blogName
     },
+    fetchPolicy: 'no-cache'
   })
 
-  useEffect(() => {
-    refetch()
-  }, [refetch])
   
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;

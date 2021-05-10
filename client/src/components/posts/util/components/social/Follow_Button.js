@@ -10,7 +10,7 @@ const FollowButton = ({ user, tag, followed }) => {
   var tagOrUser;
   var itemKind;
   var followId = useRef('')
-
+  
   if (user) {
     if (followed) {
       initial = true

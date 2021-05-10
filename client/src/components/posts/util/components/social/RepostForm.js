@@ -10,7 +10,7 @@ const { FETCH_POST, FETCH_USER_FEED } = Queries;
 
 const RepostForm = () => {
   let [repostCaption, setRepostCaption] = useState('');
-  let { postId, typename } = useParams();
+  let { postId } = useParams();
   let history = useHistory();
 
   let [repost] = useMutation(CREATE_REPOST, {

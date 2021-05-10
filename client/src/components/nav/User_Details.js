@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 const { FETCH_USER_DETAILS_COUNTS } = Queries;
 
 const UserDetails = ({
-  navActive, setNavActive
+  navActive, setNavActive, detailsClose, closeDetails
 }) => {
   let [active, setActive] = useState(false)
 
@@ -16,11 +16,18 @@ const UserDetails = ({
       document.querySelector('.userDetails').focus()
     }
 
+    if (detailsClose) {
+      //eslint-disable-next-line
+      setActive(active = false)
+      //eslint-disable-next-line
+      closeDetails(detailsClose = false)
+    }
+
     return () => {
       refetch()
     }
     //eslint-disable-next-line
-  }, [])
+  }, [detailsClose])
 
   let { loading, error, data, refetch } = useQuery(FETCH_USER_DETAILS_COUNTS, {
     variables: {

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Tabs from './Tabs';
 import Content from './Content';
 import { useLazyQuery } from '@apollo/client';
@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 const { FETCH_ACTIVITY_COUNTS } = Queries;
 
 const Activity = ({
-  navActive, setNavActive
+  navActive, setNavActive, activityClose, closeActivity
 }) => {
   let mentionsCount = useRef(0)
   let repostsCount = useRef(0)
@@ -15,6 +15,15 @@ const Activity = ({
   let cursorId = useRef(new Date().getTime())
   let [active, setActive] = useState(false)
   let [tab, setTab] = useState('all');
+
+  useEffect(() => {
+    if (activityClose) {
+      //eslint-disable-next-line
+      setActive(active = false)
+      //eslint-disable-next-line
+      closeActivity(activityClose = false)
+    }
+  }, [activityClose])
 
   const [fetchActivityCountsCB, { called, loading, data, refetch }] = useLazyQuery(FETCH_ACTIVITY_COUNTS, {
     variables: {

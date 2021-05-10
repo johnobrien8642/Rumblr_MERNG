@@ -233,6 +233,9 @@ const Queries = {
       tag(query: $query) {
         _id
         title
+        followerCount
+        followerHeatLastWeek
+        postHeatLastWeek
       }
     }
   `,
@@ -421,6 +424,13 @@ const Queries = {
         filteredPostContent
         email
       }
+    }
+  `,
+  FETCH_POST_RADAR: gql`
+    query FetchPostRadar($query: String) {
+      fetchPostRadar(query: $query) {
+        ${ALL_POSTS}
+      } 
     }
   `,
 }

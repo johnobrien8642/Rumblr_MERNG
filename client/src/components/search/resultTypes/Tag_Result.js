@@ -19,7 +19,8 @@ const TagResult = ({ tag, active, setActive }) => {
     variables: {
       query: Cookies.get('currentUser'),
       tagId: tag._id
-    }
+    },
+    fetchPolicy: 'no-cache'
   })
 
   if (loading) return 'Loading...';

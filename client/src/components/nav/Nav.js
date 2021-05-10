@@ -10,6 +10,9 @@ const { IS_LOGGED_IN } = Queries;
 
 const Nav = () => {
   let [navActive, setNavActive] = useState(false)
+  let [searchClose, closeSearch] = useState(false)
+  let [activityClose, closeActivity] = useState(false)
+  let [detailsClose, closeDetails] = useState(false)
   const { data } = useQuery(IS_LOGGED_IN)
   
   if (data.isLoggedIn) {
@@ -24,14 +27,32 @@ const Nav = () => {
           >
             <span>R</span>
           </Link>
-          <Search />
+          <Search 
+            searchClose={searchClose}
+            closeSearch={closeSearch}
+          />
         </div>
 
         <div>
           <Link 
             to='/dashboard'
             onClick={() => {
+              if (document.querySelector('.searchBar')) {
+                document.querySelector('.searchBar').blur()
+              }
+
+              if (document.querySelector('.activity')) {
+                document.querySelector('.activity').blur()
+              }
+
+              if (document.querySelector('.userDetails')) {
+                document.querySelector('.userDetails').blur()
+              }
+              
               setNavActive(navActive = false)
+              closeSearch(searchClose = true)
+              closeActivity(activityClose = true)
+              closeDetails(detailsClose = true)
             }}
           >
             Home
@@ -40,6 +61,7 @@ const Nav = () => {
             to='/discover'
             onClick={() => {
               setNavActive(navActive = false)
+              closeSearch(searchClose = true)
             }}
           >
             <img 
@@ -50,10 +72,14 @@ const Nav = () => {
           <Activity
             navActive={navActive}
             setNavActive={setNavActive}
+            activityClose={activityClose}
+            closeActivity={closeActivity}
           />
           <UserDetails
             navActive={navActive}
             setNavActive={setNavActive}
+            detailsClose={detailsClose}
+            closeDetails={closeDetails}
           />
         </div>
       </div>

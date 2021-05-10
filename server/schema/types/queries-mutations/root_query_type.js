@@ -18,6 +18,7 @@ import LikeRepostAndCommentType from '../unions/like_repost_and_comment_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
 import RootQueryTypeUtil from './util/root_query_type_util.js';
+import { pipeline } from 'node:stream/promises';
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
 const Repost = mongoose.model('Repost');
@@ -740,8 +741,87 @@ const RootQueryType = new GraphQLObjectType({
               })
             })
         })
-        
+      }
+    },
+    fetchPostRadar: {
+      type: AnyPostType,
+      args: {
+        query: { type: GraphQLString }
+      },
+      resolve(parentValue, { query }) {
+        return User.findOne({ blogName: query })
+          .then(user => {
+            return User.aggregate([
+              {
+                $lookup: {
+                  from: 'follows',
+                  let: {
+                    userId: mongoose.Types.ObjectId(user._id),
+                    onModel: 'User'
+                  },
+                  pipeline: [
+                    { $match: {
+                        $expr: {
+                          $and:
+                          [
+                            { $eq: ["$user", "$$userId"] },
+                            { $eq: ["$onModel", "$$onModel"] }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  as: 'follows'
+                }
+              },
+              { $unwind: "$follows" },
+              { $replaceRoot: { "newRoot": "$follows" } },
+              {
+                $project: {
+                  follows: 1
+                }
+              }
+            ]).then(follows => {
+              var followIds = follows.map(f => mongoose.Types.ObjectId(f.follows))
 
+              return Post.aggregate([
+                {
+                  $lookup: {
+                    from: 'posts',
+                    let: {
+                      userId: mongoose.Types.ObjectId(user._id),
+                      followIds: followIds
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and:
+                            [
+                              { $not: { $eq: ["$user", "$$userId" ] } },
+                              { $not: { $in: ["$user", "$$followIds" ] } },
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    as: 'posts'
+                  }
+                },
+                { $group: {
+                    _id: '$posts'
+                  }
+                },
+                { $unwind: '$_id' },
+                { $replaceRoot: { "newRoot": "$_id" } },
+                { $sort: { "notesHeatLastTwoDays": 1, "notesCount": 1 } },
+                { $limit: 10 }
+              ]).then(posts => {
+                var post = posts[Math.floor(Math.random() * posts.length)]
+                return post
+              })
+            })
+          })
       }
     },
     user: {
