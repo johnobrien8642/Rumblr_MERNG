@@ -9,8 +9,8 @@ import CronUtil from './cron/cron_util.js'
 import { expressCspHeader, SELF } from 'express-csp-header';
 import cors from 'cors';
 const url = 'mongodb://127.0.0.1:27017/Rumblr_MERNG';
-const { cronTagFollowerHeat, 
-        cronPostNotesHeat, 
+const { cronTagFollowerHeat,
+      cronPostNotesHeat,
         cronTagPostHeat,
         cronUserPostingHeat } = CronUtil;
 

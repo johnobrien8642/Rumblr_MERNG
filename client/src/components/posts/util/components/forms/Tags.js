@@ -14,7 +14,8 @@ const Tags = ({
 
   useEffect(() => {
     if (post) {
-      pushTags(post.tags, tags, setTags)
+      console.log(post)
+      pushTags(post.tagIds, tags, setTags)
     }  
     //eslint-disable-next-line
   }, [])

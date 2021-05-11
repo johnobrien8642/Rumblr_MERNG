@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import fs from 'fs';
+import aws from 'aws-sdk';
+import keys from '../../../../config/keys.js';
 const Post = mongoose.model('Post');
-const Repost = mongoose.model('Repost');
 const Like = mongoose.model('Like');
 const Comment = mongoose.model('Comment')
 const Image = mongoose.model('Image');
@@ -9,6 +9,11 @@ const Audio = mongoose.model('Audio');
 const Video = mongoose.model('Video');
 const Mention = mongoose.model('Mention');
 
+var s3Client = new aws.S3({
+  secretAccessKey: keys.secretAccessKey,
+  accessKeyId: keys.accessKeyId,
+  region: 'us-east-1'
+})
 
 const handlePostDelete = async (post) => {
 
@@ -39,42 +44,41 @@ const handlePostDelete = async (post) => {
     })
 }
 
+const handles3AndObjectCleanup = async (objsToClean, s3Client, keys) => {
+  var filteredObjs = objsToClean.filter(obj => obj.key)
 
-const cleanupImages = async (imageArr) => {
-  return imageArr.forEach(img => {
-    if (img.path) {
-      Promise.all([
-        fs.unlink(img.path, () => {}),
-        Image.deleteOne({ _id: img._id })
-      ])
-    } else {
-      Promise.all([
-        Image.deleteOne({ _id: img._id })
-      ])
+  var s3ObjectKeys = filteredObjs.map(obj => {
+    if (obj.kind !== 'Mention') {
+      return { Key: obj.key }
     }
   })
-}
 
-const cleanupAudio = async (audioObjs) => {
-  audioObjs.forEach(obj => {
-    Promise.all([
-      fs.unlink(obj.path, () => {}),
-      Audio.deleteOne({ _id: obj._id })
-    ])
-  })
-}
+  var params = {
+    Bucket: keys.bucket,
+    Delete: {
+      Objects: s3ObjectKeys
+    }
+  }
 
-const cleanupVideo = async (videoObjs) => {
-  videoObjs.forEach(obj => {
-    if (obj.path) {
+  if (s3ObjectKeys.length > 0) {
+    await s3Client.deleteObjects(params, function(err, data) {
+      if (err) console.log(`s3 delete err: ${err}, stack: ${err.stack}`)
+    })
+  }
+
+  objsToClean.forEach(obj => {
+    if (obj.kind === 'Image') {
       Promise.all([
-        fs.unlink(obj.path, () => {}),
+        Image.deleteOne({ _id: obj._id })
+      ])
+    } else if (obj.kind === 'Audio') {
+      Promise.all([
+        Audio.deleteOne({ _id: obj._id })
+      ])
+    } else if (obj.kind === 'Video') {
+      Promise.all([
         Video.deleteOne({ _id: obj._id })
       ])
-    } else {
-      Promise.all([
-        Video.deleteOne({ _id: obj._id })
-    ])
     }
   })
 }
@@ -96,7 +100,7 @@ const deletePost = async (post) => {
       post.kind === 'ChatPost'
     ) {
       return Promise.all([
-        cleanupImages(post.descriptionImages)
+        handles3AndObjectCleanup(post.descriptionImages, s3Client, keys)
       ]).then(() => {
         handlePostDelete(post)
       })
@@ -104,8 +108,8 @@ const deletePost = async (post) => {
     post.kind === 'PhotoPost'
   ) {
     return Promise.all([
-      cleanupImages(post.mainImages),
-      cleanupImages(post.descriptionImages)
+      handles3AndObjectCleanup(post.mainImages, s3Client, keys),
+      handles3AndObjectCleanup(post.descriptionImages, s3Client, keys)
     ]).then(() => {
       handlePostDelete(post)
     })
@@ -113,8 +117,8 @@ const deletePost = async (post) => {
     post.kind === 'AudioPost'
   ) {
     return Promise.all([
-      cleanupImages(post.descriptionImages),
-      cleanupAudio([post.audioFile])      
+      handles3AndObjectCleanup(post.descriptionImages, s3Client, keys),
+      handles3AndObjectCleanup([post.audioFile], s3Client, keys)
     ]).then(() => {
       handlePostDelete(post)
     })
@@ -122,8 +126,8 @@ const deletePost = async (post) => {
     post.kind === 'VideoPost'
   ) {
     return Promise.all([
-      cleanupImages(post.descriptionImages),
-      cleanupVideo([post.videoLink])      
+      handles3AndObjectCleanup(post.descriptionImages, s3Client, keys),
+      handles3AndObjectCleanup([post.videoLink], s3Client, keys)
     ]).then(() => {
       handlePostDelete(post)
     })
@@ -135,9 +139,9 @@ const deletePost = async (post) => {
 }
 
 const DeleteFunctionUtil = {
-  cleanupImages, cleanupAudio, 
-  cleanupVideo, cleanupMention, 
-  deletePost
+  cleanupMention, 
+  deletePost,
+  handles3AndObjectCleanup
 }
 
 export default DeleteFunctionUtil;

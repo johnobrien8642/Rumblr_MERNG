@@ -33,7 +33,7 @@ const VideoInput = ({
           <input
             id='videoFileInput'
             type='file'
-            accept='.MOV, .mp3, .wav'
+            accept='.MOV, .mp3, .mp4, .wav'
             onChange={e => {
               previewVideoFile(
                 e,

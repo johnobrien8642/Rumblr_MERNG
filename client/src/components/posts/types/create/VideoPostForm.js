@@ -27,6 +27,7 @@ const VideoPostForm = ({
   let [isLink, setIsLink] = useState(false)
   
   let [active, setActive] = useState(false)
+  let [uploading, setUploading] = useState(false)
   let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
@@ -73,6 +74,7 @@ const VideoPostForm = ({
     setVideoObj(videoObj = '');
     setVideoFile(videoFile = '');
     setActive(active = false);
+    setUploading(uploading = false);
     setBodyImageFiles(bodyImageFiles = []);
     body.current = [];
     allText.current = '';
@@ -81,13 +83,12 @@ const VideoPostForm = ({
     setTags(tags = []);
     setErrMessage(errMessage = '');
   }
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    var videoFileFormData = new FormData();
-    
     if (videoFile) {
+      var videoFileFormData = new FormData();
       videoFileFormData.append('video', videoFile)
     }
 
@@ -95,7 +96,7 @@ const VideoPostForm = ({
 
     Promise.all([
       bodyPost(bodyImagesFormData),
-      videoPost(videoFileFormData, videoObj, isLink)
+      videoPost(videoFileFormData, isLink, videoObj)
     ]).then(
       ([bodyUploads, video]) => {
 
@@ -137,10 +138,15 @@ const VideoPostForm = ({
       <h1>VideoPost</h1>
       <form
         id={formId}
-        onSubmit={e => handleSubmit(e)}
+        onSubmit={e => {
+          setUploading(uploading = true)
+          handleSubmit(e)
+        }}
         onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
         encType={'multipart/form-data'}
       >
+        
+      <p>{uploading ? 'Uploading, please wait...': ''}</p>
       
       <VideoInput
         post={post}
@@ -184,7 +190,7 @@ const VideoPostForm = ({
 
       <button
         type='submit'
-        disabled={!videoObj}
+        disabled={!videoObj && !uploading}
       >
         {post ? 'update' : 'post'}
       </button>

@@ -2,44 +2,46 @@ import mongoose from 'mongoose';
 import express from 'express';
 const router = express.Router();
 import multer from 'multer';
+import multers3 from 'multer-s3';
+import aws from 'aws-sdk';
 import ogs from 'open-graph-scraper';
 import path from 'path';
+import keys from '../../config/keys.js'
 const Image = mongoose.model('Image')
 const Audio = mongoose.model('Audio')
 const Video = mongoose.model('Video')
 const __dirname = path.resolve();
 
-var storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (file.fieldname === 'images') {
-      cb(null, path.join(__dirname, '/uploads/images'))
-    } else if (file.fieldname === 'audio') {
-      cb(null, path.join(__dirname, '/uploads/audio'))
-    } else if (file.fieldname === 'video') {
-      cb(null, path.join(__dirname, '/uploads/video'))
-    }
-  },
-  
-  filename: (req, file, cd) => {
-    cd(null, Date.now() +  '-' + Math.round(Math.random() * 1E9) + '-' + file.originalname)
-  }
+var s3Client = new aws.S3({
+  secretAccessKey: keys.secretAccessKey,
+  accessKeyId: keys.accessKeyId,
+  region: 'us-east-1'
 })
 
-var upload = multer({ storage: storage })
-
-// var upload = multer({ dest: 'uploads/'})
-
-
+var upload = multer({
+  storage: multers3({
+    s3: s3Client,
+    bucket: keys.bucket,
+    acl: 'private',
+    contentType: multers3.AUTO_CONTENT_TYPE,
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString() +
+      '-' + file.fieldname + '-' +
+      file.originalname.split(' ').join('-'))
+    }
+  })
+})
 
 router.post('/images', upload.any(), async (req, res, next) => {
 
-  const url = req.protocol + '://' + req.get('host')
-  
   function createImg(f, i) {
     let img = new Image({
-      src: url + '/uploads/images/' + f.filename,
-      created: Date.now(),
-      path: f.path
+      src: 'http://d19o4ugsraxwa9.cloudfront.net/' + f.key,
+      key: f.key,
+      createdAt: Date.now(),
     })
     return img.save()
   }
@@ -55,14 +57,13 @@ router.post('/images', upload.any(), async (req, res, next) => {
 })
 
 router.post('/audio', upload.any(), async (req, res, next) => {
-  const url = req.protocol + '://' + req.get('host')
   
   function createAudio(f) {
     if (f !== undefined) {
       let audio = new Audio({
-        url: url + '/uploads/audio/' + f.filename,
-        created: Date.now(),
-        path: f.path
+        url: 'http://d19o4ugsraxwa9.cloudfront.net/' + f.key,
+        key: f.key,
+        createdAt: Date.now()
       })
       return audio.save()
     }
@@ -77,20 +78,19 @@ router.post('/audio', upload.any(), async (req, res, next) => {
 })
 
 router.post('/video', upload.any(), async (req, res, next) => {
-  const url = req.protocol + '://' + req.get('host')
-  
+
   function createVideo(req) {
     if (req.files) {
       let video = new Video({
-        url: url + '/uploads/video/' + req.files[0].filename,
-        created: Date.now(),
-        path: req.files[0].path
+        url: 'http://d19o4ugsraxwa9.cloudfront.net/' + req.files[0].key,
+        key: req.files[0].key,
+        createdAt: Date.now()
       })
       return video.save()
     } else {
       let video = new Video({
-        url: url + '/uploads/video/' + req.body.params.url,
-        created: Date.now()
+        url: req.body.params.url,
+        createdAt: Date.now()
       })
       return video.save()
     }

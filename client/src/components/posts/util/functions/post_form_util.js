@@ -345,7 +345,6 @@ const removeAudioObj = (
     objsToClean.current = [post.audioLink]
   }
 
-  setAudioObj(audioObj = {})
   setAudioFile(audioFile = {})
   setActive(active = false)
 }
@@ -542,8 +541,8 @@ const audioPost = (
 
 const videoPost = (
   videoFileFormData,
-  videoObj,
-  isLink
+  isLink,
+  videoObj
 ) => {
   if (isLink) {
     return axios.post('/api/posts/video', {
@@ -555,199 +554,12 @@ const videoPost = (
       return videoObj
     })
   } else {
-    return axios.post('/api/posts/video', videoFileFormData, {
-      headers: {
-        'Content-Type': 'undefined'
-      }
-    }).then(videoRes => {
+    return axios.post('/api/posts/video', videoFileFormData).then(videoRes => {
       let videoObj = videoRes.data
       return videoObj
     })
   }
 }
-
-//apollo cache
-
-// const updateCacheCreate = (
-//   client, createPost,
-//   currentUser, query
-// ) => {
-//   var readQuery = client.readQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     }
-//   })
-  
-//   var { fetchUserFeed } = readQuery;
-  
-//   var newPostArr = [{ __typename: 'createPost' }, createPost, ...fetchUserFeed]
-  
-//   client.writeQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     },
-//     data: {
-//       fetchUserFeed: newPostArr
-//     }
-//   })
-// }
-
-// const updateCacheUpdate = (
-//   client, updatePost,
-//   currentUser, query
-// ) => {
-//   var readQuery = client.readQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     }
-//   })
-  
-//   var { fetchUserFeed } = readQuery;
-  
-//   var newPostArr = [...fetchUserFeed]
-  
-//   fetchUserFeed.forEach((p, i) => {
-//     if (updatePost._id === p._id) {
-//       newPostArr.splice(i, 1, updatePost)
-//     }
-//   })
-  
-//   client.writeQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     },
-//     data: {
-//       fetchUserFeed: newPostArr
-//     }
-//   })
-// }
-
-// const updateCacheDelete = (
-//   client, post, deletePost,
-//   currentUser, query
-// ) => {
-//   var readFeed = client.readQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     }
-//   })
-
-//   var { fetchUserFeed } = readFeed;
-  
-//   var newPostArr = fetchUserFeed.filter(post1 => post1._id !== post._id)
-
-//   client.writeQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     },
-//     data: {
-//       fetchUserFeed: [{ __typename: 'deletePost' }, ...newPostArr]
-//     }
-//   })
-// }
-
-// const updateCacheLike = (
-//   client, likePost,
-//   post, query
-// ) => {
-  
-//   var readFeed = client.readQuery({
-//     query: query,
-//     variables: {
-//       postId: post._id
-//     }
-//   })
-  
-//   var { fetchLikesRepostsAndComments } = readFeed;
-  
-//   var newPostArr = [...fetchLikesRepostsAndComments, likePost]
-  
-//   client.writeQuery({
-//     query: query,
-//     variables: {
-//       postId: post._id
-//     },
-//     data: {
-//       fetchLikesRepostsAndComments: newPostArr
-//     }
-//   })
-// }
-
-// const updateCacheUnlike = (
-//   client, unlikePost,
-//   post, liked, query
-// ) => {
-
-//   var readFeed = client.readQuery({
-//     query: query,
-//     variables: {
-//       postId: post._id
-//     }
-//   })
-  
-//   var { fetchLikesRepostsAndComments } = readFeed;
-  
-//   var newPostArr = fetchLikesRepostsAndComments.filter(item => {
-//       if (item._id === liked._id) {
-//         return false
-//       } else {
-//         return true
-//       }
-//     }
-//   )
-  
-//   client.writeQuery({
-//     query: query,
-//     variables: {
-//       postId: post._id
-//     },
-//     data: {
-//       fetchLikesRepostsAndComments: newPostArr
-//     }
-//   })
-// }
-
-// const updateCacheAddFilterTag = (
-//   client, addFilterTag,
-//   currentUser, query
-// ) => {
-  
-//   client.writeQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     },
-//     data: {
-//       user: {
-//         filteredTags: addFilterTag.filteredTags
-//       }
-//     }
-//   })
-// }
-
-// const updateCacheDeleteFilterTag = (
-//   client, addFilterTag,
-//   currentUser, query
-// ) => {
-  
-//   client.writeQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     },
-//     data: {
-//       user: {
-//         filteredTags: addFilterTag.filteredTags
-//       }
-//     }
-//   })
-// }
 
 //submit functions
 

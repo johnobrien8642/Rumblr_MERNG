@@ -7,7 +7,7 @@ const VideoType = new GraphQLObjectType({
   fields: () => ({
     _id: { type: GraphQLID },
     url: { type: GraphQLString },
-    path: { type: GraphQLString },
+    key: { type: GraphQLString },
     createdAt: { type: GraphQLString },
     kind: { type: GraphQLString }
   })

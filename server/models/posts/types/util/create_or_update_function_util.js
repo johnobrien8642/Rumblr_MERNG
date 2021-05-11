@@ -115,6 +115,7 @@ const createImagesFromLinks = async (imageLinks, asyncImageLink) => {
 const asyncImageLink = async (link) => {
   var img = new Image()
   img.src = link.src
+  img.key = null
   img.displayIdx = link.displayIdx
 
   return img.save().then(img => {
