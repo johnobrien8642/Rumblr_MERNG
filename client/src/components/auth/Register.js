@@ -66,7 +66,7 @@ const Register = () => {
         onSubmit={e => {
           e.preventDefault();
           registerUser({ 
-            variables: { 
+            variables: {
               email: email, 
               blogName: blogName,
               password: password,
@@ -76,11 +76,13 @@ const Register = () => {
         }}
       >
       <input
+        type='text'
         value={email}
         placeholder={'Email'}
         onChange={e => setEmail(email = e.target.value)}
       />
       <input
+        type='text'
         value={blogName}
         placeholder={'Blog Name'}
         onChange={e => setBlogName(blogName = e.target.value)}
@@ -91,6 +93,7 @@ const Register = () => {
         onChange={e => setBlogDescription(blogDescription = e.target.value)}
       ></textarea>
       <input
+        type='password'
         value={password}
         placeholder={'Password'}
         onChange={e => setPassword(password = e.target.value)}

@@ -86,18 +86,83 @@ const Nav = () => {
     )
   } else {
     return (
-      <div>
-        <Link 
-          to='/dashboard'
-          onClick={() => {
-            setNavActive(navActive = false)
-          }}
+      <div
+        className='nav loggedOutNav'
+      >
+        <div
+          className='searchAndLogo'
         >
-          <span>R</span>
-        </Link>
-        <Search />
-        <Link to='/login'><button>Login</button></Link>
-        <Link to='/register'><button>Register</button></Link>
+          <div
+            className='logo'
+          >
+            <Link
+              to='/dashboard'
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <img
+                className='filledR' 
+                src="https://img.icons8.com/ios-filled/50/000000/r.png"
+              />
+              <svg
+                className='whiteRLinesSVG'
+                xmlns="http://www.w3.org/2000/svg" version="1.1"
+              >
+                <line
+                  stroke='white'
+                  stroke-width='7'
+                  x1='10'
+                  x2='10'
+                  y1='4'
+                  y2='46'
+                />
+                <line
+                  stroke='white'
+                  stroke-width='7'
+                  x1='25'
+                  x2='35.5'
+                  y1='25'
+                  y2='44'
+                />
+                <circle
+                  fill='white'
+                  cx='36'
+                  cy='43'
+                  r='3'
+                />
+                <path
+                  stroke='white'
+                  strokeWidth='5.5'
+                  fill='transparent'
+                  d='M 10 7 C 15 7 39 2 36 20 C 32 29 15 29 10 25'
+                />
+              </svg>
+              <img
+                className='emptyR'
+                src="https://img.icons8.com/ios/50/000000/r.png"
+              />
+            </Link>
+          </div>
+          <Search />
+        </div>
+
+        <div
+          className='auth'
+        >
+          <Link
+            className='login'
+            to='/login'
+          >
+            Login
+          </Link>
+          <Link
+            className='register'
+            to='/register'
+          >
+            Register
+          </Link>
+        </div>
       </div>
     )
   }

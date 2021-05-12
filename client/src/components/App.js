@@ -27,14 +27,15 @@ const App = () => {
         <AuthRoute path={'/view/tag/:tagTitle'} component={TagFeed} />
         <AuthRoute path={'/view/blog/:blogName'} component={UserBlogShow} />
         <AuthRoute exact path={'/settings/account'} component={UserSettings} />
-        <Route exact path='/blog/view/:blogName/:postId' component={UserPostShow} />
-        <Route exact path='/blog/:blogName/followers' component={UserFollowersFeed} />
-        <Route exact path='/discover' component={Discover} />
-        <Route exact path='/likes' component={UserPostLikesFeed} />
-        <Route exact path='/following' component={UserFollowingFeed} />
+        <AuthRoute exact path='/blog/view/:blogName/:postId' component={UserPostShow} />
+        <AuthRoute exact path='/blog/:blogName/followers' component={UserFollowersFeed} />
+        <AuthRoute exact path='/discover' component={Discover} />
+        <AuthRoute exact path='/likes' component={UserPostLikesFeed} />
+        <AuthRoute exact path='/following' component={UserFollowingFeed} />
+        {/* uncomment below for email auth welcome page */}
+        {/* <AuthRoute exact path='/welcome' component={WelcomePage} /> */}
         <Route exact path='/login' component={Login} />
         <Route exact path='/register' component={Register}/>
-        <Route exact path='/welcome' component={WelcomePage} />
         <Redirect from='/' to='/dashboard' />
       </Switch>
     </div>

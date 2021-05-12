@@ -51,7 +51,9 @@ const Login = () => {
   }
 
   return (
-    <div>
+    <div
+      className='login'
+    >
       <ul>
         {errorMessages.map((error, i) => {
           return <li key={i}>{error}</li>
@@ -75,7 +77,7 @@ const Login = () => {
           onChange={e => setEmail(email = e.target.value)}
         />
         <input
-          type='text'
+          type='password'
           value={password}
           placeholder={'Password'}
           onChange={e => setPassword(password = e.target.value)}

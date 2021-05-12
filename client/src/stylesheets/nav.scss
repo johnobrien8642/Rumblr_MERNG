@@ -1,0 +1,62 @@
+.nav {
+  height: 60px;
+  border-bottom: 0.5px solid #1A283E;
+  font-family: 'Noto Sans JP', sans-serif
+}
+
+.loggedOutNav {
+  display: flex;
+  justify-content: space-between;
+
+  .searchAndLogo {
+    display: flex;
+    margin-top: 5px;
+    
+    .logo {
+      position: relative;
+      width: 45px;
+      height: 50px;
+      margin-right: 15px;
+      margin-left: 15px;
+      z-index: 0;
+      
+      .filledR {
+        opacity: 0;
+        position: absolute;
+        left: -1px;
+        transition: opacity 0.22s;
+        z-index: 2;
+      }
+
+      
+      .emptyR {
+        position: absolute;
+        left: -1px;
+        z-index: 1;
+      }
+
+      &:hover {     
+        .filledR {
+          opacity: 1;
+        }
+      }
+    }
+
+    .searchBar {
+      order: 2;
+    }
+  }
+
+  .auth {
+    .login {
+      background-color: blue;
+      // order: 3;
+    }
+
+    .register {
+      background-color: yellow;
+      margin-left: 20px;
+      // order: 4;
+    }
+  }
+}

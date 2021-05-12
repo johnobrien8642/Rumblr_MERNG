@@ -67,7 +67,9 @@ const Search = ({
     )
   } else {
     return (
-      <div>
+      <div
+        className='searchBar'
+      >
         <input 
           type='text'
           value={input}
