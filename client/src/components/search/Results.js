@@ -11,8 +11,8 @@ const Results = ({ input, active, setActive }) => {
   let { loading, error, data } = useQuery(SEARCH_USERS_AND_TAGS,
       { variables: {
         filter: { OR: [
-            {blogName_contains: input },
-            {tag_title_contains: input }
+            { blogName_contains: input },
+            { tag_title_contains: input }
           ]
         }
       }

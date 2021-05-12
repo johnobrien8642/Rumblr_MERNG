@@ -10,7 +10,6 @@ const { DOES_USER_FOLLOW_USER } = Queries;
 const UserResult = ({ user, active, setActive }) => {
 
   useEffect(() => {
-
     return () => {
       refetch()
     }

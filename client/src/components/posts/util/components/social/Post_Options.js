@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React, { useState } from 'react'; 
 import { useQuery, useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
 import { Link, withRouter } from 'react-router-dom';
@@ -15,7 +15,7 @@ const PostOptions = ({
   active, setActive, toggleNotes,
   update, setUpdate, toggleUpdate
 }) => {
-  
+  let [askToConfirm, confirmDelete] = useState(false)
   var postId
   if (post.kind === 'Like' && post.kind === 'Repost') {
     postId = post.post.post._id
@@ -44,6 +44,36 @@ const PostOptions = ({
       postId: postId
     }
   })
+
+  const renderConfirmDelete = () => {
+    if (askToConfirm) {
+      return (
+        <div
+          >
+            <p>Delete post?</p>
+            <button
+              onClick={() => {
+                deletePost({
+                  variables: {
+                    post: post
+                  }
+                })
+              }}
+            >
+              Delete post
+            </button>
+            
+            <button
+              onClick={() => {
+                confirmDelete(askToConfirm = false)
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+      )
+    }
+  }
 
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`
@@ -87,17 +117,15 @@ const PostOptions = ({
           refetchDoesUserLikePost={refetch}
           refetchNotes={refetchNotes}
         />
+
+        {renderConfirmDelete()}
         
         <img
           className='deletePostBtn'
           src="https://img.icons8.com/metro/26/000000/delete.png"
           alt=''
           onClick={() => {
-            deletePost({
-              variables: {
-                post: post
-              }
-            })
+            confirmDelete(askToConfirm = true)
           }}
         />
   

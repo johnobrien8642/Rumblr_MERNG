@@ -10,13 +10,12 @@ const FollowedTags = ({
   setFollowedActive,
   discover
 }) => {
-
+  
   useEffect(() => {
-
     return () => {
       refetch()
     }
-  })
+  }, [followedActive])
 
   let { loading, error, data, refetch } = useQuery(FETCH_USER_FOLLOWED_TAGS, {
     variables: {

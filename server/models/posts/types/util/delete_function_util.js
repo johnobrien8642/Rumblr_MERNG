@@ -91,6 +91,12 @@ const cleanupMention = async (mentionObjs) => {
   })
 }
 
+const asyncDeleteAllPosts = async (posts, deletePost) => {
+  for (let i = 0; i < posts.length; i++) {
+    await deletePost(posts[i])
+  }
+}
+
 const deletePost = async (post) => {
   if 
     (
@@ -141,6 +147,7 @@ const deletePost = async (post) => {
 const DeleteFunctionUtil = {
   cleanupMention, 
   deletePost,
+  asyncDeleteAllPosts,
   handles3AndObjectCleanup
 }
 

@@ -163,6 +163,13 @@ const Mutations = {
       }
     }
   `,
+  DELETE_MY_ACCOUNT: gql`
+    mutation DeleteMyAccount($query: String, $password: String, $token: String) {
+      deleteMyAccount(query: $query, password: $password, token: $token) {
+        _id
+      }
+    }
+  `
 };
 
 export default Mutations;

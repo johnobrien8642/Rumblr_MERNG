@@ -12,7 +12,7 @@ import CommentType from '../objects/posts/util/comment_type.js';
 import AnyPostType from '../unions/any_post_type.js';
 import createOrUpdatePost from '../../../models/posts/types/util/create_or_update_function.js';
 import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function_util.js';
-const { deletePost } = DeleteFunctionUtil;
+const { deletePost, asyncDeleteAllPosts } = DeleteFunctionUtil;
 
 const Post = mongoose.model('Post');
 const User = mongoose.model('User');
@@ -477,6 +477,43 @@ const mutation = new GraphQLObjectType({
       })
       }
     },
+    deleteMyAccount: {
+      type: UserType,
+      args: {
+        query: { type: GraphQLString },
+        password: { type: GraphQLString },
+        token: { type: GraphQLString }
+      },
+      resolve(parentValue, { query, password, token }) {
+        return User.findOne({ blogName: query })
+          .then(user => {
+            if (bcrypt.compareSync(password, user.password)) {
+              return User.aggregate([
+                { $match: { blogName: query } },
+                { $lookup: {
+                    from: 'posts',
+                    localField: '_id',
+                    foreignField: 'user',
+                    as: 'posts'
+                  }
+                },
+                { $unwind: '$posts' },
+                { $replaceRoot: { "newRoot": "$posts" } }
+              ]).then(posts => {
+                return asyncDeleteAllPosts(posts, deletePost)
+                  .then(() => {
+                    return User.deleteOne({ blogName: query })
+                      .then(() => {
+                        return AuthService.logout(token)
+                      })
+                  })
+              })
+            } else {
+              throw new Error('Password is invalid')
+            }
+          })
+      }
+    }
   })
 })
 

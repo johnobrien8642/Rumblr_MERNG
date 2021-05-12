@@ -3,6 +3,7 @@ import Email from './util/components/Email';
 import BlogDescription from './util/components/Blog_Description';
 import Password from './util/components/Password';
 import Filtering from './util/components/Filtering';
+import DeleteMyAccount from './util/components/Delete_My_Account';
 import Cookies from 'js-cookie';
 import { useQuery } from '@apollo/client';
 import Queries from '../../graphql/queries.js';
@@ -32,6 +33,8 @@ const UserSettings = () => {
       <Password user={user} />
       <h3>Filtering</h3>
       <Filtering user={user} />
+      <h3>Delete My Account</h3>
+      <DeleteMyAccount />
     </div>
   )
 }
