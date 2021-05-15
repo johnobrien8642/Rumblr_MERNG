@@ -104,6 +104,7 @@ const mutation = new GraphQLObjectType({
         ]).then(([user, foundPost]) => {
           like.user = user._id
           like.post = postId
+          like.postAuthor = foundPost.user._id
           like.onModel = postKind
 
           foundPost.notesCount = foundPost.notesCount + 1
@@ -138,7 +139,6 @@ const mutation = new GraphQLObjectType({
         itemKind: { type: GraphQLString }
       },
       resolve(_, { user, item, itemKind }) {
-        console.log(itemKind)
         var follow = new Follow({
           onModel: itemKind
         })
@@ -163,7 +163,7 @@ const mutation = new GraphQLObjectType({
 
           } else if (tag) {
             tag.followerCount = tag.followerCount + 1
-            console.log(tag._id)
+            
             user.tagFollows.push(tag._id)
             follow.follows = tag._id
 
@@ -227,7 +227,7 @@ const mutation = new GraphQLObjectType({
         return Promise.all([
           User.findOne({ blogName: repostData.user }),
           User.findOne({ blogName: repostData.repostedFrom }),
-          Post.findById(repostData.repostId)
+          Post.findById(repostData.repostedId)
         ]).then(([reposter, reposted, foundPost]) => {
         
           var repostTrailId = 
@@ -241,20 +241,20 @@ const mutation = new GraphQLObjectType({
             null
           
           var foundPostObj = foundPost ? foundPost.toObject() : null
-
+          
           repost.postId = repostData.postId
           repost.post = repostData.postId
           repost.user = reposter._id
           repost.repostedFrom = reposted._id
           repost.onModel = repostData.postKind
           
-          repost.repostTrail = foundPost ?
+          repost.repostTrail = foundPost.kind === 'Repost' ?
             [...foundPostObj.repostTrail, repostTrailId] :
             [repostTrailId]
 
-          repost.repostCaptions = foundPost ?
-            [...foundPostObj.repostCaptions, { caption: repostCaption }] :
-            [{ caption: repostCaption }]
+          repost.repostCaptions = foundPost.kind === 'Repost' ?
+            [...foundPostObj.repostCaptions, { caption: repostCaption, userId: reposter._id }] :
+            [{ caption: repostCaption, userId: reposter._id }]
 
 
           foundPost.notesCount = foundPost.notesCount + 1

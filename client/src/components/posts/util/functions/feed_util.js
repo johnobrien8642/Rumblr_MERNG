@@ -169,27 +169,28 @@ const updateCacheInfScrollActivity = (
   var newData
   
   if (fetchAllUserActivity) {
+    console.log(fetchAllUserActivity)
     oldArr = fetchAllUserActivity
     newData = res.data.fetchAllUserActivity
-  }
 
-  var newArr = [...oldArr, ...newData]
-  
-  if (fetchAllUserActivity) {
-    client.writeQuery({
-      query: gqlQuery,
-      variables: {
-        query: query,
-        cursorId: cursorId.current
-      },
-      data: {
-        fetchAllUserActivity: newArr
-      }
-    })
-  }
-  
-  if (newData) {
-    cursorId.current = newData.length > 0 ? newData[newData.length - 1]._id : null
+    var newArr = [...oldArr, ...newData]
+    
+    if (fetchAllUserActivity) {
+      client.writeQuery({
+        query: gqlQuery,
+        variables: {
+          query: query,
+          cursorId: cursorId.current
+        },
+        data: {
+          fetchAllUserActivity: newArr
+        }
+      })
+    }
+    
+    if (newData) {
+      cursorId.current = newData.length > 0 ? newData[newData.length - 1]._id : null
+    }
   }
 }
 
@@ -261,6 +262,7 @@ const updateCacheInfScrollFollowedUsers = (
   var oldArr
   var newData
   var newArr
+  
   if (fetchFollowedUsers) {
     oldArr = fetchFollowedUsers
     newData = res.data.fetchFollowedUsers
@@ -311,6 +313,7 @@ const setgqlQueryAndQuery = (
   tag, user,
   gqlQuery, query, 
   FETCH_TAG_FEED,
+  currentUser
 ) => {
 
   
@@ -319,6 +322,8 @@ const setgqlQueryAndQuery = (
     gqlQuery.current = FETCH_TAG_FEED
   } else if (user) {
     query.current = user.blogName
+  } else {
+    query.current = currentUser
   }
 }
 

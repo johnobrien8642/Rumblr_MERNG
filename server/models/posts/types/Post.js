@@ -11,7 +11,7 @@ const PostSchema = new Schema({
   allText: {
     type: String
   },
-  descriptions: [ 
+  descriptions: [
     {
       kind: String,
       content: String,

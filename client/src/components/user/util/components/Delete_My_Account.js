@@ -29,37 +29,6 @@ const DeleteMyAccount = () => {
     setError(errorMessage = '')
   }
 
-  const renderConfirmDelete = () => {
-    if (askToConfirm) {
-      return (
-        <div>
-          <p>Delete Account?</p>
-          <button
-            onClick={() => {
-              deleteMyAccount({
-                variables: {
-                  password: password,
-                  query: Cookies.get('currentUser'),
-                  token: Cookies.get('auth-token')
-                }
-              })
-            }}
-          >
-            Delete Account
-          </button>
-          
-          <button
-            onClick={() => {
-              confirmDelete(askToConfirm = false)
-            }}
-          >
-            Cancel
-          </button>
-        </div>
-      )
-    }
-  }
-
   if (active) {
     return (
       <div>

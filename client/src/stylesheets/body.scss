@@ -1,7 +1,7 @@
 body {
   background-color: #011328;
+  color: white;
 }
-
 
 b {
   font-weight: normal;
@@ -10,6 +10,8 @@ b {
 .postForm {
   border: 1px solid black;
   width: fit-content;
+  background-color: white;
+  color: black;
 }
 
 .post {
@@ -17,6 +19,8 @@ b {
   width: fit-content;
   padding: 20px;
   margin: 20px;
+  background-color: white;
+  color: black
 }
 
 .addInputs {
@@ -102,21 +106,6 @@ b {
   margin-bottom: 50px;
 }
 
-.activityTab:hover {
-  cursor: pointer;
-}
-
-.activityTabSelected:hover {
-  cursor: pointer;
-}
-
-.activityTabSelected {
-  background-color: red;
-}
-
-.activity {
-  width: 300px;
-}
 
 .userDetails {
   background-color: gray;
@@ -133,4 +122,9 @@ b {
   width: 300px;
 }
 
+.postsNav {
+  background-color: white;
+  width: 150px;
+  height: 600px;
+}
 

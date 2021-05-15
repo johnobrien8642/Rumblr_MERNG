@@ -1,58 +1,80 @@
 import React from 'react';
+import { useQuery } from '@apollo/client';
+import Queries from '../../graphql/queries.js';
+import Cookies from 'js-cookie';
+const { FETCH_USER } = Queries;
 
 const Tabs = ({
-  tab, setTab, 
-  mentionsCount, 
-  repostsCount, 
-  commentsCount, 
-  cursorId
+  tab, 
+  setTab,
+  cursorId,
+  timeAgoRef
 }) => {
 
+  let { loading, error, data } = useQuery(FETCH_USER, {
+    variables: {
+      query: Cookies.get('currentUser')
+    }
+  })
+
+  if (loading) return 'User Fetch Loading...';
+  if (error) return `Error: ${error}`;
+
+  const { user } = data;
+
   return(
-    <div>
+    <React.Fragment>
       <div
-        className={tab === 'all' ? 'activityTabSelected' : 'activityTab'}
-        onClick={() => {
-          cursorId.current = new Date().getTime()
-          setTab(tab = 'all')
-        }}
+        className='activityTabsHeader'
       >
-        All
+        {user.blogName}
       </div>
+
       <div
-        className={tab === 'Mention' ? 'activityTabSelected' : 'activityTab'}
-        onClick={() => {
-          cursorId.current = new Date().getTime()
-          mentionsCount.current = 0
-          setTab(tab = 'Mention')
-        }}
+        className='activityTabsDiv'
       >
-        Mentions
-        <span>{mentionsCount.current ? mentionsCount.current : ''}</span>
-      </div>
-      <div
-        className={tab === 'Repost' ? 'activityTabSelected' : 'activityTab'}
+        <div
+        className={tab === 'all' ? 'tab activityTabSelected' : 'tab'}
         onClick={() => {
-          cursorId.current = new Date().getTime()
-          repostsCount.current = 0
-          setTab(tab = 'Repost')
-        }}
-      >
-        Reblogs
-        <span>{repostsCount.current ? repostsCount.current : ''}</span>
+            timeAgoRef.current = []
+            cursorId.current = new Date().getTime()
+            setTab(tab = 'all')
+          }}
+        >
+          <span>All</span>
+        </div>
+        <div
+          className={tab === 'Mention' ? 'tab activityTabSelected' : 'tab'}
+          onClick={() => {
+            timeAgoRef.current = []
+            cursorId.current = new Date().getTime()
+            setTab(tab = 'Mention')
+          }}
+        >
+          <span>Mentions</span>
+        </div>
+        <div
+          className={tab === 'Repost' ? 'tab activityTabSelected' : 'tab'}
+          onClick={() => {
+            timeAgoRef.current = []
+            cursorId.current = new Date().getTime()
+            setTab(tab = 'Repost')
+          }}
+        >
+          <span>Reblogs</span>
+        </div>
+        <div
+          className={tab === 'Comment' ? 'tab activityTabSelected' : 'tab'}
+          onClick={() => {
+            timeAgoRef.current = []
+            cursorId.current = new Date().getTime()
+            setTab(tab = 'Comment')
+          }}
+        >
+          <span>Replies</span>
+        </div>
       </div>
-      <div
-        className={tab === 'Comment' ? 'activityTabSelected' : 'activityTab'}
-        onClick={() => {
-          cursorId.current = new Date().getTime()
-          commentsCount.current = 0
-          setTab(tab = 'Comment')
-        }}
-      >
-        Replies
-        <span>{commentsCount.current ? commentsCount.current : ''}</span>
-      </div>
-    </div>
+    </React.Fragment>
   )
 }
 

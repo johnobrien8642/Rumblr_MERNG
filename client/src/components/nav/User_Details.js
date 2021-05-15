@@ -144,15 +144,13 @@ const UserDetails = ({
     )
   } else {
     return (
-      <div>
-      <button
-        onClick={() => {
-          setActive(active = true)
-          setNavActive(navActive = true)
-        }}
+      <div
+        className='userIcon'
       >
-        User
-      </button>
+        <img
+          src="https://img.icons8.com/material-rounded/48/ffffff/user.png"
+          alt=''
+        />
       </div>
     )
   }

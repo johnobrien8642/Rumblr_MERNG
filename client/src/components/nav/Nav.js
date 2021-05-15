@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import Search from '../search/Search';
 import UserDetails from './User_Details';
 import Activity from './Activity';
 import Queries from '../../graphql/queries';
-const { IS_LOGGED_IN } = Queries;
+const { IS_LOGGED_IN, FETCH_ACTIVITY_COUNTS } = Queries;
 
 
 const Nav = () => {
@@ -13,68 +14,118 @@ const Nav = () => {
   let [searchClose, closeSearch] = useState(false)
   let [activityClose, closeActivity] = useState(false)
   let [detailsClose, closeDetails] = useState(false)
-  const { data } = useQuery(IS_LOGGED_IN)
+  let cursorId = useRef(new Date().getTime())
+
+  useEffect(() => {
+
+    return () => {
+      refetch()
+    }
+  })
+
+  var { loading, error, data: data1, refetch } = useQuery(FETCH_ACTIVITY_COUNTS, {
+    variables: {
+      query: Cookies.get('currentUser'),
+      cursorId: cursorId.current.toString()
+    }
+  })
+
+  var { data: data2 } = useQuery(IS_LOGGED_IN)
+
+  if (loading) return 'Loading...';
+  if (error) return `Error: ${error}`;
   
-  if (data.isLoggedIn) {
+  if (data2.isLoggedIn) {
     return (
-      <div>
-        <div>
-          <Link 
-            to='/dashboard'
-            onClick={() => {
-              setNavActive(navActive = false)
-            }}
+      <div
+        className='nav loggedInNav'
+      >
+        <div
+          className='searchAndLogo'
+        >
+          <div
+            className='logo'
           >
-            <span>R</span>
-          </Link>
-          <Search 
-            searchClose={searchClose}
-            closeSearch={closeSearch}
-          />
+            <Link
+              to='/dashboard'
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <img 
+                src="https://img.icons8.com/fluent-systems-filled/48/ffffff/r.png"
+                alt=''  
+              />
+            </Link>
+          </div>
+            <Search 
+              searchClose={searchClose}
+              closeSearch={closeSearch}
+            />
         </div>
 
-        <div>
-          <Link 
-            to='/dashboard'
-            onClick={() => {
-              if (document.querySelector('.searchBar')) {
-                document.querySelector('.searchBar').blur()
-              }
-
-              if (document.querySelector('.activity')) {
-                document.querySelector('.activity').blur()
-              }
-
-              if (document.querySelector('.userDetails')) {
-                document.querySelector('.userDetails').blur()
-              }
-              
-              setNavActive(navActive = false)
-              closeSearch(searchClose = true)
-              closeActivity(activityClose = true)
-              closeDetails(detailsClose = true)
-            }}
+        <div
+          className='navTools'
+        >
+          <div
+            className='homeIcon'
           >
-            Home
-          </Link>
-          <Link
-            to='/discover'
-            onClick={() => {
-              setNavActive(navActive = false)
-              closeSearch(searchClose = true)
-            }}
+            <Link
+              to='/dashboard'
+              onClick={() => {
+                if (document.querySelector('.searchBar')) {
+                  document.querySelector('.searchBar').blur()
+                }
+
+                if (document.querySelector('.activity')) {
+                  document.querySelector('.activity').blur()
+                }
+
+                if (document.querySelector('.userDetails')) {
+                  document.querySelector('.userDetails').blur()
+                }
+
+                setNavActive(navActive = false)
+                closeSearch(searchClose = true)
+                closeActivity(activityClose = true)
+                closeDetails(detailsClose = true)
+              }}
+            >
+              <img
+                src="https://img.icons8.com/ios-glyphs/48/ffffff/home-page.png"
+                alt=''
+              />
+            </Link>
+          </div>
+
+          <div
+            className='discoverIcon'
           >
-            <img 
-              src="https://img.icons8.com/material-outlined/48/000000/compass.png" 
-              alt='' 
-            />
-          </Link>
+            <Link
+              to='/discover'
+              onClick={() => {
+                setNavActive(navActive = false)
+                closeSearch(searchClose = true)
+              }}
+            >
+              <img 
+                src="https://img.icons8.com/ios/40/ffffff/compass--v1.png"
+                alt=''
+              />
+            </Link>
+          </div>
+
           <Activity
+            // user={data.user}
+            mentionsCount={data1.mentionsCount}
+            repostsCount={data1.repostsCount}
+            commentsCount={data1.commentsCount}
             navActive={navActive}
             setNavActive={setNavActive}
             activityClose={activityClose}
             closeActivity={closeActivity}
           />
+
           <UserDetails
             navActive={navActive}
             setNavActive={setNavActive}
@@ -102,8 +153,9 @@ const Nav = () => {
               }}
             >
               <img
-                className='filledR' 
+                className='filledR'
                 src="https://img.icons8.com/ios-filled/50/000000/r.png"
+                alt=''
               />
               <svg
                 className='whiteRLinesSVG'
@@ -111,7 +163,7 @@ const Nav = () => {
               >
                 <line
                   stroke='white'
-                  stroke-width='7'
+                  strokeWidth='7'
                   x1='10'
                   x2='10'
                   y1='4'
@@ -119,7 +171,7 @@ const Nav = () => {
                 />
                 <line
                   stroke='white'
-                  stroke-width='7'
+                  strokeWidth='7'
                   x1='25'
                   x2='35.5'
                   y1='25'
@@ -141,6 +193,7 @@ const Nav = () => {
               <img
                 className='emptyR'
                 src="https://img.icons8.com/ios/50/000000/r.png"
+                alt=''
               />
             </Link>
           </div>
@@ -154,13 +207,14 @@ const Nav = () => {
             className='login'
             to='/login'
           >
-            Login
+            Log in
           </Link>
+              
           <Link
             className='register'
             to='/register'
           >
-            Register
+            Sign up
           </Link>
         </div>
       </div>

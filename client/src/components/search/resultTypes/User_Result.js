@@ -28,7 +28,7 @@ const UserResult = ({ user, active, setActive }) => {
   if (error) return `Error: ${error}`;
   
   const { doesUserFollowUser } = data;
-
+  
   return (
     <React.Fragment>
       <Link 

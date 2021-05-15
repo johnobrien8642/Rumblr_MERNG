@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import Results from './Results';
-import FollowedTags from './resultTypes/Followed_Tags_Result.js';
+import SearchDropDown from './resultTypes/SearchDropDown';
 import Queries from '../../graphql/queries';
 const { IS_LOGGED_IN } = Queries;
 
@@ -35,8 +34,10 @@ const Search = ({
     return (
       <div
         className='searchBar'
+        tabIndex='0'
         onBlur={e => onBlur(e)}
         onFocus={e => {
+
             if (
               !e.relatedTarget || 
               e.relatedTarget.localName === 'a'
@@ -45,23 +46,37 @@ const Search = ({
             }
         }}
       >
+        <img
+          className='searchIcon'
+          src="https://img.icons8.com/material-rounded/24/000000/search.png"
+          alt=''
+          style={{opacity: .3}}
+        />
         <input
+          className='searchBarInput'
           type='text'
           value={input}
           placeholder={'Search Rumblr'}
+          onClick={() => {
+            var el = document.querySelector('.searchIcon')
+            el.style.opacity = '1'
+          }}
+          onBlur={() => {
+            var el = document.querySelector('.searchIcon')
+            el.style.opacity = '.3'
+          }}
           onChange={e => {
             setInput(input = e.target.value)
             setFollowedActive(followedActive = false)
             setActive(active = true)
           }}
         />
-        <FollowedTags
+
+        <SearchDropDown
+          input={input}
           followedActive={followedActive}
-        />
-        <Results 
-          input={input} 
           active={active}
-          setActive={setActive}s
+          setActive={setActive}
         />
       </div>
     )
@@ -70,10 +85,25 @@ const Search = ({
       <div
         className='searchBar'
       >
-        <input 
+        <img
+          className='searchIcon'
+          src="https://img.icons8.com/material-rounded/24/000000/search.png"
+          alt=''
+          style={{opacity: .3}}
+        />
+        <input
+          className='searchBarInput'
           type='text'
           value={input}
           placeholder={'Search Rumblr'}
+          onClick={() => {
+            var el = document.querySelector('.searchIcon')
+            el.style.opacity = '1'
+          }}
+          onBlur={() => {
+            var el = document.querySelector('.searchIcon')
+            el.style.opacity = '.3'
+          }}
           onChange={e => setInput(input = e.target.value)}
         />
       </div>

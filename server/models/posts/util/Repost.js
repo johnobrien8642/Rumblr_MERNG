@@ -25,7 +25,8 @@ const RepostSchema = new Schema({
   ],
   repostCaptions: [
     {
-      caption: String
+      caption: String,
+      userId: Schema.Types.ObjectId
     }
   ],
   createdAt: {

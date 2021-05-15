@@ -1,10 +1,9 @@
 import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Redirect } from 'react-router-dom';
 import Nav from '../components/nav/Nav'
 import Dashboard from './dashboard/Dashboard';
 import Login from '../components/auth/Login';
 import Register from './auth/Register';
-import WelcomePage from './auth/Welcome_Page';
 import TagFeed from './feeds/Tag_Feed';
 import UserPostLikesFeed from './feeds/User_Post_Likes_Feed';
 import UserFollowingFeed from './feeds/User_Following_Feed';
@@ -14,6 +13,8 @@ import UserFollowersFeed from './feeds/User_Followers_Feed';
 import UserSettings from './user/User_Settings';
 import Discover from './nav/Discover';
 import AuthRoute from '../util/route_util';
+// uncomment below for email auth welcome page
+// import WelcomePage from './auth/Welcome_Page';
 import 'react-h5-audio-player/lib/styles.css';
 import './../stylesheets/application.scss';
 
@@ -34,8 +35,8 @@ const App = () => {
         <AuthRoute exact path='/following' component={UserFollowingFeed} />
         {/* uncomment below for email auth welcome page */}
         {/* <AuthRoute exact path='/welcome' component={WelcomePage} /> */}
-        <Route exact path='/login' component={Login} />
-        <Route exact path='/register' component={Register}/>
+        <AuthRoute exact path='/register' component={Register} routeType={'auth'} />
+        <AuthRoute exact path='/login' component={Login} routeType={'auth'} />
         <Redirect from='/' to='/dashboard' />
       </Switch>
     </div>

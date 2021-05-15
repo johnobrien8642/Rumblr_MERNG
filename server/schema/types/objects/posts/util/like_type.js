@@ -26,6 +26,14 @@ const LikeType = new GraphQLObjectType({
           .then(like => like.post)
       }
     },
+    postAuthor: {
+      type: UserType,
+      resolve(parentValue) {
+        return Like.findById(parentValue._id)
+          .populate('postAuthor')
+          .then(like => like.postAuthor)
+      }
+    },
     createdAt: { type: GraphQLString },
     kind: { type: GraphQLString }
   })

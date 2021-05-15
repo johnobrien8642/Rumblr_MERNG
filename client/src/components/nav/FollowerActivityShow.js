@@ -7,6 +7,7 @@ const FollowerActivityShow = ({
 
   return(
     <div
+      className='activityResult'
       onClick={() => {
         setNavActive(navActive = false)
       }}
@@ -14,7 +15,7 @@ const FollowerActivityShow = ({
       <Link
         to={`/view/blog/${follow.user.blogName}`}
       >
-        {follow.user.blogName} follows you
+        <span className='activitySlug'><span className='boldUser'>{follow.user.blogName}</span> follows you</span>
       </Link>
     </div>
   )

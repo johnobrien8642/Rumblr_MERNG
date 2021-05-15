@@ -66,11 +66,11 @@ const RepostForm = () => {
     var repostObj = {}
 
     if (post.kind === 'Repost') {
-      repostObj.repostId = post._id
+      repostObj.repostedId = post._id
       repostObj.postId = post.post._id
       repostObj.postKind = post.post.kind
     } else {
-      repostObj.repostId = null
+      repostObj.repostedId = post._id
       repostObj.postId = post._id
       repostObj.postKind = post.kind
     }

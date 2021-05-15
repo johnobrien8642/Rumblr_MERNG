@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import BylineUtil from './util/byline_util.js'
 const { handleByline } = BylineUtil;
 
-const CommentShow = ({
-  comment, navActive, setNavActive
+const LikeActivityShow = ({
+  like, navActive, setNavActive
 }) => {
 
   return(
@@ -15,18 +15,18 @@ const CommentShow = ({
       }}
     >
       <Link
-        to={`/view/blog/${comment.user.blogName}`}
+        to={`/view/blog/${like.user.blogName}`}
       >
-        <span className='boldUser'>{comment.user.blogName}</span>
+        <span className='boldUser'>{like.user.blogName}</span>
       </Link>
       <span>{" "}</span>
       <Link
-        to={`/blog/view/${comment.post.user.blogName}/${comment.post._id}`}
+        to={`/blog/view/${like.user.blogName}/${like.post._id}`}
       >
-        <span className='activitySlug'>replied to your post {handleByline(comment.post)}</span>
+        <span className='activitySlug'>liked your post {handleByline(like.post)}</span>
       </Link>
     </div>
   )
 }
 
-export default CommentShow;
+export default LikeActivityShow;

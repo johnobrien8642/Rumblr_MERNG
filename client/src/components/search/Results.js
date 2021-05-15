@@ -7,7 +7,7 @@ import TagResult from './resultTypes/Tag_Result';
 const { SEARCH_USERS_AND_TAGS } = Queries;
 
 const Results = ({ input, active, setActive }) => {
-
+  
   let { loading, error, data } = useQuery(SEARCH_USERS_AND_TAGS,
       { variables: {
         filter: { OR: [
@@ -23,47 +23,46 @@ const Results = ({ input, active, setActive }) => {
   if (error) return `Error: ${error.message}`;
   
   const { usersAndTags } = data;
-    
+  
   if (active) {
     return (
-      <div>
-        <ul
-          tabIndex='0'
-        >
-          {usersAndTags.map((res, i) => {
-            switch(res.__typename) {
-              case 'UserType':
-                return(
-                  <li 
-                    key={res._id}
-                  >
-                    <UserResult 
-                      user={res}
-                      active={active}
-                      setActive={setActive}
-                    />
-                  </li>
-                )
-              case 'TagType':
-                return(
-                  <li 
-                    key={res._id}
-                  >
-                    <TagResult
-                      tag={res}
-                      active={active}
-                      setActive={setActive}
-                    />
-                  </li>
-                )
-              default:
-                return (
-                  <li></li>
-                )
-              }
-          })}
-        </ul>
-      </div>
+      <ul
+        className='results'
+        tabIndex='0'
+      >
+        {usersAndTags.map((res, i) => {
+          switch(res.__typename) {
+            case 'UserType':
+              return(
+                <li 
+                  key={res._id}
+                >
+                  <UserResult 
+                    user={res}
+                    active={active}
+                    setActive={setActive}
+                  />
+                </li>
+              )
+            case 'TagType':
+              return(
+                <li 
+                  key={res._id}
+                >
+                  <TagResult
+                    tag={res}
+                    active={active}
+                    setActive={setActive}
+                  />
+                </li>
+              )
+            default:
+              return (
+                <li></li>
+              )
+            }
+        })}
+      </ul>
     )
   } else {
     return (

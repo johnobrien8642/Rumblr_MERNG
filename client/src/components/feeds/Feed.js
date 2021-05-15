@@ -22,10 +22,12 @@ const Feed = ({
 
   setgqlQueryAndQuery(
     tag, user, gqlQuery,
-    query, FETCH_TAG_FEED
+    query, FETCH_TAG_FEED,
+    Cookies.get('currentUser')
   )
   
   useEffect(() => {
+    
     
     var scroll = infiniteScroll(
       client, updateCacheInfScroll,
@@ -39,7 +41,6 @@ const Feed = ({
     }
     //eslint-disable-next-line
   }, [])
-
   
   let { loading, error, data } = useQuery(gqlQuery.current, {
     variables: {

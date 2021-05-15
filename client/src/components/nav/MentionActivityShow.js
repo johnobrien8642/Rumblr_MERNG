@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import BylineUtil from './util/byline_util.js'
+const { handleByline } = BylineUtil;
 
 const MentionShow = ({
   mention, navActive, setNavActive
@@ -7,6 +9,7 @@ const MentionShow = ({
 
   return(
     <div
+      className='activityResult'
       onClick={() => {
         setNavActive(navActive = false)
       }}
@@ -14,13 +17,13 @@ const MentionShow = ({
       <Link
         to={`/view/blog/${mention.user.blogName}`}
       >
-        {mention.user.blogName}
+        <span className='boldUser'>{mention.user.blogName}</span>
       </Link>
       <span>{" "}</span>
       <Link
         to={`/blog/view/${mention.post.user.blogName}/${mention.post._id}`}
       >
-        mentioned you
+        <span className='activitySlug'>mentioned you {handleByline(mention.post)}</span>
       </Link>
     </div>
   )

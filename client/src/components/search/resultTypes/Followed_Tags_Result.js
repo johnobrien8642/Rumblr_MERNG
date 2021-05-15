@@ -15,6 +15,7 @@ const FollowedTags = ({
     return () => {
       refetch()
     }
+    //eslint-disable-next-line
   }, [followedActive])
 
   let { loading, error, data, refetch } = useQuery(FETCH_USER_FOLLOWED_TAGS, {
@@ -30,22 +31,29 @@ const FollowedTags = ({
   
   if (followedActive) {
     return (
-      <ul
-        className='followedTags'
-      >
-        <li>{discover ? 'Following': 'Tags you follow'}</li>
-        {user.tagFollows.map((tag, i) => {
-          return (
-            <li 
-              key={tag._id}
-            >
-              <TagResult 
-                tag={tag}
-              />
-            </li>
-          )
-        })}
-      </ul>
+      <React.Fragment>
+        <div
+          className='followedTagsHeader'
+        >
+          {discover ? 'Following': 'Tags you follow'}
+        </div>
+
+        <ul
+          className='followedTags'
+        >
+          {user.tagFollows.map((tag, i) => {
+            return (
+              <li 
+                key={tag._id}
+              >
+                <TagResult
+                  tag={tag}
+                />
+              </li>
+            )
+          })}
+        </ul>
+      </React.Fragment>
     )
   } else {
     return (

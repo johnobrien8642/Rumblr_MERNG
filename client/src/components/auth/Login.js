@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import Mutations from '../../graphql/mutations'
 import Queries from '../../graphql/queries'
@@ -52,13 +52,24 @@ const Login = () => {
 
   return (
     <div
-      className='login'
+      className='loginForm'
     >
-      <ul>
-        {errorMessages.map((error, i) => {
-          return <li key={i}>{error}</li>
-        })}
-      </ul>
+      <div
+        className='greetingHeader'
+      >
+        <h1>Rumblr</h1>
+        <p>
+          Welcome to Rumblr, a clone of Tumblr using
+          MongoDB, Express, React, Node, Apollo and GraphQL!
+        </p>
+          <a 
+            href={"https://github.com/johnobrien8642/Rumblr_MERNG"}
+          >
+            Go to Github repository
+          </a>
+      </div>
+
+
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -70,6 +81,13 @@ const Login = () => {
           })
         }}
       >
+
+        <ul>
+          {errorMessages.map((error, i) => {
+            return <li key={i}>{error}</li>
+          })}
+        </ul>
+
         <input
           type='text'
           value={email}
@@ -82,7 +100,16 @@ const Login = () => {
           placeholder={'Password'}
           onChange={e => setPassword(password = e.target.value)}
         />
-        <button type='submit'>Login</button>
+        <button 
+          type='submit'
+        >
+          Login
+        </button>
+        <Link
+          to='/register'
+        >
+          Don't have an account? Sign up!
+        </Link>
       </form>
     </div>
   )

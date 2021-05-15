@@ -18,7 +18,6 @@ import LikeRepostAndCommentType from '../unions/like_repost_and_comment_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
 import RootQueryTypeUtil from './util/root_query_type_util.js';
-import { pipeline } from 'node:stream/promises';
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
 const Repost = mongoose.model('Repost');
@@ -48,11 +47,11 @@ const RootQueryType = new GraphQLObjectType({
           }
           
           const users = async (query) => {
-            return await User.find(query.$or[0]).exec();
+            return await User.find(query.$or[0]).limit(10).exec();
           }
   
           const tags = async (query) => {
-            return await Tag.find(query.$or[1]).exec();
+            return await Tag.find(query.$or[1]).limit(10).exec();
           }
           
           const decoded = jwt.verify(ctx.headers.authorization, keys.secretOrKey)
@@ -75,7 +74,7 @@ const RootQueryType = new GraphQLObjectType({
         } else {
           return []
         }
-        }
+      }
     },
     fetchMatchingTags: {
       type: new GraphQLList(TagType),
@@ -242,7 +241,6 @@ const RootQueryType = new GraphQLObjectType({
         cursorId: { type: GraphQLString }
       },
       resolve(_, { query, cursorId }) {
-        
         return User.findOne({ blogName: query })
           .populate('tagFollows')
           .then(user => {
@@ -309,7 +307,7 @@ const RootQueryType = new GraphQLObjectType({
                   { $unwind: '$posts' },
                   { $replaceRoot: { "newRoot": "$posts" } },
                   { $sort: { "createdAt": -1 } },
-                  { $limit: 1 }
+                  { $limit: 25 }
                 ]).then(res => {
                   return res
                 })
@@ -394,7 +392,7 @@ const RootQueryType = new GraphQLObjectType({
           { $unwind: "$notes" },
           { $replaceRoot: { "newRoot": "$notes" } },
           { $sort: { "createdAt": 1 } },
-          { $limit: 5 }
+          { $limit: 25 }
         ]).then(res => res)
       }
     },
@@ -505,18 +503,37 @@ const RootQueryType = new GraphQLObjectType({
               as: 'follows'
             }
           },
+          {
+            $lookup: {
+              from: 'likes',
+              let: { userId: '$_id', cursor: recastPostId },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and: 
+                      [
+                        { $eq: [ "$postAuthor", "$$userId" ] },
+                        { $lt: [ "$_id", "$$cursor" ] }
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'likes'
+            }
+          },
           { $addFields: { 
               allActivity: { 
                 $concatArrays: [ 
-                  "$mentions", "$reposts", "$comments", "$follows"
+                  "$mentions", "$reposts", "$comments", "$follows", "$likes"
                 ] 
               } 
             } 
           },
           { $unwind: "$allActivity" },
           { $replaceRoot: { "newRoot": "$allActivity" } },
-          { $sort: { "createdAt": 1 } },
-          { $limit: 10 }
+          { $sort: { "createdAt": -1 } },
+          { $limit: 25 }
         ]).then(res => {
           return res
         })
@@ -639,7 +656,7 @@ const RootQueryType = new GraphQLObjectType({
           { $unwind: "$followers" },
           { $replaceRoot: { "newRoot": "$followers" } },
           { $sort: { "createdAt": -1 } },
-          { $limit: 1 }
+          { $limit: 100 }
         ]).then(res => {
           return res
         })
@@ -681,7 +698,7 @@ const RootQueryType = new GraphQLObjectType({
           { $unwind: "$followed" },
           { $replaceRoot: { "newRoot": "$followed" } },
           { $sort: { "createdAt": -1 } },
-          { $limit: 1 }
+          { $limit: 100 }
         ]).then(res => {
           return res
         })

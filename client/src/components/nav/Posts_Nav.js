@@ -10,7 +10,9 @@ import VideoPostForm from '../posts/types/create/VideoPostForm'
 
 const PostNav = ({ props }) => {
   return(
-    <div>
+    <div
+      className='postsNav'
+    >
       <Link
         to={`/dashboard/new/text`}
       >

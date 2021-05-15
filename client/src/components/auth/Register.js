@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import Mutations from '../../graphql/mutations';
 import Queries from '../../graphql/queries';
 import Cookies from 'js-cookie';
@@ -56,49 +56,71 @@ const Register = () => {
   }
 
   return (
-    <div>
-      <ul>
-        {errorMessages.map((error, i) => {
-          return <li key={i}>{error}</li>
-        })}
-      </ul>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          registerUser({ 
-            variables: {
-              email: email, 
-              blogName: blogName,
-              password: password,
-              blogDescription: blogDescription
-            }
-          })
-        }}
+    <div
+      className='registerForm'
+    >
+      <div
+        className='greetingHeader'
       >
-      <input
-        type='text'
-        value={email}
-        placeholder={'Email'}
-        onChange={e => setEmail(email = e.target.value)}
-      />
-      <input
-        type='text'
-        value={blogName}
-        placeholder={'Blog Name'}
-        onChange={e => setBlogName(blogName = e.target.value)}
-      />
-      <textarea
-        value={blogDescription}
-        placeholder={'Blog description'}
-        onChange={e => setBlogDescription(blogDescription = e.target.value)}
-      ></textarea>
-      <input
-        type='password'
-        value={password}
-        placeholder={'Password'}
-        onChange={e => setPassword(password = e.target.value)}
-      />
-      <button type='submit'>Sign Up</button>
+        <h1>Rumblr</h1>
+      </div>
+
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            registerUser({ 
+              variables: {
+                email: email, 
+                blogName: blogName,
+                password: password,
+                blogDescription: blogDescription
+              }
+            })
+          }}
+        >
+
+        <ul>
+          {errorMessages.map((error, i) => {
+            return <li key={i}>{error}</li>
+          })}
+        </ul>
+
+        <input
+          type='text'
+          value={email}
+          placeholder={'Email'}
+          onChange={e => setEmail(email = e.target.value)}
+        />
+        <input
+          type='text'
+          value={blogName}
+          placeholder={'Blog Name'}
+          onChange={e => setBlogName(blogName = e.target.value)}
+        />
+        <textarea
+          value={blogDescription}
+          placeholder={'Blog description'}
+          onChange={e => setBlogDescription(blogDescription = e.target.value)}
+        ></textarea>
+
+        <input
+          type='password'
+          value={password}
+          placeholder={'Password'}
+          onChange={e => setPassword(password = e.target.value)}
+        />
+
+        <button 
+          type='submit'
+        >
+          Sign up
+        </button>
+
+        <Link
+          to='/login'
+        >
+          Already have an account? Log in!
+        </Link>
       </form>
     </div>
   )

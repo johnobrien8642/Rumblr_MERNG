@@ -1,20 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Tabs from './Tabs';
 import Content from './Content';
-import { useLazyQuery } from '@apollo/client';
-import Queries from '../../graphql/queries.js';
-import Cookies from 'js-cookie';
-const { FETCH_ACTIVITY_COUNTS } = Queries;
 
 const Activity = ({
-  navActive, setNavActive, activityClose, closeActivity
+  navActive, setNavActive, 
+  activityClose, closeActivity,
+  mentionsCount, repostsCount,
+  commentsCount
 }) => {
-  let mentionsCount = useRef(0)
-  let repostsCount = useRef(0)
-  let commentsCount = useRef(0)
+  let timeAgoRef = useRef([]);
+  let totalCountRef = useRef(0)
   let cursorId = useRef(new Date().getTime())
   let [active, setActive] = useState(false)
   let [tab, setTab] = useState('all');
+  // let tabRef = useRef('all')
 
   useEffect(() => {
     if (activityClose) {
@@ -23,74 +22,120 @@ const Activity = ({
       //eslint-disable-next-line
       closeActivity(activityClose = false)
     }
+
   }, [activityClose])
 
-  const [fetchActivityCountsCB, { called, loading, data, refetch }] = useLazyQuery(FETCH_ACTIVITY_COUNTS, {
-    variables: {
-      query: Cookies.get('currentUser'),
-      cursorId: cursorId.current.toString()
-    }
-  })
-  
-  if (called && loading) return <p>Loading ...</p>
-
-  if (!called) {
-    fetchActivityCountsCB()
+  const accumulateCounts = (
+    mentionsCount, 
+    repostsCount, 
+    commentsCount,
+    totalCountRef
+  ) => {
+    totalCountRef.current = totalCountRef.current + mentionsCount + repostsCount + commentsCount
   }
 
-  const accumulateCounts = (data) => {
-    mentionsCount.current = mentionsCount.current + data.mentionsCount
-    repostsCount.current = repostsCount.current + data.repostsCount
-    commentsCount.current = commentsCount.current + data.commentsCount
+  const renderTotalCount = (totalCountRef) => {
+    if (totalCountRef.current > 0 && totalCountRef.current <= 99) {
+      return (
+        <div
+          className='countAlertWrapperDiv'
+        >
+          <div>
+            <span
+              className={
+                totalCountRef.current < 10 ? 
+                'oneThroughTen' : 
+                'elevenThroughNinetyNine'
+              }
+            >
+              {totalCountRef.current}
+            </span>
+          </div>
+        </div>
+      )
+    } else if (totalCountRef.current > 99) {
+      return (
+        <div
+          className='countAlertWrapperDiv'
+        >
+          <div>
+            <span
+              className={'greaterThanNinetyNine'}
+            >
+              99+
+            </span>
+          </div>
+        </div>
+      )
+    }
   }
   
   if (active) {
-    const { fetchActivityCounts } = data;
-    refetch()
-    accumulateCounts(fetchActivityCounts)
+
+    accumulateCounts(
+      mentionsCount,
+      repostsCount,
+      commentsCount,
+      totalCountRef
+    )
 
     return(
       <div
-        className='activity'
-        tabIndex={0}
-        onBlur={e => {
-          if (!e.relatedTarget) {
-            var date = new Date()
-            cursorId.current = date.getTime()
-            setTab(tab = 'all')
-            setActive(active = false)
-          }
+        className='activityIcon'
+        onClick={() => {
+          setActive(active = true)
         }}
       >
-        <Tabs
-          tab={tab}
-          setTab={setTab}
-          cursorId={cursorId}
-          mentionsCount={mentionsCount}
-          repostsCount={repostsCount}
-          commentsCount={commentsCount}
+        <img 
+         src="https://img.icons8.com/fluent-systems-filled/48/ffffff/lightning-bolt.png"
+         alt=''
         />
-        <Content
-          tab={tab}
-          active={active}
-          setActive={setActive}
-          activityCursorId={cursorId}
-          navActive={navActive}
-          setNavActive={setNavActive}
-        />
+        
+        <div
+          className='activity'
+          tabIndex={0}
+          onBlur={e => {
+            if (!e.relatedTarget) {
+              var date = new Date()
+              cursorId.current = date.getTime()
+              timeAgoRef.current = []
+              setTab(tab = 'all')
+              setActive(active = false)
+            }
+          }}
+        >
+          <Tabs
+            tab={tab}
+            setTab={setTab}
+            cursorId={cursorId}
+            timeAgoRef={timeAgoRef}
+          />
+          <Content
+            tab={tab}
+            active={active}
+            setActive={setActive}
+            activityCursorId={cursorId}
+            navActive={navActive}
+            setNavActive={setNavActive}
+            timeAgoRef={timeAgoRef}
+          />
+        </div>
       </div>
     )
   } else {
     return (
-      <div>
-        <button
-          type='button'
-          onClick={() => {
-            setActive(active = true)
-          }}
-        >
-          Activity
-        </button>
+      <div
+        className='activityIcon'
+        onClick={() => {
+          totalCountRef.current = 0
+          setActive(active = true)
+        }}
+      >
+        <img 
+          src="https://img.icons8.com/fluent-systems-filled/48/ffffff/lightning-bolt.png"
+          alt=''
+        />
+        {renderTotalCount(totalCountRef)}
       </div>
     )
   }

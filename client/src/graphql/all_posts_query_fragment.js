@@ -41,6 +41,9 @@ const AllQueryFragment = {
         _id
         blogName
       }
+      title
+      descriptions
+      kind
     }
     ... on PhotoPostType {
       _id
@@ -48,6 +51,8 @@ const AllQueryFragment = {
         _id
         blogName
       }
+      descriptions
+      kind
     }
     ... on QuotePostType {
       _id
@@ -55,6 +60,8 @@ const AllQueryFragment = {
         _id
         blogName
       }
+      quote
+      kind
     }
     ... on LinkPostType {
       _id
@@ -62,6 +69,8 @@ const AllQueryFragment = {
         _id
         blogName
       }
+      descriptions
+      kind
     }
     ... on ChatPostType {
       _id
@@ -69,6 +78,8 @@ const AllQueryFragment = {
         _id
         blogName
       }
+      descriptions
+      kind
     }
     ... on AudioPostType {
       _id
@@ -76,6 +87,8 @@ const AllQueryFragment = {
         _id
         blogName
       }
+      descriptions
+      kind
     }
     ... on VideoPostType {
       _id
@@ -83,6 +96,8 @@ const AllQueryFragment = {
         _id
         blogName
       }
+      descriptions
+      kind
     }
   `
 }

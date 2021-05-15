@@ -1,10 +1,15 @@
 .nav {
+  // background-color: red;
+  background-color: #011328;
+  width: 100%;
+  position: fixed;
   height: 60px;
   border-bottom: 0.5px solid #1A283E;
   font-family: 'Noto Sans JP', sans-serif
 }
 
-.loggedOutNav {
+//when logged out
+.loggedOutNav, .loggedInNav {
   display: flex;
   justify-content: space-between;
 
@@ -17,46 +22,389 @@
       width: 45px;
       height: 50px;
       margin-right: 15px;
-      margin-left: 15px;
+      margin-left: 10px;
       z-index: 0;
       
-      .filledR {
-        opacity: 0;
-        position: absolute;
-        left: -1px;
-        transition: opacity 0.22s;
-        z-index: 2;
-      }
+      img {
+        opacity: 1;
+        filter: contrast(500%);
+        transition: opacity .2s;
 
-      
-      .emptyR {
-        position: absolute;
-        left: -1px;
-        z-index: 1;
-      }
-
-      &:hover {     
-        .filledR {
-          opacity: 1;
+        &:hover {
+          opacity: .7;
         }
       }
     }
 
     .searchBar {
-      order: 2;
+      display: none;
+    }
+
+    @media (min-width: 980px) {
+      .searchBar {
+        display: block;
+        position: relative;
+  
+        img {
+          position: absolute;
+          z-index: 2;
+          top: 12px;
+          left: 2px;
+  
+          &:hover {
+            cursor: pointer;
+          }
+        }
+  
+        .searchBarInput {
+          transform: translateY(25%);
+          font-size: 16px;
+          background-color: white;
+          opacity: .3;
+          padding-left: 30px;
+          width: 480px;
+          height: 33px;
+          border-radius: 5px;
+          transition: opacity 1s;
+        
+          &:focus {
+            opacity: 1;
+          }
+
+        }
+
+        .searchDropDown {
+          background-color: white;
+          color: black;
+          border-radius: 5px;
+          box-shadow: 1px 11px 24px -5px black;
+          margin-top: 15px;
+          height: 350px;
+          display: block;
+          overflow: auto;
+          // opacity: .5;
+          
+          .followedTagsHeader {
+            color: #414141;
+            background-color: #E8E9E8;
+            padding-top: 7px;
+            padding-left: 7px;
+            padding-bottom: 5px;
+            height: 25px;
+            font-size: 13px;
+          }
+
+          .followedTags {
+            overflow: auto;
+
+            
+            li {
+              display: flex;
+              margin-top: 5px;
+              justify-content: space-between;
+              // border-bottom: 1px solid black;
+              
+              a {
+                padding: 5px 15px 3px 8px;
+                display: inline-block;
+                color: black;
+              }
+
+              form {
+                button {
+                  margin-top: 8px;
+                  margin-right: 30px;
+                  font-size: 14px;
+                  font-weight: 700;
+                  color: #14A7FF;
+
+                  &:hover {
+                    cursor: pointer;
+                  }
+                }
+              }
+            }
+          }
+          
+          .results {
+            overflow: auto;
+            
+            li {
+              display: flex;
+              margin-top: 5px;
+              justify-content: space-between;
+              // background-color: red;
+              height: 50px;
+              // border-bottom: 1px solid black;
+              
+              a {
+                padding: 5px 15px 3px 8px;
+                display: inline-block;
+                color: black;
+
+                p {
+                  font-size: 12px;
+                }
+              }
+
+              form {
+                button {
+                  margin-top: 8px;
+                  margin-right: 30px;
+                  font-size: 14px;
+                  font-weight: 700;
+                  color: #14A7FF;
+
+                  &:hover {
+                    cursor: pointer;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 
+  //when logged out
   .auth {
+    margin-top: 15px;
+
     .login {
-      background-color: blue;
-      // order: 3;
+      color: black;
+      background-color: #1bca2a;
+      padding: 5px 18px 8px 18px;
+      box-shadow: 0px 1px 9px 2px black;
+      font-weight: bold;
+      border-radius: 5px;
+      white-space: nowrap;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
 
     .register {
-      background-color: yellow;
-      margin-left: 20px;
-      // order: 4;
+      color: black;
+      background-color: #14a9ff;
+      padding: 5px 18px 8px 18px;
+      margin-left: 15px;
+      margin-right: 20px;
+      font-weight: bold;
+      box-shadow: 0px 1px 9px 2px black;
+      border-radius: 5px;
+      white-space: nowrap;
+    
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .navTools {
+    display: flex;
+    position: relative;
+    margin-top: 5px;
+    // background-color: red;
+    
+
+    .homeIcon {
+      margin-right: 25px;
+
+      img {
+        filter: contrast(500%);
+      }
+    }
+
+    .discoverIcon {
+      margin-top: 4px;
+      margin-right: 25px;
+
+      img {
+        filter: contrast(500%)
+      }
+    }
+
+    .activityIcon {
+      margin-right: 25px;
+      
+      &:hover {
+        cursor: pointer;
+      }
+
+      img {
+        filter: contrast(500%);
+      }
+    }
+
+    .userIcon {
+      margin-right: 10px;
+
+      &:hover {
+        cursor: pointer;
+      }
+      
+      img {
+        filter: contrast(500%);
+      }
+    }
+
+    .activityIcon {
+      position: relative;
+
+      .countAlertWrapperDiv {
+        position: absolute;
+        background-color: #011328;
+        // background-color: red;
+        height: 29px;
+        width: 29px;
+        top: -1px;
+        left: 25px;
+        border-radius: 5px;
+
+        div {
+          // position: absolute;
+          display: inline-block;
+          position: relative;
+          height: 23.5px;
+          top: -0.1px;
+          left: 3.2px;
+          width: 23.5px;
+          font-size: 13px;
+          background-color: #14A7FF;
+          border-radius: 2.5px;
+          
+          
+          .oneThroughTen {
+            position: relative;
+            margin: auto;
+            color: #011328;
+            font-weight: 700;
+            font-size: 14px;
+            top: 0px;
+            left: 8px;
+          }
+
+          .elevenThroughNinetyNine {
+            position: relative;
+            margin: auto;
+            color: #011328;
+            font-weight: 700;
+            top: 2px;
+            left: 4px;
+          }
+        
+          .greaterThanNinetyNine {
+            position: relative;
+            margin: auto;
+            color: #011328;
+            font-weight: 700;
+            top: 2px;
+            left: 0.8px;
+          }
+        }
+      }
+      
+
+      .activity {
+        position: absolute;
+        width: 400px;
+        background-color: white;
+        // background-color: red;
+        border-radius: 5px;
+        color: black;
+        top: 52px;
+        right: -70px;
+        height: 500px;
+        box-shadow: 1px 11px 24px 0px black;
+        z-index: 0;
+
+        .content {
+          overflow: auto;
+          height: 400px;      
+        }
+
+        .timeAgo {
+          color: #474747;
+          background-color: #E8E9E8;
+          font-size: 14px;
+
+          p {
+            padding: 5px 0 5px 5px;
+          }
+        }
+
+        .activityResult {
+          margin: 3px 5px 3px 5px;
+          color: black;
+
+          &:first-child {
+            margin-top: 0;
+          }
+          
+          .boldUser {
+            font-weight: 700;
+            color: black
+          }
+
+          .activitySlug {
+            color: black;
+          }
+
+          .byLine {
+            color: #474747;
+          }
+        }
+
+        .activityTabsHeader {
+          color: #474747;
+          padding: 12px 0 11px 15px;
+          font-weight: 700;
+          border-bottom: .5px solid rgba(26, 40, 62, 0.2);
+        }
+
+        .activityTabsDiv {
+          display: flex;
+          z-index: 1;
+          color: #474747;
+          justify-content: space-between;
+          margin-top: 8px;
+
+          .tab {
+            display: flex;
+            width: 100px;
+            height: 40px;
+            font-size: 18px;
+            font-weight: 700;
+
+            span {
+              margin: auto;
+              padding-bottom: 10px;
+            }
+          }
+
+          .activityTabSelected {
+            color: #14A7FF;
+            border-bottom: 3px solid #14A7FF;;
+            // background-color: red;
+          }
+        }
+  
+        .activityTab:hover {
+          cursor: pointer;
+        }
+        
+        .activityTabSelected:hover {
+          cursor: pointer;
+        }
+        
+        // .activityTabSelected {
+        //   // background-color: red;
+        // }
+
+        
+      } 
     }
   }
 }

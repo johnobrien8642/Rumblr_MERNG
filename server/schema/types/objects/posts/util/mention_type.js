@@ -35,6 +35,7 @@ const MentionType = new GraphQLObjectType({
         .then(mention => mention.post)
       }
     },
+    createdAt: { type: GraphQLString },
     kind: { type: GraphQLString },
   })
 })

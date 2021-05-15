@@ -177,6 +177,7 @@ const Queries = {
         ... on UserType {
           _id
           blogName
+          blogDescription
           email
           kind
         }
@@ -290,10 +291,15 @@ const Queries = {
             __typename
             ${ALL_POSTS_ACTIVITY}
           }
+          createdAt
         }
         ... on RepostType {
           _id
           kind
+          repostCaptions {
+            caption
+            userId
+          }
           user {
             _id
             blogName
@@ -306,6 +312,7 @@ const Queries = {
             __typename
             ${ALL_POSTS_ACTIVITY}
           }
+          createdAt
         }
         ... on CommentType {
           _id
@@ -319,6 +326,7 @@ const Queries = {
             __typename
             ${ALL_POSTS_ACTIVITY}
           }
+          createdAt
         }
         ... on CommentType {
           _id
@@ -332,6 +340,7 @@ const Queries = {
             __typename
             ${ALL_POSTS_ACTIVITY}
           }
+          createdAt
         }
         ... on FollowType {
           _id
@@ -350,6 +359,20 @@ const Queries = {
               blogName
             }
           }
+          createdAt
+        }
+        ... on LikeType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+          }
+          post {
+            __typename
+            ${ALL_POSTS_ACTIVITY}
+          }
+          createdAt
         }
       }
     }
