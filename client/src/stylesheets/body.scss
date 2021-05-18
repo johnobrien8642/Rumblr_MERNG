@@ -1,6 +1,12 @@
+:root {
+  --off-white: #ECECEC;
+  --tumblr-deep-blue: #011328;
+  --mid-gray: #414141;
+  --light-gray: #E8E9E8;
+}
+
 body {
-  background-color: #011328;
-  color: white;
+  background-color: var(--tumblr-deep-blue);
 }
 
 b {
@@ -10,8 +16,7 @@ b {
 .postForm {
   border: 1px solid black;
   width: fit-content;
-  background-color: white;
-  color: black;
+  background-color: var(--off-white);
 }
 
 .post {
@@ -19,8 +24,7 @@ b {
   width: fit-content;
   padding: 20px;
   margin: 20px;
-  background-color: white;
-  color: black
+  background-color: var(--off-white);
 }
 
 .addInputs {
@@ -107,23 +111,23 @@ b {
 }
 
 
-.userDetails {
-  background-color: gray;
-  width: 300px;
-}
+// .userDetails {
+//   background-color: gray;
+//   width: 300px;
+// }
 
-.followerResult {
-  background-color: gray;
-  width: 300px;
-}
+// .followerResult {
+//   background-color: gray;
+//   width: 300px;
+// }
 
-.followedResult {
-  background-color: gray;
-  width: 300px;
-}
+// .followedResult {
+//   background-color: gray;
+//   width: 300px;
+// }
 
 .postsNav {
-  background-color: white;
+  background-color: var(--off-white);
   width: 150px;
   height: 600px;
 }

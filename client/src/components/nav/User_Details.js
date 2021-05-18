@@ -1,156 +1,151 @@
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import Logout from '../auth/Logout.js'
-import Queries from '../../graphql/queries';
-import Cookies from 'js-cookie';
-const { FETCH_USER_DETAILS_COUNTS } = Queries;
+import Logout from '../auth/Logout.js';
 
 const UserDetails = ({
-  navActive, setNavActive, detailsClose, closeDetails
+  navActive, 
+  setNavActive, 
+  detailsClose,
+  blogName,
+  blogDescription,
+  totalLikeCount,
+  userFollowCount,
+  userPostsCount,
+  followersCount,
+  detailsOpen,
+  setDetailsOpen
 }) => {
   let [active, setActive] = useState(false)
+  let listenerRef = useRef(null)
 
   useEffect(() => {
-    document.onload = () => {
-      document.querySelector('.userDetails').focus()
-    }
+    var el = document.querySelector('.userDetails')
 
-    if (detailsClose) {
-      //eslint-disable-next-line
-      setActive(active = false)
-      //eslint-disable-next-line
-      closeDetails(detailsClose = false)
+    if (el) {
+      el.focus()
     }
-
-    return () => {
-      refetch()
-    }
+    
     //eslint-disable-next-line
-  }, [detailsClose])
+  }, [detailsClose, detailsOpen, active])
 
-  let { loading, error, data, refetch } = useQuery(FETCH_USER_DETAILS_COUNTS, {
-    variables: {
-      query: Cookies.get('currentUser')
-    },
-    fetchPolicy: 'cache-and-network'
-  })
-  
-  if (loading) return 'Loading...';
-  if (error) return `Error: ${error.message}`
-
-  let { user } = data;
-
-  if (active) {
+  if (detailsOpen) {
     return (
-    <div
-      className='userDetails'
-      tabIndex={0}
-      onBlur={e => {
-        if (e.relatedTarget === null) {
-          setActive(active = false)
-        }
-      }}
-    >
-      <button
-        onClick={() => setNavActive(navActive = false)}
+      <div
+        className='userDetails'
+        tabIndex={0}
+        onBlur={e => {
+          if (!e.relatedTarget) {
+            setDetailsOpen(detailsOpen = false)
+          }
+        }}
       >
-        User
-      </button>
-      <ul>
-        <li>
-          <Logout />
-        </li>
-        <li>
-        
-          <Link 
-            to='/likes'
-            onClick={() => {
-              setNavActive(navActive = false)
-            }}
+        <div
+          className='userHeader'
+        >
+          <span>Account</span>
+
+          <Logout
+            listener={listenerRef.current}
+            active={active}
+            setActive={setActive}
+          />
+        </div>
+      
+        <ul>
+          <li>
+            <Link 
+              to='/likes'
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <img
+                className='detailIcon'
+                src="https://img.icons8.com/material-rounded/24/000000/like--v1.png" 
+                alt='' 
+              />
+              Likes
+            </Link>
+            <span>{totalLikeCount}</span>
+          </li>
+          <li>
+            <Link 
+              to='/following'
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <img 
+                className='detailIcon'
+                src="https://img.icons8.com/metro/26/000000/add-user-male.png"
+                alt=''
+              />
+              Following
+            </Link>
+            <span>{userFollowCount}</span>
+          </li>
+          <li>
+            <Link 
+              to='/settings/account'
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <img
+                className='detailIcon'
+                src="https://img.icons8.com/material-sharp/24/000000/settings.png"
+                alt=''
+              />
+              Settings
+            </Link>
+          </li>
+            <li
+              className='separator'
+            >
+            </li>
+          <li
+            className='blogDescription'
           >
-            <img 
-              src="https://img.icons8.com/material-rounded/24/000000/like--v1.png" 
-              alt='' 
-            />
-            Likes
-          </Link>
-          <span>{user.totalLikeCount}</span>
-        </li>
-        <li>
-          <Link 
-            to='/following'
-            onClick={() => {
-              setNavActive(navActive = false)
-            }}
-          >
-            <img 
-              src="https://img.icons8.com/metro/26/000000/add-user-male.png"
-              alt=''
-            />
-            Following
-          </Link>
-          <span>{user.userFollowCount}</span>
-        </li>
-        <li>
-          <Link 
-            to='/settings/account'
-            onClick={() => {
-              setNavActive(navActive = false)
-            }}
-          >
-            <img 
-              src="https://img.icons8.com/material-sharp/24/000000/settings.png"
-              alt=''
-            />
-            Settings
-          </Link>
-        </li>
-        <li>
-          <Link 
-            to={`/view/blog/${user.blogName}`} 
-            onClick={() => {
-              setNavActive(navActive = false)
-            }}
-          >
-            <h3>{user.blogName}</h3>
-          </Link>
-            <p>{user.blogDescription}</p>
-        </li>
-        <li>
-          <Link
-            to={`/view/blog/${user.blogName}`}
-            onClick={() => {
-              setNavActive(navActive = false)
-            }}
-          >
-            <span>Posts</span>
-            <span>{user.userPostsCount}</span>
-          </Link>
-        </li>
-        <li>
-          <Link
-            to={`/blog/${user.blogName}/followers`}
-            onClick={() => {
-              setNavActive(navActive = false)
-            }}
-          >
-            <span>Followers</span>
-          </Link>
-          <span>{user.followersCount}</span>
-        </li>
-      </ul>
-    </div>
+            <Link 
+              to={`/view/blog/${blogName}`} 
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <h3>{blogName}</h3>
+              <p>{blogDescription}</p>
+            </Link>
+          </li>
+          <li>
+            <Link
+              className='blogDetailData'
+              to={`/view/blog/${blogName}`}
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <p>Posts</p>
+            </Link>
+              <span>{userPostsCount}</span>
+          </li>
+          <li>
+            <Link
+              className='blogDetailData'
+              to={`/blog/${blogName}/followers`}
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <p>Followers</p>
+            </Link>
+              <span>{followersCount}</span>
+          </li>
+        </ul>
+      </div>
     )
   } else {
     return (
-      <div
-        className='userIcon'
-      >
-        <img
-          src="https://img.icons8.com/material-rounded/48/ffffff/user.png"
-          alt=''
-        />
+      <div>
       </div>
     )
   }

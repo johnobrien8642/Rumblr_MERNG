@@ -6,7 +6,11 @@ const { IS_LOGGED_IN } = Queries;
 
 const Search = ({
   searchClose,
-  closeSearch
+  closeSearch,
+  activityOpen,
+  setActivityOpen,
+  detailsOpen,
+  setDetailsOpen
 }) => {
   let [input, setInput] = useState('');
   let [followedActive, setFollowedActive] = useState(false)
@@ -37,13 +41,14 @@ const Search = ({
         tabIndex='0'
         onBlur={e => onBlur(e)}
         onFocus={e => {
-
-            if (
-              !e.relatedTarget || 
-              e.relatedTarget.localName === 'a'
-            ) {
-              setFollowedActive(followedActive = true)
-            }
+          if (
+            !e.relatedTarget || 
+            e.relatedTarget.localName === 'a'
+          ) {
+            setFollowedActive(followedActive = true)
+            setActivityOpen(activityOpen = false)
+            setDetailsOpen(detailsOpen = false)
+          }
         }}
       >
         <img

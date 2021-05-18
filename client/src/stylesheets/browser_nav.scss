@@ -1,11 +1,12 @@
-.nav {
-  // background-color: red;
-  background-color: #011328;
+.browserNav {
+  background-color: var(--tumblr-deep-blue);
   width: 100%;
   position: fixed;
   height: 60px;
   border-bottom: 0.5px solid #1A283E;
-  font-family: 'Noto Sans JP', sans-serif
+  font-family: 'Noto Sans JP', sans-serif;
+  top: 0px;
+  z-index: 99;
 }
 
 //when logged out
@@ -31,6 +32,7 @@
         transition: opacity .2s;
 
         &:hover {
+          cursor: pointer;
           opacity: .7;
         }
       }
@@ -82,11 +84,10 @@
           height: 350px;
           display: block;
           overflow: auto;
-          // opacity: .5;
           
           .followedTagsHeader {
-            color: #414141;
-            background-color: #E8E9E8;
+            color: var(--mid-gray);
+            background-color: var(--light-gray);
             padding-top: 7px;
             padding-left: 7px;
             padding-bottom: 5px;
@@ -102,7 +103,6 @@
               display: flex;
               margin-top: 5px;
               justify-content: space-between;
-              // border-bottom: 1px solid black;
               
               a {
                 padding: 5px 15px 3px 8px;
@@ -133,9 +133,7 @@
               display: flex;
               margin-top: 5px;
               justify-content: space-between;
-              // background-color: red;
               height: 50px;
-              // border-bottom: 1px solid black;
               
               a {
                 padding: 5px 15px 3px 8px;
@@ -202,12 +200,12 @@
     }
   }
 
+  //when logged in
+
   .navTools {
     display: flex;
     position: relative;
     margin-top: 5px;
-    // background-color: red;
-    
 
     .homeIcon {
       margin-right: 25px;
@@ -256,7 +254,6 @@
       .countAlertWrapperDiv {
         position: absolute;
         background-color: #011328;
-        // background-color: red;
         height: 29px;
         width: 29px;
         top: -1px;
@@ -264,7 +261,6 @@
         border-radius: 5px;
 
         div {
-          // position: absolute;
           display: inline-block;
           position: relative;
           height: 23.5px;
@@ -305,106 +301,188 @@
           }
         }
       }
+    }
+
+    .userIcon {
+      position: relative;
+
+    }
+
+    .activity {
+      position: absolute;
+      width: 400px;
+      background-color: white;
+      border-radius: 5px;
+      color: black;
+      top: 52px;
+      right: 20px;
+      height: 500px;
+      box-shadow: 1px 11px 24px 0px black;
+      z-index: 0;
+
+      .content {
+        overflow: auto;
+        height: 400px;      
+      }
+
+      .timeAgo {
+        color: #474747;
+        background-color: #E8E9E8;
+        font-size: 14px;
+
+        p {
+          padding: 5px 0 5px 5px;
+        }
+      }
+
+      .activityResult {
+        padding: 3px 5px 3px 5px;
+        color: black;
+
+        &:hover {
+          background-color: #E8E9E8;
+        }
+
+        &:first-child {
+          margin-top: 0;
+        }
+        
+        .boldUser {
+          font-weight: 700;
+          color: black
+        }
+
+        .activitySlug {
+          color: black;
+        }
+
+        .byLine {
+          color: #474747;
+        }
+      }
+
+      .activityTabsHeader {
+        color: #474747;
+        padding: 12px 0 11px 15px;
+        font-weight: 700;
+        border-bottom: .5px solid rgba(26, 40, 62, 0.2);
+      }
+
+      .activityTabsDiv {
+        display: flex;
+        z-index: 1;
+        color: #474747;
+        justify-content: space-between;
+        margin-top: 8px;
+
+        .tab {
+          display: flex;
+          width: 100px;
+          height: 40px;
+          font-size: 18px;
+          font-weight: 700;
+
+          span {
+            margin: auto;
+            padding-bottom: 10px;
+          }
+        }
+
+        .activityTabSelected {
+          color: #14A7FF;
+          border-bottom: 3px solid #14A7FF;;
+        }
+      }
+
+      .activityTab:hover {
+        cursor: pointer;
+      }
+      
+      .activityTabSelected:hover {
+        cursor: pointer;
+      }      
+    }
+
+    .userDetails {
+      position: absolute;
+      top: 50px;
+      left: 9px;
+      width: 250px;
+      color: black;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: -3px 10px 27px 0px black;
       
 
-      .activity {
-        position: absolute;
-        width: 400px;
-        background-color: white;
-        // background-color: red;
+      .detailIcon {
+        opacity: .7;
+        padding: 0 8px 0 8px;
+      }
+
+      .userHeader {
+        position: relative;
+        display: flex;
         border-radius: 5px;
-        color: black;
-        top: 52px;
-        right: -70px;
-        height: 500px;
-        box-shadow: 1px 11px 24px 0px black;
-        z-index: 0;
+        background-color: var(--light-gray);
+        color: var(--mid-gray);
+        justify-content: space-between;
+        font-size: 16px;
+        padding: 8px 0 8px 10px;
 
-        .content {
-          overflow: auto;
-          height: 400px;      
+        button {
+          position: relative;
+          padding-right: 13px;
+          color: var(--mid-gray);
+          font-size: 16px;
+          top: 2px;
         }
+      }
 
-        .timeAgo {
-          color: #474747;
-          background-color: #E8E9E8;
-          font-size: 14px;
 
-          p {
-            padding: 5px 0 5px 5px;
-          }
-        }
+      ul {
+        font-size: 20px;
 
-        .activityResult {
-          margin: 3px 5px 3px 5px;
-          color: black;
-
-          &:first-child {
-            margin-top: 0;
-          }
-          
-          .boldUser {
-            font-weight: 700;
-            color: black
-          }
-
-          .activitySlug {
-            color: black;
-          }
-
-          .byLine {
-            color: #474747;
-          }
-        }
-
-        .activityTabsHeader {
-          color: #474747;
-          padding: 12px 0 11px 15px;
-          font-weight: 700;
-          border-bottom: .5px solid rgba(26, 40, 62, 0.2);
-        }
-
-        .activityTabsDiv {
+        li {
           display: flex;
-          z-index: 1;
-          color: #474747;
           justify-content: space-between;
-          margin-top: 8px;
+          flex-direction: row;
+          padding: 8px 0 8px 0;
 
-          .tab {
-            display: flex;
-            width: 100px;
-            height: 40px;
-            font-size: 18px;
-            font-weight: 700;
+          .blogDetailData {
+            p {
+              padding-left: 50px;
+            }
+          }
+      
+          a {
+            color: var(--mid-gray);
+            font-size: 17px;
+            
+            h3 {
+              color: black;
+              font-weight: 700;
+              padding: 0 0 8px 8px;
+            }
 
-            span {
-              margin: auto;
-              padding-bottom: 10px;
+            p {
+              font-size: 15px;
+              padding-left: 8px;
             }
           }
 
-          .activityTabSelected {
-            color: #14A7FF;
-            border-bottom: 3px solid #14A7FF;;
-            // background-color: red;
+          span {
+            color: var(--mid-gray);
+            padding-right: 15px;
+            font-size: 16px;
           }
         }
-  
-        .activityTab:hover {
-          cursor: pointer;
-        }
-        
-        .activityTabSelected:hover {
-          cursor: pointer;
-        }
-        
-        // .activityTabSelected {
-        //   // background-color: red;
-        // }
+      }
 
-        
-      } 
+      .separator {
+        height: 30px;
+        background-color: var(--light-gray);
+        padding: 0;
+      }
     }
   }
 }

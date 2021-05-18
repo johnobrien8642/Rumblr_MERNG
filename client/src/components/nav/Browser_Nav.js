@@ -1,128 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
-import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import React, { useState } from 'react';
 import Search from '../search/Search';
 import UserDetails from './User_Details';
 import Activity from './Activity';
-import BrowserNav from './Browser_Nav';
-import Queries from '../../graphql/queries';
-const { IS_LOGGED_IN, 
-        FETCH_ACTIVITY_COUNTS, 
-        FETCH_USER_DETAILS_COUNTS } = Queries;
+import { Link } from 'react-router-dom';
 
-
-const Nav = () => {
+const BrowserNav = ({
+  data1, 
+  data2,
+  totalCountRef,
+  renderTotalCount
+}) => {
   let [navActive, setNavActive] = useState(false)
   let [searchClose, closeSearch] = useState(false)
   let [activityClose, closeActivity] = useState(false)
   let [detailsClose, closeDetails] = useState(false)
   let [activityOpen, setActivityOpen] = useState(false)
   let [detailsOpen, setDetailsOpen] = useState(false)
-  let totalCountRef = useRef(0);
-  let cursorId = useRef(new Date().getTime())
 
-  useEffect(() => {
-
-    return () => {
-      refetch1()
-      refetch2()
-    }
-
-    //eslint-disable-next-line
-  }, [navActive])
-
-  var { loading: loading1, 
-        error: error1, 
-        data: data1, 
-        refetch: refetch1 } = useQuery(FETCH_ACTIVITY_COUNTS, {
-        variables: {
-          query: Cookies.get('currentUser'),
-          cursorId: cursorId.current.toString()
-        },
-        fetchPolicy: 'cache-and-network'
-      })
-
-  var { loading: loading2, 
-        error: error2, 
-        data: data2, 
-        refetch: refetch2 } = useQuery(FETCH_USER_DETAILS_COUNTS, {
-          variables: {
-            query: Cookies.get('currentUser')
-          },
-          fetchPolicy: 'cache-and-network'
-      }) 
-
-  var { data: data3 } = useQuery(IS_LOGGED_IN)
-  
-  if (loading1 || loading2) return 'Loading...';
-
-  if (error1) {
-    return `Error: ${error1}`
-  } else if (error2) {
-    return `Error: ${error2}`
-  }
-
-  const accumulateCounts = (
-    data1,
-    totalCountRef
-  ) => {
-    totalCountRef.current = 
-    totalCountRef.current + 
-    data1.mentionsCount + 
-    data1.repostsCount + 
-    data1.commentsCount
-  }
-
-  const renderTotalCount = (totalCountRef) => {
-    if (totalCountRef.current > 0 && totalCountRef.current <= 99) {
-      return (
-        <div
-          className='countAlertWrapperDiv'
-        >
-          <div>
-            <span
-              className={
-                totalCountRef.current < 10 ? 
-                'oneThroughTen' : 
-                'elevenThroughNinetyNine'
-              }
-            >
-              {totalCountRef.current}
-            </span>
-          </div>
-        </div>
-      )
-    } else if (totalCountRef.current > 99) {
-      return (
-        <div
-          className='countAlertWrapperDiv'
-        >
-          <div>
-            <span
-              className={'greaterThanNinetyNine'}
-            >
-              99+
-            </span>
-          </div>
-        </div>
-      )
-    }
-  }
-  
-  if (data3.isLoggedIn) {
-
-    accumulateCounts(data1, totalCountRef)
-
-    return (
-      <React.Fragment>
-        <BrowserNav 
-          data1={data1}
-          data2={data2}
-          totalCountRef={totalCountRef}
-          renderTotalCount={renderTotalCount}
-        />
-      {/* <div
+  return (
+    <div
         className='browserNav loggedInNav'
       >
         <div
@@ -285,51 +181,8 @@ const Nav = () => {
             setActivityOpen={setActivityOpen}
           />
         </div>
-      </div> */}
-      </React.Fragment>
-    )
-  } else {
-    return (
-      <div
-        className='nav loggedOutNav'
-      >
-        <div
-          className='searchAndLogo'
-        >
-          <div
-            className='logo'
-          >
-            <img
-              src="https://img.icons8.com/fluent-systems-filled/48/ffffff/r.png"
-              alt=''  
-            />
-          </div>
-          <Search />
-        </div>
-
-        <div
-          className='auth'
-        >
-          <Link
-            className='login'
-            to='/login'
-          >
-            Log in
-          </Link>
-              
-          <Link
-            className='register'
-            to='/register'
-            onClick={e => {
-              e.stopPropagation()
-            }}
-          >
-            Sign up
-          </Link>
-        </div>
       </div>
-    )
-  }
+  )
 }
 
-export default Nav;
+export default BrowserNav;

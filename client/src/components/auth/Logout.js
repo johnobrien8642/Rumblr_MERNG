@@ -7,8 +7,10 @@ import Queries from '../../graphql/queries';
 const { LOGOUT_USER } = Mutations;
 const { IS_LOGGED_IN } = Queries;
 
-const Logout = () => {
-  let history = useHistory(); 
+const Logout = ({
+  listener
+}) => {
+  let history = useHistory();
 
   const [ Logout ] = useMutation(LOGOUT_USER, {
     update(client, { data }) {
@@ -20,6 +22,7 @@ const Logout = () => {
       })
     },
     onCompleted() {
+      document.removeEventListener('click', listener, true)
       Cookies.set('auth-token', '')
       Cookies.set('currentUser', '')
       history.push('/')
@@ -30,10 +33,10 @@ const Logout = () => {
   })
 
   return (
-    <div>
+    <React.Fragment>
       <button
+        type='button'
         onClick={e => {
-          e.preventDefault();
           Logout({ 
             variables: { 
               token: Cookies.get('auth-token')
@@ -41,9 +44,9 @@ const Logout = () => {
           })
         }}
       >
-       Logout
+        Log out
       </button>
-    </div>
+    </React.Fragment>
   )
 }
 

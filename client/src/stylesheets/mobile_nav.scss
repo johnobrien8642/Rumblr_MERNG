@@ -1,0 +1,123 @@
+.loggedOutNav, .loggedInNav {
+  @media (min-width: 980px) {
+    .searchBar {
+      display: block;
+      position: relative;
+  
+      img {
+        position: absolute;
+        z-index: 2;
+        top: 12px;
+        left: 2px;
+  
+        &:hover {
+          cursor: pointer;
+        }
+      }
+  
+      .searchBarInput {
+        transform: translateY(25%);
+        font-size: 16px;
+        background-color: white;
+        opacity: .3;
+        padding-left: 30px;
+        width: 480px;
+        height: 33px;
+        border-radius: 5px;
+        transition: opacity 1s;
+      
+        &:focus {
+          opacity: 1;
+        }
+  
+      }
+  
+      .searchDropDown {
+        background-color: white;
+        color: black;
+        border-radius: 5px;
+        box-shadow: 1px 11px 24px -5px black;
+        margin-top: 15px;
+        height: 350px;
+        display: block;
+        overflow: auto;
+        
+        .followedTagsHeader {
+          color: var(--mid-gray);
+          background-color: var(--light-gray);
+          padding-top: 7px;
+          padding-left: 7px;
+          padding-bottom: 5px;
+          height: 25px;
+          font-size: 13px;
+        }
+  
+        .followedTags {
+          overflow: auto;
+  
+          
+          li {
+            display: flex;
+            margin-top: 5px;
+            justify-content: space-between;
+            
+            a {
+              padding: 5px 15px 3px 8px;
+              display: inline-block;
+              color: black;
+            }
+  
+            form {
+              button {
+                margin-top: 8px;
+                margin-right: 30px;
+                font-size: 14px;
+                font-weight: 700;
+                color: #14A7FF;
+  
+                &:hover {
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
+        
+        .results {
+          overflow: auto;
+          
+          li {
+            display: flex;
+            margin-top: 5px;
+            justify-content: space-between;
+            height: 50px;
+            
+            a {
+              padding: 5px 15px 3px 8px;
+              display: inline-block;
+              color: black;
+  
+              p {
+                font-size: 12px;
+              }
+            }
+  
+            form {
+              button {
+                margin-top: 8px;
+                margin-right: 30px;
+                font-size: 14px;
+                font-weight: 700;
+                color: #14A7FF;
+  
+                &:hover {
+                  cursor: pointer;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

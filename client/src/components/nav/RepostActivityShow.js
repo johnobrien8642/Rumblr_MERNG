@@ -22,7 +22,7 @@ const RepostActivityShow = ({
       <Link
         to={`/blog/view/${repost.user.blogName}/${repost._id}`}
       >
-        <span>reposted your post {handleByline(repost)}</span>
+        <span className='activitySlug'>reposted your post {handleByline(repost)}</span>
       </Link>
       <p>
         {repost.repostCaptions.forEach(obj => {
