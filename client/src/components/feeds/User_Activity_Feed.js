@@ -6,17 +6,13 @@ import FeedUtil from '../posts/util/functions/feed_util.js';
 import ActivityUtil from '../nav/util/activity_util.js';
 const { FETCH_ALL_ACTIVITY } = Queries;
 const { handleActivity, handleTimeAgo } = ActivityUtil;
-const { infiniteScroll, 
+const { infiniteScroll,
         updateCacheInfScrollActivity, 
         handleData } = FeedUtil;
 
-const Content = ({
-  tab, active, 
-  setActive, activityCursorId, 
-  navActive, setNavActive,
-  timeAgoRef
-}) => {
+const UserActivityFeed = () => {
   let feedArr = useRef([]);
+  let timeAgoRef = useRef([]);
   let fetchMoreDiv = useRef(null);
   let cursorId = useRef(null);
   let fetchMoreDivId = useRef('#fetchMoreActivity');
@@ -27,8 +23,6 @@ const Content = ({
 
   useEffect(() => {
     timeAgoRef.current = []
-
-    document.querySelector('.activity').focus()
     
     var scroll = infiniteScroll(
       client, updateCacheInfScrollActivity,
@@ -42,7 +36,7 @@ const Content = ({
       refetch()
     }
     //eslint-disable-next-line
-  }, [tab, active])
+  }, [])
   
   let { loading, error, data, refetch } = useQuery(gqlQuery.current, {
     variables: {
@@ -59,22 +53,21 @@ const Content = ({
 
   return(
     <div
-      className='content'
+      className='activityFeed'
     >
       {feedArr.current.map((activity, i) => {
         return (
           <div
             key={activity._id}
             onClick={() => {
-              setNavActive(navActive = false)
+              // setNavActive(navActive = false)
             }}
           >
-            {handleTimeAgo(activity, timeAgoRef, tab)}
-            {handleActivity(activity, tab, true, navActive, setNavActive)}
+            {handleTimeAgo(activity, timeAgoRef, 'all')}
+            {handleActivity(activity, 'all', false)}
           </div>
         )
       })}
-
       <div
         id='fetchMoreActivity'
       >
@@ -83,4 +76,4 @@ const Content = ({
   )
 }
 
-export default Content;
+export default UserActivityFeed;

@@ -1,5 +1,256 @@
-.loggedOutNav, .loggedInNav {
-  @media (min-width: 980px) {
+.mobileNav {
+  display: none;
+  position: fixed;
+  height: 50px;
+  width: 100%;
+  background-color: var(--tumblr-deep-blue);
+}
+
+@media (max-width: 980px) {
+  .browserNav {
+    display: none;
+  }
+
+  .mobileNav {
+    display: flex;
+    position: fixed;
+    top: 0px;
+  
+    .hamburgerOrExit {
+      width: 50px;
+  
+      .exitIcon {
+        filter: contrast(500%);
+        margin: 14px 0 0 7px;
+        
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    
+      .hamburgerIcon {
+        filter: contrast(500%);
+        margin: 10px 0 0 5px;
+        
+        
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  
+    .mobileMenuDD.open {
+      width: 75%;
+    }
+
+    .mobileMenuDDModal.open {
+      display: block;
+    }
+
+    .mobileMenuDDModal {
+      display: none;
+      position: absolute;
+      height: 100vh;
+      width: 100vh;
+      background-color: rgb(0, 0, 0, .5);
+      top: 50px;
+    }
+
+      .mobileMenuDD {
+        display: block;
+        position: absolute;
+        top: 50px;
+        left: 0px;
+        width: 0%;
+        height: 80vh;
+        transition: width .3s;
+        font-family: 'Noto Sans JP', sans-serif;
+        background-color: var(--tumblr-deep-blue);
+        overflow-x: hidden;
+        overflow-y: auto;
+        white-space: nowrap;
+        z-index: 98;
+    
+        .mobileMenuItem {
+          display: flex;
+          justify-content: space-between;
+    
+          a {
+            display: inline-block;
+            margin: 8px 0 8px 10px;
+    
+            &:hover {
+              cursor: pointer;
+            }
+    
+            img {
+              position: relative;
+              top: 5px;
+              width: 30px;
+            }
+    
+            span {
+              display: inline-block;
+              padding-left: 10px;
+              margin-bottom: 5px;
+              
+            }
+          }
+    
+          .count {
+            display: inline-block;
+            margin-right: 10px;
+          }
+    
+          span, h3, p {
+            color: var(--off-white);
+            font-size: 17px;
+            font-weight: 500;
+            white-space: nowrap;
+          }
+    
+          h3 {
+            margin-top: 20px;
+          }
+        }
+
+        .mobileUserSettings {
+          width: 70%;
+          height: 80vh;
+          background-color: yellow;
+        }
+      }
+    
+      .mobileMenuItem.settings {
+        position: relative;
+        margin-left: 10px;
+        margin-top: 5px;
+    
+        div {
+          img {
+            width: 30px;
+          }
+    
+          span {
+            position: relative;
+            padding-left: 10px;
+            top: -5px;
+    
+          }
+        }
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      
+    
+      .mobileMenuItem.createAPost {
+        position: relative;
+        display: block;
+        margin-top: 8px;
+        margin-left: 20%;
+        margin-bottom: 10px;
+        width: 200px;
+        height: 40px;
+        border-radius: 7px;
+        background-color: var(--tumblr-light-blue);
+
+        //galaxy fold and iphone 5
+        @media (max-width: 320px) {
+          width: 150px;
+        }
+        
+        
+        img {
+          display: inline-block;
+          position: relative;
+          width: 18px;
+          padding: 13px 10px 13px 29px;
+          top: -4px;
+          //galaxy fold and iphone 5
+            @media (max-width: 320px) {
+              padding: 13px 10px 13px 10px;
+            }
+          }
+      
+          span {
+            position: relative;
+            font-size: 16px;
+            font-weight: 900;
+            padding: 10px 37px 13px 2px;
+            top: -18px;
+            left: -2px;
+            
+            //galaxy fold and iphone 5
+            @media (max-width: 320px) {
+              padding: 10px 37px 13px 0;
+            }
+            // background-color: black;
+          }
+    
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    
+      .mobileMenuItem.blogDetailHeader {
+        display: inline-block;
+        margin-left: 25px;
+
+        p {
+          font-size: 15px;
+        }
+        
+        @media (max-width: 320px) {
+          p {
+            width: 150px;
+            white-space: normal;
+          }
+        }
+      }
+    
+      .mobileMenuItem.blogDetailData {
+        margin-left: 60px;
+      }
+  
+    .logo {
+      // background: red;
+      // position: fixed;
+      margin: auto;
+  
+      img {
+        transition: opacity .2s;
+  
+        &:hover {
+          opacity: .7;
+        }
+      }
+  
+    }
+  
+    .searchOrExitIcon {
+      margin: 12px 10px 0 10px;
+      
+      .searchIcon {
+        opacity: .7;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+  
+      .exitIcon {
+
+        @media (max-width: 320px) {
+          margin-left: -6px;
+        }
+  
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  
     .searchBar {
       display: block;
       position: relative;
@@ -16,30 +267,46 @@
       }
   
       .searchBarInput {
+        position: relative;
         transform: translateY(25%);
         font-size: 16px;
         background-color: white;
         opacity: .3;
         padding-left: 30px;
-        width: 480px;
+        width: 220px;
         height: 33px;
         border-radius: 5px;
         transition: opacity 1s;
+
+        
+        @media (max-width: 320px) {
+          width: 170px;
+        }
+
+        @media (max-width: 540px) {
+          width: 280px;
+        }
+
+        @media (max-width: 768px) {
+          width: 350px;
+        }
       
         &:focus {
           opacity: 1;
         }
-  
       }
   
       .searchDropDown {
+        display: block;
+        position: fixed;
+        top: 50px;
+        bottom: 0;
+        left: 0;
+        right: 0;
         background-color: white;
         color: black;
         border-radius: 5px;
         box-shadow: 1px 11px 24px -5px black;
-        margin-top: 15px;
-        height: 350px;
-        display: block;
         overflow: auto;
         
         .followedTagsHeader {
@@ -54,7 +321,6 @@
   
         .followedTags {
           overflow: auto;
-  
           
           li {
             display: flex;
@@ -121,3 +387,15 @@
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

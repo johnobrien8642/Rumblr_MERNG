@@ -19,7 +19,9 @@ const PostRadar = () => {
   const { fetchPostRadar } = data;
   if (fetchPostRadar) {
     return (
-      <div>
+      <div
+        className='postRadar'
+      >
         <h1>Radar</h1>
         <PostShow 
           post={fetchPostRadar}

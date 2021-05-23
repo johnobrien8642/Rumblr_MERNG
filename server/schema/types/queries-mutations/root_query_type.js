@@ -307,7 +307,7 @@ const RootQueryType = new GraphQLObjectType({
                   { $unwind: '$posts' },
                   { $replaceRoot: { "newRoot": "$posts" } },
                   { $sort: { "createdAt": -1 } },
-                  { $limit: 25 }
+                  { $limit: 50 }
                 ]).then(res => {
                   return res
                 })

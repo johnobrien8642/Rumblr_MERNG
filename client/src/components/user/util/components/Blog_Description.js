@@ -9,6 +9,7 @@ const { UPDATE_USER_BLOG_DESCRIPTION } = Mutations;
 const { blogDescriptionCache } = UserSettingUtil;
 
 const BlogDescription = ({
+  mobile,
   userBlogDescription
 }) => {
   let blogDescriptionRef = useRef(userBlogDescription)

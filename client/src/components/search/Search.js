@@ -10,11 +10,14 @@ const Search = ({
   activityOpen,
   setActivityOpen,
   detailsOpen,
-  setDetailsOpen
+  setDetailsOpen,
+  searchOpen,
+  openSearch,
+  mobile
 }) => {
   let [input, setInput] = useState('');
-  let [followedActive, setFollowedActive] = useState(false)
-  let [active, setActive] = useState('');
+  let [followedActive, setFollowedActive] = useState(mobile ? true : false)
+  let [active, setActive] = useState(false);
   
   useEffect(() => {
     if (searchClose) {
@@ -23,12 +26,16 @@ const Search = ({
       //eslint-disable-next-line
       closeSearch(searchClose = false)
     }
-  }, [searchClose])
+  }, [searchClose, mobile, searchOpen])
 
   const onBlur = (e) => {
     if (!e.relatedTarget) {
-      setActive(active = false)
-      setFollowedActive(followedActive = false)
+      if (mobile) {
+        openSearch(searchOpen = false)
+      } else {
+        setActive(active = false)
+        setFollowedActive(followedActive = false)
+      }
     }
   }
 
@@ -46,8 +53,11 @@ const Search = ({
             e.relatedTarget.localName === 'a'
           ) {
             setFollowedActive(followedActive = true)
-            setActivityOpen(activityOpen = false)
-            setDetailsOpen(detailsOpen = false)
+
+            if (!mobile) {
+              setActivityOpen(activityOpen = false)
+              setDetailsOpen(detailsOpen = false)
+            }
           }
         }}
       >
@@ -65,15 +75,24 @@ const Search = ({
           onClick={() => {
             var el = document.querySelector('.searchIcon')
             el.style.opacity = '1'
+            if (!mobile) {
+              setDetailsOpen(detailsOpen = false)
+              setActivityOpen(activityOpen = false)
+            }
           }}
           onBlur={() => {
             var el = document.querySelector('.searchIcon')
             el.style.opacity = '.3'
           }}
           onChange={e => {
-            setInput(input = e.target.value)
-            setFollowedActive(followedActive = false)
-            setActive(active = true)
+              if (e.target.value === "") {
+                setInput(input = e.target.value)
+                setFollowedActive(followedActive = true)
+              } else {
+                setInput(input = e.target.value)
+                setFollowedActive(followedActive = false)
+                setActive(active = true)
+              }
           }}
         />
 

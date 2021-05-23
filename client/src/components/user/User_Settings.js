@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Email from './util/components/Email';
 import BlogDescription from './util/components/Blog_Description';
 import Password from './util/components/Password';
@@ -9,8 +10,8 @@ import { useQuery } from '@apollo/client';
 import Queries from '../../graphql/queries.js';
 const { FETCH_USER } = Queries;
 
-
 const UserSettings = () => {
+  let history = useHistory();
   
   let { loading, error, data } = useQuery(FETCH_USER, {
     variables: {
@@ -24,7 +25,20 @@ const UserSettings = () => {
   const { user } = data
   
   return (
-    <div>
+    <div
+      className='browserUserSettings'
+    >
+      <div
+        className='backBtn'
+        onClick={() => {
+          history.push('/dashboard')
+        }}
+      >
+        <img
+          src="https://img.icons8.com/metro/26/000000/edit.png"
+          alt=''
+        />
+      </div>
       <h3>Email</h3>
       <Email userEmail={user.email} />
       <h3>Blog Description</h3>

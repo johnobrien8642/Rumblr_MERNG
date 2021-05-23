@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import PostNav from '../nav/Posts_Nav';
+import PostsNav from '../nav/Posts_Nav';
 import Feed from '../feeds/Feed.js';
 import PostRadar from '../dashboard/util/Post_Radar';
 import CheckOutTheseBlogs from '../dashboard/util/Check_Out_These_Blogs';
@@ -10,7 +10,13 @@ const Dashboard = props => {
 
   return(
     <div>
-      <PostNav props={props} />
+      <PostsNav props={props} />
+      <Route
+        exact path={`${props.match.path}/create`}
+        render={(props) => (
+          <PostsNav props={props} mobile={true} />
+        )}
+      />
       <PostRadar />
       <CheckOutTheseBlogs />
       <Route

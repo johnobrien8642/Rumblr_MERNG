@@ -190,6 +190,7 @@ if (token) {
     })
 }
 
+
 const Root = () => {
   return (
     <ApolloProvider client={client}>
@@ -201,3 +202,5 @@ const Root = () => {
 }
 
 ReactDOM.render(<Root />, document.getElementById('root'));
+
+

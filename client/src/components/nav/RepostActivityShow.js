@@ -4,13 +4,15 @@ import BylineUtil from './util/byline_util.js'
 const { handleByline } = BylineUtil;
 
 const RepostActivityShow = ({
-  repost, navActive, setNavActive
+  dropdown, repost, navActive, setNavActive
 }) => {
   return(
     <div
       className='activityResult'
       onClick={() => {
-        setNavActive(navActive = false)
+        if (dropdown) {
+          setNavActive(navActive = false)
+        }
       }}
     >
       <Link

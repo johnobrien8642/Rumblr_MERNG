@@ -1,6 +1,7 @@
 :root {
   --off-white: #ECECEC;
   --tumblr-deep-blue: #011328;
+  --tumblr-light-blue: #14A7FF;
   --mid-gray: #414141;
   --light-gray: #E8E9E8;
 }
@@ -8,6 +9,10 @@
 body {
   background-color: var(--tumblr-deep-blue);
 }
+
+// .loading * {
+//   transition: none !important;
+// }
 
 b {
   font-weight: normal;
@@ -127,8 +132,17 @@ b {
 // }
 
 .postsNav {
+  display: block;
   background-color: var(--off-white);
   width: 150px;
   height: 600px;
+}
+
+.postRadar {
+  display: block;
+}
+
+.checkOutTheseBlogs {
+  display: block;
 }
 

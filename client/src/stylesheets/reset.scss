@@ -18,6 +18,16 @@ div:focus {
   outline: 0;
 }
 
+a:-webkit-any-link {
+	color: black;
+	cursor: default;
+}
+
+body {
+	position: relative;
+}
+
+
 // Super Form Reset
 // A couple of things to watch out for:
 // - IE8: If a text input doesn't have padding on all sides or none the text won't be centered.

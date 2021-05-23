@@ -11,12 +11,13 @@ TimeAgo.addDefaultLocale(en)
 const timeAgo = new TimeAgo('en-US')
 
 
-const handleActivity = (activity, navActive, setNavActive, tab) => {
+const handleActivity = (activity, tab, dropdown, navActive, setNavActive) => {
 
   if (tab === 'all') {
     if (activity.kind === 'Mention') {
       return (
         <MentionActivityShow
+          dropdown={dropdown}
           mention={activity}
           navActive={navActive}
           setNavActive={setNavActive}
@@ -24,7 +25,8 @@ const handleActivity = (activity, navActive, setNavActive, tab) => {
       )
     } else if (activity.kind === 'Repost') {
       return (   
-        <RepostActivityShow 
+        <RepostActivityShow
+          dropdown={dropdown}
           repost={activity}
           navActive={navActive}
           setNavActive={setNavActive}
@@ -33,6 +35,7 @@ const handleActivity = (activity, navActive, setNavActive, tab) => {
     } else if (activity.kind === 'Comment') {
       return (
         <CommentActivityShow 
+          dropdown={dropdown}
           comment={activity}
           navActive={navActive}
           setNavActive={setNavActive}
@@ -40,7 +43,8 @@ const handleActivity = (activity, navActive, setNavActive, tab) => {
       )
     } else if (activity.kind === 'Follow') {
       return (
-        <FollowerActivityShow 
+        <FollowerActivityShow
+          dropdown={dropdown}
           follow={activity}
           navActive={navActive}
           setNavActive={setNavActive}
@@ -48,7 +52,8 @@ const handleActivity = (activity, navActive, setNavActive, tab) => {
       )
     } else if (activity.kind === 'Like') {
       return (
-        <LikeActivityShow 
+        <LikeActivityShow
+          dropdown={dropdown}
           like={activity}
           navActive={navActive}
           setNavActive={setNavActive}
@@ -58,7 +63,8 @@ const handleActivity = (activity, navActive, setNavActive, tab) => {
   } else if (tab === 'Mention') {
     if (activity.kind === 'Mention') {
       return (
-        <MentionActivityShow 
+        <MentionActivityShow
+          dropdown={dropdown}
           mention={activity}
           navActive={navActive}
           setNavActive={setNavActive}
@@ -68,7 +74,8 @@ const handleActivity = (activity, navActive, setNavActive, tab) => {
   } else if (tab === 'Repost') {
     if (activity.kind === 'Repost') {
       return (
-        <RepostActivityShow 
+        <RepostActivityShow
+          dropdown={dropdown}
           repost={activity}
           navActive={navActive}
           setNavActive={setNavActive}
@@ -79,6 +86,7 @@ const handleActivity = (activity, navActive, setNavActive, tab) => {
     if (activity.kind === 'Comment') {
       return (
         <CommentActivityShow
+          dropdown={dropdown} 
           comment={activity}
           navActive={navActive}
           setNavActive={setNavActive}
@@ -89,6 +97,7 @@ const handleActivity = (activity, navActive, setNavActive, tab) => {
     if (activity.kind === 'Follow') {
       return (
         <FollowerActivityShow
+          dropdown={dropdown}
           follow={activity}
           navActive={navActive}
           setNavActive={setNavActive}

@@ -48,7 +48,7 @@ const BodyImageAndText = ({
                     setBodyImageFiles={setBodyImageFiles}
                     render={render}
                     setRender={setRender}
-                    objsToClean={objsToClean}          
+                    objsToClean={objsToClean}       
                   />
                 </React.Fragment>
               )

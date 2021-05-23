@@ -4,14 +4,16 @@ import BylineUtil from './util/byline_util.js'
 const { handleByline } = BylineUtil;
 
 const CommentShow = ({
-  comment, navActive, setNavActive
+  dropdown, comment, navActive, setNavActive
 }) => {
 
   return(
     <div
       className='activityResult'
       onClick={() => {
-        setNavActive(navActive = false)
+        if (dropdown) {
+          setNavActive(navActive = false)
+        }
       }}
     >
       <Link

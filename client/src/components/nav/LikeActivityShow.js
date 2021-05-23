@@ -4,14 +4,16 @@ import BylineUtil from './util/byline_util.js'
 const { handleByline } = BylineUtil;
 
 const LikeActivityShow = ({
-  like, navActive, setNavActive
+  dropdown, like, navActive, setNavActive
 }) => {
 
   return(
     <div
       className='activityResult'
       onClick={() => {
-        setNavActive(navActive = false)
+        if (dropdown) {
+          setNavActive(navActive = false)
+        }
       }}
     >
       <Link

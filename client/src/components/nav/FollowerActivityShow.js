@@ -2,14 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const FollowerActivityShow = ({
-  follow, navActive, setNavActive
+  dropdown, follow, navActive, setNavActive
 }) => {
 
   return(
     <div
       className='activityResult'
       onClick={() => {
-        setNavActive(navActive = false)
+        if (dropdown) {
+          setNavActive(navActive = false)
+        }
       }}
     >
       <Link

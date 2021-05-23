@@ -28,7 +28,6 @@ const Feed = ({
   
   useEffect(() => {
     
-    
     var scroll = infiniteScroll(
       client, updateCacheInfScroll,
       query, gqlQuery,

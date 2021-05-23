@@ -31,7 +31,11 @@ const Activity = ({
         className='activity'
         tabIndex={0}
         onBlur={e => {
-          if (!e.relatedTarget) {
+          console.log(e)
+          if (
+            !e.relatedTarget &&
+            e.target.offsetParent.className !== 'navTools'
+          ) {
             setActivityOpen(activityOpen = false)
           }
         }}

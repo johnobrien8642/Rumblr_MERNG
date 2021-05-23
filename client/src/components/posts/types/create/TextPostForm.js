@@ -98,7 +98,9 @@ const TextPostForm = ({
         handleAllTextTextPost(allText, descriptions, title)
 
         var instanceData = {
-          variants: { title },
+          variants: {
+            title 
+          },
           allText: allText.current,
           descriptions: descriptions,
           descriptionImages: handleUploadedFiles(body, bodyUploads),

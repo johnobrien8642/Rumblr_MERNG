@@ -19,7 +19,9 @@ const CheckOutTheseBlogs = () => {
   const { fetchCheckOutTheseBlogs } = data;
   
   return (
-    <div>
+    <div
+      className='checkOutTheseBlogs'
+    >
       <h1>Check Out These Blogs</h1>
       {fetchCheckOutTheseBlogs.map(user => {
         return (

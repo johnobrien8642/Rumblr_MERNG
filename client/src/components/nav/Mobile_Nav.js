@@ -1,26 +1,47 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Search from '../search/Search';
 import UserDetails from './User_Details';
 import Activity from './Activity';
+import MobileMenuDD from './Mobile_Menu_DD';
 import { Link } from 'react-router-dom';
+import MobileSearchOrLogo from './Mobile_Search_Or_Logo';
+import RenderSearchOrExitIcon from './Render_Search_Or_Exit_Icon';
 import NavUtil from './util/nav_util.js';
-const { accumulateCounts, renderTotalCount } = NavUtil;
+import HamburgerOrExitIcon from './Hamburger_Or_Exit_Icon';
+const { accumulateCounts } = NavUtil;
 
-const BrowserNav = ({
-  activityCounts,
+const MobileNav = ({
+  activityCounts, 
   userDetailsCounts,
   loggedInBool,
   totalCountRef,
   cursorId
-  // renderTotalCount,
-  // accumulateCounts
 }) => {
-  let [navActive, setNavActive] = useState(false)
-  let [searchClose, closeSearch] = useState(false)
-  let [activityClose, closeActivity] = useState(false)
-  let [detailsClose, closeDetails] = useState(false)
-  let [activityOpen, setActivityOpen] = useState(false)
-  let [detailsOpen, setDetailsOpen] = useState(false)
+  let [menuOpen, openMenu] = useState(false)
+  let [settingsOpen, openSettings] = useState(false)
+  let [searchOpen, openSearch] = useState(false)
+  let scrollYRef = useRef(null)
+  let scrollYRef2 = useRef(null)
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.position = 'fixed'
+      var el = document.querySelector('.mobileNav')
+      
+      if (el) {
+        el.focus()
+      }
+    }
+
+    var listener = window.addEventListener('scroll', () => {
+      scrollYRef.current = window.scrollY
+    })
+
+    return () => {
+      window.removeEventListener('scroll', listener)
+    }
+  }, [menuOpen])
+
   
   if (loggedInBool.isLoggedIn) {
     
@@ -28,9 +49,55 @@ const BrowserNav = ({
 
     return (
       <div
-        className='browserNav loggedIn'
+        className='mobileNav loggedIn'
+        tabIndex={-1}
+        onBlur={() => {
+          var body = document.body
+          body.style.position = ''
+          openMenu(menuOpen = false)
+        }}
       >
         <div
+          className='hamburgerOrExit'
+        >
+          <HamburgerOrExitIcon
+            menuOpen={menuOpen}
+            openMenu={openMenu}
+            settingsOpen={settingsOpen}
+            openSettings={openSettings}
+            scrollYRef={scrollYRef}
+            scrollYRef2={scrollYRef2}
+          />
+        </div>
+
+        <MobileMenuDD
+          activityCounts={activityCounts}
+          userDetailsCounts={userDetailsCounts}
+          loggedInBool={loggedInBool}
+          menuOpen={menuOpen}
+          openMenu={openMenu}
+          settingsOpen={settingsOpen}
+          openSettings={openSettings}
+          totalCountRef={totalCountRef}
+          cursorId={cursorId}
+          scrollYRef={scrollYRef}
+          scrollYRef2={scrollYRef2}
+        />
+
+        <MobileSearchOrLogo 
+          searchOpen={searchOpen}
+          openSearch={openSearch}
+        />
+
+        <div
+          className='searchOrExitIcon'
+        >
+          <RenderSearchOrExitIcon
+            searchOpen={searchOpen}
+            openSearch={openSearch}
+          />
+        </div>
+        {/* <div
           className='searchAndLogo'
         >
           <div
@@ -43,7 +110,7 @@ const BrowserNav = ({
               }}
             >
               <img 
-                src="https://img.icons8.com/fluent-systems-filled/38/ffffff/r.png"
+                src="https://img.icons8.com/fluent-systems-filled/48/ffffff/r.png"
                 alt=''  
               />
             </Link>
@@ -86,7 +153,7 @@ const BrowserNav = ({
               }}
             >
               <img
-                src="https://img.icons8.com/ios-glyphs/38/ffffff/home-page.png"
+                src="https://img.icons8.com/ios-glyphs/48/ffffff/home-page.png"
                 alt=''
               />
             </Link>
@@ -105,7 +172,7 @@ const BrowserNav = ({
               }}
             >
               <img 
-                src="https://img.icons8.com/ios/34/ffffff/compass--v1.png"
+                src="https://img.icons8.com/ios/40/ffffff/compass--v1.png"
                 alt=''
               />
             </Link>
@@ -117,7 +184,6 @@ const BrowserNav = ({
             totalCountRef.current = 0
 
             if (activityOpen) {
-              cursorId.current = new Date().getTime()
               setActivityOpen(activityOpen = false)
             } else {
               setActivityOpen(activityOpen = true)
@@ -129,7 +195,7 @@ const BrowserNav = ({
           }}
         >
           <img 
-            src="https://img.icons8.com/fluent-systems-filled/38/ffffff/lightning-bolt.png"
+            src="https://img.icons8.com/fluent-systems-filled/48/ffffff/lightning-bolt.png"
             alt=''
           />
           {renderTotalCount(totalCountRef)}
@@ -167,7 +233,7 @@ const BrowserNav = ({
           }}
         >
           <img
-            src="https://img.icons8.com/material-rounded/38/ffffff/user.png"
+            src="https://img.icons8.com/material-rounded/48/ffffff/user.png"
             alt=''
           />
         </div>
@@ -190,7 +256,7 @@ const BrowserNav = ({
             activityOpen={activityOpen}
             setActivityOpen={setActivityOpen}
           />
-        </div>
+        </div> */}
       </div>
     )
   } else {
@@ -237,4 +303,4 @@ const BrowserNav = ({
   }
 }
 
-export default BrowserNav;
+export default MobileNav;

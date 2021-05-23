@@ -11,6 +11,7 @@ const { FETCH_USER } = Queries;
 
 
 const FilterTagInput = ({
+  mobile,
   user
 }) => {
   let [tag, setTag] = useState('')
@@ -41,7 +42,6 @@ const FilterTagInput = ({
     }
   })
 
-  
   if (active) {
     return (
       <div>

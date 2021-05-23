@@ -31,7 +31,9 @@ const DeleteMyAccount = () => {
 
   if (active) {
     return (
-      <div>
+      <div
+        className='deleteMyAcct'
+      >
         <input
           type='password'
           placeholder='Confirm password...'
@@ -70,7 +72,9 @@ const DeleteMyAccount = () => {
     )
   } else if (askToConfirm) {
     return (
-      <div>
+      <div
+        className='deleteMyAcct'
+      >
         <button
           onClick={() => {
             deleteMyAccount({
@@ -98,7 +102,9 @@ const DeleteMyAccount = () => {
     )
   } else {
     return (
-      <div>
+      <div
+        className='deleteMyAcct'
+      >
         <button
           onClick={() => {
             setActive(active = true)

@@ -4,7 +4,9 @@ import { useMutation } from '@apollo/client';
 import Mutations from '../../../../graphql/mutations.js';
 const { UPDATE_USER_PASSWORD } = Mutations;
 
-const Password = () => {
+const Password = ({
+  mobile
+}) => {
   let [active, setActive] = useState(false);
   let [currentPW, setCurrentPW] = useState('');
   let [newPassword, setNewPassword] = useState('');

@@ -53,7 +53,7 @@ const UserDetails = ({
       
         <ul>
           <li>
-            <Link 
+            <Link
               to='/likes'
               onClick={() => {
                 setNavActive(navActive = false)
