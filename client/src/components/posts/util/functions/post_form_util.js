@@ -51,6 +51,27 @@ const previewMainImages = (
   }
 }
 
+const previewProfilePic = (
+  e,
+  previewProfilePicRef,
+  profileImageFile,
+  setProfileImageFile
+) => {
+  const file = Object.values(e.currentTarget.files)
+
+  var reader = new FileReader();
+
+  reader.addEventListener('load', () => {
+    previewProfilePicRef.current.src = reader.result
+    previewProfilePicRef.current.alt = ''
+    setProfileImageFile(profileImageFile = file)
+  }, false)
+
+  if (file[0]) {
+    reader.readAsDataURL(file[0])
+  }
+}
+
 const previewBodyImages = (
     e, body, bodyImageFiles,
     setBodyImageFiles,
@@ -373,6 +394,21 @@ const removeVideoObj = (
   setActive(active = false)
 }
 
+const removeProfilePic = (
+  previewProfilePicRef,
+  profileImageFile,
+  setProfileImageFile,
+  edit, render,
+  setRender
+) => {
+  previewProfilePicRef.current = {}
+  setProfileImageFile(profileImageFile = null)
+  
+  if (edit) {
+    setRender(render + 1)
+  }
+}
+
 //handle tags
 
 const handleTagInput = (
@@ -387,7 +423,7 @@ const handleTagInput = (
   
   if (!validText) {
     //eslint-disable-next-line
-    var matchText = new RegExp(/[\w+\s+.,!@$%&*()_+=?<>;:-]*/, 'g')
+    var matchText = new RegExp(/[\w+\s+'".,!@$%&*()_+=?<>;:-]*/, 'g')
     var cleanedText = tag.match(matchText)
     if (cleanedText) {
       var cleanedArr = cleanedText.filter(str => str !== '')
@@ -799,26 +835,42 @@ function MentionCustomization( editor ) {
 }
 
 const PostCreateUtil = { 
-  previewMainImages, previewBodyImages, 
+  previewMainImages, 
+  previewBodyImages, 
   previewLink,
-  previewAudio, previewVideoFile, 
-  previewVideoLink, removeMainObj,
-  removeBodyObj, removeAudioObj,
-  removeVideoObj, removeTag, 
-  handleTagInput, handleFoundTag, 
-  drag, onDropBody, onDropMain, allowDrop, 
+  previewAudio, 
+  previewVideoFile,
+  previewVideoLink,
+  previewProfilePic,
+  removeMainObj,
+  removeBodyObj, 
+  removeAudioObj,
+  removeVideoObj,
+  removeProfilePic,
+  removeTag, 
+  handleTagInput, 
+  handleFoundTag,
+  drag, 
+  onDropBody, 
+  onDropMain, 
+  allowDrop, 
   removeLinkSiteNameAndImage,
   removeLinkTitleAndDesc,
-  fetchUrlMetadata, mainPost, bodyPost,
-  audioPost, videoPost, 
+  fetchUrlMetadata, 
+  mainPost, 
+  bodyPost,
+  audioPost, 
+  videoPost, 
   // updateCacheCreate,
   // updateCacheUpdate, updateCacheDelete, 
   // updateCacheLike, updateCacheUnlike,
   // updateCacheAddFilterTag,
   // updateCacheDeleteFilterTag, 
-  handleFormData, stripAllImgs, 
+  handleFormData, 
+  stripAllImgs, 
   handleUploadedFiles,
-  handleMentions, discardMentions,
+  handleMentions, 
+  discardMentions,
   handleAllTextAudioPost, 
   handleAllTextTextPost,
   handleAllTextChatPost,
@@ -827,7 +879,8 @@ const PostCreateUtil = {
   handleAllTextQuotePost,
   handleAllTextVideoPost,
   resetDisplayIdx,
-  isUpdate, MentionCustomization
+  isUpdate, 
+  MentionCustomization
 };
  
 export default PostCreateUtil;

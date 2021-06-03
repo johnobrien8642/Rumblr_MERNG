@@ -1,50 +1,45 @@
-import React, { useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import FollowButton from '../../posts/util/components/social/Follow_Button';
-import Queries from '../../../graphql/queries';
-import Cookies from 'js-cookie';
+import ProfilePic from '../../user/util/components/Profile_Pic';
+import FeedUtil from '../../posts/util/functions/feed_util.js';
+const { doesUserFollowUser } = FeedUtil;
 
-const { DOES_USER_FOLLOW_USER } = Queries;
+const UserResult = ({ 
+  currentUser,
+  user, 
+  active,
+  setActive,
+  checkOutTheseBlogs
+}) => {
+  let doesUserFollowUserRef = useRef(false)
 
-const UserResult = ({ user, active, setActive }) => {
-
-  useEffect(() => {
-    return () => {
-      refetch()
-    }
-  })
-
-  let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_USER, {
-    variables: {
-      user: Cookies.get('currentUser'),
-      otherUser: user.blogName
-    },
-    fetchPolicy: 'no-cache'
-  })
-
+  doesUserFollowUser(doesUserFollowUserRef, currentUser, user)
   
-  if (loading) return 'Loading...';
-  if (error) return `Error: ${error}`;
-  
-  const { doesUserFollowUser } = data;
+  // if (currentUser) {
+  //   doesUserFollowUserRef.current =
+  //   currentUser.userFollows.some(obj => obj._id === user._id)
+  // }
   
   return (
     <React.Fragment>
-      <Link 
-        to={`/view/blog/${user.blogName}`}
-        onClick={() => {
-          if (active) {
-            setActive(active = false)
-          }
-        }}
-      >
-        <h3>{user.blogName}</h3>
-        <p>{user.blogDescription}</p>
-      </Link>
+      <div>
+        <ProfilePic user={user} standaloneLink={true} />
+        <Link
+          to={`/view/blog/${user.blogName}`}
+          onClick={() => {
+            if (active) {
+              setActive(active = false)
+            }
+          }}
+        >
+          <h3>{user.blogName}</h3>
+          <p>{checkOutTheseBlogs ? user.blogDescription : ''}</p>
+        </Link>
+      </div>
       <FollowButton 
-        user={user} 
-        follow={doesUserFollowUser}
+        user={user}
+        followed={doesUserFollowUserRef.current}
       />
     </React.Fragment>
   )

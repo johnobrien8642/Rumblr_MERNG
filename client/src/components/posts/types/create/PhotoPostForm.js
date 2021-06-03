@@ -4,11 +4,12 @@ import { useMutation } from '@apollo/client';
 import Mutations from '../../../../graphql/mutations';
 import Queries from '../../../../graphql/queries';
 import Cookies from 'js-cookie';
-import PhotoPostInput from '../../util/components/forms/inputTypes/Photo_Post_Input'
+import PhotoPostOrRegisterPhotoInput from '../../util/components/forms/inputTypes/Photo_Post_Or_Register_Photo_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+import ProfilePic from '../../../user/util/components/Profile_Pic';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, mainPost,
         handleFormData, stripAllImgs,
@@ -20,8 +21,14 @@ const { FETCH_USER_FEED } = Queries;
 
 
 const PhotoPostForm = ({
-  post, update,
-  setUpdate
+  user,
+  post, 
+  update,
+  setUpdate,
+  photoPostActive,
+  setPhotoPostActive,
+  postFormModal,
+  setPostFormModal
 }) => {
   let [mainImageFiles, setMainImageFiles] = useState([]);
   let main = useRef([]);
@@ -38,6 +45,15 @@ const PhotoPostForm = ({
   const formId = 'photoPostForm'
   const formInputId = 'photoPostInput'
   let history = useHistory();
+
+  useEffect(() => {
+    var el = document.querySelector('.photoPostForm')
+
+    if (el) {
+      el.focus()
+    }
+
+  }, [photoPostActive])
 
   useEffect(() => {
     resetDisplayIdx(main)
@@ -122,78 +138,100 @@ const PhotoPostForm = ({
     )
   }
 
-  return (
+  if (photoPostActive) {
+    return (
     <div
-      className={post ? '' : 'postForm'}
+      className='postFormContainer'
     >
-      <h1>PhotoPost</h1>
-      <form
-        id={formId}
-        onSubmit={e => handleSubmit(e)}
-        onKeyPress={e => { e.key === 'Enter' && e.preventDefault(); }}
-        encType={'multipart/form-data'}
-      >
+
+      <ProfilePic user={user} />
       
-        <PhotoPostInput
-          post={post}
-          update={update}
-          formId={formId}
-          formInputId={formInputId}
-          objsToClean={objsToClean}
-          main={main}
-          mainImageFiles={mainImageFiles}
-          setMainImageFiles={setMainImageFiles}
-          render={render}
-          setRender={setRender}
-          errMessage={errMessage}
-          setErrMessage={setErrMessage}
-        />
-
-        <BodyImageAndText
-          post={post}
-          update={update}
-          formId={formId}
-          formInputId={formInputId}
-          objsToClean={objsToClean}
-          body={body}
-          bodyImageFiles={bodyImageFiles}
-          setBodyImageFiles={setBodyImageFiles}
-          description={description}
-          setDescription={setDescription}
-          render={render}
-          setRender={setRender}
-          errMessage={errMessage}
-          setErrMessage={setErrMessage}
-        />
-
-        <Tags
-          post={post}
-          tag={tag}
-          setTag={setTag}
-          tags={tags}
-          setTags={setTags}
-        />
-
-        <button
-          type='submit'
-          disabled={
-            main.current.length === 0 &&
-            mainImageFiles.length === 0 && 
-            bodyImageFiles.length === 0
-          }
-        >
-          {post ? 'update': 'post'}
-        </button>
-      </form>
       <div
-        onClick={() => {
-          history.push('/')
+        className={photoPostActive ? 
+          'postForm photoPostForm active' : 
+          'postForm photoPostForm hidden'
+        }
+        tabIndex={-1}
+        onBlur={() => {
+          setPhotoPostActive(photoPostActive = false)
+          setPostFormModal(postFormModal = false)
         }}
       >
-        Close
+        <h1>PhotoPost</h1>
+        <form
+          id={formId}
+          onSubmit={e => handleSubmit(e)}
+          onKeyPress={e => { e.key === 'Enter' && e.preventDefault(); }}
+          encType={'multipart/form-data'}
+        >
+        
+          <PhotoPostOrRegisterPhotoInput
+            post={post}
+            update={update}
+            formId={formId}
+            formInputId={formInputId}
+            objsToClean={objsToClean}
+            main={main}
+            mainImageFiles={mainImageFiles}
+            setMainImageFiles={setMainImageFiles}
+            render={render}
+            setRender={setRender}
+            errMessage={errMessage}
+            setErrMessage={setErrMessage}
+          />
+  
+          <BodyImageAndText
+            post={post}
+            update={update}
+            formId={formId}
+            formInputId={formInputId}
+            objsToClean={objsToClean}
+            body={body}
+            bodyImageFiles={bodyImageFiles}
+            setBodyImageFiles={setBodyImageFiles}
+            description={description}
+            setDescription={setDescription}
+            render={render}
+            setRender={setRender}
+            errMessage={errMessage}
+            setErrMessage={setErrMessage}
+          />
+  
+          <Tags
+            post={post}
+            tag={tag}
+            setTag={setTag}
+            tags={tags}
+            setTags={setTags}
+          />
+  
+          <button
+            type='submit'
+            disabled={
+              main.current.length === 0 &&
+              mainImageFiles.length === 0 && 
+              bodyImageFiles.length === 0
+            }
+          >
+            {post ? 'update': 'post'}
+          </button>
+        </form>
+        <div
+          onClick={() => {
+            history.push('/')
+          }}
+        >
+          Close
+        </div>
       </div>
     </div>
-  )
+    )
+  } else {
+    return (
+      <div>
+      </div>
+    )
+  }
 }
 
 export default PhotoPostForm;

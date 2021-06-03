@@ -10,10 +10,10 @@ const UserAndTagType = new GraphQLUnionType({
   name: 'UserAndTagType',
   types: () => ( [ UserType, TagType ] ),
   resolveType(value) {
-    if (value instanceof User) {
+    if (value.kind === 'User') {
       return UserType
     }
-    if (value instanceof Tag) {
+    if (value.kind === 'Tag') {
       return TagType
     }
   }

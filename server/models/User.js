@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
+  profilePic: {
+    type: Schema.Types.ObjectId,
+    ref: 'Image'
+  },
   blogName: {
     type: String, 
     required: true
@@ -35,7 +39,15 @@ const UserSchema = new Schema({
   tagFollows: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Tag'
+      ref: 'Tag',
+      index: true
+    }
+  ],
+  userFollows: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      index: true
     }
   ],
   filteredTags: [

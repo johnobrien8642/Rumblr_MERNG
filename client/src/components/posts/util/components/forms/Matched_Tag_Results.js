@@ -1,12 +1,17 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import Queries from '../../../../../graphql/queries.js';
+import PostFormUtil from '../../functions/post_form_util.js';
 const { FETCH_MATCHING_TAGS } = Queries;
+const { handleFoundTag } = PostFormUtil;
+
 
 const MatchedTagResults = ({
-    query, handleClickTagInput,
-    setTags, tags,
-    setTag, tag
+    query,
+    setTags, 
+    tags,
+    setTag, 
+    tag
   }) => {
     let { loading, error, data } = useQuery(FETCH_MATCHING_TAGS, {
       variables: {
@@ -14,28 +19,50 @@ const MatchedTagResults = ({
       }
     })
 
-    if (loading) return 'Loading...';
+    // if (loading) return 'Loading...';
     if (error) return `Error: ${error}`;
 
-    return (
-      <ul>
-        {data.fetchMatchingTags.map((tag, i) => {
-          return (
-            <li 
-              key={i}
-              onClick={() => handleClickTagInput(
-                  tag.title, 
-                  setTags, tags, 
-                  setTag, tag
-                )
-              }
-            >
-              {tag.title}
-            </li>
-          )
-        })}
-      </ul>
-    )
+    const handleMatchedTagClassName = (data) => {
+      if (data.fetchMatchingTags.length > 0) {
+        return 'matchingTagsDD active'
+      } else {
+        return 'matchingTagsDD'
+      }
+    }
+
+    if (data) {
+      return (
+        <ul
+          className={handleMatchedTagClassName(data)}
+        >
+          <li>POPULAR</li>
+          {data.fetchMatchingTags.map((tag, i) => {
+            return (
+              <li 
+                key={i}
+                onClick={e => {
+                  handleFoundTag(
+                    tag.title,
+                    setTags, tags,
+                    setTag, tag
+                  )
+                }}
+              >
+                {tag.title.slice(1, tag.title.length)}
+              </li>
+            )
+          })}
+        </ul>
+      )
+    } else {
+      return (
+        <ul
+          className='noMatchingTags'
+        >
+        </ul>
+      )
+    }
+
 }
 
 export default MatchedTagResults;

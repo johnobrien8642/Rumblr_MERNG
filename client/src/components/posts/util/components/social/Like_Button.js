@@ -48,7 +48,7 @@ const LikeButton = ({
     return (
       <img
         className='likeBtn'
-        src="https://img.icons8.com/material-rounded/24/000000/like--v1.png"
+        src="https://img.icons8.com/material-rounded/64/000000/like--v1.png"
         alt=''
         onClick={() => {
           unlikePost({
@@ -66,7 +66,7 @@ const LikeButton = ({
     return (
       <img
         className='likeBtn'
-        src="https://img.icons8.com/material-outlined/24/000000/like--v1.png"
+        src="https://img.icons8.com/material-outlined/64/000000/like--v1.png"
         alt=''
         onClick={() => {
           likePost({

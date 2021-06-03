@@ -9,6 +9,7 @@ import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+import ProfilePic from '../../../user/util/components/Profile_Pic';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
@@ -18,8 +19,14 @@ const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const QuotePostForm = ({
-  post, update,
-  setUpdate
+  user,
+  post, 
+  update,
+  setUpdate,
+  quotePostActive,
+  setQuotePostActive,
+  postFormModal,
+  setPostFormModal
 }) => {
   let [quote, setQuote] = useState('');
   let [source, setSource] = useState('');
@@ -37,6 +44,15 @@ const QuotePostForm = ({
   let formId = 'quotePostForm';
   const formInputId = 'quotePostInput';
   let history = useHistory();
+
+  useEffect(() => {
+    var el = document.querySelector('.quotePostForm')
+
+    if (el) {
+      el.focus()
+    }
+
+  }, [quotePostActive])
 
   useEffect(() => {
     resetDisplayIdx(body)
@@ -116,69 +132,92 @@ const QuotePostForm = ({
       }
     )
   }
-  
-  return (
-    <div
-      className={post ? '' : 'postForm'}
-    >
-      <h1>QuotePost</h1>
-      <form
-        id={formId}
-        onSubmit={e => handleSubmit(e)}
-        onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
-        encType={'multipart/form-data'}
-      >
 
-      <QuotePostInput
-        post={post}
-        update={update}
-        quote={quote}
-        setQuote={setQuote}
-        source={source}
-        setSource={setSource}
-      />
-
-      <BodyImageAndText
-        post={post}
-        update={update}
-        formId={formId}
-        formInputId={formInputId}
-        objsToClean={objsToClean}
-        body={body}
-        bodyImageFiles={bodyImageFiles}
-        setBodyImageFiles={setBodyImageFiles}
-        description={description}
-        setDescription={setDescription}
-        render={render}
-        setRender={setRender}
-        errMessage={errMessage}
-        setErrMessage={setErrMessage}
-      />
-
-      <Tags
-        post={post}
-        tag={tag}
-        setTag={setTag}
-        tags={tags}
-        setTags={setTags}
-      />
-
-      <button
-        type='submit'
-        disabled={!quote}
-      >
-        {post ? 'update' : 'post'}
-      </button>
-      </form>
+  if (quotePostActive) {
+    return (
       <div
-        onClick={() => {
-          history.push('/')
+        className='postFormContainer'
+      >
+
+      <ProfilePic user={user} />
+        
+      <div
+        className={quotePostActive ? 
+          'postForm quotePostForm active' : 
+          'postForm quotePostForm active'
+        }
+        tabIndex={-1}
+        onBlur={() => {
+          setQuotePostActive(quotePostActive = false)
+          setPostFormModal(postFormModal = false)
         }}
       >
-        Close
+        <h1>QuotePost</h1>
+        <form
+          id={formId}
+          onSubmit={e => handleSubmit(e)}
+          onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
+          encType={'multipart/form-data'}
+        >
+  
+        <QuotePostInput
+          post={post}
+          update={update}
+          quote={quote}
+          setQuote={setQuote}
+          source={source}
+          setSource={setSource}
+        />
+  
+        <BodyImageAndText
+          post={post}
+          update={update}
+          formId={formId}
+          formInputId={formInputId}
+          objsToClean={objsToClean}
+          body={body}
+          bodyImageFiles={bodyImageFiles}
+          setBodyImageFiles={setBodyImageFiles}
+          description={description}
+          setDescription={setDescription}
+          render={render}
+          setRender={setRender}
+          errMessage={errMessage}
+          setErrMessage={setErrMessage}
+        />
+  
+        <Tags
+          post={post}
+          tag={tag}
+          setTag={setTag}
+          tags={tags}
+          setTags={setTags}
+        />
+  
+        <button
+          type='submit'
+          disabled={!quote}
+        >
+          {post ? 'update' : 'post'}
+        </button>
+        </form>
+        <div
+          onClick={() => {
+            history.push('/')
+          }}
+        >
+          Close
+        </div>
       </div>
-    </div>
-  )
+      </div>
+    )
+  } else {
+    return (
+      <div>
+      </div>
+    )
+  }
+  
 }
 
 export default QuotePostForm;

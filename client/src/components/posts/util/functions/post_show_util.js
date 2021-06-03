@@ -4,24 +4,46 @@ import { Link } from 'react-router-dom';
 import AudioPlayer from 'react-h5-audio-player';
 import ReactPlayer from 'react-player';
 import UserResult from '../../../search/resultTypes/User_Result';
+import ProfilePic from '../../../user/util/components/Profile_Pic';
+import FollowButton from '../../../posts/util/components/social/Follow_Button';
 
-const postHeader = (post, discover, radar) => {
+const postHeader = (
+  post, 
+  discover, 
+  radar,
+  doesUserFollowUserRef
+) => {
 
   if (post.kind === 'Repost') {
     return (
-      <span>
-        <Link to={`/view/blog/${post.user.blogName}`}>
-          {post.user.blogName}
-        </Link> 
-        <i className="fas fa-retweet"></i>
-        <Link to={`/view/blog/${post.repostedFrom.blogName}`}>
-          {post.repostedFrom.blogName}
-        </Link>
-      </span>
+      <div>
+        <ProfilePic user={post.user} />
+        <span>
+          <Link to={`/view/blog/${post.user.blogName}`}>
+            {post.user.blogName}
+          </Link> 
+          <img 
+            src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
+            alt=''
+          />
+          <Link to={`/view/blog/${post.repostedFrom.blogName}`}>
+            {post.repostedFrom.blogName}
+          </Link>
+          <FollowButton
+            feed={true}
+            user={post.repostedFrom}
+            followed={doesUserFollowUserRef.current}
+          />
+        </span>
+      </div>
     )
   } else if (discover || radar) {
     return (
-      <UserResult user={post.user} />
+      <div
+        className='postRadarPostHeader'
+      >
+        <UserResult user={post.user} />
+      </div>
     )
   } else {
     return (
@@ -102,8 +124,11 @@ const postBody = (post) => {
   if (data.kind === 'TextPost') {
     return (
       <React.Fragment>
-        <h3>{data.title}</h3>
-        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data.main) }} />
+        <h3
+          className='textPostTitle'
+        >
+          {data.title}
+        </h3>
         {displayDescription(descriptionArr)}
       </React.Fragment>
     )
@@ -198,12 +223,13 @@ const displayDescription = (descriptionArr) => {
           case 'text':
             return (
               <div
+                className='descriptionText'
                 key={i}
                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(obj.content) }}
               />
             )
           case 'Image':
-            return <img key={i} src={`${obj.src}`} alt={'usefilename'} />
+            return <img className='descriptionImg' key={i} src={`${obj.src}`} alt={'usefilename'} />
           default:
             return 'no keys matched postBody PhotoPost'
         }
@@ -212,6 +238,33 @@ const displayDescription = (descriptionArr) => {
   )
 }
 
-const PostShowUtil = { postHeader, postBody, repostFooter, postTags }
+const handlePostClassName = (post) => {
+  var { kind } = post;
+
+  if (kind === 'TextPost') {
+    return 'post textPost'
+  } else if (kind === 'PhotoPost') {
+    return 'post photoPost'
+  } else if (kind === 'QuotePost') {
+    return 'post quotePost'
+  } else if (kind === 'LinkPost') {
+    return 'post linkPost'
+  } else if (kind === 'ChatPost') {
+    return 'post chatPost'
+  } else if (kind === 'AudioPost') {
+    return 'post audioPost'
+  } else if (kind === 'VideoPost') {
+    return 'post videoPost'
+  }
+}
+
+
+const PostShowUtil = { 
+  postHeader, 
+  postBody, 
+  repostFooter, 
+  postTags,
+  handlePostClassName
+}
 
 export default PostShowUtil;

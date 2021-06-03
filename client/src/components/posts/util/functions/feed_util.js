@@ -286,7 +286,7 @@ const updateCacheInfScrollFollowedUsers = (
 }
 
 const handleData = (data, feedArr, cursorId, endOfPosts) => {
-  const { fetchUserFeed, fetchTagFeed, 
+  var { fetchUserFeed, fetchTagFeed, 
           fetchAllUserActivity, 
           fetchUserFollowers,
           fetchFollowedUsers } = data
@@ -296,7 +296,9 @@ const handleData = (data, feedArr, cursorId, endOfPosts) => {
   } else if (fetchTagFeed) {
     feedArr.current = fetchTagFeed
   } else if (fetchAllUserActivity) {
-    feedArr.current = fetchAllUserActivity
+    var arr = [...fetchAllUserActivity]
+    arr.sort((a, b) => b.createdAt - a.createdAt)
+    feedArr.current = arr
   } else if (fetchUserFollowers) {
     feedArr.current = fetchUserFollowers
   } else if (fetchFollowedUsers) {
@@ -327,13 +329,25 @@ const setgqlQueryAndQuery = (
   }
 }
 
+const doesUserFollowUser = (
+  doesUserFollowUserRef,
+  currentUser,
+  user
+) => {
+  if (currentUser) {
+    doesUserFollowUserRef.current =
+    currentUser.userFollows.some(obj => obj._id === user._id)
+  }
+}
+
 const FeedUtil = { 
   header, updateCacheInfScroll,
   infiniteScroll,
   updateCacheInfScrollActivity,
   updateCacheInfScrollUserFollowers,
   updateCacheInfScrollFollowedUsers,
-  handleData, setgqlQueryAndQuery
+  handleData, setgqlQueryAndQuery,
+  doesUserFollowUser
 }
 
 export default FeedUtil;

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import UserSettings from '../user/User_Settings';
 
 const MobileMenuDD = ({
   menuOpen,
@@ -12,15 +11,14 @@ const MobileMenuDD = ({
   loggedInBool,
   totalCountRef,
   cursorId,
-  scrollYRef,
   scrollYRef2
 }) => {
 
   useEffect(() => {
-    if (!menuOpen) {
+    if (!menuOpen || menuOpen) {
       window.scrollTo(0, scrollYRef2.current)
     }
-  }, [menuOpen, settingsOpen]) 
+  }, [menuOpen, settingsOpen, scrollYRef2])
 
   const { user } = userDetailsCounts;
   

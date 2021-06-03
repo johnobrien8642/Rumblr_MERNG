@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
 import UserResult from '../../search/resultTypes/User_Result';
@@ -7,7 +8,13 @@ const { FETCH_CHECK_OUT_THESE_BLOGS } = Queries;
 
 const CheckOutTheseBlogs = () => {
 
-  let { loading, error, data } = useQuery(FETCH_CHECK_OUT_THESE_BLOGS, {
+  useEffect(() => {
+    return () => {
+      refetch()
+    }
+  })
+
+  let { loading, error, data, refetch } = useQuery(FETCH_CHECK_OUT_THESE_BLOGS, {
     variables: {
       query: Cookies.get('currentUser')
     }
@@ -22,16 +29,22 @@ const CheckOutTheseBlogs = () => {
     <div
       className='checkOutTheseBlogs'
     >
-      <h1>Check Out These Blogs</h1>
+      <h1>Check out these blogs</h1>
       {fetchCheckOutTheseBlogs.map(user => {
         return (
           <div
             key={user._id}
           >
-            <UserResult user={user} />
+            <UserResult user={user} checkOutTheseBlogs={true} />
           </div>
         )
       })}
+      <Link
+        className='explore'
+        to='/discover'
+      >
+        Explore all of Rumblr
+      </Link>
     </div>
   )
 }

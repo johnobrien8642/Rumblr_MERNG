@@ -1,8 +1,8 @@
-import MentionActivityShow from '../MentionActivityShow';
-import RepostActivityShow from '../RepostActivityShow';
-import CommentActivityShow from '../CommentActivityShow';
-import FollowerActivityShow from '../FollowerActivityShow';
-import LikeActivityShow from '../LikeActivityShow';
+import MentionActivityShow from './components/Mention_Activity_Show';
+import RepostActivityShow from './components/Repost_Activity_Show';
+import CommentActivityShow from './components/Comment_Activity_Show';
+import FollowerActivityShow from './components/Follower_Activity_Show';
+import LikeActivityShow from './components/Like_Activity_Show';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 
@@ -10,8 +10,13 @@ TimeAgo.addDefaultLocale(en)
 
 const timeAgo = new TimeAgo('en-US')
 
-
-const handleActivity = (activity, tab, dropdown, navActive, setNavActive) => {
+const handleActivity = (
+  activity, 
+  tab, 
+  dropdown, 
+  navActive, 
+  setNavActive
+) => {
 
   if (tab === 'all') {
     if (activity.kind === 'Mention') {
@@ -181,25 +186,35 @@ const handleByline = (activity) => {
       var titleArr = []
       if (words.length > 10) {
         titleArr = words.slice(0, 10)
+
+        return (
+          <span className='byLine'>{titleArr.join(' ') + '...'}</span>
+        )
       } else {
         titleArr = [...words]
+
+        return (
+          <span className='byLine'>{descriptionsArr.join(' ')}</span>
+        )
       }
       
-      return (
-        <span className='byLine'>{titleArr.join(' ') + '...'}</span>
-      )
     } else if (post.descriptions) {
       allDescriptions = post.descriptions.map(d => d.content).join(' ')
       words = allDescriptions.split(' ')
       descriptionsArr = []
       if (words.length > 10) {
         descriptionsArr = words.slice(0, 10)
+
+        return (
+          <span className='byLine'>{descriptionsArr.join(' ') + '...'}</span>
+        )
       } else {
         descriptionsArr = [...words]
+
+        return (
+          <span className='byLine'>{descriptionsArr.join(' ')}</span>
+        )
       }
-      return (
-        <span className='byLine'>{descriptionsArr.join(' ') + '...'}</span>
-      )
     } else {
       return (
         <span></span>
@@ -217,13 +232,18 @@ const handleByline = (activity) => {
 
       if (words.length > 10) {
         descriptionsArr = words.slice(0, 10)
+
+        return (
+          <span className='byLine'>{descriptionsArr.join(' ') + '...'}</span>
+        )
       } else {
         descriptionsArr = [...words]
+
+        return (
+          <span className='byLine'>{descriptionsArr.join(' ')}</span>
+        )
       }
 
-      return (
-        <span className='byLine'>{descriptionsArr.join(' ') + '...'}</span>
-      )
     } else {
       return (
         <span></span>
@@ -235,13 +255,17 @@ const handleByline = (activity) => {
 
     if (words.length > 10) {
       quoteArr = words.slice(0, 10)
+
+      return (
+        <span className='byLine'>{quoteArr.join(' ') + '...'}</span>
+      )
     } else {
       quoteArr = [...words]
-    }
 
-    return (
-      <span className='byLine'>{quoteArr.join(' ') + '...'}</span>
-    )
+      return (
+        <span className='byLine'>{descriptionsArr.join(' ')}</span>
+      )
+    }
   }
 }
 
@@ -251,4 +275,4 @@ const ActivityUtil = {
   handleTimeAgo,
 }
 
-export default ActivityUtil
+export default ActivityUtil;

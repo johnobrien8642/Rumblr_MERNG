@@ -28,6 +28,14 @@ const RepostType = new GraphQLObjectType({
         .then(repost => repost.post)
       }
     },
+    postAuthor: {
+      type: UserType,
+      resolve(parentValue) {
+        return Repost.findById(parentValue._id)
+        .populate('postAuthor')
+        .then(repost => repost.postAuthor)
+      }
+    },
     repostedFrom: {
       type: UserType,
       resolve(parentValue) {

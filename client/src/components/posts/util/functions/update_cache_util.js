@@ -1,5 +1,3 @@
-
-
 const postCreate = (
   client, createPost,
   currentUser, query
@@ -181,6 +179,96 @@ const filterPostContent = (
   })
 }
 
+const followUpdate = (
+  client, follow,
+  gqlQuery, query,
+  kind
+) => {
+  var readFeed = client.readQuery({
+    query: gqlQuery,
+    variables: {
+      query: query
+    }
+  })
+  
+  var { user } = readFeed;
+
+  var newArr = kind === 'User' ? 
+  [...user.userFollows, follow._id] : 
+  [...user.tagFollows, follow._id]
+
+  if (kind === 'User') {
+    client.writeQuery({
+      query: gqlQuery,
+      variables: {
+        query: query
+      },
+      data: {
+        user: {
+          userFollows: newArr
+        }
+      }
+    })
+  } else {
+    client.writeQuery({
+      query: gqlQuery,
+      variables: {
+        query: query
+      },
+      data: {
+        user: {
+          tagFollows: newArr
+        }
+      }
+    })
+  }
+}
+
+const unfollowUpdate = (
+  client, unfollow,
+  gqlQuery, query,
+  kind
+) => {
+  var readFeed = client.readQuery({
+    query: gqlQuery,
+    variables: {
+      query: query
+    }
+  })
+  
+  var { user } = readFeed;
+
+  var newArr = kind === 'User' ? 
+  user.userFollows.filter(obj => obj._id !== unfollow._id) : 
+  user.tagFollows.filter(obj => obj._id !== unfollow._id)
+
+  if (kind === 'User') {
+    client.writeQuery({
+      query: gqlQuery,
+      variables: {
+        query: query
+      },
+      data: {
+        user: {
+          userFollows: newArr
+        }
+      }
+    })
+  } else {
+    client.writeQuery({
+      query: gqlQuery,
+      variables: {
+        query: query
+      },
+      data: {
+        user: {
+          tagFollows: newArr
+        }
+      }
+    })
+  }
+}
+
 const UpdateCacheUtil = {
   postCreate, 
   postUpdate, 
@@ -189,6 +277,8 @@ const UpdateCacheUtil = {
   postUnlike,
   filterTag,
   filterPostContent,
+  followUpdate,
+  unfollowUpdate
 }
 
 export default UpdateCacheUtil

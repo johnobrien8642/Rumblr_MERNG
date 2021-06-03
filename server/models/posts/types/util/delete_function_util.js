@@ -44,6 +44,35 @@ const handlePostDelete = async (post) => {
     })
 }
 
+const handleS3Cleanup = async (obj, s3Client, keys) => {
+  var params = {
+    Bucket: keys.bucket,
+    Delete: {
+      Objects: [{ Key: obj.key }]
+    }
+  }
+
+  if (obj) {
+    await s3Client.deleteObjects(params, function(err, data) {
+      if (err) console.log(`s3 delete err: ${err}, stack: ${err.stack}`)
+    })
+  }
+
+  if (obj.kind === 'Image') {
+    Promise.all([
+      Image.deleteOne({ _id: obj._id })
+    ])
+  } else if (obj.kind === 'Audio') {
+    Promise.all([
+      Audio.deleteOne({ _id: obj._id })
+    ])
+  } else if (obj.kind === 'Video') {
+    Promise.all([
+      Video.deleteOne({ _id: obj._id })
+    ])
+  }
+}
+
 const handles3AndObjectCleanup = async (objsToClean, s3Client, keys) => {
   var filteredObjs = objsToClean.filter(obj => obj.key)
 
@@ -97,6 +126,18 @@ const asyncDeleteAllPosts = async (posts, deletePost) => {
   }
 }
 
+const asyncDeleteAllActivityAndProfilePic = async (user) => {
+  await Image.findById(user.profilePic)
+          .then(image => {
+
+          })
+
+  await Post.deleteMany({ kind: 'Repost', postAuthor: user._id })
+  await Like.deleteMany({ user: user._id })
+  await Comment.deleteMany({ user: user._id })
+  
+}
+
 const deletePost = async (post) => {
   if 
     (
@@ -148,6 +189,8 @@ const DeleteFunctionUtil = {
   cleanupMention, 
   deletePost,
   asyncDeleteAllPosts,
+  asyncDeleteAllActivityAndProfilePic,
+  handleS3Cleanup,
   handles3AndObjectCleanup
 }
 

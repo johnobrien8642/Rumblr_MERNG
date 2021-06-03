@@ -14,17 +14,19 @@ const Tags = ({
 
   useEffect(() => {
     if (post) {
-      console.log(post)
       pushTags(post.tagIds, tags, setTags)
     }  
     //eslint-disable-next-line
   }, [])
 
   return (
-    <div>
+    <div
+      className='tagsContainer'
+    >
       {tags.map((tag, i) => {
         return (
-          <div 
+          <div
+            className='tagDiv'
             key={i}
           >
             {tag}
@@ -34,51 +36,62 @@ const Tags = ({
                 removeTag(i, tags, setTags)
               }}
             >
-              X
+              <span>x</span>
             </span>
           </div>
         )
       })}
 
-      <input
-        type='text'
-        value={tag}
-        placeholder='#tags'
-        onChange={e => setTag(tag = e.target.value)}
-        onKeyDown={e => {
-          if (
-            (e.key === 'Enter' && tag) ||
-            (e.key === '#' && tag)
-          ) {
-            handleTagInput(
+      <div
+        className='tagInputAndDDContainer'
+      >
+        <input
+          type='text'
+          value={tag}
+          placeholder='#tags'
+          onChange={e => setTag(tag = e.target.value)}
+          onKeyDown={e => {
+            if (
+              (e.key === 'Enter' && tag) ||
+              (e.key === '#' && tag)
+            ) {
+              handleTagInput(
+                  tag, setTag,
+                  tags, setTags
+                )
+              }
+            }
+          }
+          onClick={e => {
+            if (tag) {
+              handleTagInput(
                 tag, setTag,
                 tags, setTags
               )
             }
-          }
-        }
-        onClick={e => {
-          if (tag) {
-            handleTagInput(
-              tag, setTag,
-              tags, setTags
-            )
-          }
-        }}
-        onBlur={e => {
-          if (!e.relatedTarget && tag) {
-            handleTagInput(
-              tag, setTag,
-              tags, setTags
-            )
-          }
-        }}
-      />
+          }}
+          onBlur={e => {
+            if (e && e.relatedTarget) {
+              var formClasses = [...e.relatedTarget.classList]
 
-      <div>
+              if (
+                (formClasses[0] === 'browserPostsNav' ||
+                formClasses.includes('ck') ||
+                formClasses[0] === 'titleInput' ||
+                !e.relatedTarget) &&
+                tag
+              ) {
+                handleTagInput(
+                  tag, setTag,
+                  tags, setTags
+                )
+              }
+            }
+          }}
+        />
+
         <MatchedTagResults 
           query={tag}
-          handleFoundTag={handleFoundTag}
           tags={tags}
           setTags={setTags}
           tag={tag}

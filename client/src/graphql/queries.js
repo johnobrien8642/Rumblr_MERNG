@@ -25,6 +25,7 @@ const Queries = {
           repostedFrom {
             _id
             blogName
+            kind
           }
           post {
             __typename
@@ -137,6 +138,10 @@ const Queries = {
         totalLikeCount
         followersCount
         userPostsCount
+        profilePic {
+          _id
+          src
+        }
       }
     }
   `,
@@ -286,9 +291,21 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
           post {
             __typename
+            ... on RepostType {
+              _id
+              kind
+              post {
+                __typename
+                ${ALL_POSTS_ACTIVITY}
+              }
+            }
             ${ALL_POSTS_ACTIVITY}
           }
           createdAt
@@ -299,10 +316,15 @@ const Queries = {
           repostCaptions {
             caption
             userId
+            repostId
           }
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
           repostedFrom {
             _id
@@ -321,9 +343,21 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
           post {
             __typename
+            ... on RepostType {
+              _id
+              kind
+              post {
+                __typename
+                ${ALL_POSTS_ACTIVITY}
+              }
+            }
             ${ALL_POSTS_ACTIVITY}
           }
           createdAt
@@ -335,9 +369,21 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
           post {
             __typename
+            ... on RepostType {
+              _id
+              kind
+              post {
+                __typename
+                ${ALL_POSTS_ACTIVITY}
+              }
+            }
             ${ALL_POSTS_ACTIVITY}
           }
           createdAt
@@ -348,6 +394,10 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
           follows {
             __typename
@@ -367,9 +417,21 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
           post {
             __typename
+            ... on RepostType {
+              _id
+              kind
+              post {
+                __typename
+                ${ALL_POSTS_ACTIVITY}
+              }
+            }
             ${ALL_POSTS_ACTIVITY}
           }
           createdAt
@@ -446,6 +508,21 @@ const Queries = {
         filteredTags
         filteredPostContent
         email
+        profilePic {
+          _id
+          src
+          key
+          kind
+        }
+        tagFollows {
+          _id
+          title
+        }
+        userFollows {
+          _id
+          blogName
+          blogDescription
+        }
       }
     }
   `,
@@ -462,6 +539,10 @@ const Queries = {
         _id
         blogName
         blogDescription
+        profilePic {
+          _id
+          src
+        }
       }
     }
   `,

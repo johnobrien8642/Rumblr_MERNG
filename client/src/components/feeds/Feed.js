@@ -9,7 +9,9 @@ const { infiniteScroll, updateCacheInfScroll,
         handleData, setgqlQueryAndQuery } = FeedUtil;
 
 const Feed = ({
-  user, tag
+  user, 
+  tag,
+  currentUser
 }) => {
   let feedArr = useRef([])
   let fetchMoreDiv = useRef(null);
@@ -54,26 +56,27 @@ const Feed = ({
   handleData(data, feedArr, cursorId, endOfPosts)
   
   return(
-    <div>
-      <div>
-        {feedArr.current.map((obj, i) => {
-          return (
-            <div
-              className='post'
-              key={obj._id}
-            >
-              <PostUpdateOrShow
-                post={obj}
-              />
-            </div>
-          )
-        })}
-        </div>
-        <div
-          id='fetchMoreFeed'
-        >
-          {endOfPosts.current ? "You're all caught up" : ""}
-        </div>
+    <div
+      className='userOrTagFeed'
+    >
+      {feedArr.current.map((obj, i) => {
+        return (
+          <div
+            className='post'
+            key={obj._id}
+          >
+            <PostUpdateOrShow
+              post={obj}
+              currentUser={currentUser}
+            />
+          </div>
+        )
+      })}
+      <div
+        id='fetchMoreFeed'
+      >
+        {endOfPosts.current ? "You're all caught up" : ""}
+      </div>
     </div>
   )
 }

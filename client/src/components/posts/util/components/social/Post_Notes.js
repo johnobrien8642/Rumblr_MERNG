@@ -71,16 +71,9 @@ const PostNotes = ({
   if (active) {
     return (
       <div
+        className='postNotes'
         tabIndex={-1}
       >
-        <img
-          className='backBtn'
-          src="https://img.icons8.com/windows/32/000000/long-arrow-left.png"
-          alt=''
-          onClick={() => {
-            setActive(active = false)
-          }}
-          />
         <ul
         >
           {notes.map((n, i) => {

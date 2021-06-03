@@ -10,6 +10,7 @@ import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js';
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+import ProfilePic from '../../../user/util/components/Profile_Pic';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
@@ -20,8 +21,14 @@ const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const TextPostForm = ({
-  post, update,
-  setUpdate
+  user,
+  post, 
+  update,
+  setUpdate,
+  textPostActive,
+  setTextPostActive,
+  postFormModal,
+  setPostFormModal
 }) => {
   let [title, setTitle] = useState('');
 
@@ -38,6 +45,20 @@ const TextPostForm = ({
   const formInputId = 'textPostInput'
   let history = useHistory();
 
+  useEffect(() => {
+    if (textPostActive) {
+      document.body.style.margin = 'fixed'
+      document.body.style.height = '100%'
+      document.body.style.overflow = 'hidden'
+      var el = document.querySelector('.textPostForm')
+  
+      if (el) {
+        el.focus()
+      }
+    }
+
+  }, [textPostActive])
+  
   useEffect(() => {
     resetDisplayIdx(body)
   })
@@ -60,7 +81,11 @@ const TextPostForm = ({
         resetInputs();
       } else {
         resetInputs();
-        history.push('/dashboard');
+        document.body.style.margin = ''
+        document.body.style.height = ''
+        document.body.style.overflow = ''
+        setPostFormModal(postFormModal = false)
+        setTextPostActive(textPostActive = false)
       }
     },
     onError(error) {
@@ -120,94 +145,124 @@ const TextPostForm = ({
     )
   }
 
-  return (
+  if (textPostActive) {
+    return (
     <div
-      className={post ? '' : 'postForm'}
+      className='postFormContainer'
     >
-      <h1>TextPost</h1>
-      <form
-        id={formId}
-        onSubmit={e => handleSubmit(e)}
-        onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
-        encType={'multipart/form-data'}
-      >
 
-      <TextPostInput
-        post={post}
-        update={update}
-        formInputId={formInputId}
-        title={title}
-        setTitle={setTitle}
-        render={render}
-        setRender={setRender}
-      />
+      <ProfilePic user={user} />
 
-      <BodyImageAndText
-        post={post}
-        update={update}
-        formId={formId}
-        formInputId={formInputId}
-        objsToClean={objsToClean}
-        body={body}
-        bodyImageFiles={bodyImageFiles}
-        setBodyImageFiles={setBodyImageFiles}
-        description={description}
-        setDescription={setDescription}
-        render={render}
-        setRender={setRender}
-        errMessage={errMessage}
-        setErrMessage={setErrMessage}
-      />
-
-      <Tags
-        post={post}
-        tag={tag}
-        setTag={setTag}
-        tags={tags}
-        setTags={setTags}
-      />
-
-      <button
-        type='submit'
-        disabled={!title && body.current.length === 0 && !description}
-        onClick={() => {
-          if (description) {
-            var textObj = {
-              kind: 'text',
-              srcType: 'text',
-              content: description,
-              displayIdx: body.current.length,
-              uniqId: randomstring.generate({
-                length: 12,
-                charset: 'alphabetic'
-              })
-            }
-            
-            body.current.push(textObj)
-
-            setDescription(description = '')
-          }
-
-          if (tag) {
-            handleTagInput(
-              tag, setTag,
-              tags, setTags
-            )
-          }
-        }}
-      >
-        {post ? 'update' : 'post'}
-      </button>
-      </form>
       <div
-        onClick={() => {
-          history.push('/')
-        }}
+        className={textPostActive ? 
+          'postForm textPostForm active' :
+          'postForm textPostForm hidden'
+        }
+        tabIndex={-1}
       >
-        Close
+        <h3>{user.blogName}</h3>
+        <form
+          id={formId}
+          onSubmit={e => handleSubmit(e)}
+          onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
+          encType={'multipart/form-data'}
+        >
+  
+        <TextPostInput
+          post={post}
+          update={update}
+          formInputId={formInputId}
+          title={title}
+          setTitle={setTitle}
+          render={render}
+          setRender={setRender}
+        />
+  
+        <BodyImageAndText
+          post={post}
+          update={update}
+          formId={formId}
+          formInputId={formInputId}
+          objsToClean={objsToClean}
+          body={body}
+          bodyImageFiles={bodyImageFiles}
+          setBodyImageFiles={setBodyImageFiles}
+          description={description}
+          setDescription={setDescription}
+          render={render}
+          setRender={setRender}
+          errMessage={errMessage}
+          setErrMessage={setErrMessage}
+        />
+  
+        <Tags
+          post={post}
+          tag={tag}
+          setTag={setTag}
+          tags={tags}
+          setTags={setTags}
+        />
+
+          <div
+            className='closeOrPostContainer'
+          >
+            <div
+              className='closeBtn'
+              onClick={() => {
+                document.body.style.margin = ''
+                document.body.style.height = ''
+                document.body.style.overflow = ''
+                resetInputs()
+                setTextPostActive(textPostActive = false)
+                setPostFormModal(postFormModal = false)
+              }}
+            >
+              Close
+            </div>
+            
+            <button
+              className='formSubmitBtn'
+              type='submit'
+              disabled={!title && body.current.length === 0 && !description}
+              onClick={() => {
+                if (description) {
+                  var textObj = {
+                    kind: 'text',
+                    srcType: 'text',
+                    content: description,
+                    displayIdx: body.current.length,
+                    uniqId: randomstring.generate({
+                      length: 12,
+                      charset: 'alphabetic'
+                    })
+                  }
+
+                  body.current.push(textObj)
+                
+                  setDescription(description = '')
+                }
+              
+                if (tag) {
+                  handleTagInput(
+                    tag, setTag,
+                    tags, setTags
+                  )
+                }
+              }}
+            >
+              {post ? 'Update' : 'Post'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  )
+    )
+  } else {
+    return (
+      <div>
+      </div>
+    )
+  }
 }
 
 export default TextPostForm;

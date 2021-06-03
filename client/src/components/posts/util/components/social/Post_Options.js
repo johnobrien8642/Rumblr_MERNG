@@ -48,29 +48,28 @@ const PostOptions = ({
   const renderConfirmDelete = () => {
     if (askToConfirm) {
       return (
-        <div
+        <div>
+          <p>Delete post?</p>
+          <button
+            onClick={() => {
+              deletePost({
+                variables: {
+                  post: post
+                }
+              })
+            }}
           >
-            <p>Delete post?</p>
-            <button
-              onClick={() => {
-                deletePost({
-                  variables: {
-                    post: post
-                  }
-                })
-              }}
-            >
-              Delete post
-            </button>
-            
-            <button
-              onClick={() => {
-                confirmDelete(askToConfirm = false)
-              }}
-            >
-              Cancel
-            </button>
-          </div>
+            Delete post
+          </button>
+          
+          <button
+            onClick={() => {
+              confirmDelete(askToConfirm = false)
+            }}
+          >
+            Cancel
+          </button>
+        </div>
       )
     }
   }
@@ -82,16 +81,21 @@ const PostOptions = ({
 
   if (post.user.blogName === Cookies.get('currentUser')) {
     return (
-      <div>
+      <div
+        className='postFooter'
+      >
         <div
           className='notesBtn'
           onClick={() => {
             toggleNotes(active, setActive)
           }}
         >
-          {notesCount} Notes
+          {notesCount} notes
         </div>
   
+            <div
+              className='postOptions'
+            >
         <img
           className='commentBubbleBtn'
           src="https://img.icons8.com/windows/32/000000/speech-bubble--v1.png"
@@ -138,43 +142,50 @@ const PostOptions = ({
           }}
         />
       </div>
+      </div>
     )
   } else {
     return (
-      <div>
+      <div
+        className='postFooter'
+      >
         <div
           className='notesBtn'
           onClick={() => {
             toggleNotes(active, setActive)
           }}
         >
-          {notesCount} Notes
+          {notesCount} notes
         </div>
   
-        <img
-          className='addCommentBtn'
-          src="https://img.icons8.com/windows/32/000000/speech-bubble--v1.png"
-          alt=''
-          onClick={() => {
-            toggleNotes()
-          }}
-        />
-  
-        <Link
-          to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
+        <div
+          className='postOptions'
         >
-          <img 
-            src="https://img.icons8.com/material-outlined/24/000000/retweet.png"
+          <img
+            className='addCommentBtn'
+            src="https://img.icons8.com/windows/64/000000/speech-bubble--v1.png"
             alt=''
+            onClick={() => {
+              toggleNotes()
+            }}
           />
-        </Link>
-  
-  
-        <LikeButton
-          post={post}
-          liked={doesUserLikePost}
-          refetchDoesUserLikePost={refetch}
-        />
+
+          <Link
+            to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
+          >
+            <img 
+              src="https://img.icons8.com/material-outlined/64/000000/retweet.png"
+              alt=''
+            />
+          </Link>
+          
+          
+          <LikeButton
+            post={post}
+            liked={doesUserLikePost}
+            refetchDoesUserLikePost={refetch}
+          />
+        </div>
       </div>
     )
   }

@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
-import UserSettingUtil from '../functions/user_setting_util.js'
+import UserSettingsUtil from '../functions/user_settings_util.js'
 import Queries from '../../../../graphql/queries.js';
 import Mutations from '../../../../graphql/mutations.js';
 const { FETCH_USER } = Queries;
 const { UPDATE_USER_BLOG_DESCRIPTION } = Mutations;
-const { blogDescriptionCache } = UserSettingUtil;
+const { blogDescriptionCache } = UserSettingsUtil;
 
 const BlogDescription = ({
   mobile,
@@ -63,9 +63,13 @@ const BlogDescription = ({
             type='text'
             value={blogDescription}
             onChange={e => {
-              setBlogDescription(blogDescription = e.target.value)
+              if (blogDescription.length < 150) {
+                setBlogDescription(blogDescription = e.target.value)
+              }
             }}
           />
+          <span>{150 - blogDescription.length} characters left</span>
+          
           <p>{errorMessage ? `${errorMessage}` : ''}</p>
           <input
             type='password'

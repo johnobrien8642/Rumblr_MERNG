@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
-import UserSettingUtil from '../functions/user_setting_util.js'
+import UserSettingsUtil from '../functions/user_settings_util.js'
 import Queries from '../../../../graphql/queries.js';
 import Mutations from '../../../../graphql/mutations.js';
 const { FETCH_USER } = Queries;
 const { UPDATE_USER_EMAIL } = Mutations;
-const { updateCacheUpdateEmail } = UserSettingUtil;
+const { updateCacheUpdateEmail } = UserSettingsUtil;
 
 const Email = ({
   userEmail
@@ -80,10 +80,14 @@ const Email = ({
                 resetInputs()
                 setActive(active = false)
               }}
-            >Cancel</button>
+            >
+              Cancel
+            </button>
             <button
               type='submit'
-            >Save</button>
+            >
+              Save
+            </button>
           </div>
         </form>
       </div>

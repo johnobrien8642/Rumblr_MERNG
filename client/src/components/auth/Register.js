@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory, Link } from 'react-router-dom';
 import Mutations from '../../graphql/mutations';
 import Queries from '../../graphql/queries';
-import Cookies from 'js-cookie';
+import PostFormUtil from '../posts/util/functions/post_form_util.js';
+import PhotoPostOrRegisterPhotoInput from '../posts/util/components/forms/inputTypes/Photo_Post_Or_Register_Photo_Input';
 const { REGISTER_USER } = Mutations;
 const { IS_LOGGED_IN } = Queries;
+const { mainPost, 
+        handleFormData } = PostFormUtil;
 
 
 const Register = () => {
+  let previewProfilePicRef = useRef({});
+  let [profileImageFile, setProfileImageFile] = useState(null);
   let [email, setEmail] = useState('');
   let [blogName, setBlogName] = useState('');
   let [blogDescription, setBlogDescription] = useState('');
@@ -55,6 +61,32 @@ const Register = () => {
     addErrorMessage(errorMessages = []);
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    var mainImageFormData = handleFormData(profileImageFile)
+
+    Promise.all([
+      mainPost(mainImageFormData)
+    ])
+    .then(([mainUpload]) => {
+      
+      var instanceData = {
+        profilePicId: mainUpload[0]._id,
+        email: email, 
+        blogName: blogName,
+        password: password,
+        blogDescription: blogDescription
+      }
+
+      registerUser({ 
+        variables: {
+          instanceData: instanceData
+        }
+      })
+    })
+  }
+
   return (
     <div
       className='registerForm'
@@ -67,15 +99,7 @@ const Register = () => {
 
         <form
           onSubmit={e => {
-            e.preventDefault();
-            registerUser({ 
-              variables: {
-                email: email, 
-                blogName: blogName,
-                password: password,
-                blogDescription: blogDescription
-              }
-            })
+            handleSubmit(e)
           }}
         >
 
@@ -84,6 +108,13 @@ const Register = () => {
             return <li key={i}>{error}</li>
           })}
         </ul>
+
+        <PhotoPostOrRegisterPhotoInput 
+          register={true}
+          previewProfilePicRef={previewProfilePicRef}
+          profileImageFile={profileImageFile}
+          setProfileImageFile={setProfileImageFile}
+        />
 
         <input
           type='text'
@@ -100,8 +131,14 @@ const Register = () => {
         <textarea
           value={blogDescription}
           placeholder={'Blog description'}
-          onChange={e => setBlogDescription(blogDescription = e.target.value)}
+          onChange={e => {
+            if (blogDescription.length < 150) {
+              setBlogDescription(blogDescription = e.target.value)
+            } 
+          }}
         ></textarea>
+        <span>{150 - blogDescription.length} characters left</span>
+        
 
         <input
           type='password'

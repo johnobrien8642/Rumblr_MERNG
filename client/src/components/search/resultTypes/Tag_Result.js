@@ -1,33 +1,20 @@
-import React, { useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import FollowButton from '../../posts/util/components/social/Follow_Button'
-import Queries from '../../../graphql/queries';
-import Cookies from 'js-cookie';
-const { DOES_USER_FOLLOW_TAG } = Queries;
 
-const TagResult = ({ tag, active, setActive }) => {
-  
-  useEffect(() => {
+const TagResult = ({ 
+  currentUser, 
+  tag, 
+  active, 
+  setActive 
+}) => {
+  let doesUserFollowTagRef = useRef(false)
 
-    return () => {
-      refetch()
-    }
-  })
-  
-  let { loading, error, data, refetch } = useQuery(DOES_USER_FOLLOW_TAG, {
-    variables: {
-      query: Cookies.get('currentUser'),
-      tagId: tag._id
-    },
-    fetchPolicy: 'no-cache'
-  })
+  if (currentUser) {
+    doesUserFollowTagRef.current =
+    currentUser.tagFollows.some(obj => obj._id === tag._id)
+  }
 
-  if (loading) return 'Loading...';
-  if (error) return `Error: ${error}`;
-
-  const { doesUserFollowTag } = data;
-  
   var cleanedTag = tag.title.slice(1)
   
   return (
@@ -44,7 +31,7 @@ const TagResult = ({ tag, active, setActive }) => {
       </Link>
       <FollowButton
         tag={tag} 
-        followed={doesUserFollowTag}
+        followed={doesUserFollowTagRef.current}
       />
     </React.Fragment>
   )

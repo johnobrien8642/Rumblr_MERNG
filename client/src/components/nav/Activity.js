@@ -21,8 +21,6 @@ const Activity = ({
     }
 
   }, [activityClose, activityOpen, active])
-
-  
   
   if (activityOpen) {
 
@@ -31,11 +29,7 @@ const Activity = ({
         className='activity'
         tabIndex={0}
         onBlur={e => {
-          console.log(e)
-          if (
-            !e.relatedTarget &&
-            e.target.offsetParent.className !== 'navTools'
-          ) {
+          if (!e.relatedTarget) {
             setActivityOpen(activityOpen = false)
           }
         }}

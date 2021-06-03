@@ -7,7 +7,8 @@ const RepostCaptionType = new GraphQLObjectType({
   fields: () => ({
     _id: { type: GraphQLID },
     caption: { type: GraphQLString },
-    userId: { type: GraphQLID }
+    userId: { type: GraphQLID },
+    repostId: { type: GraphQLID }
   })
 })
 

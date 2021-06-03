@@ -19,7 +19,7 @@ const DescriptionStringInput = ({
 
   const editorConfiguration = {
     extraPlugins: [MentionCustomization],
-    placeholder: 'Write a description...',
+    placeholder: 'Your text here',
     balloonToolbar: [
       'bold',
       'italic',
@@ -80,7 +80,7 @@ const DescriptionStringInput = ({
               }
               
               body.current.push(textObj)
-              editor.setData('<p class="ck-placeholder" data-placeholder="Write a description..."><br data-cke-filler="true"></p>')
+              editor.setData('<p class="ck-placeholder" data-placeholder="Your text here"><br data-cke-filler="true"></p>')
             }
           })
         }}

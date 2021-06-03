@@ -9,6 +9,7 @@ import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js';
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+import ProfilePic from '../../../user/util/components/Profile_Pic';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
@@ -18,8 +19,14 @@ const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const ChatPostForm = ({
-  post, update,
-  setUpdate
+  user,
+  post, 
+  update,
+  setUpdate,
+  chatPostActive,
+  setChatPostActive,
+  postFormModal,
+  setPostFormModal
 }) => {
   let chat = useRef('')
 
@@ -36,6 +43,15 @@ const ChatPostForm = ({
   const formId = 'chatPostForm';
   const formInputId = 'chatPostInput';
   let history = useHistory();
+
+  useEffect(() => {
+    var el = document.querySelector('.chatPostForm')
+
+    if (el) {
+      el.focus()
+    }
+
+  }, [chatPostActive])
 
   useEffect(() => {
     resetDisplayIdx(body)
@@ -117,65 +133,87 @@ const ChatPostForm = ({
     )
   }
   
-  return (
-    <div
-      className={post ? '' : 'postForm'}
-    >
-      <h1>ChatPost</h1>
-      <form
-        id={formId}
-        onSubmit={e => handleSubmit(e)}
-        onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
-        encType={'multipart/form-data'}
-      >
-
-      <ChatPostInput
-        chat={chat}
-        post={post}
-        update={update}
-      />
-
-      <BodyImageAndText
-        post={post}
-        update={update}
-        formId={formId}
-        formInputId={formInputId}
-        objsToClean={objsToClean}
-        body={body}
-        bodyImageFiles={bodyImageFiles}
-        setBodyImageFiles={setBodyImageFiles}
-        description={description}
-        setDescription={setDescription}
-        render={render}
-        setRender={setRender}
-        errMessage={errMessage}
-        setErrMessage={setErrMessage}
-      />
-
-      <Tags
-        post={post}
-        tag={tag}
-        setTag={setTag}
-        tags={tags}
-        setTags={setTags}
-      />
-
-      <button
-        type='submit'
-        disabled={!chat}
-      >
-        {post ? 'update' : 'post'}
-      </button>
-      </form>
+  if (chatPostActive) {
+    return (
       <div
-        onClick={() => {
-          history.push('/')
+        className='postFormContainer'
+      >
+
+      <ProfilePic user={user} />
+
+      <div
+        className={chatPostActive ? 
+        'postForm chatPostForm active' : 
+        'postForm chatPostForm hidden'
+        }
+        tabIndex={-1}
+        onBlur={() => {
+          setChatPostActive(chatPostActive = false)
+          setPostFormModal(postFormModal = false)
         }}
       >
-        Close
+        <h1>ChatPost</h1>
+        <form
+          id={formId}
+          onSubmit={e => handleSubmit(e)}
+          onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
+          encType={'multipart/form-data'}
+        >
+  
+        <ChatPostInput
+          chat={chat}
+          post={post}
+          update={update}
+        />
+  
+        <BodyImageAndText
+          post={post}
+          update={update}
+          formId={formId}
+          formInputId={formInputId}
+          objsToClean={objsToClean}
+          body={body}
+          bodyImageFiles={bodyImageFiles}
+          setBodyImageFiles={setBodyImageFiles}
+          description={description}
+          setDescription={setDescription}
+          render={render}
+          setRender={setRender}
+          errMessage={errMessage}
+          setErrMessage={setErrMessage}
+        />
+  
+        <Tags
+          post={post}
+          tag={tag}
+          setTag={setTag}
+          tags={tags}
+          setTags={setTags}
+        />
+  
+        <button
+          type='submit'
+          disabled={!chat}
+        >
+          {post ? 'update' : 'post'}
+        </button>
+        </form>
+        <div
+          onClick={() => {
+            history.push('/')
+          }}
+        >
+          Close
+        </div>
       </div>
-    </div>
-  )
+      </div>
+    )
+  } else {
+    return (
+      <div>
+      </div>
+    )
+  }
 }
 
 export default ChatPostForm;

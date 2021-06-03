@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Search from '../search/Search';
 import UserDetails from './User_Details';
 import Activity from './Activity';
@@ -7,6 +7,7 @@ import NavUtil from './util/nav_util.js';
 const { accumulateCounts, renderTotalCount } = NavUtil;
 
 const BrowserNav = ({
+  user,
   activityCounts,
   userDetailsCounts,
   loggedInBool,
@@ -49,6 +50,7 @@ const BrowserNav = ({
             </Link>
           </div>
             <Search
+              user={user}
               searchClose={searchClose}
               closeSearch={closeSearch}
               detailsOpen={detailsOpen}
@@ -111,30 +113,31 @@ const BrowserNav = ({
             </Link>
           </div>
 
-        <div
-          className='activityIcon'
-          onClick={() => {
-            totalCountRef.current = 0
+          <div
+            className='activityIcon'
+            tabIndex={0}
+            onClick={() => {
+              totalCountRef.current = 0
 
-            if (activityOpen) {
-              cursorId.current = new Date().getTime()
-              setActivityOpen(activityOpen = false)
-            } else {
-              setActivityOpen(activityOpen = true)
-            }
+              if (activityOpen) {
+                cursorId.current = new Date().getTime()
+                setActivityOpen(activityOpen = false)
+              } else {
+                setActivityOpen(activityOpen = true)
+              }
 
-            if (detailsOpen) {
-              setDetailsOpen(detailsOpen = false)
-            }
-          }}
-        >
-          <img 
-            src="https://img.icons8.com/fluent-systems-filled/38/ffffff/lightning-bolt.png"
-            alt=''
-          />
-          {renderTotalCount(totalCountRef)}
-        </div>
-
+              if (detailsOpen) {
+                setDetailsOpen(detailsOpen = false)
+              }
+            }}
+          >
+            <img 
+              src="https://img.icons8.com/fluent-systems-filled/38/ffffff/lightning-bolt.png"
+              alt=''
+            />
+            {renderTotalCount(totalCountRef)}
+          </div>
+          
           <Activity
             mentionsCount={activityCounts.mentionsCount}
             repostsCount={activityCounts.repostsCount}
@@ -151,28 +154,30 @@ const BrowserNav = ({
             setActivityOpen={setActivityOpen}
           />
 
-        <div
-          className='userIcon'
-          tabIndex={0}
-          onClick={() => {
-            if (detailsOpen) {
-              setDetailsOpen(detailsOpen = false)
-            } else {
-              setDetailsOpen(detailsOpen = true)
-            }
-
-            if (activityOpen) {
-              setActivityOpen(activityOpen = false)
-            }
-          }}
-        >
-          <img
-            src="https://img.icons8.com/material-rounded/38/ffffff/user.png"
-            alt=''
-          />
-        </div>
+          <div
+            className='userIcon'
+            tabIndex={0}
+            onClick={() => {
+              if (detailsOpen) {
+                setDetailsOpen(detailsOpen = false)
+              } else {
+                setDetailsOpen(detailsOpen = true)
+              }
+            
+              if (activityOpen) {
+                setActivityOpen(activityOpen = false)
+              }
+            }}
+          >
+            <img
+              src="https://img.icons8.com/material-rounded/38/ffffff/user.png"
+              alt=''
+            />
+          </div>
 
           <UserDetails
+            user={userDetailsCounts.user ? userDetailsCounts.user : null}
+            profilePic={userDetailsCounts.user ? userDetailsCounts.user.profilePic : null}
             blogName={userDetailsCounts.user ? userDetailsCounts.user.blogName : null}
             blogDescription={userDetailsCounts.user ? userDetailsCounts.user.blogDescription : null}
             totalLikeCount={userDetailsCounts.user ? userDetailsCounts.user.totalLikeCount : null}

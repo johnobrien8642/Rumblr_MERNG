@@ -2,11 +2,13 @@ const accumulateCounts = (
   data1,
   totalCountRef
 ) => {
-  totalCountRef.current =
-  totalCountRef.current +
-  data1.mentionsCount +
-  data1.repostsCount +
-  data1.commentsCount
+  if (data1) {
+    totalCountRef.current =
+    totalCountRef.current +
+    data1.mentionsCount +
+    data1.repostsCount +
+    data1.commentsCount
+  }
 }
 
 const renderTotalCount = (totalCountRef) => {

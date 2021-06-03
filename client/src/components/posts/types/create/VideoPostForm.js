@@ -9,6 +9,7 @@ import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text';
 import Tags from '../../util/components/forms/Tags';
 import PostFormUtil from '../../util/functions/post_form_util.js';
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+import ProfilePic from '../../../user/util/components/Profile_Pic';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, videoPost, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
@@ -19,8 +20,14 @@ const { FETCH_USER_FEED } = Queries;
 
 
 const VideoPostForm = ({
-  post, update,
-  setUpdate
+  user,
+  post, 
+  update,
+  setUpdate,
+  videoPostActive,
+  setVideoPostActive,
+  postFormModal,
+  setPostFormModal
 }) => {
   let [videoFile, setVideoFile] = useState('');
   let [videoObj, setVideoObj] = useState('');
@@ -40,6 +47,15 @@ const VideoPostForm = ({
   const formId = 'videoPostForm';
   const formInputId = 'videoPostInput'
   let history = useHistory();
+
+  useEffect(() => {
+    var el = document.querySelector('.videoPostForm')
+
+    if (el) {
+      el.focus()
+    }
+
+  }, [videoPostActive])
 
   useEffect(() => {
     resetDisplayIdx(body)
@@ -131,79 +147,103 @@ const VideoPostForm = ({
     )
   }
 
-  return (
+  if (videoPostActive) {
+    return (
     <div
-      className={post ? '' : 'postForm'}
+      className='postFormContainer'
     >
-      <h1>VideoPost</h1>
-      <form
-        id={formId}
-        onSubmit={e => {
-          setUploading(uploading = true)
-          handleSubmit(e)
-        }}
-        onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
-        encType={'multipart/form-data'}
-      >
-        
-      <p>{uploading ? 'Uploading, please wait...': ''}</p>
-      
-      <VideoInput
-        post={post}
-        update={update}
-        formId={formId}
-        active={active}
-        objsToClean={objsToClean}
-        setActive={setActive}
-        videoObj={videoObj}
-        setVideoObj={setVideoObj}
-        videoFile={videoFile}
-        setVideoFile={setVideoFile}
-        isLink={isLink}
-        setIsLink={setIsLink}
-      />
-    
-      <BodyImageAndText
-        post={post}
-        update={update}
-        formId={formId}
-        formInputId={formInputId}
-        objsToClean={objsToClean}
-        body={body}
-        bodyImageFiles={bodyImageFiles}
-        setBodyImageFiles={setBodyImageFiles}
-        description={description}
-        setDescription={setDescription}
-        render={render}
-        setRender={setRender}
-        errMessage={errMessage}
-        setErrMessage={setErrMessage}
-      />
 
-      <Tags
-        post={post}
-        tag={tag}
-        setTag={setTag}
-        tags={tags}
-        setTags={setTags}
-      />
+      <ProfilePic user={user} />
 
-      <button
-        type='submit'
-        disabled={!videoObj && !uploading}
-      >
-        {post ? 'update' : 'post'}
-      </button>
-      </form>
-      <div
-        onClick={() => {
-          history.push('/')
-        }}
-      >
-        Close
+      <div>
+        <div
+          className={videoPostActive ? 
+            'postForm videoPostForm active' : 
+            'postForm videoPostForm active'
+          }
+          tabIndex={-1}
+          onBlur={() => {
+            setVideoPostActive(videoPostActive = false)
+            setPostFormModal(postFormModal = false)
+          }}
+        >
+          <h1>VideoPost</h1>
+          <form
+            id={formId}
+            onSubmit={e => {
+              setUploading(uploading = true)
+              handleSubmit(e)
+            }}
+            onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
+            encType={'multipart/form-data'}
+          >
+
+          <p>{uploading ? 'Uploading, please wait...': ''}</p>
+          
+          <VideoInput
+            post={post}
+            update={update}
+            formId={formId}
+            active={active}
+            objsToClean={objsToClean}
+            setActive={setActive}
+            videoObj={videoObj}
+            setVideoObj={setVideoObj}
+            videoFile={videoFile}
+            setVideoFile={setVideoFile}
+            isLink={isLink}
+            setIsLink={setIsLink}
+          />
+
+          <BodyImageAndText
+            post={post}
+            update={update}
+            formId={formId}
+            formInputId={formInputId}
+            objsToClean={objsToClean}
+            body={body}
+            bodyImageFiles={bodyImageFiles}
+            setBodyImageFiles={setBodyImageFiles}
+            description={description}
+            setDescription={setDescription}
+            render={render}
+            setRender={setRender}
+            errMessage={errMessage}
+            setErrMessage={setErrMessage}
+          />
+
+          <Tags
+            post={post}
+            tag={tag}
+            setTag={setTag}
+            tags={tags}
+            setTags={setTags}
+          />
+
+          <button
+            type='submit'
+            disabled={!videoObj && !uploading}
+          >
+            {post ? 'update' : 'post'}
+          </button>
+          </form>
+          <div
+            onClick={() => {
+              history.push('/')
+            }}
+          >
+            Close
+          </div>
+        </div>
       </div>
     </div>
-  )
+    )
+  } else {
+    return (
+      <div>
+      </div>
+    )
+  }
 }
 
 export default VideoPostForm;

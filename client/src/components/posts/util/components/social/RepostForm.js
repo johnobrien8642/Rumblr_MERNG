@@ -69,10 +69,12 @@ const RepostForm = () => {
       repostObj.repostedId = post._id
       repostObj.postId = post.post._id
       repostObj.postKind = post.post.kind
+      repostObj.postAuthor = post.post.user._id
     } else {
       repostObj.repostedId = post._id
       repostObj.postId = post._id
       repostObj.postKind = post.kind
+      repostObj.postAuthor = post.user._id
     }
     repostObj.previousReposter = post.kind === 'Repost' ? post.user : null
     repostObj.repostCaption = repostCaption

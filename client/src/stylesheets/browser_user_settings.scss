@@ -1,0 +1,92 @@
+.browserUserSettingsContainer {
+  background-color: white;
+  width: 700px;
+  margin: 0 auto;
+  margin-top: 120px;
+
+  .browserUserSettings {
+    // width: 620px;
+    padding: 30px;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--middler-gray);
+  
+    h1 {
+      font-size: 29px;
+      border-bottom: 2px solid rgb(0, 0, 0, 0.1);
+      padding-bottom: 22px;
+    }
+
+    .profilePicPreview {
+    
+      .previewImg {
+        position: relative;
+        width: 300px;
+        height: auto;
+        margin: auto;
+        margin-bottom: 15px;
+  
+        .removeProPicBtn {
+          position: absolute;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          top: -20px;
+          left: 278px;
+          background-color: red;
+        }
+  
+        img {
+          display: block;
+          margin: auto;
+          object-fit: contain;
+        }
+      }
+  
+      .profilePicFileInputCustomLabel {
+        display: block;
+        margin: auto;
+        margin-bottom: 15px;
+        position: relative;
+        border-radius: 5px;
+        background-color: var(--light-gray);
+        height: 200px;
+        width: 200px;
+  
+        &:hover {
+          cursor: pointer;
+        }
+  
+        div {
+          display: flex;
+          position: relative;
+          flex-direction: column;
+          top: 50%;
+          transform: translateY(-50%);
+          
+          
+  
+          img {
+            display: block;
+            margin: auto;
+            width: 70px;
+            filter: grayscale(100%);
+            opacity: .7;
+          }
+  
+          span {
+            display: block;
+            margin: auto;
+          }
+        }
+        
+  
+        // text-align: center;
+        #profilePicFileInput {
+          display: none;
+          // background-color: red;
+        }
+      }
+    }
+  
+  }
+}

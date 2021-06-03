@@ -9,6 +9,7 @@ import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text';
 import Tags from '../../util/components/forms/Tags';
 import PostFormUtil from '../../util/functions/post_form_util.js';
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
+import ProfilePic from '../../../user/util/components/Profile_Pic';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         audioPost, handleUploadedFiles,
@@ -18,8 +19,14 @@ const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const AudioPostForm = ({
-  post, update,
-  setUpdate
+  user,
+  post, 
+  update,
+  setUpdate,
+  audioPostActive,
+  setAudioPostActive,
+  postFormModal,
+  setPostFormModal
 }) => {
   // let audioFile = useRef({});
   let [audioFile, setAudioFile] = useState('');
@@ -45,6 +52,15 @@ const AudioPostForm = ({
   const formInputId = 'audioPostInput'
   let history = useHistory();
   
+  useEffect(() => {
+    var el = document.querySelector('.audioPostForm')
+
+    if (el) {
+      el.focus()
+    }
+
+  }, [audioPostActive])
+
   useEffect(() => {
     resetDisplayIdx(body)
   })
@@ -141,80 +157,102 @@ const AudioPostForm = ({
     )
   }
 
-  return (
-    <div
-      className={post ? '' : 'postForm'}
-    >
-      <h1>AudioPost</h1>
-      <form
-        id={formId}
-        onSubmit={e => handleSubmit(e)}
-        onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
-        encType={'multipart/form-data'}
-      >
-    
-      <AudioFileInput
-        post={post}
-        update={update}
-        formId={formId}
-        objsToClean={objsToClean}
-        audioFile={audioFile}
-        setAudioFile={setAudioFile}
-        title={title}
-        setTitle={setTitle}
-        artist={artist}
-        setArtist={setArtist}
-        album={album}
-        setAlbum={setAlbum}
-        src={src}
-        setSrc={setSrc}
-        active={active}
-        setActive={setActive}
-        render={render}
-        setRender={setRender}
-      />
-
-      <BodyImageAndText
-        post={post}
-        update={update}
-        formId={formId}
-        formInputId={formInputId}
-        objsToClean={objsToClean}
-        body={body}
-        bodyImageFiles={bodyImageFiles}
-        setBodyImageFiles={setBodyImageFiles}
-        description={description}
-        setDescription={setDescription}
-        render={render}
-        setRender={setRender}
-        errMessage={errMessage}
-        setErrMessage={setErrMessage}
-      />
-
-      <Tags
-        post={post}
-        tag={tag}
-        setTag={setTag}
-        tags={tags}
-        setTags={setTags}
-      />
-
-      <button
-        type='submit'
-        disabled={!audioFile}
-      >
-        {post ? 'update' : 'post'}
-      </button>
-      </form>
+  if (audioPostActive) {
+    return (
       <div
-        onClick={() => {
-          history.push('/')
+        className='postFormContainer'
+      >
+
+      <ProfilePic user={user} />
+
+      <div
+        className={audioPostActive ? 
+          'postForm audioPostForm active' : 
+          'postForm audioPostForm hidden'
+        }
+        tabIndex={-1}
+        onBlur={() => {
+          setAudioPostActive(audioPostActive = false)
+          setPostFormModal(postFormModal = false)
         }}
       >
-        Close
+        <h1>AudioPost</h1>
+        <form
+          id={formId}
+          onSubmit={e => handleSubmit(e)}
+          onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
+          encType={'multipart/form-data'}
+        >
+      
+        <AudioFileInput
+          post={post}
+          update={update}
+          formId={formId}
+          objsToClean={objsToClean}
+          audioFile={audioFile}
+          setAudioFile={setAudioFile}
+          title={title}
+          setTitle={setTitle}
+          artist={artist}
+          setArtist={setArtist}
+          album={album}
+          setAlbum={setAlbum}
+          src={src}
+          setSrc={setSrc}
+          active={active}
+          setActive={setActive}
+          render={render}
+          setRender={setRender}
+        />
+  
+        <BodyImageAndText
+          post={post}
+          update={update}
+          formId={formId}
+          formInputId={formInputId}
+          objsToClean={objsToClean}
+          body={body}
+          bodyImageFiles={bodyImageFiles}
+          setBodyImageFiles={setBodyImageFiles}
+          description={description}
+          setDescription={setDescription}
+          render={render}
+          setRender={setRender}
+          errMessage={errMessage}
+          setErrMessage={setErrMessage}
+        />
+  
+        <Tags
+          post={post}
+          tag={tag}
+          setTag={setTag}
+          tags={tags}
+          setTags={setTags}
+        />
+  
+        <button
+          type='submit'
+          disabled={!audioFile}
+        >
+          {post ? 'update' : 'post'}
+        </button>
+        </form>
+        <div
+          onClick={() => {
+            history.push('/')
+          }}
+        >
+          Close
+        </div>
       </div>
     </div>
-  )
+    )
+  } else {
+    return (
+      <div>
+      </div>
+    )
+  }
 }
 
 export default AudioPostForm;

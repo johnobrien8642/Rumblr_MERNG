@@ -49,7 +49,7 @@ const Content = ({
       query: Cookies.get('currentUser'),
       cursorId: null
     },
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'no-cache'
   })
 
   if (loading) return 'Loading Content...';

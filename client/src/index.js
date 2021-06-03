@@ -46,6 +46,20 @@ const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({
     typePolicies: {
+      UserType: {
+        fields: {
+          userFollows: {
+            merge(existing = [], incoming = []) {
+              return incoming
+            }
+          },
+          tagFollows: {
+            merge(existing = [], incoming = []) {
+              return incoming
+            }
+          }
+        }
+      },
       Query: {
        fields: {
          fetchLikesRepostsAndComments: {
@@ -161,6 +175,11 @@ const client = new ApolloClient({
             
               return elements
             }
+          }
+        },
+        fetchCheckOutTheseBlogs: {
+          merge: (existing = [], incoming = []) => {
+            return incoming
           }
         }
       }

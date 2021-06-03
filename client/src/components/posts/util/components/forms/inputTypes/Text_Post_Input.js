@@ -14,13 +14,12 @@ const TextPostInput = ({
   }, [])
 
   return (
-    <div>
-      <input
-        value={title}
-        placeholder='Title'
-        onChange={e => setTitle(title = e.target.value)}
-      />
-    </div>
+    <input
+      className='titleInput'
+      value={title}
+      placeholder='Title'
+      onChange={e => setTitle(title = e.target.value)}
+    />
   )
 }
 

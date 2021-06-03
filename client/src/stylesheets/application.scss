@@ -1,7 +1,9 @@
 @use 'reset';
 @use 'body';
+@use 'auth_forms';
 @use 'browser_nav';
 @use 'mobile_nav';
 @use 'mobile_post_nav_wheel';
-@use 'auth_forms';
-@use 'svg';
+@use 'browser_feed';
+@use 'browser_user_settings';
+@use 'post_forms';

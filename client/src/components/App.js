@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Switch, Redirect } from 'react-router-dom';
-import Nav from '../components/nav/Nav'
+import Nav from '../components/nav/Nav';
 import Dashboard from './dashboard/Dashboard';
 import Login from '../components/auth/Login';
 import Register from './auth/Register';
@@ -20,6 +20,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import './../stylesheets/application.scss';
 
 
+
 const App = () => {
 
   useEffect(() => {
@@ -28,15 +29,14 @@ const App = () => {
       `${window.scrollY}px`)
     })
 
-    
-
     return () => {
       window.removeEventListener('scroll', listener)
     }
   })
 
   return (
-    <div className="App">
+    <React.Fragment>
+    {/* // <div className="App"> */}
       <Nav />
       <Switch>
         <AuthRoute path={'/dashboard'} component={Dashboard} />
@@ -55,7 +55,8 @@ const App = () => {
         <AuthRoute exact path='/login' component={Login} routeType={'auth'} />
         <Redirect from='/' to='/dashboard' />
       </Switch>
-    </div>
+    {/* // </div> */}
+    </React.Fragment>
   );
 }
 

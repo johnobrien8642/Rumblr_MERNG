@@ -1,6 +1,8 @@
 import graphql from 'graphql';
 import bcrypt from 'bcryptjs';
 import Validator from 'validator';
+import aws from 'aws-sdk';
+import keys from '../../../config/keys.js'
 import { GraphQLJSONObject } from 'graphql-type-json';
 import mongoose from 'mongoose';
 import UserType from '../objects/user_type.js';
@@ -10,9 +12,13 @@ import LikeType from '../objects/posts/util/like_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
 import CommentType from '../objects/posts/util/comment_type.js';
 import AnyPostType from '../unions/any_post_type.js';
+import UserAndTagType from '../unions/user_and_tag_type.js';
 import createOrUpdatePost from '../../../models/posts/types/util/create_or_update_function.js';
 import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function_util.js';
-const { deletePost, asyncDeleteAllPosts } = DeleteFunctionUtil;
+const { deletePost, 
+        asyncDeleteAllPosts, 
+        asyncDeleteAllActivityAndProfilePic,
+        handleS3Cleanup } = DeleteFunctionUtil;
 
 const Post = mongoose.model('Post');
 const User = mongoose.model('User');
@@ -21,8 +27,15 @@ const Repost = mongoose.model('Repost');
 const Like = mongoose.model('Like');
 const Comment = mongoose.model('Comment')
 const Follow = mongoose.model('Follow');
+const Image = mongoose.model('Image');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
+
+var s3Client = new aws.S3({
+  secretAccessKey: keys.secretAccessKey,
+  accessKeyId: keys.accessKeyId,
+  region: 'us-east-1'
+})
 
 const mutation = new GraphQLObjectType({
   name: 'Mutations',
@@ -30,13 +43,10 @@ const mutation = new GraphQLObjectType({
     registerUser: {
       type: UserType,
       args: {
-        blogName: { type: GraphQLString },
-        blogDescription: { type: GraphQLString },
-        email: { type: GraphQLString },
-        password: { type: GraphQLString },
+        instanceData: { type: GraphQLJSONObject }
       },
-      resolve(_, args, ctx) {
-        return AuthService.register(args, ctx).then(res => {
+      resolve(_, { instanceData }, ctx) {
+        return AuthService.register(instanceData, ctx).then(res => {
           ctx.headers.authorization = JSON.stringify(res.token)
           return res
         })
@@ -132,7 +142,7 @@ const mutation = new GraphQLObjectType({
       }
     },
     follow: {
-      type: FollowType,
+      type: UserAndTagType,
       args: {
         user: { type: GraphQLString },
         item: { type: GraphQLString },
@@ -154,37 +164,36 @@ const mutation = new GraphQLObjectType({
           if (followsUser) {
             follow.follows = followsUser._id
             followsUser.followerCount = followsUser.followerCount + 1
+            user.userFollows.push(followsUser._id)
 
             return Promise.all([
               follow.save(),
               followsUser.save(),
               user.save()
-            ]).then(([follow, followsUser, user]) => follow)
-
+            ]).then(([follow, followsUser, user]) => followsUser)
           } else if (tag) {
-            tag.followerCount = tag.followerCount + 1
-            
-            user.tagFollows.push(tag._id)
             follow.follows = tag._id
+            tag.followerCount = tag.followerCount + 1
+            user.tagFollows.push(tag._id)
 
             return Promise.all([
               follow.save(),
               user.save(),
               tag.save()
-            ]).then(([follow, user, tag]) => follow)
+            ]).then(([follow, user, tag]) => tag)
           }
         })
       }
     },
     unfollow: {
-      type: FollowType,
+      type: UserAndTagType,
       args: {
         user: { type: GraphQLString },
-        followId: { type: GraphQLID },
         item: { type: GraphQLID }
       },
-      resolve(_, { user, followId, item }) {
+      resolve(_, { user, item }) {
         var recastItem = mongoose.Types.ObjectId(item)
+
         return Promise.all([
           User.findOne({ blogName: user }),
           User.findOne({ _id: recastItem }),
@@ -192,25 +201,24 @@ const mutation = new GraphQLObjectType({
         ]).then(([user, followsUser, tag]) => {
 
           if (followsUser) {
+            user.userFollows = user.userFollows.filter(obj => obj._id.toString() !== followsUser._id.toString())
             followsUser.followerCount = followsUser.followerCount - 1
-
+            
             return Promise.all([
-              tag.save(),
               user.save(),
               followsUser.save(),
-              Follow.deleteOne({ _id: followId })
-            ]).then(([tag, user, followsUser, follow]) => follow)
+              Follow.deleteOne({ user: mongoose.Types.ObjectId(user._id), follows: mongoose.Types.ObjectId(followsUser._id) })
+            ]).then(([user, followsUser, follow]) => followsUser)
           } else if (tag) {
+            user.userFollows = user.userFollows.filter(obj => obj._id.toString() !== tag._id.toString())
             tag.followerCount = tag.followerCount - 1
-            user.tagFollows = user.tagFollows.filter(id => id.toString() !== tag._id.toString())
-
+      
             return Promise.all([
               tag.save(),
               user.save(),
-              Follow.deleteOne({ _id: followId })
-            ]).then(([tag, user, follow]) => follow)
+              Follow.deleteOne({ user: mongoose.Types.ObjectId(user._id), follows: mongoose.Types.ObjectId(tag._id) })
+            ]).then(([tag, user, follow]) => tag)
           }
-          
         })
       }
     },
@@ -244,6 +252,7 @@ const mutation = new GraphQLObjectType({
           
           repost.postId = repostData.postId
           repost.post = repostData.postId
+          repost.postAuthor = repostData.postAuthor
           repost.user = reposter._id
           repost.repostedFrom = reposted._id
           repost.onModel = repostData.postKind
@@ -253,8 +262,8 @@ const mutation = new GraphQLObjectType({
             [repostTrailId]
 
           repost.repostCaptions = foundPost.kind === 'Repost' ?
-            [...foundPostObj.repostCaptions, { caption: repostCaption, userId: reposter._id }] :
-            [{ caption: repostCaption, userId: reposter._id }]
+            [...foundPostObj.repostCaptions, { caption: repostCaption, userId: reposter._id, repostId: repost._id }] :
+            [{ caption: repostCaption, userId: reposter._id, repostId: repost._id }]
 
 
           foundPost.notesCount = foundPost.notesCount + 1
@@ -310,6 +319,45 @@ const mutation = new GraphQLObjectType({
         })
       }
     },
+    updateProfilePic: {
+      type: UserType,
+      args: {
+        instanceData: { type: GraphQLJSONObject }
+      },
+      resolve(parentValue, {
+        instanceData
+      }) {
+        var { profilePicId, password, user } = instanceData;
+        
+        return User.findOne({ blogName: user })
+          .then(user => {
+            if (bcrypt.compareSync(password, user.password)) {
+              return Promise.all([
+                Image.findOne({ _id: user.profilePic })
+              ]).then(([foundImage]) => {
+                if (foundImage) {
+                  return Promise.all([
+                    handleS3Cleanup(foundImage, s3Client, keys),
+                    Image.deleteOne({ _id: foundImage._id })
+                  ]).then(([cleaned, deletedImage]) => {
+                    user.profilePic = profilePicId
+  
+                    return user.save().then(user => {
+                      return user
+                    })
+                  })
+                } else {
+                  user.profilePic = profilePicId
+
+                  return user.save().then(user => user)
+                }
+              })
+            } else {
+              return new Error('Incorrect password')
+            }
+          })
+      }
+    },
     updateUserEmail: {
       type: UserType,
       args: {
@@ -355,6 +403,8 @@ const mutation = new GraphQLObjectType({
               user.blogDescription = blogDescription
               return user.save()
                 .then(user => user)
+            } else {
+              return new Error('Incorrect password')
             }
           })
       }
@@ -500,8 +550,11 @@ const mutation = new GraphQLObjectType({
                 { $unwind: '$posts' },
                 { $replaceRoot: { "newRoot": "$posts" } }
               ]).then(posts => {
-                return asyncDeleteAllPosts(posts, deletePost)
-                  .then(() => {
+                return Promise.all([
+                  asyncDeleteAllPostsAndProfilePic(posts, deletePost),
+                  asyncDeleteAllActivity(user),
+                  handleS3Cleanup(user.profilePic)
+                ]).then(() => {
                     return User.deleteOne({ blogName: query })
                       .then(() => {
                         return AuthService.logout(token)
@@ -516,7 +569,5 @@ const mutation = new GraphQLObjectType({
     }
   })
 })
-
-'password'
 
 export default mutation;

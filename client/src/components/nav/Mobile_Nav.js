@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Search from '../search/Search';
-import UserDetails from './User_Details';
-import Activity from './Activity';
 import MobileMenuDD from './Mobile_Menu_DD';
 import { Link } from 'react-router-dom';
 import MobileSearchOrLogo from './Mobile_Search_Or_Logo';
@@ -25,7 +23,10 @@ const MobileNav = ({
 
   useEffect(() => {
     if (menuOpen) {
-      document.body.style.position = 'fixed'
+      // document.body.style.position = 'fixed'
+      document.body.style.margin = '0'
+      document.body.style.height = '100%'
+      document.body.style.overflow = 'hidden'
       var el = document.querySelector('.mobileNav')
       
       if (el) {
@@ -52,8 +53,9 @@ const MobileNav = ({
         className='mobileNav loggedIn'
         tabIndex={-1}
         onBlur={() => {
-          var body = document.body
-          body.style.position = ''
+          document.body.style.margin = ''
+          document.body.style.height = ''
+          document.body.style.overflow = ''
           openMenu(menuOpen = false)
         }}
       >
@@ -97,166 +99,6 @@ const MobileNav = ({
             openSearch={openSearch}
           />
         </div>
-        {/* <div
-          className='searchAndLogo'
-        >
-          <div
-            className='logo'
-          >
-            <Link
-              to='/dashboard'
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
-            >
-              <img 
-                src="https://img.icons8.com/fluent-systems-filled/48/ffffff/r.png"
-                alt=''  
-              />
-            </Link>
-          </div>
-            <Search
-              searchClose={searchClose}
-              closeSearch={closeSearch}
-              detailsOpen={detailsOpen}
-              setDetailsOpen={setDetailsOpen}
-              activityOpen={activityOpen}
-              setActivityOpen={setActivityOpen}
-            />
-        </div>
-
-        <div
-          className='navTools'
-        >
-          <div
-            className='homeIcon'
-          >
-            <Link
-              to='/dashboard'
-              onClick={() => {
-                if (document.querySelector('.searchBar')) {
-                  document.querySelector('.searchBar').blur()
-                }
-
-                if (document.querySelector('.activity')) {
-                  document.querySelector('.activity').blur()
-                }
-
-                if (document.querySelector('.userDetails')) {
-                  document.querySelector('.userDetails').blur()
-                }
-
-                setNavActive(navActive = false)
-                closeSearch(searchClose = true)
-                setActivityOpen(activityOpen = false)
-                setDetailsOpen(detailsOpen = false)
-              }}
-            >
-              <img
-                src="https://img.icons8.com/ios-glyphs/48/ffffff/home-page.png"
-                alt=''
-              />
-            </Link>
-          </div>
-
-          <div
-            className='discoverIcon'
-          >
-            <Link
-              to='/discover'
-              onClick={() => {
-                setNavActive(navActive = false)
-                closeSearch(searchClose = true)
-                setActivityOpen(activityOpen = false)
-                setDetailsOpen(detailsOpen = false)
-              }}
-            >
-              <img 
-                src="https://img.icons8.com/ios/40/ffffff/compass--v1.png"
-                alt=''
-              />
-            </Link>
-          </div>
-
-        <div
-          className='activityIcon'
-          onClick={() => {
-            totalCountRef.current = 0
-
-            if (activityOpen) {
-              setActivityOpen(activityOpen = false)
-            } else {
-              setActivityOpen(activityOpen = true)
-            }
-
-            if (detailsOpen) {
-              setDetailsOpen(detailsOpen = false)
-            }
-          }}
-        >
-          <img 
-            src="https://img.icons8.com/fluent-systems-filled/48/ffffff/lightning-bolt.png"
-            alt=''
-          />
-          {renderTotalCount(totalCountRef)}
-        </div>
-
-          <Activity
-            mentionsCount={activityCounts.mentionsCount}
-            repostsCount={activityCounts.repostsCount}
-            commentsCount={activityCounts.commentsCount}
-            navActive={navActive}
-            setNavActive={setNavActive}
-            activityClose={activityClose}
-            closeActivity={closeActivity}
-            detailsClose={detailsClose}
-            closeDetails={closeDetails}
-            detailsOpen={detailsOpen}
-            setDetailsOpen={setDetailsOpen}
-            activityOpen={activityOpen}
-            setActivityOpen={setActivityOpen}
-          />
-
-        <div
-          className='userIcon'
-          tabIndex={0}
-          onClick={() => {
-            if (detailsOpen) {
-              setDetailsOpen(detailsOpen = false)
-            } else {
-              setDetailsOpen(detailsOpen = true)
-            }
-
-            if (activityOpen) {
-              setActivityOpen(activityOpen = false)
-            }
-          }}
-        >
-          <img
-            src="https://img.icons8.com/material-rounded/48/ffffff/user.png"
-            alt=''
-          />
-        </div>
-
-          <UserDetails
-            blogName={userDetailsCounts.user ? userDetailsCounts.user.blogName : null}
-            blogDescription={userDetailsCounts.user ? userDetailsCounts.user.blogDescription : null}
-            totalLikeCount={userDetailsCounts.user ? userDetailsCounts.user.totalLikeCount : null}
-            userFollowCount={userDetailsCounts.user ? userDetailsCounts.user.userFollowCount : null}
-            userPostsCount={userDetailsCounts.user ? userDetailsCounts.user.userPostsCount : null}
-            followersCount={userDetailsCounts.user ? userDetailsCounts.user.followersCount : null}
-            navActive={navActive}
-            setNavActive={setNavActive}
-            detailsClose={detailsClose}
-            closeDetails={closeDetails}
-            activityClose={activityClose}
-            closeActivity={closeActivity}
-            detailsOpen={detailsOpen}
-            setDetailsOpen={setDetailsOpen}
-            activityOpen={activityOpen}
-            setActivityOpen={setActivityOpen}
-          />
-        </div> */}
       </div>
     )
   } else {

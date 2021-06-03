@@ -61,6 +61,30 @@ textarea
 	// font-family:Arial;
 }
 
+.ck,
+.ck-content,
+.ck-editor__editable,
+.ck-rounded-corners,
+.ck-editor__editable_inline,
+.ck-blurred,
+.ck-focused {
+	border: none !important;
+	outline: none !important;
+	
+	 &:focus {
+		 border: none !important;
+		 outline: none !important;
+	 }
+}
+
+div[contenteditable] {
+	outline: none;
+
+	&:focus {
+		outline: none;
+	}
+}
+
 // /* Remove the stupid outer glow in Webkit */
 input:focus,
 textarea:focus

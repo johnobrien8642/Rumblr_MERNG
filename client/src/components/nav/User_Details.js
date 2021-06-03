@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Logout from '../auth/Logout.js';
+import ProfilePic from '../user/util/components/Profile_Pic';
 
 const UserDetails = ({
+  user,
   navActive, 
-  setNavActive, 
+  setNavActive,
   detailsClose,
+  profilePic,
   blogName,
   blogDescription,
   totalLikeCount,
@@ -29,6 +32,14 @@ const UserDetails = ({
   }, [detailsClose, detailsOpen, active])
 
   if (detailsOpen) {
+    const { 
+      totalLikeCount, 
+      userFollowCount, 
+      userPostsCount,
+      followersCount,
+      blogName,
+      blogDescription } = user;
+
     return (
       <div
         className='userDetails'
@@ -105,15 +116,21 @@ const UserDetails = ({
             </li>
           <li
             className='blogDescription'
-          >
+          > 
             <Link 
               to={`/view/blog/${blogName}`} 
               onClick={() => {
                 setNavActive(navActive = false)
               }}
             >
-              <h3>{blogName}</h3>
-              <p>{blogDescription}</p>
+              <ProfilePic 
+                user={user}
+                standaloneLink={false}
+              />
+              <div>
+                <h3>{blogName}</h3>
+                <p>{blogDescription}</p>
+              </div>
             </Link>
           </li>
           <li>
@@ -126,7 +143,7 @@ const UserDetails = ({
             >
               <p>Posts</p>
             </Link>
-              <span>{userPostsCount}</span>
+              <span className='detailCount'>{userPostsCount}</span>
           </li>
           <li>
             <Link
@@ -138,7 +155,7 @@ const UserDetails = ({
             >
               <p>Followers</p>
             </Link>
-              <span>{followersCount}</span>
+              <span className='detailCount'>{followersCount}</span>
           </li>
         </ul>
       </div>
@@ -150,5 +167,32 @@ const UserDetails = ({
     )
   }
 }
+
+// const handleByLine = (user) => {
+//   var words, descriptionArr = []
+
+//   if (user.blogDescription) {
+//     words = user.blogDescription.split(' ')
+    
+//     if (words.length > 8) {
+//       descriptionArr = words.slice(0, 8)
+
+//       return (
+//         <p>{descriptionArr.join(' ') + '...'}</p>
+//       )
+//     } else {
+//       descriptionArr = [...words]
+
+//       return (
+//         <p>{descriptionArr.join(' ')}</p>
+//       )
+//     }
+
+//   } else {
+//     return (
+//       <p></p>
+//     )
+//   }
+// }
 
 export default UserDetails;

@@ -1,0 +1,315 @@
+.postFormModal.active {
+  display: block;
+}
+
+.postFormModal.hidden {
+  display: none;
+}
+
+.postForm.hidden {
+  display: none;
+}
+
+.postForm.active {
+  display: block;
+}
+
+.postFormModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--tumblr-deep-blue-modal);
+  z-index: 100;
+
+  .postFormContainer {
+    position: absolute;
+    top: 25%;
+    width: 540px;
+    min-height: 290px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 5px;
+
+    .profilePic {
+      position: absolute !important;
+      top: 0px !important;
+      left: -88px !important;
+      z-index: 103 !important;
+    }
+
+    .postForm {
+      position: relative;
+      box-sizing: border-box;
+      // margin: 18px;
+      // overflow-y: auto;
+      z-index: 102;
+
+      h3 {
+        font-family: var(--font);
+        font-size: 14px;
+        font-weight: 700;
+        margin: 15px 0 15px 16px;
+      }
+
+      .bodyImageInputContainer {
+        position: absolute;
+        display: flex;
+        width: 500px;
+        height: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        // background-color: red;
+        z-index: 500;
+        box-sizing: border-box;
+        border: 3px dashed rgb(0, 0, 0, 0.3);
+        background-color: var(--less-light-gray);
+        // border-top: 3px dashed var(--mid-gray);
+        // overflow: hidden;
+  
+        // textarea {
+        //   position: relative;
+        //   top: -111px;
+        //   left: 320px;
+        //   // background-color: red;
+        //   font-size: 17px;
+        //   font-weight: 500;
+        //   font-family: var(--font);
+        //   // color: rgb(0, 0, 0, 0.5)
+        // }
+  
+        .backBtn {
+          position: relative;
+          top: -5px;
+          left: -2px;
+          width: 50px;
+          height: 50px;
+        }
+  
+        .bodyImageInputCustomLabel {
+          // position: absolute;
+          border-right: 3px dashed rgb(0, 0, 0, 0.3);
+          width: 250px;
+          height: 200px;
+  
+          span {
+            display: inline-block;
+            position: relative;
+            font-weight: 500;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgb(0, 0, 0, 0.5)
+          }
+  
+          &:hover {
+            cursor: pointer;
+          }
+  
+          #bodyFileInput {
+            display: none;
+          }
+        }
+      }
+  
+  
+      .photoInputIcon {
+        display: inline-block;
+        position: absolute;
+        left: 90%;
+        width: 23px;
+        height: 23px;
+        filter: grayscale(100%);
+        z-index: 11;
+        
+        &:hover {
+          cursor: pointer;
+        }
+      }
+  
+      .ck {
+        position: relative;
+        padding-top: 8px;
+        margin: 0 0 0 10px;
+        min-height: 110px;
+        left: -6px;
+        outline: 0;
+        z-index: 10;
+  
+        &:focus {
+          outline: none;
+          border: none;
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  .tagsContainer {
+    display: flex;
+    position: relative;
+    margin: 0 0 0 0;
+    padding: 0 0 20px 0;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+
+    .tagDiv {
+      display: flex;
+      font-size: 15px;
+      white-space: nowrap;
+      margin-left: 8px;
+      padding: 0 10px 3px 5px;
+      height: fit-content;
+      border-radius: 15px;
+      background-color: var(--tumblr-lighter-blue);
+      color: white;
+
+      &:first-of-type {
+        margin-left: 15px;
+      }      
+
+      &:hover {
+        cursor: default;
+      }
+
+      .removeTag {
+        position: relative;
+        display: block;
+        top: 6px;
+        left: 4px;
+        height: 13px;
+        width: 10px;
+        text-align: center;
+        // background-color: white;
+        border-radius: 50%;
+        margin-left: 3px;
+
+        span {
+          display: block;
+          position: relative;
+          top: -5.3px;
+          // color: black;
+          font-weight: bold;
+          font-size: 13px;
+        }
+      }
+    }
+    
+        .tagInputAndDDContainer {
+          position: relative;
+
+          input {
+            margin: -2px 0 0 15px;
+            font-size: 17px;
+            
+          }
+  
+          .matchingTagsDD.active {
+            display: block;
+          }
+
+          .matchingTagsDD {
+            display: none;
+            position: absolute;
+            top: 30px;
+            left: -40px;
+            min-width: 190px;
+            background-color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+            border: 1px solid var(--light-gray);
+            z-index: 97;
+            
+            li {
+              padding: 5px 0 5px 10px;
+
+              &:not(:first-child) {
+                &:hover {
+                  background-color: var(--tag-hover-blue);
+                }
+              }
+
+              &:first-child {
+                font-size: 12px;
+                font-weight: 500;
+                padding: 3px 0 5px 5px;
+                color: rgb(0, 0, 0, 0.3);
+                background-color: var(--less-light-gray);
+
+                &:hover {
+                  cursor: default;
+                }
+              }
+
+              &:hover {
+                cursor: pointer;
+              }
+            }
+          }          
+        }
+      }
+
+      .closeOrPostContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 65px;
+
+        .closeBtn {
+          position: relative;
+          background-color: rgb(0, 0, 0, 0.4);
+          height: fit-content;
+          width: fit-content;
+          font-size: 14px;
+          font-weight: 700;
+          padding: 6px 10px 8px 10px;
+          margin-left: 17px;
+          border-radius: 3px;
+          color: white;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        .formSubmitBtn {
+          position: relative;
+          display: block;
+          font-size: 15px;
+          font-weight: 700;
+          height: fit-content;
+          width: fit-content;
+          margin-right: 17px;
+          padding: 8px 14px 8px 14px;
+          border-radius: 3px;
+          background-color: var(--tumblr-light-blue);
+          color: white;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+      
+      .postForm.textPostForm {
+        
+        .titleInput {
+          // background-color: red;
+          // display: none;
+          font-size: 34px;
+          margin: 0 0 0 15px;
+
+        &:focus {
+          outline: none;
+          border: none;
+        }
+      
+        &::placeholder {
+          color: rgb(0, 0, 0, 0.7);
+        }
+    }
+  }
+}

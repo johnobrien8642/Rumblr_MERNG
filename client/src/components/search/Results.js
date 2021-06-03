@@ -6,7 +6,12 @@ import TagResult from './resultTypes/Tag_Result';
 
 const { SEARCH_USERS_AND_TAGS } = Queries;
 
-const Results = ({ input, active, setActive }) => {
+const Results = ({
+  user,
+  input, 
+  active, 
+  setActive 
+}) => {
   
   let { loading, error, data } = useQuery(SEARCH_USERS_AND_TAGS,
       { variables: {
@@ -37,7 +42,8 @@ const Results = ({ input, active, setActive }) => {
                 <li 
                   key={res._id}
                 >
-                  <UserResult 
+                  <UserResult
+                    currentUser={user}
                     user={res}
                     active={active}
                     setActive={setActive}
@@ -50,6 +56,7 @@ const Results = ({ input, active, setActive }) => {
                   key={res._id}
                 >
                   <TagResult
+                    currentUser={user}
                     tag={res}
                     active={active}
                     setActive={setActive}

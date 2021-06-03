@@ -5,6 +5,7 @@ import TagType from '../objects/posts/util/tag_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import RepostType from '../objects/posts/util/repost_type.js'
 import FollowType from '../objects/posts/util/follow_type.js'
+import ImageType from './posts/util/image_type.js';
 const User = mongoose.model('User');
 const Follow = mongoose.model('Follow');
 const Mention = mongoose.model('Mention');
@@ -30,6 +31,14 @@ const UserType = new GraphQLObjectType({
     createdAt: { type: GraphQLInt },
     lastUpdated: { type: GraphQLInt },
     kind: { type: GraphQLString },
+    profilePic: {
+      type: ImageType,
+      resolve(parentValue) {
+        return User.findById(parentValue._id)
+          .populate('profilePic')
+          .then(user => user.profilePic)
+      }
+    },
     posts: {
       type: new GraphQLList(AnyPostType),
       resolve(parentValue) {
@@ -52,6 +61,14 @@ const UserType = new GraphQLObjectType({
         return User.findById(parentValue._id)
           .populate('tagFollows')
           .then(user => user.tagFollows)
+      }
+    },
+    userFollows: {
+      type: new GraphQLList(UserType),
+      resolve(parentValue) {
+        return User.findById(parentValue._id)
+          .populate('userFollows')
+          .then(user => user.userFollows)
       }
     },
     userFollowing: { 

@@ -15,7 +15,7 @@ const register = async (data, ctx) => {
   if (!isValid) {
     throw new Error(message)
   }
-  const { blogName, blogDescription, email, password } = data;
+  const { profilePicId, blogName, blogDescription, email, password } = data;
   
   const existingUser = await User.findOne({ email })
 
@@ -33,6 +33,7 @@ const register = async (data, ctx) => {
 
   const user = new User(
     {
+    profilePic: profilePicId ? profilePicId : null,
     blogName: blogName,
     blogDescription: blogDescription,
     email: email,

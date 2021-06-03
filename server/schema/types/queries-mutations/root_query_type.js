@@ -87,7 +87,7 @@ const RootQueryType = new GraphQLObjectType({
         query.title = new RegExp(filter);
         
         const tags = async (query) => {
-          return await Tag.find(query).exec()
+          return await Tag.find(query).limit(5).exec()
         }
 
         return Promise.all([tags(query)]).then(([tags]) => {

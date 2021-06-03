@@ -13,6 +13,10 @@ const RepostSchema = new Schema({
     type: Schema.Types.ObjectId,
     refPath: 'onModel'
   },
+  postAuthor: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   repostedFrom: {
     type: Schema.Types.ObjectId,
     ref: 'User'
@@ -26,7 +30,8 @@ const RepostSchema = new Schema({
   repostCaptions: [
     {
       caption: String,
-      userId: Schema.Types.ObjectId
+      userId: Schema.Types.ObjectId,
+      repostId: Schema.Types.ObjectId
     }
   ],
   createdAt: {

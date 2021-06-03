@@ -1,29 +1,61 @@
 import React from 'react';
+import Cookies from 'js-cookie';
+import { useQuery } from '@apollo/client';
 import { Route } from 'react-router-dom';
 import PostsNav from '../nav/Posts_Nav';
 import Feed from '../feeds/Feed.js';
 import PostRadar from '../dashboard/util/Post_Radar';
 import CheckOutTheseBlogs from '../dashboard/util/Check_Out_These_Blogs';
 import RepostForm from '../posts/util/components/social/RepostForm';
+import Queries from '../../graphql/queries.js';
+const { FETCH_USER } = Queries;
 
 const Dashboard = props => {
 
+  let { loading, error, data } = useQuery(FETCH_USER, {
+    variables: {
+      query: Cookies.get('currentUser')
+    }
+  })
+
+  if (loading) return 'Loading...';
+  if (error) return `Error: ${error}`;
+
+  const { user } = data;
+
   return(
-    <div>
-      <PostsNav props={props} />
-      <Route
-        exact path={`${props.match.path}/create`}
-        render={(props) => (
-          <PostsNav props={props} mobile={true} />
-        )}
-      />
-      <PostRadar />
-      <CheckOutTheseBlogs />
+    // <React.Fragment>
+    <div
+      className='dashboard'
+    >
       <Route
         exact path={`${props.match.path}/repost/:blogName/:postId/:typename`}
         component={RepostForm}
       />
-      <Feed user={null} />
+      <Route
+        exact path={`${props.match.path}/create`}
+        render={(props) => (
+          <PostsNav 
+            props={props} 
+            mobile={true} 
+            user={user} 
+          />
+        )}
+      />
+      <div
+        className='column1'
+      >
+        <PostsNav props={props} user={user} />
+        <Feed user={null} currentUser={user}/>
+      </div>
+
+      <div
+        className='column2'
+      >
+        <CheckOutTheseBlogs />
+        <PostRadar />
+      </div>
+    {/* </React.Fragment> */}
     </div>
   )
 }

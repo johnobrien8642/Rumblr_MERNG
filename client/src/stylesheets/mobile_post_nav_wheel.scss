@@ -1,8 +1,4 @@
 @media (max-width: 980px) {
-  .postsNav {
-    display: none;
-  }
-
   .postRadar {
     display: none;
   }
@@ -16,6 +12,10 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 
+.mobilePostsNavModal.none {
+  display: none;
+}
+
 .mobilePostsNavModal {
   display: block;
   position: fixed;
@@ -24,12 +24,13 @@
   left: 0;
   right: 0;
   background-color: rgba(0, 0, 0, 0);
+  z-index: 98;
   // transition: background-color .5s;
   
   .mobilePostsNav.open {
     transform: translateX(-50%) rotate(0deg);
   
-    a {
+    .postIconContainer {
       transform: rotate(0deg);
     }
   }
@@ -46,6 +47,7 @@
     height: 350px;
     margin: 0 auto;
     transition: transform .5s ease;
+    z-index: 99;
     
 
     @media (max-width: 320px) {
@@ -53,7 +55,7 @@
       height: 270px;
     }
   
-    a {
+    .postIconContainer {
       display: inline-block;
       position: relative;
       border-radius: 50%;

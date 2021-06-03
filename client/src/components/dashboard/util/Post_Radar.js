@@ -3,7 +3,9 @@ import Cookies from 'js-cookie';
 import PostShow from '../../posts/types/showOrUpdate/PostShow';
 import { useQuery } from '@apollo/client';
 import Queries from '../../../graphql/queries.js';
+import PostShowUtil from '../../posts/util/functions/post_show_util.js';
 const { FETCH_POST_RADAR } = Queries;
+const { handlePostClassName } = PostShowUtil
 
 const PostRadar = () => {
 
@@ -17,21 +19,30 @@ const PostRadar = () => {
   if (error) return `Error: ${error}`;
 
   const { fetchPostRadar } = data;
+
   if (fetchPostRadar) {
+
     return (
       <div
         className='postRadar'
       >
         <h1>Radar</h1>
-        <PostShow 
-          post={fetchPostRadar}
-          radar={true}
-        />
+        <div
+          className={handlePostClassName(fetchPostRadar)}
+        >
+          <PostShow
+            feedOrRadar={true}
+            post={fetchPostRadar}
+            radar={true}
+          />
+        </div>
       </div>
     )
   } else {
     return (
-      <div>
+      <div
+        className='postRadar'
+      >
         <h1>Radar</h1>
       </div>
     )

@@ -3,7 +3,8 @@ import PostUpdate from '../showOrUpdate/PostUpdate';
 import PostShow from '../showOrUpdate/PostShow';
 
 const PostUpdateOrShow = ({
-  post
+  post,
+  currentUser
 }) => {
   let [update, setUpdate] = useState(false)
 
@@ -27,6 +28,7 @@ const PostUpdateOrShow = ({
   } else {
     return (
       <PostShow
+        currentUser={currentUser}
         post={post}
         update={update}
         setUpdate={setUpdate}

@@ -4,6 +4,8 @@ const QueryFragments = {
     user {
       _id
       blogName
+      blogDescription
+      kind
     }
     descriptions
     descriptionImages {
@@ -23,6 +25,11 @@ const QueryFragments = {
       user {
         _id
         blogName
+        profilePic {
+          _id
+          src
+          kind
+        }
       }
       mention {
         _id

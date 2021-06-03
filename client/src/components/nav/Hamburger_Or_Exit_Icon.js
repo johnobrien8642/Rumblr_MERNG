@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 
 const HamburgerOrExitIcon = ({
   menuOpen,
@@ -33,8 +33,6 @@ const HamburgerOrExitIcon = ({
         <img
         className='hamburgerIcon'
         onClick={() => {
-          var body = document.body
-          body.style.position = 'fixed'
           scrollYRef2.current = scrollYRef.current
 
           openSettings(settingsOpen = false)

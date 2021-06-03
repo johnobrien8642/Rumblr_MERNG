@@ -13,7 +13,8 @@ const Search = ({
   setDetailsOpen,
   searchOpen,
   openSearch,
-  mobile
+  mobile,
+  user
 }) => {
   let [input, setInput] = useState('');
   let [followedActive, setFollowedActive] = useState(mobile ? true : false)
@@ -97,6 +98,7 @@ const Search = ({
         />
 
         <SearchDropDown
+          user={user}
           input={input}
           followedActive={followedActive}
           active={active}
