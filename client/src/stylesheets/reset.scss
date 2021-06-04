@@ -70,18 +70,24 @@ textarea
 .ck-focused {
 	border: none !important;
 	outline: none !important;
+	box-shadow: none !important;
 	
 	 &:focus {
 		 border: none !important;
 		 outline: none !important;
+		 box-shadow: none !important;
+		 box-sizing: none !important;
 	 }
 }
 
 div[contenteditable] {
-	outline: none;
+	outline: none !important;
+	border: none !important;
+	padding: 0;
 
 	&:focus {
-		outline: none;
+		outline: none !important;
+		border: none !important;
 	}
 }
 

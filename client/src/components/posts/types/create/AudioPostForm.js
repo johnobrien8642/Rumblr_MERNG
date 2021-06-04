@@ -14,7 +14,8 @@ const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         audioPost, handleUploadedFiles,
         resetDisplayIdx, handleMentions, 
-        discardMentions, handleAllTextAudioPost  } = PostFormUtil;
+        discardMentions, handleAllTextAudioPost,
+        allowScroll, preventScroll } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -53,11 +54,8 @@ const AudioPostForm = ({
   let history = useHistory();
   
   useEffect(() => {
-    var el = document.querySelector('.audioPostForm')
 
-    if (el) {
-      el.focus()
-    }
+    preventScroll(audioPostActive, document)
 
   }, [audioPostActive])
 
@@ -82,7 +80,10 @@ const AudioPostForm = ({
       if (post) {
         setUpdate(update = false)
       } else {
-        history.push('/dashboard');
+        resetInputs()
+        allowScroll(document)
+        setAudioPostActive(audioPostActive = false)
+        setPostFormModal(postFormModal = false)   
       }
     },
     onError(error) {
@@ -91,7 +92,6 @@ const AudioPostForm = ({
   });
 
   const resetInputs = () => {
-    audioFile.current = {};
     setTitle(title = '') 
     setArtist(artist = '') 
     setAlbum(album = '') 
@@ -170,13 +170,10 @@ const AudioPostForm = ({
           'postForm audioPostForm active' : 
           'postForm audioPostForm hidden'
         }
-        tabIndex={-1}
-        onBlur={() => {
-          setAudioPostActive(audioPostActive = false)
-          setPostFormModal(postFormModal = false)
-        }}
       >
-        <h1>AudioPost</h1>
+
+        <h3>{user.blogName}</h3>
+
         <form
           id={formId}
           onSubmit={e => handleSubmit(e)}
@@ -230,20 +227,29 @@ const AudioPostForm = ({
           setTags={setTags}
         />
   
-        <button
-          type='submit'
-          disabled={!audioFile}
-        >
-          {post ? 'update' : 'post'}
-        </button>
-        </form>
         <div
-          onClick={() => {
-            history.push('/')
-          }}
+          className='closeOrPostContainer'
         >
-          Close
+          <div
+            className='closeBtn'
+            onClick={() => {
+              resetInputs()
+              allowScroll(document)
+              setAudioPostActive(audioPostActive = false)
+              setPostFormModal(postFormModal = false)
+            }}
+          >
+            Close
+          </div>
+          <button
+            className='formSubmitBtn'
+            type='submit'
+            disabled={!audioFile}
+          >
+            {post ? 'Update' : 'Post'}
+          </button>
         </div>
+        </form>
       </div>
     </div>
     )

@@ -14,7 +14,8 @@ const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
         handleMentions, discardMentions,
-        handleAllTextQuotePost } = PostFormUtil;
+        handleAllTextQuotePost, preventScroll,
+        allowScroll } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -46,11 +47,8 @@ const QuotePostForm = ({
   let history = useHistory();
 
   useEffect(() => {
-    var el = document.querySelector('.quotePostForm')
 
-    if (el) {
-      el.focus()
-    }
+    preventScroll(quotePostActive, document)
 
   }, [quotePostActive])
 
@@ -75,7 +73,9 @@ const QuotePostForm = ({
       if (post) {
         setUpdate(update = false)
       } else {
-        history.push('/dashboard');
+        allowScroll(document)
+        setQuotePostActive(quotePostActive = false)
+        setPostFormModal(postFormModal = false)
       }
     },
     onError(error) {
@@ -152,13 +152,14 @@ const QuotePostForm = ({
           setPostFormModal(postFormModal = false)
         }}
       >
-        <h1>QuotePost</h1>
         <form
           id={formId}
           onSubmit={e => handleSubmit(e)}
           onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
           encType={'multipart/form-data'}
         >
+
+        <h3>{user.blogName}</h3>
   
         <QuotePostInput
           post={post}
@@ -193,21 +194,29 @@ const QuotePostForm = ({
           tags={tags}
           setTags={setTags}
         />
-  
-        <button
-          type='submit'
-          disabled={!quote}
-        >
-          {post ? 'update' : 'post'}
-        </button>
-        </form>
         <div
-          onClick={() => {
-            history.push('/')
-          }}
+          className='closeOrPostContainer'
         >
-          Close
+          <div
+            className='closeBtn'
+            onClick={() => {
+              allowScroll(document)
+              resetInputs()
+              setQuotePostActive(quotePostActive = false)
+              setPostFormModal(postFormModal = false)
+            }}
+          >
+            Close
+          </div>
+          <button
+            className='formSubmitBtn'
+            type='submit'
+            disabled={!quote}
+          >
+            {post ? 'Update' : 'Post'}
+          </button>
         </div>
+        </form>
       </div>
       </div>
     )

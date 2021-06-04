@@ -14,7 +14,8 @@ const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx, 
         fetchUrlMetadata, handleMentions, 
-        discardMentions, handleAllTextLinkPost } = PostFormUtil;
+        discardMentions, handleAllTextLinkPost,
+        preventScroll, allowScroll } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -51,11 +52,8 @@ const LinkPostForm = ({
   let history = useHistory();
 
   useEffect(() => {
-    var el = document.querySelector('.linkPostForm')
-
-    if (el) {
-      el.focus()
-    }
+    
+    preventScroll(linkPostActive, document)
 
   }, [linkPostActive])
 
@@ -80,7 +78,9 @@ const LinkPostForm = ({
       if (post) {
         setUpdate(update = false)
       } else {
-        history.push('/dashboard');
+        allowScroll(document)
+        setLinkPostActive(linkPostActive = false)
+        setPostFormModal(postFormModal = false)
       }
     },
     onError(error) {
@@ -186,25 +186,21 @@ const LinkPostForm = ({
       >
 
       <ProfilePic user={user} />
-      
+
       <div
         className={linkPostActive ? 
           'postForm linkPostForm active' : 
           'postForm linkPostForm hidden'
         }
-        tabIndex={-1}
-        onBlur={() => {
-          setLinkPostActive(linkPostActive = false)
-          setPostFormModal(postFormModal = false)
-        }}
       >
-        <h1>LinkPost</h1>
         <form
           id={formId}
           onSubmit={e => handleSubmit(e)}
           onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
           encType={'multipart/form-data'}
         >
+        
+        <h3>{user.blogName}</h3>
   
         {handleLinkPreview()}
         
@@ -251,21 +247,30 @@ const LinkPostForm = ({
           tags={tags}
           setTags={setTags}
         />
-  
-        <button
-          type='submit'
-          disabled={!result}
-        >
-          {post ? 'update' : 'post'}
-        </button>
-        </form>
+      
         <div
-          onClick={() => {
-            history.push('/')
-          }}
+          className='closeOrPostContainer'
         >
-          Close
+          <div
+            className='closeBtn'
+            onClick={() => {
+              resetInputs()
+              allowScroll(document)
+              setLinkPostActive(linkPostActive = false)
+              setPostFormModal(postFormModal = false)
+            }}
+          >
+            Close
+          </div>
+          <button
+            className='formSubmitBtn'
+            type='submit'
+            disabled={!result}
+          >
+            {post ? 'Update' : 'Post'}
+          </button>
         </div>
+        </form>
       </div>
       </div>
     )

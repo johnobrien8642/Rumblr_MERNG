@@ -8,6 +8,8 @@ import ChatPostForm from '../posts/types/create/ChatPostForm';
 import AudioPostForm from '../posts/types/create/AudioPostForm';
 import VideoPostForm from '../posts/types/create/VideoPostForm';
 import ProfilePic from '../user/util/components/Profile_Pic';
+import PostFormUtil from '../posts/util/functions/post_form_util.js'
+const { preventScroll, allowScroll } = PostFormUtil;
 
 const PostsNav = ({ 
   props,
@@ -60,11 +62,7 @@ const PostsNav = ({
         el.focus()
       }
 
-      if (open) {
-        document.body.style.margin = '0'
-        document.body.style.height = '100%'
-        document.body.style.overflow = 'hidden'
-      }
+      preventScroll(open, document)
     }
   })
   
@@ -106,9 +104,7 @@ const PostsNav = ({
                 setOpen(open = false)
               ]).then(() => {
                 setTimeout(() => {
-                  document.body.style.margin = ''
-                  document.body.style.height = ''
-                  document.body.style.overflow = ''
+                  allowScroll(document)
                   history.push('/dashboard')
                 }, 100)
               })

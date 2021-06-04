@@ -16,7 +16,8 @@ const { bodyPost, handleFormData,
         stripAllImgs, handleUploadedFiles, 
         resetDisplayIdx, handleTagInput,
         handleAllTextTextPost, handleMentions, 
-        discardMentions } = PostFormUtil;
+        discardMentions, preventScroll, 
+        allowScroll } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -46,16 +47,8 @@ const TextPostForm = ({
   let history = useHistory();
 
   useEffect(() => {
-    if (textPostActive) {
-      document.body.style.margin = 'fixed'
-      document.body.style.height = '100%'
-      document.body.style.overflow = 'hidden'
-      var el = document.querySelector('.textPostForm')
-  
-      if (el) {
-        el.focus()
-      }
-    }
+
+    preventScroll(textPostActive, document)
 
   }, [textPostActive])
   
@@ -81,9 +74,7 @@ const TextPostForm = ({
         resetInputs();
       } else {
         resetInputs();
-        document.body.style.margin = ''
-        document.body.style.height = ''
-        document.body.style.overflow = ''
+        allowScroll(document)
         setPostFormModal(postFormModal = false)
         setTextPostActive(textPostActive = false)
       }
@@ -158,15 +149,15 @@ const TextPostForm = ({
           'postForm textPostForm active' :
           'postForm textPostForm hidden'
         }
-        tabIndex={-1}
       >
-        <h3>{user.blogName}</h3>
         <form
           id={formId}
           onSubmit={e => handleSubmit(e)}
           onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
           encType={'multipart/form-data'}
         >
+
+        <h3>{user.blogName}</h3>
   
         <TextPostInput
           post={post}
@@ -209,9 +200,7 @@ const TextPostForm = ({
             <div
               className='closeBtn'
               onClick={() => {
-                document.body.style.margin = ''
-                document.body.style.height = ''
-                document.body.style.overflow = ''
+                allowScroll(document)
                 resetInputs()
                 setTextPostActive(textPostActive = false)
                 setPostFormModal(postFormModal = false)

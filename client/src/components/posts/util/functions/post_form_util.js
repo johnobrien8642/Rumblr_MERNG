@@ -834,6 +834,22 @@ function MentionCustomization( editor ) {
   } );
 }
 
+//handle scrolling
+
+const preventScroll = (activeVar, document) => {
+  if (activeVar) {
+    document.body.style.margin = 'fixed'
+    document.body.style.height = '100%'
+    document.body.style.overflow = 'hidden'
+  }
+}
+
+const allowScroll = (document) => {
+  document.body.style.margin = ''
+  document.body.style.height = ''
+  document.body.style.overflow = ''
+}
+
 const PostCreateUtil = { 
   previewMainImages, 
   previewBodyImages, 
@@ -880,7 +896,9 @@ const PostCreateUtil = {
   handleAllTextVideoPost,
   resetDisplayIdx,
   isUpdate, 
-  MentionCustomization
+  MentionCustomization,
+  preventScroll,
+  allowScroll
 };
  
 export default PostCreateUtil;

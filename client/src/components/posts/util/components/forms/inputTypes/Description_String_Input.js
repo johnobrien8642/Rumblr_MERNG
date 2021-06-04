@@ -66,6 +66,7 @@ const DescriptionStringInput = ({
           setDescription(description = editor.getData())
         }}
         onReady={(editor, description) => {
+               
           editor.editing.view.document.on('keydown', (evt, data) => {
             if (data.domEvent.key === 'Enter' && editor.getData()) {
               var textObj = {

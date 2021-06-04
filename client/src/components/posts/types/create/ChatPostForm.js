@@ -14,7 +14,8 @@ const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
         handleMentions, discardMentions,
-        handleAllTextChatPost  } = PostFormUtil;
+        handleAllTextChatPost, preventScroll,
+        allowScroll } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -45,11 +46,8 @@ const ChatPostForm = ({
   let history = useHistory();
 
   useEffect(() => {
-    var el = document.querySelector('.chatPostForm')
-
-    if (el) {
-      el.focus()
-    }
+  
+    preventScroll(chatPostActive, document)
 
   }, [chatPostActive])
 
@@ -74,7 +72,9 @@ const ChatPostForm = ({
       if (post) {
         setUpdate(update = false)
       } else {
-        history.push('/dashboard');
+        allowScroll(document)
+        setChatPostActive(chatPostActive = false)
+        setPostFormModal(postFormModal = false)
       }
     },
     onError(error) {
@@ -147,18 +147,18 @@ const ChatPostForm = ({
         'postForm chatPostForm hidden'
         }
         tabIndex={-1}
-        onBlur={() => {
-          setChatPostActive(chatPostActive = false)
-          setPostFormModal(postFormModal = false)
-        }}
       >
-        <h1>ChatPost</h1>
+
+        <h3>{user.blogName}</h3>
+
         <form
           id={formId}
           onSubmit={e => handleSubmit(e)}
           onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
           encType={'multipart/form-data'}
         >
+
+        <h3>{user.blogName}</h3>
   
         <ChatPostInput
           chat={chat}
@@ -190,21 +190,29 @@ const ChatPostForm = ({
           tags={tags}
           setTags={setTags}
         />
-  
-        <button
-          type='submit'
-          disabled={!chat}
-        >
-          {post ? 'update' : 'post'}
-        </button>
-        </form>
         <div
-          onClick={() => {
-            history.push('/')
-          }}
+          className='closeOrPostContainer'
         >
-          Close
+          <div
+            className='closeBtn'
+            onClick={() => {
+              resetInputs()
+              allowScroll(document)
+              setChatPostActive(chatPostActive = false)
+              setPostFormModal(postFormModal = false)
+            }}
+          >
+            Close
+          </div>
+          <button
+            className='formSubmitBtn'
+            type='submit'
+            disabled={!chat}
+          >
+            {post ? 'Update' : 'Post'}
+          </button>
         </div>
+        </form>
       </div>
       </div>
     )

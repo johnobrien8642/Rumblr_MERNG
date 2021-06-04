@@ -113,7 +113,7 @@ const PhotoPostOrRegisterInput = ({
   } else {
     return (
       <div
-        className={'mainPreview'}
+        className='mainPreview'
       >
         {main.current.map((obj, i) => {
         return (

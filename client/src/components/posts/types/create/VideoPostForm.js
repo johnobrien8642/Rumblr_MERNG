@@ -14,7 +14,8 @@ const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, videoPost, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
         resetDisplayIdx, handleMentions, 
-        discardMentions, handleAllTextVideoPost  } = PostFormUtil;
+        discardMentions, handleAllTextVideoPost,
+        allowScroll, preventScroll  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -49,11 +50,8 @@ const VideoPostForm = ({
   let history = useHistory();
 
   useEffect(() => {
-    var el = document.querySelector('.videoPostForm')
 
-    if (el) {
-      el.focus()
-    }
+    preventScroll(videoPostActive, document)
 
   }, [videoPostActive])
 
@@ -78,7 +76,10 @@ const VideoPostForm = ({
       if (post) {
         setUpdate(update = false)
       } else {
-        history.push('/dashboard');
+        resetInputs()
+        allowScroll(document)
+        setVideoPostActive(videoPostActive = false)
+        setPostFormModal(postFormModal = false)
       }
     },
     onError(error) {
@@ -161,13 +162,10 @@ const VideoPostForm = ({
             'postForm videoPostForm active' : 
             'postForm videoPostForm active'
           }
-          tabIndex={-1}
-          onBlur={() => {
-            setVideoPostActive(videoPostActive = false)
-            setPostFormModal(postFormModal = false)
-          }}
         >
-          <h1>VideoPost</h1>
+          
+          <h3>{user.blogName}</h3>
+
           <form
             id={formId}
             onSubmit={e => {
@@ -220,20 +218,27 @@ const VideoPostForm = ({
             setTags={setTags}
           />
 
-          <button
-            type='submit'
-            disabled={!videoObj && !uploading}
-          >
-            {post ? 'update' : 'post'}
-          </button>
-          </form>
           <div
-            onClick={() => {
-              history.push('/')
-            }}
+            className='closeOrPostContainer'
           >
-            Close
+            <div
+              className='closeBtn'
+              onClick={() => {
+                history.push('/')
+              }}
+            >
+              Close
+            </div>
+
+            <button
+              className='formSubmitBtn'
+              type='submit'
+              disabled={!videoObj && !uploading}
+            >
+              {post ? 'Update' : 'Post'}
+            </button>
           </div>
+          </form>
         </div>
       </div>
     </div>

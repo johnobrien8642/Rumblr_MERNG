@@ -35,10 +35,10 @@ const Dashboard = props => {
       <Route
         exact path={`${props.match.path}/create`}
         render={(props) => (
-          <PostsNav 
-            props={props} 
-            mobile={true} 
-            user={user} 
+          <PostsNav
+            props={props}
+            mobile={true}
+            user={user}
           />
         )}
       />

@@ -15,7 +15,8 @@ const { bodyPost, mainPost,
         handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
         handleMentions, discardMentions,
-        handleAllTextPhotoPost  } = PostFormUtil;
+        handleAllTextPhotoPost, allowScroll,
+        preventScroll  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -44,15 +45,11 @@ const PhotoPostForm = ({
   let [render, setRender] = useState(0)
   const formId = 'photoPostForm'
   const formInputId = 'photoPostInput'
-  let history = useHistory();
 
   useEffect(() => {
-    var el = document.querySelector('.photoPostForm')
-
-    if (el) {
-      el.focus()
-    }
-
+    
+    preventScroll(photoPostActive, document)
+    
   }, [photoPostActive])
 
   useEffect(() => {
@@ -77,7 +74,9 @@ const PhotoPostForm = ({
       if (post) {
         setUpdate(update = false)
       } else {
-        history.push('/dashboard');
+        allowScroll(document)
+        setPhotoPostActive(photoPostActive = false)
+        setPostFormModal(postFormModal = false)
       }
     },
     onError(error) {
@@ -151,19 +150,15 @@ const PhotoPostForm = ({
           'postForm photoPostForm active' : 
           'postForm photoPostForm hidden'
         }
-        tabIndex={-1}
-        onBlur={() => {
-          setPhotoPostActive(photoPostActive = false)
-          setPostFormModal(postFormModal = false)
-        }}
       >
-        <h1>PhotoPost</h1>
         <form
           id={formId}
           onSubmit={e => handleSubmit(e)}
           onKeyPress={e => { e.key === 'Enter' && e.preventDefault(); }}
           encType={'multipart/form-data'}
         >
+
+          <h3>{user.blogName}</h3>
         
           <PhotoPostOrRegisterPhotoInput
             post={post}
@@ -204,8 +199,23 @@ const PhotoPostForm = ({
             tags={tags}
             setTags={setTags}
           />
+        <div
+          className='closeOrPostContainer'
+        >
+          <div
+            className='closeBtn'
+            onClick={() => {
+              allowScroll(document)
+              resetInputs()
+              setPhotoPostActive(photoPostActive = false)
+              setPostFormModal(postFormModal = false)
+            }}
+          >
+            Close
+          </div>
   
           <button
+            className='formSubmitBtn'
             type='submit'
             disabled={
               main.current.length === 0 &&
@@ -213,16 +223,10 @@ const PhotoPostForm = ({
               bodyImageFiles.length === 0
             }
           >
-            {post ? 'update': 'post'}
+            {post ? 'Update': 'Post'}
           </button>
-        </form>
-        <div
-          onClick={() => {
-            history.push('/')
-          }}
-        >
-          Close
         </div>
+        </form>
       </div>
     </div>
     )
