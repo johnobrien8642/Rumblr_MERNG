@@ -1,7 +1,7 @@
 import React from 'react';
-import AddPhotoDivOrPhotoInput from './AddPhotoDivOrPhotoInput';
+import AddPhotoDivOrPhotoInput from './Add_Photo_Div_Or_Photo_Input';
 import PostFormUtil from '../../../functions/post_form_util.js'
-const { previewMainImages, previewProfilePic, previewLink } = PostFormUtil;
+const { previewProfilePic } = PostFormUtil;
 
 const MainImageOrRegisterPhotoInput = ({
   register,

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PostFormUtil from '../../../functions/post_form_util.js'
-const { previewMainImages, previewProfilePic, previewLink } = PostFormUtil;
+const { previewMainImages, previewLink } = PostFormUtil;
 
 const AddPhotoDivOrPhotoInput = ({
   showBtnBool,
@@ -12,21 +12,14 @@ const AddPhotoDivOrPhotoInput = ({
   errMessage, 
   setErrMessage
 }) => {
-  let [displayBtn, setDisplayBtn] = useState(showBtnBool)
+  let [active, setActive] = useState(false)
 
-  useEffect(() => {
-
-    setDisplayBtn(displayBtn = showBtnBool)
-
-  }, [showBtnBool, displayBtn, setDisplayBtn])
-  
-
-  if (displayBtn) {
+  if (showBtnBool && !active) {
     return (
       <div
         className='addPhotoBtn'
         onClick={() => {
-          setDisplayBtn(displayBtn = false)
+          setActive(active = true)
         }}
       >
         <div>
@@ -68,6 +61,7 @@ const AddPhotoDivOrPhotoInput = ({
                 )
                 
                 document.querySelector('#mainFileInput').value = ''
+                setActive(active = false)
               }}
             />
             </label>
@@ -84,6 +78,7 @@ const AddPhotoDivOrPhotoInput = ({
                 if (newLinkObj) {
                   main.current.push(newLinkObj)
                   e.target.value = ''
+                  setActive(active = false)
                   setRender(render + 1)
                 }
               }}

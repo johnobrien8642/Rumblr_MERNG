@@ -13,6 +13,7 @@ const BodyImageDnD = ({
 
   return (
     <div
+      className='draggable imageContentContainer'
       onDrop={e => {
           var sortedBodyImageFiles = onDropBody(
             e, bodyIdx, body,
@@ -25,9 +26,9 @@ const BodyImageDnD = ({
       draggable='true'
       onDragStart={e => drag(e, bodyIdx, JSON.stringify(img))}
       onDragOver={e => allowDrop(e)}
-      className='draggable'
     >
-      <button 
+      <button
+        className='removeBtn'
         type='button' 
         onClick={() => {
           removeBodyObj(
@@ -42,7 +43,11 @@ const BodyImageDnD = ({
       >
         X
       </button>
-      <img src={img.src} alt={img.alt} />
+      <img
+        className='imageContent'
+        src={img.src} 
+        alt={img.alt} 
+      />
     </div>
   )
 }

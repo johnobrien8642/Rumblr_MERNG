@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import AudioFileInput from '../../util/components/forms/inputTypes/Audio_File_Input';
@@ -10,6 +9,7 @@ import Tags from '../../util/components/forms/Tags';
 import PostFormUtil from '../../util/functions/post_form_util.js';
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
+import ConfirmClose from '../../../nav/Confirm_Close';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         audioPost, handleUploadedFiles,
@@ -49,9 +49,9 @@ const AudioPostForm = ({
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
+  let [confirmClose, setConfirmClose] = useState(false);
   const formId = 'audioPostForm';
   const formInputId = 'audioPostInput'
-  let history = useHistory();
   
   useEffect(() => {
 
@@ -233,14 +233,34 @@ const AudioPostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              resetInputs()
-              allowScroll(document)
-              setAudioPostActive(audioPostActive = false)
-              setPostFormModal(postFormModal = false)
+              if (
+                !audioFile &&
+                body.current.length === 0 &&
+                !description
+              ) {
+                resetInputs()
+                allowScroll(document)
+                setAudioPostActive(audioPostActive = false)
+                setPostFormModal(postFormModal = false)
+              } else {
+                setConfirmClose(confirmClose = true)
+              }
             }}
           >
             Close
           </div>
+
+          <ConfirmClose
+            confirmClose={confirmClose}
+            setConfirmClose={setConfirmClose}
+            allowScroll={allowScroll}
+            resetInputs={resetInputs}
+            setFormActive={setAudioPostActive}
+            formActive={audioPostActive}
+            setPostFormModal={setPostFormModal}
+            postFormModal={postFormModal}
+          />
+
           <button
             className='formSubmitBtn'
             type='submit'

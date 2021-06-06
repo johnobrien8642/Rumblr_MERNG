@@ -1,8 +1,14 @@
 import React, { useEffect } from 'react';
+import QuotePlaceholderOrInput from './Quote_Placeholder_Or_Input';
 
 const QuotePostInput = ({
-  post, quote, setQuote,
-  source, setSource
+  post, 
+  quote, 
+  setQuote,
+  source, 
+  setSource,
+  placeholder,
+  setPlaceholder
 }) => {
   
   useEffect(() => {
@@ -12,21 +18,51 @@ const QuotePostInput = ({
       //eslint-disable-next-line
       setSource(source = post.source)
     }
-  }, [])
+
+  }, [quote])
 
   return (
-    <div>
-      <textarea
-          value={quote}
-          placeholder='"Quote"'
-          onChange={e => setQuote(quote = e.target.value)}
-      ></textarea>
-      <span>&#8208;</span>
-      <input 
-        value={source}
-        placeholder='Source'
-        onChange={e => setSource(source = e.target.value)}
-      />
+    <div
+      className='quoteAndSourceInputContainer'
+    >
+      <div
+        className='quoteInputContainer'
+      >
+        <span
+          data-placeholder='"Quote"'
+          data-quote={'"'}
+          className={quote ? 'quoteInput active' : 'quoteInput placeholder'}
+          contentEditable='true'
+          onInput={e => {
+            setQuote(quote = e.target.textContent)
+          }}
+        ></span>
+      </div>
+
+      <div
+        className='dashAndSource'
+      >
+        <span
+          className='dash'
+        >
+          <span>-</span>
+        </span>
+
+        {/* <input
+          className='source'
+          value={source}
+          placeholder='Source'
+          onChange={e => setSource(source = e.target.value)}
+        /> */}
+        <span
+          data-placeholder='Source'
+          className={quote ? 'sourceInput' : 'sourceInput placeholder'}
+          contentEditable='true'
+          onInput={e => {
+            setSource(source = e.target.textContent)
+          }}
+        ></span>
+      </div>
     </div>
   )
 }

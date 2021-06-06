@@ -13,6 +13,7 @@ const MainImageDnD = ({
 
   return (
     <div
+      className='draggable imageContentContainer'
       onDrop={e => {
           var sortedMainImageFiles = onDropMain(
             e, mainIdx, main, mainImageFiles
@@ -24,9 +25,9 @@ const MainImageDnD = ({
       draggable='true'
       onDragStart={e => drag(e, mainIdx, JSON.stringify(img))}
       onDragOver={e => allowDrop(e)}
-      className='draggable'
     >
-      <button 
+      <button
+        className='removeBtn'
         type='button' 
         onClick={() => {
           removeMainObj(
@@ -40,9 +41,13 @@ const MainImageDnD = ({
           setRender(render + 1)
         }}
       >
-        X
+        <span>x</span>
       </button>
-      <img src={img.src} alt={img.alt} />
+      <img
+        className='imageContent'
+        src={img.src} 
+        alt={img.alt} 
+      />
     </div>
   )
 }

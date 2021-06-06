@@ -13,13 +13,12 @@ const MatchedTagResults = ({
     setTag, 
     tag
   }) => {
-    let { loading, error, data } = useQuery(FETCH_MATCHING_TAGS, {
+    let { error, data } = useQuery(FETCH_MATCHING_TAGS, {
       variables: {
         filter: query
       }
     })
 
-    // if (loading) return 'Loading...';
     if (error) return `Error: ${error}`;
 
     const handleMatchedTagClassName = (data) => {

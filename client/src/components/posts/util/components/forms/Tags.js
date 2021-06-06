@@ -3,8 +3,7 @@ import MatchedTagResults from './Matched_Tag_Results'
 import PostUpdateUtil from '../../functions/post_update_util.js'
 import PostFormUtil from '../../functions/post_form_util.js'
 const { pushTags } = PostUpdateUtil;
-const { handleTagInput, handleFoundTag,
-        removeTag } = PostFormUtil;
+const { handleTagInput, removeTag } = PostFormUtil;
 
 const Tags = ({
   post, tags, 

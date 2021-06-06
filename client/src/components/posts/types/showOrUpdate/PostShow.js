@@ -5,7 +5,6 @@ import PostOptions from '../../util/components/social/Post_Options.js';
 import PostShowUtil from '../../util/functions/post_show_util.js';
 import Queries from '../../../../graphql/queries';
 import FeedUtil from '../../../posts/util/functions/feed_util.js';
-import ProfilePic from '../../../user/util/components/Profile_Pic.js';
 const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
 const { doesUserFollowUser } = FeedUtil;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;

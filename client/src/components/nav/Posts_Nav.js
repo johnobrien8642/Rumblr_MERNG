@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Switch, Route, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import PhotoPostForm from '../posts/types/create/PhotoPostForm';
 import TextPostForm from '../posts/types/create/TextPostForm';
 import QuotePostForm from '../posts/types/create/QuotePostForm';

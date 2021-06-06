@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useQuery } from '@apollo/client';
 import BrowserNav from './Browser_Nav';
@@ -11,7 +11,7 @@ const { IS_LOGGED_IN,
 
 
 const Nav = () => {
-  let [navActive, setNavActive] = useState(false)
+  // let [navActive, setNavActive] = useState(false)
   let totalCountRef = useRef(0);
   let cursorId = useRef(new Date().getTime())
   
@@ -22,7 +22,7 @@ const Nav = () => {
       refetch2()
     }
     //eslint-disable-next-line
-  }, [navActive])
+  }, [])
 
   var { loading: loading1, 
         error: error1, 

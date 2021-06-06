@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import QuotePostInput from '../../util/components/forms/inputTypes/Quote_Post_Input'
@@ -10,6 +9,7 @@ import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
+import ConfirmClose from '../../../nav/Confirm_Close.js';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
@@ -31,6 +31,7 @@ const QuotePostForm = ({
 }) => {
   let [quote, setQuote] = useState('');
   let [source, setSource] = useState('');
+  let [placeholder, setPlaceholder] = useState('Quote');
 
   let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
@@ -42,10 +43,10 @@ const QuotePostForm = ({
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
+  let [confirmClose, setConfirmClose] = useState(false)
   let formId = 'quotePostForm';
   const formInputId = 'quotePostInput';
-  let history = useHistory();
-
+  
   useEffect(() => {
 
     preventScroll(quotePostActive, document)
@@ -146,11 +147,6 @@ const QuotePostForm = ({
           'postForm quotePostForm active' : 
           'postForm quotePostForm active'
         }
-        tabIndex={-1}
-        onBlur={() => {
-          setQuotePostActive(quotePostActive = false)
-          setPostFormModal(postFormModal = false)
-        }}
       >
         <form
           id={formId}
@@ -168,6 +164,8 @@ const QuotePostForm = ({
           setQuote={setQuote}
           source={source}
           setSource={setSource}
+          placeholder={placeholder}
+          setPlaceholder={setPlaceholder}
         />
   
         <BodyImageAndText
@@ -200,14 +198,35 @@ const QuotePostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              allowScroll(document)
-              resetInputs()
-              setQuotePostActive(quotePostActive = false)
-              setPostFormModal(postFormModal = false)
+              if (
+                  !quote && 
+                  !source &&
+                  body.current.length === 0 && 
+                  !description
+                ) {
+                  allowScroll(document)
+                  resetInputs()
+                  setQuotePostActive(quotePostActive = false)
+                  setPostFormModal(postFormModal = false)
+                } else {
+                  setConfirmClose(confirmClose = true)
+                }
             }}
           >
             Close
           </div>
+
+          <ConfirmClose
+            confirmClose={confirmClose}
+            setConfirmClose={setConfirmClose}
+            allowScroll={allowScroll}
+            resetInputs={resetInputs}
+            setFormActive={setQuotePostActive}
+            formActive={quotePostActive}
+            setPostFormModal={setPostFormModal}
+            postFormModal={postFormModal}
+          />
+
           <button
             className='formSubmitBtn'
             type='submit'

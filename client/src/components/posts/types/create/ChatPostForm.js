@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import ChatPostInput from '../../util/components/forms/inputTypes/Chat_Post_Input'
@@ -10,6 +9,7 @@ import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js';
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
+import ConfirmClose from '../../../nav/Confirm_Close.js';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
@@ -41,9 +41,9 @@ const ChatPostForm = ({
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
+  let [confirmClose, setConfirmClose] = useState(false);
   const formId = 'chatPostForm';
   const formInputId = 'chatPostInput';
-  let history = useHistory();
 
   useEffect(() => {
   
@@ -146,11 +146,7 @@ const ChatPostForm = ({
         'postForm chatPostForm active' : 
         'postForm chatPostForm hidden'
         }
-        tabIndex={-1}
       >
-
-        <h3>{user.blogName}</h3>
-
         <form
           id={formId}
           onSubmit={e => handleSubmit(e)}
@@ -196,14 +192,33 @@ const ChatPostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              resetInputs()
-              allowScroll(document)
-              setChatPostActive(chatPostActive = false)
-              setPostFormModal(postFormModal = false)
+              if (!chat.current &&
+                  body.current.length === 0 &&
+                  !description
+                ) {
+                  resetInputs()
+                  allowScroll(document)
+                  setChatPostActive(chatPostActive = false)
+                  setPostFormModal(postFormModal = false)
+                } else {
+                  setConfirmClose(confirmClose = true)
+                }
             }}
           >
             Close
           </div>
+
+          <ConfirmClose
+            confirmClose={confirmClose}
+            setConfirmClose={setConfirmClose}
+            allowScroll={allowScroll}
+            resetInputs={resetInputs}
+            setFormActive={setChatPostActive}
+            formActive={chatPostActive}
+            setPostFormModal={setPostFormModal}
+            postFormModal={postFormModal}
+          />
+
           <button
             className='formSubmitBtn'
             type='submit'

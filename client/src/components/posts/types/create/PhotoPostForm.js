@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import Mutations from '../../../../graphql/mutations';
 import Queries from '../../../../graphql/queries';
@@ -10,6 +9,7 @@ import Tags from '../../util/components/forms/Tags'
 import PostFormUtil from '../../util/functions/post_form_util.js'
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
+import ConfirmClose from '../../../nav/Confirm_Close.js';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, mainPost,
         handleFormData, stripAllImgs,
@@ -43,6 +43,7 @@ const PhotoPostForm = ({
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0)
+  let [confirmClose, setConfirmClose] = useState(false)
   const formId = 'photoPostForm'
   const formInputId = 'photoPostInput'
 
@@ -205,14 +206,34 @@ const PhotoPostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              allowScroll(document)
-              resetInputs()
-              setPhotoPostActive(photoPostActive = false)
-              setPostFormModal(postFormModal = false)
+              if (
+                  main.current.length === 0 && 
+                  body.current.length === 0 && 
+                  !description
+                )
+              {
+                allowScroll(document)
+                resetInputs()
+                setPhotoPostActive(photoPostActive = false)
+                setPostFormModal(postFormModal = false)
+              } else {
+                setConfirmClose(confirmClose = true)
+              }
             }}
           >
             Close
           </div>
+
+          <ConfirmClose 
+            confirmClose={confirmClose}
+            setConfirmClose={setConfirmClose}
+            allowScroll={allowScroll}
+            resetInputs={resetInputs}
+            setFormActive={setPhotoPostActive}
+            formActive={photoPostActive}
+            setPostFormModal={setPostFormModal}
+            postFormModal={postFormModal}
+          />
   
           <button
             className='formSubmitBtn'

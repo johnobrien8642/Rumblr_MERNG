@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import VideoInput from '../../util/components/forms/inputTypes/Video_Input';
@@ -10,6 +9,7 @@ import Tags from '../../util/components/forms/Tags';
 import PostFormUtil from '../../util/functions/post_form_util.js';
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
+import ConfirmClose from '../../../nav/Confirm_Close';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, videoPost, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
@@ -18,7 +18,6 @@ const { bodyPost, videoPost, handleFormData,
         allowScroll, preventScroll  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
-
 
 const VideoPostForm = ({
   user,
@@ -45,9 +44,9 @@ const VideoPostForm = ({
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
+  let [confirmClose, setConfirmClose] = useState(false)
   const formId = 'videoPostForm';
   const formInputId = 'videoPostInput'
-  let history = useHistory();
 
   useEffect(() => {
 
@@ -224,11 +223,32 @@ const VideoPostForm = ({
             <div
               className='closeBtn'
               onClick={() => {
-                history.push('/')
+                if (!videoFile &&
+                    body.current.length === 0 &&
+                    !description
+                  ) {
+                    resetInputs()
+                    allowScroll(document)
+                    setVideoPostActive(videoPostActive = false)
+                    setPostFormModal(postFormModal = false)
+                  } else {
+                    setConfirmClose(confirmClose = true)
+                  }
               }}
             >
               Close
             </div>
+
+            <ConfirmClose
+              confirmClose={confirmClose}
+              setConfirmClose={setConfirmClose}
+              allowScroll={allowScroll}
+              resetInputs={resetInputs}
+              setFormActive={setVideoPostActive}
+              formActive={videoPostActive}
+              setPostFormModal={setPostFormModal}
+              postFormModal={postFormModal}
+            />
 
             <button
               className='formSubmitBtn'
