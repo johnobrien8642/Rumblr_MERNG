@@ -11,8 +11,11 @@ const LinkNameAndImage = ({
   
   if (showNameAndUrl) {
     return (
-      <div>
+      <div
+        className='linkNameAndImageContainer'
+      >
         <button
+          className='removeBtn'
           type='button'
           onClick={() => removeLinkSiteNameAndImage(
             siteName, setSiteName, 
@@ -23,9 +26,12 @@ const LinkNameAndImage = ({
           X
         </button>
         <a href={link}>
-          <span>{siteName}</span>
-          <img src={imageUrl}  alt={'link page img'}/>
+          <span className='siteName'>{siteName}</span>
         </a>
+        <img
+          src={imageUrl}
+          alt={'link page img'}
+        />
       </div>
     )
   } else {

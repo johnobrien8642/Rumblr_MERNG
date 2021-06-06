@@ -3,12 +3,22 @@ import Validator from 'validator';
 import LinkNameAndImage from '../forms/Link_Name_And_Image'
 import LinkTitleAndDesc from '../forms/Link_Title_And_Desc'
 
-const LinkPreview = ({ 
-  post, link, setLink, result,
-  siteName, setSiteName,
-  imageUrl, setImageUrl, setTitle,
-  title, linkDescription,
-  setLinkDescription, resetLink
+const LinkPreview = ({
+  displayBodyImageAndTextInput,
+  setDisplayBodyImageAndTextInput,
+  post, 
+  link, 
+  setLink, 
+  result,
+  siteName, 
+  setSiteName,
+  imageUrl, 
+  setImageUrl, 
+  setTitle,
+  title, 
+  linkDescription,
+  setLinkDescription, 
+  resetLink
 }) => {
   let [input, setInput] = useState('');
   let [showNameAndUrl, setShowNameAndUrl] = useState(true)
@@ -29,24 +39,47 @@ const LinkPreview = ({
       setTitle(title = linkObj.title)
       //eslint-disable-next-line
       setLinkDescription(linkDescription = linkObj.linkDescription)
+      //eslint-disable-next-line
+      setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = true)
     }
 
-
-    if (!showNameAndUrl && !showTitleAndLinkDescription) {
-      resetLink()
-      resetInput()
-    }
     //eslint-disable-next-line
   }, [])
+  
+  
+  useEffect(() => {
 
-  const resetInput = () => {
-    setShowNameAndUrl(showNameAndUrl = true)
-    setShowTitleAndLinkDescription(showTitleAndLinkDescription = true)
-  }
+    const resetInput = () => {
+      //eslint-disable-next-line
+      setShowNameAndUrl(showNameAndUrl = true)
+      //eslint-disable-next-line
+      setShowTitleAndLinkDescription(showTitleAndLinkDescription = true)
+      //eslint-disable-next-line
+      setInput(input = '')
+    }
+
+    if (!showNameAndUrl && !showTitleAndLinkDescription) {
+      //eslint-disable-next-line
+      resetLink()
+      //eslint-disable-next-line
+      resetInput()
+    }
+  }, [showNameAndUrl, showTitleAndLinkDescription, resetLink])
+
+  useEffect(() => {
+    if (result) {
+      //eslint-disable-next-line
+      setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = true)
+    }
+  }, [result])
+
+ 
 
   if (result) {
     return (
-      <div>
+      <div
+        className='linkPreviewContainer'
+      >
         <LinkNameAndImage
           link={link}
           showNameAndUrl={showNameAndUrl}
@@ -70,8 +103,11 @@ const LinkPreview = ({
     )
   } else {
     return(
-      <div>
+      <div
+        className='urlInputContainer'
+      >
         <textarea
+            className='urlInput'
             value={input}
             placeholder='Type or paste a URL'
             onChange={e => {

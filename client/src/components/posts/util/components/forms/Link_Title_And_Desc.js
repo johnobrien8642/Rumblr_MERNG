@@ -11,8 +11,11 @@ const LinkTitleAndDesc = ({
 
   if (showTitleAndLinkDescription) {
     return (
-      <div>
+      <div
+        className='linkTitleAndDescContainer'
+      >
         <button
+          className='removeBtn'
           type='button'
           onClick={() => removeLinkTitleAndDesc(
             title, setTitle,
@@ -25,10 +28,11 @@ const LinkTitleAndDesc = ({
         >
           X
         </button>
-        <a href={link}>
+
+        {/* <a href={link}> */}
           <h2>{title}</h2>
           <p>{linkDescription}</p>
-        </a>
+        {/* </a> */}
       </div>
     )
   } else {

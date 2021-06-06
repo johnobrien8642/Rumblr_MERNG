@@ -7,6 +7,7 @@ import PostUpdateUtil from '../../functions/post_update_util.js';
 const { reassembleBody } = PostUpdateUtil;
 
 const BodyImageAndText = ({
+  displayBodyImageAndTextInput,
   post, formId, update,
   formInputId, objsToClean,
   body, bodyImageFiles,
@@ -24,85 +25,92 @@ const BodyImageAndText = ({
     }
     //eslint-disable-next-line
   }, [])
-  
-  return(
-  <div
-    className={'bodyPreview'}
-  >
-      {body.current.map((obj, i) => {
-          if (
-              obj.srcType === 'newImgFile' ||
-              obj.srcType === 'newImgLink' ||
-              obj.srcType === 'oldImgUpload' ||
-              obj.srcType === 'oldImgLink'
-            ) {
-              return (
-                <React.Fragment
-                  key={i}
-                >
-                  <BodyImageDnD
-                    bodyIdx={i}
-                    img={obj}
-                    body={body}
-                    bodyImageFiles={bodyImageFiles}
-                    setBodyImageFiles={setBodyImageFiles}
-                    render={render}
-                    setRender={setRender}
-                    objsToClean={objsToClean}       
-                  />
-                </React.Fragment>
-              )
-            } else if (
-                obj.srcType === 'text' ||
-                obj.srcType === 'oldText'
+
+  if (displayBodyImageAndTextInput) {
+    return(
+    <div
+      className={'bodyPreview'}
+    >
+        {body.current.map((obj, i) => {
+            if (
+                obj.srcType === 'newImgFile' ||
+                obj.srcType === 'newImgLink' ||
+                obj.srcType === 'oldImgUpload' ||
+                obj.srcType === 'oldImgLink'
               ) {
+                return (
+                  <React.Fragment
+                    key={i}
+                  >
+                    <BodyImageDnD
+                      bodyIdx={i}
+                      img={obj}
+                      body={body}
+                      bodyImageFiles={bodyImageFiles}
+                      setBodyImageFiles={setBodyImageFiles}
+                      render={render}
+                      setRender={setRender}
+                      objsToClean={objsToClean}       
+                    />
+                  </React.Fragment>
+                )
+              } else if (
+                  obj.srcType === 'text' ||
+                  obj.srcType === 'oldText'
+                ) {
+                return (
+                  <React.Fragment
+                    key={i}
+                  >
+                    <BodyTextDnD
+                      bodyIdx={i}
+                      update={update}
+                      formInputId={formInputId}
+                      text={obj}
+                      body={body}
+                      bodyImageFiles={bodyImageFiles}
+                      setBodyImageFiles={setBodyImageFiles}
+                      render={render}
+                      setRender={setRender}
+                      objsToClean={objsToClean}
+                    />
+                  </React.Fragment>
+                )
+            } else {
               return (
-                <React.Fragment
-                  key={i}
-                >
-                  <BodyTextDnD
-                    bodyIdx={i}
-                    update={update}
-                    formInputId={formInputId}
-                    text={obj}
-                    body={body}
-                    bodyImageFiles={bodyImageFiles}
-                    setBodyImageFiles={setBodyImageFiles}
-                    render={render}
-                    setRender={setRender}
-                    objsToClean={objsToClean}
-                  />
-                </React.Fragment>
+                <div></div>
               )
-          } else {
-            return (
-              <div></div>
-            )
-          }
-      })}
-
-      <div>
-          <BodyImageInput
-            formId={formId}
-            body={body}
-            bodyImageFiles={bodyImageFiles}
-            setBodyImageFiles={setBodyImageFiles}
-            render={render}
-            setRender={setRender}
-            errMessage={errMessage}
-            setErrMessage={setErrMessage}
-          />
-
-          <DescriptionStringInput
-            body={body}
-            update={update}
-            description={description}
-            setDescription={setDescription}
-            formInputId={formInputId}
-          />
+            }
+        })}
+  
+        <div>
+            <BodyImageInput
+              formId={formId}
+              body={body}
+              bodyImageFiles={bodyImageFiles}
+              setBodyImageFiles={setBodyImageFiles}
+              render={render}
+              setRender={setRender}
+              errMessage={errMessage}
+              setErrMessage={setErrMessage}
+            />
+  
+            <DescriptionStringInput
+              body={body}
+              update={update}
+              description={description}
+              setDescription={setDescription}
+              formInputId={formInputId}
+            />
+          </div>
         </div>
-      </div>
-  )
+    )
+  } else {
+    return (
+      <div></div>
+    )
+  }
+  
 }
 
 export default BodyImageAndText;

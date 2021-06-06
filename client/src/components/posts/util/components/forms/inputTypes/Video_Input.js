@@ -5,7 +5,9 @@ const { previewVideoFile, previewVideoLink,
         removeVideoObj } = PostFormUtil;
 
 const VideoInput = ({
-  formId, 
+  displayBodyImageAndTextInput,
+  setDisplayBodyImageAndTextInput,
+  formId,
   post,
   update,
   videoFile,
@@ -24,6 +26,17 @@ const VideoInput = ({
       setActive(active = true)
     }
   }, [])
+
+  useEffect(() => {
+    if (
+        Object.keys(videoFile).length !== 0 || 
+        Object.keys(videoObj).length !== 0
+      ) {
+
+      //eslint-disable-next-line
+      setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = true)
+    }
+  }, [videoFile, videoObj])
 
   const renderUpdateFileInput = () => {
     if (update) {
@@ -75,58 +88,83 @@ const VideoInput = ({
 
   if (active) {
     return (
-      <div>
+      <div
+        className='videoPlayerContainer'
+      >
         <button
+          className='removeBtn'
           type='button'
-          onClick={() => removeVideoObj(
-            post,
-            videoObj,
-            setVideoObj,
-            videoFile,
-            setVideoFile,
-            active,
-            setActive,
-            isLink,
-            setIsLink,
-            objsToClean
-          )}
-        >
-          X
-        </button>
-        <ReactPlayer
-          url={videoObj}
-          controls
-        />
-        
-        {renderUpdateFileInput()}
-      </div>
-    )
-  } else {
-    return(
-      <div>
-        <h3>Upload video file</h3>
-        <input
-          id='videoFileInput'
-          type='file'
-          accept='.MOV, .mp3, .wav'
-          onChange={e => {
-            previewVideoFile(
-              e,
+          onClick={() => {
+              removeVideoObj(
               post,
               videoObj,
               setVideoObj,
               videoFile,
               setVideoFile,
-              active, 
+              active,
               setActive,
+              isLink,
+              setIsLink,
               objsToClean
             )
 
-            document.getElementById('videoFileInput').value = ''
+            setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = false)
           }}
+        >
+          <span>x</span>
+        </button>
+        <ReactPlayer
+          width={'100%'}
+          url={videoObj}
+          controls
         />
-        <h3>Upload video link</h3>
+        {renderUpdateFileInput()}
+      </div>
+    )
+  } else {
+    return(
+      <div
+        className='videoFileInputContainer'
+      >
+        <label
+          className='videoFileInputCustomLabel'
+        >
+          <div>
+            <img 
+              className='linkIcon'
+              src="https://img.icons8.com/nolan/64/camcorder-pro.png"
+              alt=''
+            />
+            <span>Upload a video file</span>
+          </div>
+          <input
+            id='videoFileInput'
+            type='file'
+            accept='.MOV, .mp3, .wav'
+            onChange={e => {
+              previewVideoFile(
+                e,
+                post,
+                videoObj,
+                setVideoObj,
+                videoFile,
+                setVideoFile,
+                active, 
+                setActive,
+                objsToClean
+              )
+
+              document.getElementById('videoFileInput').value = ''
+            }}
+          />
+        </label>
+        <img 
+          className='linkIcon'
+          src="https://img.icons8.com/flat-round/64/000000/link--v1.png"
+          alt=''
+        />
         <textarea
+          placeholder='Paste a url...'
           onChange={e => {
             previewVideoLink(
               e,
@@ -143,6 +181,7 @@ const VideoInput = ({
             setIsLink(isLink = true)
           }}
         ></textarea>
+        <div  className='borderMiddle' />
       </div>
     )
   }

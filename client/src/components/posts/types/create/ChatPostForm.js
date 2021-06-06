@@ -132,6 +132,12 @@ const ChatPostForm = ({
       }
     )
   }
+
+  const disabledBool = () => {
+    return !chat.current &&
+    body.current.length === 0 &&
+    !description
+  }
   
   if (chatPostActive) {
     return (
@@ -192,10 +198,7 @@ const ChatPostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              if (!chat.current &&
-                  body.current.length === 0 &&
-                  !description
-                ) {
+              if (disabledBool()) {
                   resetInputs()
                   allowScroll(document)
                   setChatPostActive(chatPostActive = false)
@@ -220,9 +223,9 @@ const ChatPostForm = ({
           />
 
           <button
-            className='formSubmitBtn'
+            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             type='submit'
-            disabled={!chat}
+            disabled={disabledBool()}
           >
             {post ? 'Update' : 'Post'}
           </button>

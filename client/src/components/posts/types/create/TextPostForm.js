@@ -42,7 +42,7 @@ const TextPostForm = ({
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
-  let [confirmClose, setConfirmClose] = useState(false)
+  let [confirmClose, setConfirmClose] = useState(false);
   const formId = 'textPostForm'
   const formInputId = 'textPostInput'
 
@@ -136,6 +136,10 @@ const TextPostForm = ({
     )
   }
 
+  const disabledBool = () => {
+    return !title && body.current.length === 0 && !description
+  }
+
   if (textPostActive) {
     return (
     <div
@@ -170,6 +174,7 @@ const TextPostForm = ({
         />
   
         <BodyImageAndText
+          displayBodyImageAndTextInput={true}
           post={post}
           update={update}
           formId={formId}
@@ -200,7 +205,7 @@ const TextPostForm = ({
             <div
               className='closeBtn'
               onClick={() => {
-                if (!title && body.current.length === 0 && !description) {
+                if (disabledBool()) {
                   allowScroll(document)
                   resetInputs()
                   setTextPostActive(textPostActive = false)
@@ -225,9 +230,9 @@ const TextPostForm = ({
             />
             
             <button
-              className='formSubmitBtn'
+              className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
               type='submit'
-              disabled={!title && body.current.length === 0 && !description}
+              disabled={disabledBool()}
               onClick={() => {
                 if (description) {
                   var textObj = {

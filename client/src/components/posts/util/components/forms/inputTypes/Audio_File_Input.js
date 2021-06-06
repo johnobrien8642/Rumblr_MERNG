@@ -5,7 +5,11 @@ import PostFormUtil from '../../../functions/post_form_util.js'
 const { previewAudio, removeAudioObj } = PostFormUtil;
 
 const AudioFileInput = ({
-  post, update, formId, 
+  displayBodyImageAndTextInput,
+  setDisplayBodyImageAndTextInput,
+  post, 
+  update, 
+  formId, 
   audioFile, 
   setAudioFile,
   title, 
@@ -39,47 +43,68 @@ const AudioFileInput = ({
     //eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    if (audioFile || src) {
+      //eslint-disable-next-line
+      setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = true)
+    }
+
+  }, [setDisplayBodyImageAndTextInput, displayBodyImageAndTextInput])
+
   const renderUpdateFileInput = () => {
     if (update) {
       return (
-        <div>
-        <h3>Upload audio file</h3>
-        <input
-          id='audioFileInput'
-          type='file'
-          accept='.mp3, .mp4, .wav, .aiff'
-          onChange={e => {
-            previewAudio(
-              e, 
-              mm, 
-              audioFile, 
-              setAudioFile,
-              title, 
-              setTitle, 
-              artist,
-              setArtist, 
-              album,
-              setAlbum,
-              src,
-              setSrc,
-              active,
-              setActive,
-              objsToClean,
-              post,
-            )
+        // <div>
+        <label
+          className='audioFileInputCustomLabel'
+        >
+          <div>
+            <img 
+              src="https://img.icons8.com/nolan/64/headphones.png"
+              alt=''
+            />
+            <span>Upload an audio file</span>
+          </div>
+          <input
+            id='audioFileInput'
+            type='file'
+            accept='.mp3, .mp4, .wav, .aiff'
+            onChange={e => {
+              previewAudio(
+                e,
+                mm,
+                audioFile,
+                setAudioFile,
+                title, 
+                setTitle, 
+                artist,
+                setArtist, 
+                album,
+                setAlbum,
+                src,
+                setSrc,
+                active,
+                setActive,
+                objsToClean,
+                post,
+              )
 
-            document.getElementById('audioFileInput').value = ''
-          }}
-        />
-        </div>
+              document.getElementById('audioFileInput').value = ''
+            }}
+          />
+        </label>
+        // </div>
       )
     }
   }
 
   if (active) {
     return (
-      <div>
+      <div
+        className='audioFilePlayer'
+      >
         <button
+          className='removeBtn'
           type='button'
           disabled={update ? true : false}
           onClick={() =>  {
@@ -132,17 +157,25 @@ const AudioFileInput = ({
     )
   } else {
     return(
-      <div>
-        <h3>Upload audio file</h3>
+      <label
+        className='audioFileInputCustomLabel'
+      >
+        <div>
+          <img 
+            src="https://img.icons8.com/nolan/64/headphones.png"
+            alt=''
+          />
+          <span>Upload an audio file</span>
+        </div>
         <input
           id='audioFileInput'
           type='file'
           accept='.mp3, .mp4, .wav, .aiff'
           onChange={e => {
             previewAudio(
-              e, 
-              mm, 
-              audioFile, 
+              e,
+              mm,
+              audioFile,
               setAudioFile,
               title, 
               setTitle, 
@@ -157,11 +190,10 @@ const AudioFileInput = ({
               objsToClean,
               post,
             )
-
             document.getElementById('audioFileInput').value = ''
           }}
         />
-      </div>
+      </label>
     )
   }
 }

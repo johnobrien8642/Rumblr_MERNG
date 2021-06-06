@@ -43,11 +43,11 @@ const MainImageOrRegisterPhotoInput = ({
                   previewProfilePicRef,
                   profileImageFile,
                   setProfileImageFile
-                  )
+                )
                   
                   document.querySelector('#profilePicFileInput').value = ''
                 }}
-                />
+            />
           </label>
           <p>{errMessage}</p>
       </React.Fragment>

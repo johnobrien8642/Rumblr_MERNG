@@ -33,10 +33,9 @@ const AddPhotoDivOrPhotoInput = ({
     )
   } else {
     return (
-        <div
-          className='mainImageFileInputContainer'
-        >
-
+      <div
+        className='mainImageFileInputContainer'
+      >
         <label
           className='mainImageFileInputCustomLabel'
         >
@@ -83,7 +82,7 @@ const AddPhotoDivOrPhotoInput = ({
                 }
               }}
             ></textarea>
-        <div  className='borderMiddle'/>
+        <div  className='borderMiddle' />
         <p>{errMessage}</p>
       </div>
     )

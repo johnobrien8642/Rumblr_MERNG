@@ -138,6 +138,12 @@ const PhotoPostForm = ({
     )
   }
 
+  const disabledBool = () => {
+    return main.current.length === 0 && 
+    body.current.length === 0 && 
+    !description
+  }
+
   if (photoPostActive) {
     return (
     <div
@@ -177,6 +183,7 @@ const PhotoPostForm = ({
           />
   
           <BodyImageAndText
+            displayBodyImageAndTextInput={true}
             post={post}
             update={update}
             formId={formId}
@@ -206,12 +213,7 @@ const PhotoPostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              if (
-                  main.current.length === 0 && 
-                  body.current.length === 0 && 
-                  !description
-                )
-              {
+              if (disabledBool()) {
                 allowScroll(document)
                 resetInputs()
                 setPhotoPostActive(photoPostActive = false)
@@ -236,13 +238,9 @@ const PhotoPostForm = ({
           />
   
           <button
-            className='formSubmitBtn'
+            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             type='submit'
-            disabled={
-              main.current.length === 0 &&
-              mainImageFiles.length === 0 && 
-              bodyImageFiles.length === 0
-            }
+            disabled={disabledBool()}
           >
             {post ? 'Update': 'Post'}
           </button>

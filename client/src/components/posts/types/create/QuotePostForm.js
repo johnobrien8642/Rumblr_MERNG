@@ -134,6 +134,13 @@ const QuotePostForm = ({
     )
   }
 
+  const disabledBool = () => {
+    return !quote && 
+    !source &&
+    body.current.length === 0 && 
+    !description
+  }
+
   if (quotePostActive) {
     return (
       <div
@@ -198,12 +205,7 @@ const QuotePostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              if (
-                  !quote && 
-                  !source &&
-                  body.current.length === 0 && 
-                  !description
-                ) {
+              if (disabledBool()) {
                   allowScroll(document)
                   resetInputs()
                   setQuotePostActive(quotePostActive = false)
@@ -228,9 +230,9 @@ const QuotePostForm = ({
           />
 
           <button
-            className='formSubmitBtn'
+            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             type='submit'
-            disabled={!quote}
+            disabled={disabledBool()}
           >
             {post ? 'Update' : 'Post'}
           </button>

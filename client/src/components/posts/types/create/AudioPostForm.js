@@ -50,6 +50,7 @@ const AudioPostForm = ({
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false);
+  let [displayBodyImageAndTextInput, setDisplayBodyImageAndTextInput] = useState(false)
   const formId = 'audioPostForm';
   const formInputId = 'audioPostInput'
   
@@ -104,6 +105,7 @@ const AudioPostForm = ({
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');
+    setActive(active = false)
   }
 
 
@@ -157,6 +159,10 @@ const AudioPostForm = ({
     )
   }
 
+  const disabledBool = () => {
+    return !audioFile
+  }
+
   if (audioPostActive) {
     return (
       <div
@@ -182,6 +188,8 @@ const AudioPostForm = ({
         >
       
         <AudioFileInput
+          displayBodyImageAndTextInput={displayBodyImageAndTextInput}
+          setDisplayBodyImageAndTextInput={setDisplayBodyImageAndTextInput}
           post={post}
           update={update}
           formId={formId}
@@ -203,6 +211,7 @@ const AudioPostForm = ({
         />
   
         <BodyImageAndText
+          displayBodyImageAndTextInput={displayBodyImageAndTextInput}
           post={post}
           update={update}
           formId={formId}
@@ -233,11 +242,7 @@ const AudioPostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              if (
-                !audioFile &&
-                body.current.length === 0 &&
-                !description
-              ) {
+              if (disabledBool()) {
                 resetInputs()
                 allowScroll(document)
                 setAudioPostActive(audioPostActive = false)
@@ -262,9 +267,9 @@ const AudioPostForm = ({
           />
 
           <button
-            className='formSubmitBtn'
+            className={disabledBool() ? 'formSubmitBtn disabled': 'formSubmitBtn'}
             type='submit'
-            disabled={!audioFile}
+            disabled={disabledBool()}
           >
             {post ? 'Update' : 'Post'}
           </button>

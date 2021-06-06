@@ -39,7 +39,7 @@ const ChatPostInput = ({
 
   return (
     <div
-      className='chatText'
+      className={chat.current ? 'chatText' : 'chatText placeholder'}
       contentEditable={true}
       onInput={e => {
         regexChat()

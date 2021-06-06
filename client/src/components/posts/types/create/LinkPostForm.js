@@ -48,6 +48,7 @@ const LinkPostForm = ({
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false);
+  let [displayBodyImageAndTextInput, setDisplayBodyImageAndTextInput] = useState(false)
   const formId = 'linkPostForm';
   const formInputId = 'linkPostInput';
   
@@ -102,6 +103,7 @@ const LinkPostForm = ({
     setTag(tag = '');
     setTags(tags = []);
     setErrMessage(errMessage = '');
+    setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = false)
   }
 
   const handleSubmit = async (e) => {
@@ -177,6 +179,13 @@ const LinkPostForm = ({
     setLink(link = '')
     setPastLink(pastLink = '')
     setResult(result = '')
+    setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = false)
+  }
+
+  const disabledBool = () => {
+    return !link && 
+    body.current.length === 0 && 
+    !description
   }
   
   if (linkPostActive) {
@@ -205,6 +214,8 @@ const LinkPostForm = ({
         {handleLinkPreview()}
         
         <LinkPreview
+          displayBodyImageAndTextInput={displayBodyImageAndTextInput}
+          setDisplayBodyImageAndTextInput={setDisplayBodyImageAndTextInput}
           post={post}
           update={update}
           link={link}
@@ -224,6 +235,7 @@ const LinkPostForm = ({
         />
   
         <BodyImageAndText
+          displayBodyImageAndTextInput={displayBodyImageAndTextInput}
           post={post}
           update={update}
           formId={formId}
@@ -254,15 +266,12 @@ const LinkPostForm = ({
           <div
             className='closeBtn'
             onClick={() => {
-              if (
-                  !link && 
-                  body.current.length === 0 && 
-                  !description
-                ) {
+              if (disabledBool()) {
                   resetInputs()
                   allowScroll(document)
                   setLinkPostActive(linkPostActive = false)
                   setPostFormModal(postFormModal = false)
+                  setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = false)
               } else {
                 setConfirmClose(confirmClose = true)
               }
@@ -271,7 +280,7 @@ const LinkPostForm = ({
             Close
           </div>
 
-          <ConfirmClose 
+          <ConfirmClose
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -284,9 +293,9 @@ const LinkPostForm = ({
 
 
           <button
-            className='formSubmitBtn'
+            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             type='submit'
-            disabled={!result}
+            disabled={disabledBool()}
           >
             {post ? 'Update' : 'Post'}
           </button>

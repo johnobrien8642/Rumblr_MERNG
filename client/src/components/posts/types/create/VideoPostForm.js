@@ -44,7 +44,8 @@ const VideoPostForm = ({
   let [tags, setTags] = useState([]);
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
-  let [confirmClose, setConfirmClose] = useState(false)
+  let [confirmClose, setConfirmClose] = useState(false);
+  let [displayBodyImageAndTextInput, setDisplayBodyImageAndTextInput] = useState(false);
   const formId = 'videoPostForm';
   const formInputId = 'videoPostInput'
 
@@ -147,6 +148,14 @@ const VideoPostForm = ({
     )
   }
 
+  const disabledBool = () => {
+    return !videoFile && 
+    !videoObj &&
+    !uploading &&
+    body.current.length === 0 &&
+    !description
+  }
+
   if (videoPostActive) {
     return (
     <div
@@ -178,6 +187,8 @@ const VideoPostForm = ({
           <p>{uploading ? 'Uploading, please wait...': ''}</p>
           
           <VideoInput
+            displayBodyImageAndTextInput={displayBodyImageAndTextInput}
+            setDisplayBodyImageAndTextInput={setDisplayBodyImageAndTextInput}
             post={post}
             update={update}
             formId={formId}
@@ -193,6 +204,7 @@ const VideoPostForm = ({
           />
 
           <BodyImageAndText
+            displayBodyImageAndTextInput={displayBodyImageAndTextInput}
             post={post}
             update={update}
             formId={formId}
@@ -223,10 +235,7 @@ const VideoPostForm = ({
             <div
               className='closeBtn'
               onClick={() => {
-                if (!videoFile &&
-                    body.current.length === 0 &&
-                    !description
-                  ) {
+                if (disabledBool()) {
                     resetInputs()
                     allowScroll(document)
                     setVideoPostActive(videoPostActive = false)
@@ -251,9 +260,9 @@ const VideoPostForm = ({
             />
 
             <button
-              className='formSubmitBtn'
+              className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
               type='submit'
-              disabled={!videoObj && !uploading}
+              disabled={disabledBool()}
             >
               {post ? 'Update' : 'Post'}
             </button>

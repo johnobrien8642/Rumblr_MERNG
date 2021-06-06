@@ -89,41 +89,46 @@ const RepostForm = () => {
   }
 
   return (
-    <div>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          handleSubmit()
-        }}
+    <React.Fragment>
+    <div className='repostModal'/>
+      <div
+        className='repostForm'
       >
-
-        <PostShow 
-          post={post}
-        />
-
-        <textarea
-          type='text'
-          value={repostCaption}
-          placeholder={'Enter a caption'}
-          onChange={e => {
-            setRepostCaption(repostCaption = e.target.value)
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            handleSubmit()
           }}
-        ></textarea>
-
-        <button 
-          type='button'
-          onClick={() => history.goBack()}  
         >
-          Close
-        </button>
 
-        <button 
-          type='submit'
-        >
-          Repost
-        </button>
-      </form>
-    </div>
+          <PostShow 
+            post={post}
+          />
+
+          <textarea
+            type='text'
+            value={repostCaption}
+            placeholder={'Enter a caption'}
+            onChange={e => {
+              setRepostCaption(repostCaption = e.target.value)
+            }}
+          ></textarea>
+
+          <button 
+            type='button'
+            onClick={() => history.goBack()}  
+          >
+            Close
+          </button>
+
+          <button 
+            type='submit'
+          >
+            Repost
+          </button>
+        </form>
+      </div>
+    </React.Fragment>
   )
 }
 

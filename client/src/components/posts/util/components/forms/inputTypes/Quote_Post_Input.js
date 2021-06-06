@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import QuotePlaceholderOrInput from './Quote_Placeholder_Or_Input';
 
 const QuotePostInput = ({
   post, 

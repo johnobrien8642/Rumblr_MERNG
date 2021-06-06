@@ -29,7 +29,7 @@
     position: absolute;
     top: 20%;
     width: 540px;
-    min-height: 290px;
+    min-height: 150px;
     left: 50%;
     transform: translateX(-50%);
     border: 1px solid black;
@@ -89,7 +89,6 @@
               left: .5px;
               font-size: 15px;
             }
-
           }
 
           .imageContent {
@@ -390,6 +389,10 @@
             cursor: pointer;
           }
         }
+
+        .formSubmitBtn.disabled {
+          color: rgb(255, 255, 255, .5)
+        }
       }
       
       .textPostForm {
@@ -411,12 +414,108 @@
       }
     }
 
-    
+
+    .linkPostForm {
+
+      .linkPreviewContainer {
+        width: 100%;
+
+        .linkNameAndImageContainer {
+
+          a {
+            width: 100%;
+
+            &:hover {
+              cursor: pointer;
+            }
+
+            .siteName {
+              position: relative;
+              top: 35px;
+            }
+          }
+
+          img {
+            object-fit: contain;
+            width: 100%;
+            border-top: 1px solid rgb(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgb(0, 0, 0, 0.3);
+          }
+        }
+
+        .linkTitleAndDescContainer {
+          background-color: var(--light-gray);
+
+          h2 {
+            position: relative;
+            top: -15px;
+            margin-left: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            // background-color: red;
+            width: fit-content;
+            color: rgb(0, 0, 0, 0.7)
+          }
+
+          p {
+            display: inline-block;
+            width: 85%;
+            margin: 0 0 20px 20px;
+            font-size: 15px;
+            
+          }
+
+        }
+
+        .linkNameAndImageContainer,
+        .linkTitleAndDescContainer {
+
+          &:hover {
+            .removeBtn {
+              transform: scale(1);
+            }
+          }
+          
+          .removeBtn {
+            position: relative;
+            top: 8px;
+            left: 530px;
+            height: 20px;
+            width: 20px;
+            font-weight: bold;
+            border-radius: 50%;
+            background-color: red;
+            color: white;
+            transform: scale(0);
+            transition: transform .2s .5s;
+
+            span {
+              position: relative;
+              display: inline-block;
+              top: -1.5px;
+              left: .5px;
+              font-size: 15px;
+            }
+          }
+        }
+      }
+
+      .urlInputContainer {
+        margin-bottom: 15px;
+        border-top: 2px dashed rgb(0, 0, 0, 0.1);
+        border-bottom: 2px dashed rgb(0, 0, 0, 0.1);
+        background-color: var(--light-gray);
+        height: 85px;
+
+        .urlInput {
+          margin: 35px 0 0 30px;
+  
+        }
+      }
+    }
 
     .photoPostForm {
-      
-      
-
+    
       .addPhotoBtn {
         position: relative;
         width: 100%;
@@ -540,6 +639,8 @@
       }
     }
 
+
+
     .quotePostForm {
       overflow-wrap: break-word;
       word-break: break-all;
@@ -608,10 +709,265 @@
   
           .sourceInput {
             display: inline-block;
-            margin: 0 0 0 8px;
+            margin: 0 0 10px 8px;
 
           }
         }
       }
     }
-}
+
+
+    .chatPostForm {
+      .chatText {
+        margin: 0 0 0 15px;
+        width: 95%;
+        // background-color: red;
+      }
+
+      .chatText.placeholder {
+        color: rgb(0, 0, 0, 0.6)
+      }
+    }
+
+
+    .audioPostForm {
+
+      .audioFileInputCustomLabel {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        height: 150px;
+        margin: 0 0 15px 0;
+        background-color: var(--light-gray);
+        border-top: 3px dashed rgb(0, 0, 0, 0.3);
+        border-bottom: 3px dashed rgb(0, 0, 0, 0.3);
+
+        div {
+          position: relative;
+          top: 30px;
+          left: 215px;
+
+          img {
+            position: relative;
+            display: inline-block;
+            left: 28px;
+            filter: grayscale(100%);
+          }
+  
+          span {
+            display: inline-block;
+            position: relative;
+            top: 10px;
+            font-weight: 500;
+            transform: translateX(-50%);
+            color: rgb(0, 0, 0, 0.5)
+          }
+  
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        #audioFileInput {
+          display: none;
+        }
+      }
+
+      .audioFilePlayer {
+        margin: auto;
+        margin-bottom: 20px;
+        width: 90%;
+
+        p {
+          margin-bottom: 10px;
+        }
+
+        input {
+          width: 400px;
+        }
+
+        &:hover {
+          .removeBtn {
+            transform: scale(1);
+          }
+        }
+        
+        .removeBtn {
+          position: relative;
+          top: 8px;
+          left: 470px;
+          height: 20px;
+          width: 20px;
+          font-weight: bold;
+          border-radius: 50%;
+          background-color: red;
+          color: white;
+          transform: scale(0);
+          transition: transform .2s .5s;
+
+          span {
+            position: relative;
+            display: inline-block;
+            top: -1.5px;
+            left: .5px;
+            font-size: 15px;
+          }
+        }
+      }
+    }
+
+    .videoPostForm {
+
+      .videoPlayerContainer {
+        margin-bottom: 20px;
+
+        &:hover {
+          .removeBtn {
+            transform: scale(1);
+          }
+        }
+
+        .removeBtn {
+          position: relative;
+          top: 15px;
+          left: 528px;
+          height: 20px;
+          width: 20px;
+          font-weight: bold;
+          border-radius: 50%;
+          background-color: red;
+          color: white;
+          transform: scale(0);
+          transition: transform .2s .5s;
+
+          span {
+            position: relative;
+            display: inline-block;
+            top: -1.5px;
+            left: .5px;
+            font-size: 15px;
+          }
+        }
+      }
+
+      .videoFileInputContainer {
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-bottom: 10px;
+        z-index: 500;
+        box-sizing: border-box;
+        border-top: 2px dashed rgb(0, 0, 0, 0.2);
+        border-bottom: 2px dashed rgb(0, 0, 0, 0.2);
+        background-color: var(--less-light-gray);
+        overflow: hidden;
+
+        .borderMiddle {
+          border-right: 1px solid rgb(0, 0, 0, 0.1);
+          position: absolute;
+          top: 30px;
+          bottom: 30px;
+          left: 268px;
+        }
+
+        .linkIcon {
+          position: absolute;
+          filter: grayscale(100%);
+          top: 60px !important;
+          left: 365px;
+        }
+  
+        textarea {
+          position: relative;
+          top: 131px;
+          left: 101px;
+          font-size: 17px;
+          font-weight: 500;
+          font-family: var(--font);
+        }
+  
+        .videoFileInputCustomLabel {
+          // position: absolute;
+          // border-right: 1px solid rgb(0, 0, 0, 0.3);
+          width: 250px;
+          height: 200px;
+
+          div {
+            display: flex;
+            position: relative;
+            flex-direction: column;
+            top: 95px;
+            left: 5px;
+            transform: translateY(-50%);
+
+            .linkIcon {
+              position: absolute;
+              filter: grayscale(100%);
+              top: -42px !important;
+              left: 82px;
+              width: 85px;
+            }
+            
+            // img {
+            //   position: relative;
+            //   display: block;
+            //   margin: auto;
+            //   width: 70px;
+            //   filter: grayscale(100%);
+            //   opacity: .7;
+            // }
+    
+            span {
+              position: relative;
+              display: block;
+              margin: auto;
+              top: 44px;
+              font-size: 17px;
+              font-weight: 500;
+              color: rgb(0, 0, 0, 0.5)
+            }
+          }
+  
+          // span {
+          //   display: inline-block;
+          //   position: relative;
+          //   top: 90px;
+          //   left: 50%;
+          //   transform: translateX(-50%);
+          // }
+  
+          &:hover {
+            cursor: pointer;
+          }
+  
+          #videoFileInput {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .repostModal {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--tumblr-deep-blue-modal);
+    z-index: 504;
+  }
+  
+  .repostForm {
+    display: block;
+    position: absolute;
+    top: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
+    // box-shadow: 5px 5px 5px 5px var(--tumblr-deep-blue-modal);
+    z-index: 505;
+  }
