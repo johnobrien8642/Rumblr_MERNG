@@ -196,7 +196,7 @@ const MobileMenuDD = ({
           >
             <p>Followers</p>
           </Link>
-          <span className='count'>{user.followersCount}</span>
+          <span className='followerCount'>{user.followersCount}</span>
         </div>
       </div>
       <div

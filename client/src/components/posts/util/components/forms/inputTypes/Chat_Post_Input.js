@@ -5,6 +5,7 @@ const ChatPostInput = ({
   post, chat
 }) => {
   let [placeholder, setPlaceholder] = useState("<strong>Brother Muzone:</strong> Well we can't stand out here all night...<br><br><strong> Omar Little:</strong> I suppose we can't...<br><br><strong> Brother Muzone:</strong> A man has to have a code.<br><br><strong> Omar Little:</strong> Oh indeed...")
+  let [togglePlaceholder, setTogglePlaceholder] = useState(false)
 
   useEffect(() => {
     if (post) {
@@ -18,15 +19,18 @@ const ChatPostInput = ({
     //eslint-disable-next-line
   }, [])
 
+  
+  
+  
   const regexChat = () => {
     var chatDiv = document.querySelector('.chatText')
-  
+    
     const bolded = chatDiv.innerText
-      .replace(/^(.*?:)/gm, '<strong>$1</strong>')
-      .split('\n').join('<br/>')
-
+    .replace(/^(.*?:)/gm, '<strong>$1</strong>')
+    .split('\n').join('<br/>')
+    
     chatDiv.innerHTML = bolded
-
+    
     if (window.getSelection) {
       var range = document.createRange();
       range.selectNodeContents(chatDiv)
@@ -36,18 +40,20 @@ const ChatPostInput = ({
       sel.addRange(range);
     }
   }
-
+  
   return (
     <div
-      className={chat.current ? 'chatText' : 'chatText placeholder'}
+      className={!togglePlaceholder ? 'chatText' : 'chatText placeholder'}
       contentEditable={true}
       onInput={e => {
         regexChat()
 
         chat.current = e.target.innerHTML
+
       }}
       onFocus={() => {
         setPlaceholder(placeholder = '')
+        setTogglePlaceholder(togglePlaceholder = false)
       }}
       onKeyDown={e => {
         if (e.key === 'Enter') {

@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
-import { useParams, useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
 import PostShow from '../../../types/showOrUpdate/PostShow'
+import ConfirmClose from '../../../../nav/Confirm_Close';
 import Mutations from '../../../../../graphql/mutations'
 import Queries from '../../../../../graphql/queries'
+import PostFormUtil from '../../functions/post_form_util.js';
 const { CREATE_REPOST } = Mutations;
-const { FETCH_POST, FETCH_USER_FEED } = Queries;
+const { FETCH_USER_FEED } = Queries;
+const { preventScroll, allowScroll } = PostFormUtil;
 
-const RepostForm = () => {
+const RepostForm = ({
+  post,
+  repostActive,
+  setRepostActive
+}) => {
   let [repostCaption, setRepostCaption] = useState('');
-  let { postId } = useParams();
-  let history = useHistory();
+  let [confirmClose, setConfirmClose] = useState(false)
+
+  useEffect(() => {
+
+    if (repostActive) {
+      preventScroll(repostActive, document)
+    }
+
+    return () => {
+      allowScroll(document)
+    }
+  })
 
   let [repost] = useMutation(CREATE_REPOST, {
     update(client, { data }) {
@@ -40,23 +56,23 @@ const RepostForm = () => {
     },
     onCompleted(data) {
       resetInputs();
-      history.push('/dashboard')
+      setRepostActive(repostActive = false)
     },
     onError(error) {
       console.log(error)
     }
   })
   
-  let { loading, error, data } = useQuery(FETCH_POST, {
-    variables: {
-      query: postId
-    }
-  })
+  // let { loading, error, data } = useQuery(FETCH_POST, {
+  //   variables: {
+  //     query: postId
+  //   }
+  // })
 
-  if (loading) return 'Loading...';
-  if (error) return `Error: ${error}`
+  // if (loading) return 'Loading...';
+  // if (error) return `Error: ${error}`
   
-  const { post } = data;
+  // const { post } = data;
   
   const resetInputs = () => {
     setRepostCaption(repostCaption = '');
@@ -88,48 +104,65 @@ const RepostForm = () => {
     })
   }
 
-  return (
-    <React.Fragment>
-    <div className='repostModal'/>
-      <div
-        className='repostForm'
-      >
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            handleSubmit()
-          }}
+  if (repostActive) {
+    return (
+      <React.Fragment>
+      <div className='repostModal'/>
+        <div
+          className='repostForm'
         >
-
-          <PostShow 
-            post={post}
-          />
-
-          <textarea
-            type='text'
-            value={repostCaption}
-            placeholder={'Enter a caption'}
-            onChange={e => {
-              setRepostCaption(repostCaption = e.target.value)
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              handleSubmit()
             }}
-          ></textarea>
-
-          <button 
-            type='button'
-            onClick={() => history.goBack()}  
           >
-            Close
-          </button>
+  
+            <PostShow 
+              post={post}
+            />
+  
+            <textarea
+              type='text'
+              value={repostCaption}
+              placeholder={'Enter a caption'}
+              onChange={e => {
+                setRepostCaption(repostCaption = e.target.value)
+              }}
+            ></textarea>
+  
+            <button 
+              type='button'
+              onClick={() => setConfirmClose(confirmClose = true)}  
+            >
+              Close
+            </button>
+  
+            <ConfirmClose
+              confirmClose={confirmClose}
+              setConfirmClose={setConfirmClose}
+              allowScroll={allowScroll}
+              resetInputs={resetInputs}
+              setFormActive={setRepostActive}
+              formActive={repostActive}
+              repost={true}
+            />
+  
+            <button 
+              type='submit'
+            >
+              Repost
+            </button>
+          </form>
+        </div>
+      </React.Fragment>
+    )
+  } else {
+    return (
+      <div></div>
+    )
+  }
 
-          <button 
-            type='submit'
-          >
-            Repost
-          </button>
-        </form>
-      </div>
-    </React.Fragment>
-  )
 }
 
 export default RepostForm;

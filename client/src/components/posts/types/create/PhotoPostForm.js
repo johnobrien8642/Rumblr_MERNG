@@ -22,6 +22,7 @@ const { FETCH_USER_FEED } = Queries;
 
 
 const PhotoPostForm = ({
+  mobile,
   user,
   post, 
   update,
@@ -29,7 +30,9 @@ const PhotoPostForm = ({
   photoPostActive,
   setPhotoPostActive,
   postFormModal,
-  setPostFormModal
+  setPostFormModal,
+  postFormOpen,
+  setPostFormOpen
 }) => {
   let [mainImageFiles, setMainImageFiles] = useState([]);
   let main = useRef([]);
@@ -78,6 +81,9 @@ const PhotoPostForm = ({
         allowScroll(document)
         setPhotoPostActive(photoPostActive = false)
         setPostFormModal(postFormModal = false)
+        if (mobile) {
+          setPostFormOpen(postFormOpen = false)
+        }
       }
     },
     onError(error) {
@@ -218,6 +224,9 @@ const PhotoPostForm = ({
                 resetInputs()
                 setPhotoPostActive(photoPostActive = false)
                 setPostFormModal(postFormModal = false)
+                if (mobile) {
+                  setPostFormOpen(postFormOpen = false)
+                }
               } else {
                 setConfirmClose(confirmClose = true)
               }
@@ -226,7 +235,8 @@ const PhotoPostForm = ({
             Close
           </div>
 
-          <ConfirmClose 
+          <ConfirmClose
+            mobile={mobile} 
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -235,6 +245,8 @@ const PhotoPostForm = ({
             formActive={photoPostActive}
             setPostFormModal={setPostFormModal}
             postFormModal={postFormModal}
+            postFormOpen={postFormOpen}
+            setPostFormOpen={setPostFormOpen}
           />
   
           <button

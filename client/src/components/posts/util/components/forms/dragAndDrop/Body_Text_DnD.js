@@ -59,7 +59,7 @@ const BodyTextDnD = ({
 
   return (
     <div
-      className='draggable'
+      className='draggable textContentContainer'
       onDrop={e => {
         onDropBody(
           e, bodyIdx, body,

@@ -83,7 +83,9 @@ const BodyImageAndText = ({
             }
         })}
   
-        <div>
+        <div
+          className='bodyImageOrDescriptionStringContainer'
+        >
             <BodyImageInput
               formId={formId}
               body={body}

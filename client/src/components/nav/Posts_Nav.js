@@ -16,14 +16,15 @@ const PostsNav = ({
   user,
   mobile
 }) => {
-  let [textPostActive, setTextPostActive] = useState(false)
-  let [photoPostActive, setPhotoPostActive] = useState(false)
-  let [quotePostActive, setQuotePostActive] = useState(false)
-  let [linkPostActive, setLinkPostActive] = useState(false)
-  let [chatPostActive, setChatPostActive] = useState(false)
-  let [audioPostActive, setAudioPostActive] = useState(false)
-  let [videoPostActive, setVideoPostActive] = useState(false)
-  let [postFormModal, setPostFormModal] = useState(false)
+  let [postFormOpen, setPostFormOpen] = useState(false);
+  let [textPostActive, setTextPostActive] = useState(false);
+  let [photoPostActive, setPhotoPostActive] = useState(false);
+  let [quotePostActive, setQuotePostActive] = useState(false);
+  let [linkPostActive, setLinkPostActive] = useState(false);
+  let [chatPostActive, setChatPostActive] = useState(false);
+  let [audioPostActive, setAudioPostActive] = useState(false);
+  let [videoPostActive, setVideoPostActive] = useState(false);
+  let [postFormModal, setPostFormModal] = useState(false);
   let [open, setOpen] = useState(false);
   let history = useHistory();
 
@@ -53,7 +54,7 @@ const PostsNav = ({
       mobile: "https://img.icons8.com/material-rounded/64/000000/camcorder-pro.png"
     }
   }
-
+  
   useEffect(() => {
     if (mobile) {
       var el = document.querySelector('.mobilePostsNav.open')
@@ -64,6 +65,10 @@ const PostsNav = ({
 
       preventScroll(open, document)
     }
+
+    return () => {
+      allowScroll(document)
+    }
   })
   
   if (mobile) {
@@ -71,7 +76,7 @@ const PostsNav = ({
       setOpen(open = true)
     }, 100)
   }
-
+  
   const handleMobilePostsNavModalClass = (mobile, open) => {
     if (mobile && !open) {
       return 'mobilePostsNavModal'
@@ -81,10 +86,12 @@ const PostsNav = ({
   }
   
   const handleMobileOrBrowserPostsNavClass = (mobile, open) => {
-    if (mobile && !open) {
-      return 'mobilePostsNav'
+  if (mobile && open && postFormOpen)  {
+      return 'mobilePostsNav open postFormOpen'
     } else if (mobile && open) {
       return 'mobilePostsNav open'
+    }else if (mobile && !open) {
+      return 'mobilePostsNav'
     } else {
       return 'browserPostsNav'
     }
@@ -99,7 +106,7 @@ const PostsNav = ({
           className={handleMobileOrBrowserPostsNavClass(mobile, open)}
           tabIndex={-1}
           onBlur={() => {
-            if (mobile) {
+            if (mobile && !postFormOpen) {
               Promise.all([
                 setOpen(open = false)
               ]).then(() => {
@@ -116,6 +123,7 @@ const PostsNav = ({
             onClick={() => {
               setTextPostActive(textPostActive = true)
               setPostFormModal(postFormModal = true)
+              setPostFormOpen(postFormOpen = true)
             }}
           >
             <div>
@@ -133,6 +141,7 @@ const PostsNav = ({
             onClick={() => {
               setPhotoPostActive(photoPostActive = true)
               setPostFormModal(postFormModal = true)
+              setPostFormOpen(postFormOpen = true)
             }}
           >
             <div>
@@ -150,6 +159,7 @@ const PostsNav = ({
             onClick={() => {
               setQuotePostActive(quotePostActive = true)
               setPostFormModal(postFormModal = true)
+              setPostFormOpen(postFormOpen = true)
             }}
           >
             <div>
@@ -167,6 +177,7 @@ const PostsNav = ({
             onClick={() => {
               setLinkPostActive(linkPostActive = true)
               setPostFormModal(postFormModal = true)
+              setPostFormOpen(postFormOpen = true)
             }}
           >
             <div>
@@ -184,6 +195,7 @@ const PostsNav = ({
             onClick={() => {
               setChatPostActive(chatPostActive = true)
               setPostFormModal(postFormModal = true)
+              setPostFormOpen(postFormOpen = true)
             }}
           >
             <div>
@@ -201,6 +213,7 @@ const PostsNav = ({
             onClick={() => {
               setAudioPostActive(audioPostActive = true)
               setPostFormModal(postFormModal = true)
+              setPostFormOpen(postFormOpen = true)
             }}
           >
             <div>
@@ -218,6 +231,7 @@ const PostsNav = ({
             onClick={() => {
               setVideoPostActive(videoPostActive = true)
               setPostFormModal(postFormModal = true)
+              setPostFormOpen(postFormOpen = true)
             }}
           >
             <div>
@@ -230,42 +244,86 @@ const PostsNav = ({
             </div>
           </div>
 
-          <TextPostForm
-            user={user}
-            textPostActive={textPostActive}
-            setTextPostActive={setTextPostActive}
-          />
-          <PhotoPostForm
-            user={user}
-            photoPostActive={photoPostActive}
-            setPhotoPostActive={setPhotoPostActive}
-          />
-          <QuotePostForm
-            user={user}
-            quotePostActive={quotePostActive}
-            setQuotePostActive={setQuotePostActive}
-          />
-          <LinkPostForm
-            user={user}
-            linkPostActive={linkPostActive}
-            setLinkPostActive={setLinkPostActive}
-          />
-          <ChatPostForm
-            user={user}
-            chatPostActive={chatPostActive}
-            setChatPostActive={setChatPostActive}
-          />
-          <AudioPostForm
-            user={user}
-            audioPostActive={audioPostActive}
-            setAudioPostActive={setAudioPostActive}
-          />
-          <VideoPostForm
-            user={user}
-            videoPostActive={videoPostActive}
-            setVideoPostActive={setVideoPostActive}
-          />
         </div>
+
+          <div
+            className={postFormModal ?
+              'postFormModal active' : 
+              'postFormModal hidden'
+            }
+          >
+
+            <TextPostForm
+              user={user}
+              mobile={true}
+              textPostActive={textPostActive}
+              setTextPostActive={setTextPostActive}
+              postFormModal={postFormModal}
+              setPostFormModal={setPostFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
+            />
+            <PhotoPostForm
+              user={user}
+              mobile={true}
+              photoPostActive={photoPostActive}
+              setPhotoPostActive={setPhotoPostActive}
+              postFormModal={postFormModal}
+              setPostFormModal={setPostFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
+            />
+            <QuotePostForm
+              user={user}
+              mobile={true}
+              quotePostActive={quotePostActive}
+              setQuotePostActive={setQuotePostActive}
+              postFormModal={postFormModal}
+              setPostFormModal={setPostFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
+            />
+            <LinkPostForm
+              user={user}
+              mobile={true}
+              linkPostActive={linkPostActive}
+              setLinkPostActive={setLinkPostActive}
+              postFormModal={postFormModal}
+              setPostFormModal={setPostFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
+            />
+            <ChatPostForm
+              user={user}
+              mobile={true}
+              chatPostActive={chatPostActive}
+              setChatPostActive={setChatPostActive}
+              postFormModal={postFormModal}
+              setPostFormModal={setPostFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
+            />
+            <AudioPostForm
+              user={user}
+              mobile={true}
+              audioPostActive={audioPostActive}
+              setAudioPostActive={setAudioPostActive}
+              postFormModal={postFormModal}
+              setPostFormModal={setPostFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
+            />
+            <VideoPostForm
+              user={user}
+              mobile={true}
+              videoPostActive={videoPostActive}
+              setVideoPostActive={setVideoPostActive}
+              postFormModal={postFormModal}
+              setPostFormModal={setPostFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
+            />
+          </div>
       </div>
     )
   } else {

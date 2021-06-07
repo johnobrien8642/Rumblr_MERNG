@@ -4,7 +4,8 @@ import axios from 'axios';
 import Validator from 'validator';
 
 const previewMainImages = (
-  e, main,
+  e, 
+  main,
   mainImageFiles,
   setMainImageFiles,
   setErrMessage,

@@ -20,6 +20,7 @@ const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const QuotePostForm = ({
+  mobile,
   user,
   post, 
   update,
@@ -27,7 +28,9 @@ const QuotePostForm = ({
   quotePostActive,
   setQuotePostActive,
   postFormModal,
-  setPostFormModal
+  setPostFormModal,
+  postFormOpen,
+  setPostFormOpen
 }) => {
   let [quote, setQuote] = useState('');
   let [source, setSource] = useState('');
@@ -77,6 +80,9 @@ const QuotePostForm = ({
         allowScroll(document)
         setQuotePostActive(quotePostActive = false)
         setPostFormModal(postFormModal = false)
+        if (mobile) {
+          setPostFormOpen(postFormOpen = false)
+        }
       }
     },
     onError(error) {
@@ -210,6 +216,9 @@ const QuotePostForm = ({
                   resetInputs()
                   setQuotePostActive(quotePostActive = false)
                   setPostFormModal(postFormModal = false)
+                  if (mobile) {
+                    setPostFormOpen(postFormOpen = false)
+                  }
                 } else {
                   setConfirmClose(confirmClose = true)
                 }
@@ -219,6 +228,7 @@ const QuotePostForm = ({
           </div>
 
           <ConfirmClose
+            mobile={mobile}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -227,6 +237,8 @@ const QuotePostForm = ({
             formActive={quotePostActive}
             setPostFormModal={setPostFormModal}
             postFormModal={postFormModal}
+            postFormOpen={postFormOpen}
+            setPostFormOpen={setPostFormOpen}
           />
 
           <button

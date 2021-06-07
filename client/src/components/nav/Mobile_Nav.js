@@ -4,9 +4,11 @@ import MobileMenuDD from './Mobile_Menu_DD';
 import { Link } from 'react-router-dom';
 import MobileSearchOrLogo from './Mobile_Search_Or_Logo';
 import RenderSearchOrExitIcon from './Render_Search_Or_Exit_Icon';
+import PostFormUtil from '../posts/util/functions/post_form_util.js';
 import NavUtil from './util/nav_util.js';
 import HamburgerOrExitIcon from './Hamburger_Or_Exit_Icon';
 const { accumulateCounts } = NavUtil;
+const { preventScroll, allowScroll } = PostFormUtil;
 
 const MobileNav = ({
   activityCounts, 
@@ -23,10 +25,9 @@ const MobileNav = ({
 
   useEffect(() => {
     if (menuOpen) {
-      // document.body.style.position = 'fixed'
-      document.body.style.margin = '0'
-      document.body.style.height = '100%'
-      document.body.style.overflow = 'hidden'
+  
+      preventScroll(menuOpen, document)
+
       var el = document.querySelector('.mobileNav')
       
       if (el) {
@@ -40,9 +41,9 @@ const MobileNav = ({
 
     return () => {
       window.removeEventListener('scroll', listener)
+      allowScroll(document)
     }
   }, [menuOpen])
-
   
   if (loggedInBool.isLoggedIn) {
     

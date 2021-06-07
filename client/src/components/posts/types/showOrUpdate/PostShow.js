@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useQuery } from '@apollo/client';
 import PostNotes from '../../util/components/social/Post_Notes.js';
 import PostOptions from '../../util/components/social/Post_Options.js';
+import RepostForm from '../../../posts/util/components/social/RepostForm';
 import PostShowUtil from '../../util/functions/post_show_util.js';
 import Queries from '../../../../graphql/queries';
 import FeedUtil from '../../../posts/util/functions/feed_util.js';
@@ -17,6 +18,7 @@ const PostShow = ({
   currentUser
 }) => {
   let [active, setActive] = useState(false)
+  let [repostActive, setRepostActive] = useState(false)
   let doesUserFollowUserRef = useRef(false)
 
   doesUserFollowUser(doesUserFollowUserRef, currentUser, post.user)
@@ -55,6 +57,8 @@ const PostShow = ({
             update={update}
             setUpdate={setUpdate}
             toggleUpdate={toggleUpdate}
+            repostActive={repostActive}
+            setRepostActive={setRepostActive}
           />
         </React.Fragment>
       )
@@ -83,6 +87,12 @@ const PostShow = ({
           {postTags(post)}
 
           {notesAndOptions()}
+
+          <RepostForm 
+            post={post}
+            repostActive={repostActive}
+            setRepostActive={setRepostActive}
+          />
         </React.Fragment>
       )
   }

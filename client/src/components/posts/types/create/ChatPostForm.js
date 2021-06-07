@@ -20,6 +20,7 @@ const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const ChatPostForm = ({
+  mobile,
   user,
   post, 
   update,
@@ -27,7 +28,9 @@ const ChatPostForm = ({
   chatPostActive,
   setChatPostActive,
   postFormModal,
-  setPostFormModal
+  setPostFormModal,
+  postFormOpen,
+  setPostFormOpen
 }) => {
   let chat = useRef('')
 
@@ -75,6 +78,10 @@ const ChatPostForm = ({
         allowScroll(document)
         setChatPostActive(chatPostActive = false)
         setPostFormModal(postFormModal = false)
+
+        if (mobile) {
+          setPostFormOpen(postFormOpen = false)
+        }
       }
     },
     onError(error) {
@@ -203,6 +210,10 @@ const ChatPostForm = ({
                   allowScroll(document)
                   setChatPostActive(chatPostActive = false)
                   setPostFormModal(postFormModal = false)
+
+                  if (mobile) {
+                    setPostFormOpen(postFormOpen = false)
+                  }
                 } else {
                   setConfirmClose(confirmClose = true)
                 }
@@ -212,6 +223,7 @@ const ChatPostForm = ({
           </div>
 
           <ConfirmClose
+            mobile={mobile}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -220,6 +232,8 @@ const ChatPostForm = ({
             formActive={chatPostActive}
             setPostFormModal={setPostFormModal}
             postFormModal={postFormModal}
+            postFormOpen={postFormOpen}
+            setPostFormOpen={setPostFormOpen}
           />
 
           <button

@@ -131,7 +131,7 @@ const VideoInput = ({
         >
           <div>
             <img 
-              className='linkIcon'
+              className='videoIcon'
               src="https://img.icons8.com/nolan/64/camcorder-pro.png"
               alt=''
             />
@@ -158,29 +158,34 @@ const VideoInput = ({
             }}
           />
         </label>
-        <img 
-          className='linkIcon'
-          src="https://img.icons8.com/flat-round/64/000000/link--v1.png"
-          alt=''
-        />
-        <textarea
-          placeholder='Paste a url...'
-          onChange={e => {
-            previewVideoLink(
-              e,
-              post,
-              videoObj,
-              setVideoObj,
-              videoFile,
-              setVideoFile,
-              active,
-              setActive,
-              objsToClean
-            )
 
-            setIsLink(isLink = true)
-          }}
-        ></textarea>
+        <div
+          className='linkContainer'
+        >
+          <img 
+            className='linkIcon'
+            src="https://img.icons8.com/flat-round/64/000000/link--v1.png"
+            alt=''
+          />
+          <textarea
+            placeholder='Paste a url...'
+            onChange={e => {
+              previewVideoLink(
+                e,
+                post,
+                videoObj,
+                setVideoObj,
+                videoFile,
+                setVideoFile,
+                active,
+                setActive,
+                objsToClean
+              )
+
+              setIsLink(isLink = true)
+            }}
+          ></textarea>
+        </div>
         <div  className='borderMiddle' />
       </div>
     )

@@ -11,9 +11,17 @@ const { DELETE_POST } = Mutations;
 const { postDelete } = UpdateCacheUtil;
 
 const PostOptions = ({ 
-  post, refetchNotes, notesCount,
-  active, setActive, toggleNotes,
-  update, setUpdate, toggleUpdate
+  post, 
+  refetchNotes, 
+  notesCount,
+  active, 
+  setActive, 
+  toggleNotes,
+  update, 
+  setUpdate, 
+  toggleUpdate,
+  repostActive,
+  setRepostActive
 }) => {
   let [askToConfirm, confirmDelete] = useState(false)
   var postId
@@ -93,55 +101,54 @@ const PostOptions = ({
           {notesCount} notes
         </div>
   
-            <div
-              className='postOptions'
-            >
-        <img
-          className='commentBubbleBtn'
-          src="https://img.icons8.com/windows/32/000000/speech-bubble--v1.png"
-          alt=''
-          onClick={() => {
-            toggleNotes()
-          }}
-        />
-  
-        <Link
-          to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
+        <div
+          className='postOptions'
         >
+          <img
+            className='commentBubbleBtn'
+            src="https://img.icons8.com/windows/32/000000/speech-bubble--v1.png"
+            alt=''
+            onClick={() => {
+              toggleNotes()
+            }}
+          />
+
           <img 
+            className='repostIcon'
             src="https://img.icons8.com/material-outlined/24/000000/retweet.png"
             alt=''
+            onClick={() => {
+              setRepostActive(repostActive = true)
+            }}
           />
-        </Link>
-  
-  
-        <LikeButton
-          post={post}
-          liked={doesUserLikePost}
-          refetchDoesUserLikePost={refetch}
-          refetchNotes={refetchNotes}
-        />
+          
+          <LikeButton
+            post={post}
+            liked={doesUserLikePost}
+            refetchDoesUserLikePost={refetch}
+            refetchNotes={refetchNotes}
+          />
 
-        {renderConfirmDelete()}
-        
-        <img
-          className='deletePostBtn'
-          src="https://img.icons8.com/metro/26/000000/delete.png"
-          alt=''
-          onClick={() => {
-            confirmDelete(askToConfirm = true)
-          }}
-        />
-  
-        <img
-          className='editPostBtn'
-          src="https://img.icons8.com/windows/32/000000/edit--v1.png"
-          alt=''
-          onClick={() => {
-            toggleUpdate(update, setUpdate)
-          }}
-        />
-      </div>
+          {renderConfirmDelete()}
+          
+          <img
+            className='deletePostBtn'
+            src="https://img.icons8.com/metro/26/000000/delete.png"
+            alt=''
+            onClick={() => {
+              confirmDelete(askToConfirm = true)
+            }}
+          />
+
+          <img
+            className='editPostBtn'
+            src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+            alt=''
+            onClick={() => {
+              toggleUpdate(update, setUpdate)
+            }}
+          />
+        </div>
       </div>
     )
   } else {

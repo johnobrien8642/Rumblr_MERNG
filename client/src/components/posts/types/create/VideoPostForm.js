@@ -20,6 +20,7 @@ const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const VideoPostForm = ({
+  mobile,
   user,
   post, 
   update,
@@ -27,7 +28,9 @@ const VideoPostForm = ({
   videoPostActive,
   setVideoPostActive,
   postFormModal,
-  setPostFormModal
+  setPostFormModal,
+  postFormOpen,
+  setPostFormOpen
 }) => {
   let [videoFile, setVideoFile] = useState('');
   let [videoObj, setVideoObj] = useState('');
@@ -80,6 +83,10 @@ const VideoPostForm = ({
         allowScroll(document)
         setVideoPostActive(videoPostActive = false)
         setPostFormModal(postFormModal = false)
+
+        if (mobile) {
+          setPostFormOpen(postFormOpen = false)
+        }
       }
     },
     onError(error) {
@@ -240,6 +247,10 @@ const VideoPostForm = ({
                     allowScroll(document)
                     setVideoPostActive(videoPostActive = false)
                     setPostFormModal(postFormModal = false)
+
+                    if (mobile) {
+                      setPostFormOpen(postFormOpen = false)
+                    }
                   } else {
                     setConfirmClose(confirmClose = true)
                   }
@@ -249,6 +260,7 @@ const VideoPostForm = ({
             </div>
 
             <ConfirmClose
+              mobile={mobile}
               confirmClose={confirmClose}
               setConfirmClose={setConfirmClose}
               allowScroll={allowScroll}
@@ -257,6 +269,8 @@ const VideoPostForm = ({
               formActive={videoPostActive}
               setPostFormModal={setPostFormModal}
               postFormModal={postFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
             />
 
             <button

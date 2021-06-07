@@ -21,6 +21,7 @@ const { FETCH_USER_FEED } = Queries;
 
 
 const LinkPostForm = ({
+  mobile,
   user,
   post, 
   update,
@@ -28,7 +29,9 @@ const LinkPostForm = ({
   linkPostActive,
   setLinkPostActive,
   postFormModal,
-  setPostFormModal
+  setPostFormModal,
+  postFormOpen,
+  setPostFormOpen
 }) => {
   let [link, setLink] = useState('');
   let [pastLink, setPastLink] = useState('')
@@ -82,6 +85,10 @@ const LinkPostForm = ({
         allowScroll(document)
         setLinkPostActive(linkPostActive = false)
         setPostFormModal(postFormModal = false)
+        
+        if (mobile) {
+          setPostFormOpen(postFormOpen = false)
+        }
       }
     },
     onError(error) {
@@ -272,6 +279,10 @@ const LinkPostForm = ({
                   setLinkPostActive(linkPostActive = false)
                   setPostFormModal(postFormModal = false)
                   setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = false)
+
+                  if (mobile) {
+                    setPostFormOpen(postFormOpen = false)
+                  }
               } else {
                 setConfirmClose(confirmClose = true)
               }
@@ -281,6 +292,7 @@ const LinkPostForm = ({
           </div>
 
           <ConfirmClose
+            mobile={mobile}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -289,6 +301,8 @@ const LinkPostForm = ({
             formActive={linkPostActive}
             setPostFormModal={setPostFormModal}
             postFormModal={postFormModal}
+            postFormOpen={postFormOpen}
+            setPostFormOpen={setPostFormOpen}
           />
 
 

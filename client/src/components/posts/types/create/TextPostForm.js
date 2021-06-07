@@ -23,13 +23,16 @@ const { FETCH_USER_FEED } = Queries;
 
 const TextPostForm = ({
   user,
+  mobile,
   post, 
   update,
   setUpdate,
   textPostActive,
   setTextPostActive,
   postFormModal,
-  setPostFormModal
+  setPostFormModal,
+  postFormOpen,
+  setPostFormOpen
 }) => {
   let [title, setTitle] = useState('');
 
@@ -77,6 +80,10 @@ const TextPostForm = ({
         allowScroll(document)
         setPostFormModal(postFormModal = false)
         setTextPostActive(textPostActive = false)
+        
+        if (mobile) {
+          setPostFormOpen(postFormOpen = false)
+        }
       }
     },
     onError(error) {
@@ -210,6 +217,9 @@ const TextPostForm = ({
                   resetInputs()
                   setTextPostActive(textPostActive = false)
                   setPostFormModal(postFormModal = false)
+                  if (mobile) {
+                    setPostFormOpen(postFormOpen = false)
+                  }
                 } else  {
                   setConfirmClose(confirmClose = true)
                 }
@@ -218,7 +228,8 @@ const TextPostForm = ({
               Close
             </div>
 
-            <ConfirmClose 
+            <ConfirmClose
+              mobile={mobile}
               confirmClose={confirmClose}
               setConfirmClose={setConfirmClose}
               allowScroll={allowScroll}
@@ -227,6 +238,8 @@ const TextPostForm = ({
               formActive={textPostActive}
               setPostFormModal={setPostFormModal}
               postFormModal={postFormModal}
+              postFormOpen={postFormOpen}
+              setPostFormOpen={setPostFormOpen}
             />
             
             <button

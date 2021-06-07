@@ -20,6 +20,7 @@ const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
 const AudioPostForm = ({
+  mobile,
   user,
   post, 
   update,
@@ -27,7 +28,9 @@ const AudioPostForm = ({
   audioPostActive,
   setAudioPostActive,
   postFormModal,
-  setPostFormModal
+  setPostFormModal,
+  postFormOpen,
+  setPostFormOpen
 }) => {
   // let audioFile = useRef({});
   let [audioFile, setAudioFile] = useState('');
@@ -85,6 +88,10 @@ const AudioPostForm = ({
         allowScroll(document)
         setAudioPostActive(audioPostActive = false)
         setPostFormModal(postFormModal = false)   
+
+        if (mobile) {
+          setPostFormOpen(postFormOpen = false)
+        }
       }
     },
     onError(error) {
@@ -247,6 +254,10 @@ const AudioPostForm = ({
                 allowScroll(document)
                 setAudioPostActive(audioPostActive = false)
                 setPostFormModal(postFormModal = false)
+
+                if (mobile) {
+                  setPostFormOpen(postFormOpen = false)
+                }
               } else {
                 setConfirmClose(confirmClose = true)
               }
@@ -256,6 +267,7 @@ const AudioPostForm = ({
           </div>
 
           <ConfirmClose
+            mobile={mobile}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -264,6 +276,8 @@ const AudioPostForm = ({
             formActive={audioPostActive}
             setPostFormModal={setPostFormModal}
             postFormModal={postFormModal}
+            postFormOpen={postFormOpen}
+            setPostFormOpen={setPostFormOpen}
           />
 
           <button

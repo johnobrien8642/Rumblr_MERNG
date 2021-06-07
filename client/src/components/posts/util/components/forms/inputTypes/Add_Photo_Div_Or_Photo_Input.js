@@ -64,26 +64,43 @@ const AddPhotoDivOrPhotoInput = ({
               }}
             />
             </label>
-            <img
-              className='linkIcon'
-              src="https://img.icons8.com/flat-round/64/000000/link--v1.png"
-              alt=''
-            />
-            <textarea
-              placeholder='Paste a url...'
-              onChange={e => {
-                var newLinkObj = previewLink(e)
-                
-                if (newLinkObj) {
-                  main.current.push(newLinkObj)
-                  e.target.value = ''
+
+            <div
+              className='linkContainer'
+            >
+              <img
+                className='linkIcon'
+                src="https://img.icons8.com/flat-round/64/000000/link--v1.png"
+                alt=''
+              />
+              <textarea
+                placeholder='Paste a url...'
+                onChange={e => {
+                  var newLinkObj = previewLink(e)
+
+                  if (newLinkObj) {
+                    main.current.push(newLinkObj)
+                    e.target.value = ''
+                    setActive(active = false)
+                    setRender(render + 1)
+                  }
+                }}
+              ></textarea>
+            </div>
+            <div  className='borderMiddle' />
+            <p>{errMessage}</p>
+            <div
+              className='backBtnContainer'
+            >
+              <img
+                className={main.current.length === 0 ? 'backBtn' : 'backBtn active'}
+                src="https://img.icons8.com/windows/64/000000/long-arrow-left.png"
+                alt=''
+                onClick={() => {
                   setActive(active = false)
-                  setRender(render + 1)
-                }
-              }}
-            ></textarea>
-        <div  className='borderMiddle' />
-        <p>{errMessage}</p>
+                }}
+              />
+            </div>
       </div>
     )
   }

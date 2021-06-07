@@ -1,6 +1,7 @@
 import React from 'react';
 
 const ConfirmClose = ({
+  mobile,
   confirmClose,
   setConfirmClose,
   allowScroll,
@@ -8,7 +9,10 @@ const ConfirmClose = ({
   setFormActive,
   formActive,
   setPostFormModal,
-  postFormModal
+  postFormModal,
+  repost,
+  postFormOpen,
+  setPostFormOpen
 }) => {
   
   if (confirmClose) {
@@ -35,11 +39,25 @@ const ConfirmClose = ({
             <div
               className='discard'
               onClick={() => {
-                allowScroll(document)
-                resetInputs()
-                setFormActive(formActive = false)
-                setPostFormModal(postFormModal = false)
-                setConfirmClose(confirmClose = false)
+                if ((repost && mobile) || mobile) {
+                  allowScroll(document)
+                  resetInputs()
+                  setFormActive(formActive = false)
+                  setConfirmClose(confirmClose = false)
+                  setPostFormModal(postFormModal = false)
+                  setPostFormOpen(postFormOpen = false)
+                } else if (repost) {
+                  allowScroll(document)
+                  resetInputs()
+                  setFormActive(formActive = false)
+                  setConfirmClose(confirmClose = false)
+                } else {
+                  allowScroll(document)
+                  resetInputs()
+                  setFormActive(formActive = false)
+                  setPostFormModal(postFormModal = false)
+                  setConfirmClose(confirmClose = false)
+                }
               }}
             >
               <span>Discard</span>
