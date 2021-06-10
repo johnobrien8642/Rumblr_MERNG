@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
+import randomstring from 'randomstring';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import AudioFileInput from '../../util/components/forms/inputTypes/Audio_File_Input';
@@ -15,7 +16,7 @@ const { bodyPost, handleFormData, stripAllImgs,
         audioPost, handleUploadedFiles,
         resetDisplayIdx, handleMentions, 
         discardMentions, handleAllTextAudioPost,
-        allowScroll, preventScroll } = PostFormUtil;
+        allowScroll, preventScroll, handleTagInput } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -30,7 +31,9 @@ const AudioPostForm = ({
   postFormModal,
   setPostFormModal,
   postFormOpen,
-  setPostFormOpen
+  setPostFormOpen,
+  uploading,
+  setUploading
 }) => {
   // let audioFile = useRef({});
   let [audioFile, setAudioFile] = useState('');
@@ -87,7 +90,7 @@ const AudioPostForm = ({
         resetInputs()
         allowScroll(document)
         setAudioPostActive(audioPostActive = false)
-        setPostFormModal(postFormModal = false)   
+        setUploading(uploading = false)
 
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
@@ -281,9 +284,37 @@ const AudioPostForm = ({
           />
 
           <button
-            className={disabledBool() ? 'formSubmitBtn disabled': 'formSubmitBtn'}
             type='submit'
+            className={disabledBool() ? 'formSubmitBtn disabled': 'formSubmitBtn'}
             disabled={disabledBool()}
+            onClick={() => {
+              if (description) {
+                var textObj = {
+                  kind: 'text',
+                  srcType: 'text',
+                  content: description,
+                  displayIdx: body.current.length,
+                  uniqId: randomstring.generate({
+                    length: 12,
+                    charset: 'alphabetic'
+                  })
+                }
+
+                body.current.push(textObj)
+              
+                setDescription(description = '')
+              }
+              
+              if (tag) {
+                handleTagInput(
+                  tag, setTag,
+                  tags, setTags
+                )
+              }
+              
+              setPostFormModal(postFormModal = false)
+              setUploading(uploading = true)
+            }}
           >
             {post ? 'Update' : 'Post'}
           </button>

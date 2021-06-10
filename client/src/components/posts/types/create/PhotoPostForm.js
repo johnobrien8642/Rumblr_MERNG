@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
+import randomstring from 'randomstring';
 import Mutations from '../../../../graphql/mutations';
 import Queries from '../../../../graphql/queries';
 import Cookies from 'js-cookie';
@@ -13,7 +14,8 @@ import ConfirmClose from '../../../nav/Confirm_Close.js';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, mainPost,
         handleFormData, stripAllImgs,
-        handleUploadedFiles, resetDisplayIdx,
+        handleUploadedFiles, handleTagInput,
+        resetDisplayIdx,
         handleMentions, discardMentions,
         handleAllTextPhotoPost, allowScroll,
         preventScroll  } = PostFormUtil;
@@ -32,7 +34,9 @@ const PhotoPostForm = ({
   postFormModal,
   setPostFormModal,
   postFormOpen,
-  setPostFormOpen
+  setPostFormOpen,
+  uploading,
+  setUploading
 }) => {
   let [mainImageFiles, setMainImageFiles] = useState([]);
   let main = useRef([]);
@@ -79,8 +83,9 @@ const PhotoPostForm = ({
         setUpdate(update = false)
       } else {
         allowScroll(document)
+        setUploading(uploading = false)
         setPhotoPostActive(photoPostActive = false)
-        setPostFormModal(postFormModal = false)
+
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
@@ -167,7 +172,7 @@ const PhotoPostForm = ({
         <form
           id={formId}
           onSubmit={e => handleSubmit(e)}
-          onKeyPress={e => { e.key === 'Enter' && e.preventDefault(); }}
+          onKeyPress={e => { e.key === 'Enter' && e.preventDefault() }}
           encType={'multipart/form-data'}
         >
 
@@ -224,6 +229,7 @@ const PhotoPostForm = ({
                 resetInputs()
                 setPhotoPostActive(photoPostActive = false)
                 setPostFormModal(postFormModal = false)
+
                 if (mobile) {
                   setPostFormOpen(postFormOpen = false)
                 }
@@ -250,9 +256,37 @@ const PhotoPostForm = ({
           />
   
           <button
-            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             type='submit'
+            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             disabled={disabledBool()}
+            onClick={() => {
+              if (description) {
+                var textObj = {
+                  kind: 'text',
+                  srcType: 'text',
+                  content: description,
+                  displayIdx: body.current.length,
+                  uniqId: randomstring.generate({
+                    length: 12,
+                    charset: 'alphabetic'
+                  })
+                }
+
+                body.current.push(textObj)
+              
+                setDescription(description = '')
+              }
+              
+              if (tag) {
+                handleTagInput(
+                  tag, setTag,
+                  tags, setTags
+                )
+              }
+              
+              setPostFormModal(postFormModal = false)
+              setUploading(uploading = true)
+            }}
           >
             {post ? 'Update': 'Post'}
           </button>

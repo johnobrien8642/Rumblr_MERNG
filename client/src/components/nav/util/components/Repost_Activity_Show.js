@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from 'dompurify';
 import { Link } from 'react-router-dom';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
 import BylineUtil from '../byline_util.js'
@@ -9,22 +10,16 @@ const { handleByline } = BylineUtil;
 const RepostActivityShow = ({
   dropdown, repost, navActive, setNavActive
 }) => {
-
-  const renderRepostCaption = (repost) => {
-    var string
-    repost.repostCaptions.forEach(obj => {
-      if (repost._id === obj.repostId) {
-        if (obj.caption.length > 15) {
-          string = obj.caption.split(' ').slice(0, 8).join(' ') + '...'
-        } else {
-          string = obj.caption
-        }
-      }
-    })
-    return <span>{string}</span>
-  }
   
   if (repost.post) {
+
+    var caption
+    repost.repostTrail.forEach(captionObj => {
+      if (captionObj.user._id === repost.user._id) {
+        caption = captionObj.caption
+      }
+    })
+
     return(
       <div
         className='activityResult'
@@ -50,7 +45,12 @@ const RepostActivityShow = ({
           >
             <span className='activitySlug'>reposted your post {handleByline(repost)}</span>
           </Link>
-          <p>{renderRepostCaption(repost)}</p>
+          <div
+            className='repostCaption'
+            dangerouslySetInnerHTML={{ 
+              __html: DOMPurify.sanitize(caption)
+            }}
+          />
         </div>
         {handlePostIcon(repost)}
       </div>

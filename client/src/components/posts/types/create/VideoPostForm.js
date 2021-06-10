@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
+import randomstring from 'randomstring';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import VideoInput from '../../util/components/forms/inputTypes/Video_Input';
@@ -15,7 +16,7 @@ const { bodyPost, videoPost, handleFormData,
         stripAllImgs, handleUploadedFiles, 
         resetDisplayIdx, handleMentions, 
         discardMentions, handleAllTextVideoPost,
-        allowScroll, preventScroll  } = PostFormUtil;
+        allowScroll, preventScroll, handleTagInput  } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -30,14 +31,15 @@ const VideoPostForm = ({
   postFormModal,
   setPostFormModal,
   postFormOpen,
-  setPostFormOpen
+  setPostFormOpen,
+  uploading,
+  setUploading
 }) => {
   let [videoFile, setVideoFile] = useState('');
   let [videoObj, setVideoObj] = useState('');
   let [isLink, setIsLink] = useState(false)
   
   let [active, setActive] = useState(false)
-  let [uploading, setUploading] = useState(false)
   let objsToClean = useRef([]);
   let [description, setDescription] = useState('');
   let [bodyImageFiles, setBodyImageFiles] = useState([]);
@@ -82,7 +84,7 @@ const VideoPostForm = ({
         resetInputs()
         allowScroll(document)
         setVideoPostActive(videoPostActive = false)
-        setPostFormModal(postFormModal = false)
+        setUploading(uploading = false)
 
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
@@ -274,9 +276,37 @@ const VideoPostForm = ({
             />
 
             <button
-              className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
               type='submit'
               disabled={disabledBool()}
+              className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
+              onClick={() => {
+                if (description) {
+                  var textObj = {
+                    kind: 'text',
+                    srcType: 'text',
+                    content: description,
+                    displayIdx: body.current.length,
+                    uniqId: randomstring.generate({
+                      length: 12,
+                      charset: 'alphabetic'
+                    })
+                  }
+  
+                  body.current.push(textObj)
+                
+                  setDescription(description = '')
+                }
+                
+                if (tag) {
+                  handleTagInput(
+                    tag, setTag,
+                    tags, setTags
+                  )
+                }
+                
+                setPostFormModal(postFormModal = false)
+                setUploading(uploading = true)
+              }}
             >
               {post ? 'Update' : 'Post'}
             </button>

@@ -11,21 +11,22 @@
   --mid-gray: #414141;
   --less-light-gray: #EFEFEF;
   --light-gray: #E8E9E8;
+  --cancel-gray: #949DA8;
   --font: 'Noto Sans JP', sans-serif;
   --quote-font: 'Lora', serif;
+  --chat-font: 'Roboto Mono', monospace;
 }
 
-// #root {
-//   position: relative;
-//   margin: 0 auto;
-//   background-color: red;
-// }
+#root {
+  position: relative;
+  z-index: 1
+}
 
 body {
-  position: relative;
+  // position: relative;
   background-color: var(--tumblr-deep-blue);
   margin: 0 auto;
-  z-index: 1;
+  // z-index: 1;
 }
 
 .profilePic {

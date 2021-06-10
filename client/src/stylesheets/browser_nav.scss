@@ -335,11 +335,18 @@
         
         .activityResult {
           display: flex;
+          // flex-direction: column;
           position: relative;
           padding: 3px 5px 20px 5px;
           color: black;
           border-bottom: .5px solid rgb(0, 0, 0, 0.2);
           z-index: 98;
+
+          a {
+            &:hover {
+              cursor: pointer;
+            }
+          }
 
           .profilePic {
             width: 30px;
@@ -350,14 +357,29 @@
           div {
             margin: 0 8px 0 10px;
 
-            p {
-              border-left: 3.5px solid rgb(0, 0, 0, 0.2);
-              
-              span {
-                font-size: 15px;
-                padding: 10px 0 10px 10px;
+          }
 
+          .repostCaption {
+            p {
+              margin-top: 8px;
+              border-left: 3.5px solid rgb(0, 0, 0, 0.2);
+              font-size: 15px;
+              padding: 0 0 0 10px;
+
+              &:hover {
+                cursor: default;
               }
+            }
+          }
+
+          .commentContent {
+            margin-top: 8px;
+            border-left: 3.5px solid rgb(0, 0, 0, 0.2);
+            font-size: 15px;
+            padding: 0 0 0 10px;
+
+            &:hover {
+              cursor: default;
             }
           }
 
@@ -374,6 +396,7 @@
             border-radius: 5px;
             padding: 2px;
             margin: 5px;
+            margin-left: auto;
           }
 
           .textPostIcon {
@@ -401,7 +424,7 @@
           }
 
           .videoPostIcon {
-            background-color: #FC41C4; 
+            background-color: #FC41C4;
           }
 
           .mentionActivityIcon,

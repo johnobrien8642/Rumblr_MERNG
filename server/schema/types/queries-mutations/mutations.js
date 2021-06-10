@@ -233,16 +233,18 @@ const mutation = new GraphQLObjectType({
         var repost = new Repost();
         
         return Promise.all([
-          User.findOne({ blogName: repostData.user }),
+          User.findOne({ blogName: repostData.user })
+            .populate('profilePic')
+            .then(user => user),
           User.findOne({ blogName: repostData.repostedFrom }),
           Post.findById(repostData.repostedId)
         ]).then(([reposter, reposted, foundPost]) => {
         
-          var repostTrailId = 
+          var repostTrailUserObj = 
             repostData.previousReposter ? 
-            repostData.previousReposter._id : 
-            reposter._id
-
+            repostData.previousReposter : 
+            reposter
+          
           var repostCaption = 
             repostData.repostCaption ?
             repostData.repostCaption :
@@ -256,14 +258,44 @@ const mutation = new GraphQLObjectType({
           repost.user = reposter._id
           repost.repostedFrom = reposted._id
           repost.onModel = repostData.postKind
-          
-          repost.repostTrail = foundPost.kind === 'Repost' ?
-            [...foundPostObj.repostTrail, repostTrailId] :
-            [repostTrailId]
 
-          repost.repostCaptions = foundPost.kind === 'Repost' ?
-            [...foundPostObj.repostCaptions, { caption: repostCaption, userId: reposter._id, repostId: repost._id }] :
-            [{ caption: repostCaption, userId: reposter._id, repostId: repost._id }]
+          repost.repostTrail = foundPost.kind === 'Repost' ?
+            [
+              ...foundPostObj.repostTrail, 
+              {
+                user: {
+                  _id: repostTrailUserObj._id,
+                  blogName: repostTrailUserObj.blogName,
+                  profilePic: {
+                    src: repostTrailUserObj.profilePic.src
+                  }
+                },
+                caption: repostCaption, 
+                repostId: repost._id 
+              }
+            ] 
+              :
+            [
+              { 
+                user: {
+                  _id: repostTrailUserObj._id,
+                  blogName: repostTrailUserObj.blogName,
+                  profilePic: {
+                    src: repostTrailUserObj.profilePic.src
+                  }
+                },
+                caption: repostCaption, 
+                repostId: repost._id 
+              }
+            ]
+          
+          // repost.repostTrail = foundPost.kind === 'Repost' ?
+          //   [...foundPostObj.repostTrail, repostTrailId] :
+          //   [repostTrailId]
+
+          // repost.repostCaptions = foundPost.kind === 'Repost' ?
+          //   [...foundPostObj.repostCaptions, { caption: repostCaption, userId: reposter._id, repostId: repost._id }] :
+          //   [{ caption: repostCaption, userId: reposter._id, repostId: repost._id }]
 
 
           foundPost.notesCount = foundPost.notesCount + 1

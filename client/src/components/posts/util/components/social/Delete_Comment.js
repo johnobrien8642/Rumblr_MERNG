@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
 import Mutations from '../../../../../graphql/mutations';
 import Queries from '../../../../../graphql/queries';
 const { DELETE_COMMENT } = Mutations;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries
 
 const DeleteComment = ({
-  post, comment, 
+  post, 
+  comment
 }) => {
   let [active, setActive] = useState(false)
-
+  
   let [deleteComment] = useMutation(DELETE_COMMENT, {
     update(client, { data }) {
       var query = FETCH_LIKES_REPOSTS_AND_COMMENTS
@@ -46,46 +48,66 @@ const DeleteComment = ({
     }
   })
 
-  if (active) {
-    return (
-      <div>
-        <div
-          className='deleteCommentBtn'
-          onClick={() => {
-            deleteComment({
-              variables: {
-                commentId: comment._id,
-                postId: post._id
-              }
-            })
-          }}
-        >
-          Delete Comment
-        </div>
-        <div
-          className='closeCommentBtn'
-          onClick={() => {
-            setActive(active = false)
-          }}
-        >
-          Close
-        </div>
-      </div>
-    )
+  if (comment.user.blogName === Cookies.get('currentUser')) {
+    if (active) {
+      return (
+        <React.Fragment>
+          <img
+              className='commentOptions active'
+              src="https://img.icons8.com/ios-glyphs/64/000000/more.png"
+              alt=''
+              onClick={() => {
+                setActive(active = false)
+              }}
+            />
+          <div
+            className='deleteCommentContainer'
+          >
+            <div
+              className='deleteCommentBtn'
+              onClick={() => {
+                deleteComment({
+                  variables: {
+                    commentId: comment._id,
+                    postId: post._id
+                  }
+                })
+              }}
+            >
+              Delete reply
+            </div>
+            <div
+              className='closeCommentBtn'
+              onClick={() => {
+                setActive(active = false)
+              }}
+            >
+              Close
+            </div>
+          </div>
+        </React.Fragment>
+      )
+    } else {
+      return (
+        <React.Fragment>
+          <img
+            className='commentOptions'
+            src="https://img.icons8.com/ios-glyphs/64/000000/more.png"
+            alt=''
+            onClick={() => {
+              setActive(active = true)
+            }}
+          />
+        </React.Fragment>
+      )
+    }
   } else {
     return (
-      <React.Fragment>
-        <img
-          className='commentOptions'
-          src="https://img.icons8.com/ios-glyphs/30/000000/more.png"
-          alt=''
-          onClick={() => {
-            setActive(active = true)
-          }}
-        />
-      </React.Fragment>
+      <div>
+      </div>
     )
   }
+
 }
 
 export default DeleteComment;

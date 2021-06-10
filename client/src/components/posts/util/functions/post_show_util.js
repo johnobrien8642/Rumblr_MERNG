@@ -5,35 +5,40 @@ import AudioPlayer from 'react-h5-audio-player';
 import ReactPlayer from 'react-player';
 import UserResult from '../../../search/resultTypes/User_Result';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
-import FollowButton from '../../../posts/util/components/social/Follow_Button';
 
 const postHeader = (
   post, 
   discover, 
   radar,
-  doesUserFollowUserRef
+  doesUserFollowUserRef,
+  repostFormBool
 ) => {
-
   if (post.kind === 'Repost') {
     return (
-      <div>
-        <ProfilePic user={post.user} />
+      <div
+        className='userRepostHeader'
+      >
         <span>
-          <Link to={`/view/blog/${post.user.blogName}`}>
+          <ProfilePic 
+            user={post.user}
+          />
+          <Link
+            to={`/view/blog/${post.user.blogName}`}
+          >
             {post.user.blogName}
-          </Link> 
-          <img 
+          </Link>
+          {/* <img
             src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
             alt=''
           />
           <Link to={`/view/blog/${post.repostedFrom.blogName}`}>
             {post.repostedFrom.blogName}
-          </Link>
-          <FollowButton
+          </Link> */}
+          {/* <FollowButton
             feed={true}
             user={post.repostedFrom}
             followed={doesUserFollowUserRef.current}
-          />
+          /> */}
         </span>
       </div>
     )
@@ -45,10 +50,43 @@ const postHeader = (
         <UserResult user={post.user} />
       </div>
     )
+  } else if (repostFormBool) {
+    return (
+      <span
+        className='repostHeaderExtraProPic'
+      >
+        <ProfilePic
+          user={post.user}
+          standaloneLink={true}
+        />
+
+        <div
+          className='profilePicAndLinkContainer'
+        >
+          <ProfilePic 
+            user={post.user}
+            // activity={{ kind: 'Repost'}} 
+          />
+
+          <Link
+            to={`/view/blog/${post.user.blogName}`}
+          >
+            {post.user.blogName}
+          </Link>
+        </div>
+      </span>
+    )
   } else {
     return (
-      <span>
-        <Link 
+      <span
+        className='userPostHeader'
+      >
+        <ProfilePic
+          user={post.user}
+          standaloneLink={true}
+        />
+
+        <Link
           to={`/view/blog/${post.user.blogName}`}
         >
           {post.user.blogName}
@@ -60,28 +98,35 @@ const postHeader = (
 
 const repostFooter = (post) => {
   // var data = demeterPost(post)
-  var repost = post
-  
+  let repost = post
+
   if (post.kind === 'Repost') {
     return (
-      <ul>
-        {repost.repostTrail.map((u, i) => {
+      <ul
+      className='repostItemList'
+      >
+        {repost.repostTrail.map((obj, i) => {
           return (
             <li
+              className='repostShowItem'
               key={i}
             >
               <span>
-                <i className="fas fa-retweet"></i>
-                <Link to={`/view/blog/${u.blogName}`}>
-                  {u.blogName}
+                <ProfilePic 
+                  user={obj.user}
+                  activity={{ kind: 'Repost' }}
+                />
+                <Link to={`/view/blog/${obj.user.blogName}`}>
+                  {obj.user.blogName}
                 </Link>
               </span>
-              <p>
-                {
-                  repost.repostCaptions && repost.repostCaptions[i].caption !== null ?
-                  repost.repostCaptions[i].caption : ''
-                }
-              </p>
+
+              <div 
+                className='repostCaptionDiv'
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(obj.caption)
+                }}
+              />
             </li>
           )
         })}
@@ -94,12 +139,15 @@ const postTags = (post) => {
   var data = demeterPost(post)
   
   return (
-  <div>
+  <div
+    className='postTags'
+  >
     {data.tagIds.map((tag, i) => {
       var cleanedTitle = tag.title.slice(1)
       return (
-        <div 
-         key={i}
+        <div
+         key={tag._id}
+         className='tag'
         >
           <Link 
             to={`/view/tag/${cleanedTitle}`}
@@ -136,9 +184,18 @@ const postBody = (post) => {
   } else if (data.kind === 'PhotoPost') {
     return (
       <React.Fragment>
-        <div>
+        <div
+          className='mainImageContainer'
+        >
           {data.mainImages.map((mainImg, i) => {
-            return <img key={i} src={`${mainImg.src}`} alt={'usefilename'} />
+            return (
+              <img
+                className='mainImage'
+                key={i} 
+                src={`${mainImg.src}`} 
+                alt={'usefilename'} 
+              />
+            )
           })}
         </div>
         <p>{data.description}</p>
@@ -150,10 +207,13 @@ const postBody = (post) => {
     
     return (
       <React.Fragment>
-        <h1>{data.quote}</h1>
+        <h1
+          className='quote'
+        >{data.quote}</h1>
         
-        <p>
-          <span>-</span>
+        <p
+          className='source'
+        >
           {data.source}
         </p>
           {displayDescription(descriptionArr)}
@@ -162,19 +222,39 @@ const postBody = (post) => {
   } else if (data.kind === 'LinkPost') {
     return (
       <React.Fragment>
-      <a href={data.linkObj.link}>
-        <span>{data.linkObj.siteName}</span>
-        <img src={data.linkObj.imageUrl}  alt={'link page img'}/>
-        <h2>{data.linkObj.title}</h2>
-        <p>{data.linkObj.linkDescription}</p>
-      </a>
-      {displayDescription(descriptionArr)}
+        <div
+          className='linkContainer'
+        >
+          <a href={data.linkObj.link}>
+            <div
+              className='imgContainer'
+            >
+              <div className='imgModal'/>
+              <img
+                className='siteImage'
+                src={data.linkObj.imageUrl}  
+                alt={'link page img'}
+              />
+              <h2
+                className='siteTitle'
+              >{data.linkObj.title}</h2>
+            </div>
+            <p
+              className='siteDescription'
+            >{data.linkObj.linkDescription}</p>
+            <span
+              className='siteName'
+            >{data.linkObj.siteName}</span>
+          </a>
+        </div>
+        {displayDescription(descriptionArr)}
       </React.Fragment>
     )
   } else if (data.kind === 'ChatPost') {
     return (
       <React.Fragment>
-        <div 
+        <div
+          className='chatDiv'
           dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(data.chat)}}
         />
         {displayDescription(descriptionArr)}
@@ -183,19 +263,35 @@ const postBody = (post) => {
   } else if (data.kind === 'AudioPost') {
     return (
       <React.Fragment>
-        <p>Title: {data.audioMeta.title}</p>
-        <p>Artist: {data.audioMeta.artist}</p>
-        <p>Album: {data.audioMeta.album}</p>
+      <div
+        className='audioPlayerContainer'
+      >
+        <div
+          className='audioDataContainer'
+        >
+          <p
+            className='title'
+          >{data.audioMeta.title}</p>
+          <p
+            className='artist'
+          >{data.audioMeta.artist}</p>
+          <p
+            className='album'
+          >{data.audioMeta.album}</p>
+        </div>
         <AudioPlayer
           src={data.audioFile.url}
         />
-        {displayDescription(descriptionArr)}
+      </div>
+      {displayDescription(descriptionArr)}
       </React.Fragment>
     )
   } else if (data.kind === 'VideoPost') {
     return (
       <React.Fragment>
-        <ReactPlayer 
+        <ReactPlayer
+          width={'100%'}
+          height={'100%'}
           url={data.videoLink.url}
           controls
         />
@@ -217,19 +313,32 @@ const demeterPost = (post) => {
 
 const displayDescription = (descriptionArr) => {
   return (
-    <div>
+    <div
+      className='descriptionTextAndImage'
+    >
       {descriptionArr.map((obj, i) => {
         switch(obj.kind) {
           case 'text':
             return (
               <div
                 className='descriptionText'
-                key={i}
+                key={obj._id}
                 dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(obj.content) }}
               />
             )
           case 'Image':
-            return <img className='descriptionImg' key={i} src={`${obj.src}`} alt={'usefilename'} />
+            return (
+              <div
+                className='descriptionImgContainer'
+                key={obj._id}
+              >
+                <img 
+                  className='descriptionImg' 
+                  src={`${obj.src}`} 
+                  alt={'usefilename'} 
+                />
+              </div>
+            )
           default:
             return 'no keys matched postBody PhotoPost'
         }
@@ -255,6 +364,22 @@ const handlePostClassName = (post) => {
     return 'post audioPost'
   } else if (kind === 'VideoPost') {
     return 'post videoPost'
+  } else if (kind === 'Repost') {
+    if (post.post.kind === 'TextPost') {
+      return 'post repost textPost'
+    } else if (post.post.kind === 'PhotoPost') {
+      return 'post repost photoPost'
+    } else if (post.post.kind === 'QuotePost') {
+      return 'post repost quotePost'
+    } else if (post.post.kind === 'LinkPost') {
+      return 'post repost linkPost'
+    } else if (post.post.kind === 'ChatPost') {
+      return 'post repost chatPost'
+    } else if (post.post.kind === 'AudioPost') {
+      return 'post repost audioPost'
+    } else if (post.post.kind === 'VideoPost') {
+      return 'post repost videoPost'
+    }
   }
 }
 

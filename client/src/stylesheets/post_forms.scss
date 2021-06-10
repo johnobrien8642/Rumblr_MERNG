@@ -7,11 +7,15 @@
 }
 
 .postForm.hidden {
-  display: none;
+  display: hidden;
 }
 
 .postForm.active {
   display: block;
+}
+
+.postForm.none {
+  display: none;
 }
 
 .postFormModal {
@@ -85,9 +89,12 @@
       }
 
       .mainPreview, .bodyPreview {
-
+        
         .imageContentContainer {
+          position: relative;
+          height: fit-content;
           width: 100%;
+          z-index: 101;
 
           &:focus {
             .removeBtn {
@@ -98,6 +105,7 @@
           &:hover {
             .removeBtn {
               transform: scale(1);
+              cursor: pointer;
             }
           }
           
@@ -138,8 +146,12 @@
       }
 
       .textContentContainer {
-        word-break: break-all;
+        position: relative;
+        left: 10px;
+        margin: 10px 0 -8% 0;
+        // word-break: break-all;
         width: 510px;
+        z-index: 100;
 
         @media (max-width: 980px) {
           width: 350px;
@@ -160,6 +172,7 @@
 
         .ck {
           width: 100%;
+          height: fit-content;
         }
       }
 
@@ -194,8 +207,8 @@
   
         textarea {
           position: relative;
-          top: 7px;
-          left: 70px;
+          top: -110px;
+          left: 320px;
           font-size: 17px;
           font-weight: 500;
           font-family: var(--font);
@@ -272,36 +285,40 @@
       .photoInputIcon {
         display: block;
         position: relative;
-        top: 10px;
+        top: 5px;
         left: 90%;
         width: 23px;        
         height: 23px;
         filter: grayscale(100%);
-        z-index: 11;
+        z-index: 500;
         
         &:hover {
           cursor: pointer;
         }
       }
-      
-      .ck {
-        position: relative;
-        width: 510px;
-        
-        @media (max-width: 980px) {
-          width: 350px;
-        }
 
-        left: 5px;
-        min-height: 110px;
-        z-index: 10;
-        // background-color: red;
-        
-        
-        &:focus {
-          outline: none;
-          border: none;
-          box-shadow: none;
+      .descriptionStringContainer {
+        margin-top: -15px;
+
+        .ck {
+          position: relative;
+          width: 500px;
+          
+          @media (max-width: 980px) {
+            width: 350px;
+          }
+  
+          left: 12px;
+          min-height: 110px;
+          z-index: 10;
+          // background-color: red;
+          
+          
+          &:focus {
+            outline: none;
+            border: none;
+            box-shadow: none;
+          }
         }
       }
     }
@@ -309,25 +326,32 @@
 
   .tagsContainer {
     display: flex;
+    flex-wrap: wrap;
     position: relative;
+    width: 100%;
+    height: auto;
+    white-space: normal;
     margin: 0 0 0 0;
     padding: 0 0 20px 0;
     border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+    // background-color: red;
 
     .tagDiv {
       display: flex;
       font-size: 15px;
       white-space: nowrap;
-      margin-left: 8px;
+      margin: 0 0 8px 8px;
       padding: 0 10px 3px 5px;
       height: fit-content;
       border-radius: 15px;
       background-color: var(--tumblr-lighter-blue);
       color: white;
+      float: left;
+      
 
-      &:first-of-type {
-        margin-left: 15px;
-      }      
+      // &:first-of-type {
+      //   margin-left: 15px;
+      // }      
 
       &:hover {
         cursor: default;
@@ -345,6 +369,11 @@
         border-radius: 50%;
         margin-left: 3px;
 
+        .removeTag {
+          display: inline-block;
+          // float: right;
+        }
+
         span {
           display: block;
           position: relative;
@@ -357,12 +386,15 @@
     }
     
         .tagInputAndDDContainer {
+          display: inline-block;
           position: relative;
-
+          width: fit-content;
+          // background-color: red;
+          
           input {
+            // display: inline-block;
             margin: -2px 0 0 15px;
             font-size: 17px;
-            
           }
   
           .matchingTagsDD.active {
@@ -519,12 +551,28 @@
       }
       
       .textPostForm {
-        
+
         .titleInput {
+          display: block;
+          position: relative;
+          left: 15px;
+          width: 510px;
+          font-size: 34px;
+          // background-color: red;
+        }
+        
+        .titleInput.placeholder:empty:before {
+          content: attr(data-placeholder);
+          color: rgb(0, 0, 0, 0.5);
+        }
+        
+        .titleInput.active {
           // background-color: red;
           // display: none;
           font-size: 34px;
-          margin: 0 0 0 15px;
+          // margin: 0 0 0 15px;
+
+          
 
         &:focus {
           outline: none;
@@ -1029,6 +1077,12 @@
 
     .audioPostForm {
 
+      .audioFilePlayer {
+        input {
+          font-size: 17px;
+        }
+      }
+
       .audioFileInputCustomLabel {
         position: relative;
         display: inline-block;
@@ -1366,27 +1420,4 @@
         }
       }
     }
-  }
-
-  .repostModal {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: var(--tumblr-deep-blue-modal);
-    z-index: 504;
-    overflow: auto;
-  }
-  
-  .repostForm {
-    display: block;
-    position: absolute;
-    // top: 120px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: white;
-    border-radius: 3px;
-    // box-shadow: 5px 5px 5px 5px var(--tumblr-deep-blue-modal);
-    z-index: 505;
   }

@@ -17,31 +17,50 @@ var s3Client = new aws.S3({
 
 const handlePostDelete = async (post) => {
 
-  return Post.findById(post._id)
-    .then(foundPost => {
-
-      if (foundPost.kind === 'Repost') {
-        return Post.findById(foundPost.post._id)
-          .then(repostedPost => {
-            repostedPost.notesCount - 1
-
-            return Promise.all([
-              repostedPost.save(),
-              Post.deleteOne({ _id: post._id }),
-              Like.deleteMany({ post: post._id }),
-              Comment.deleteMany({ post: post._id }),
-              Mention.deleteMany({ post: post._id }),
-            ]).then(() => post._id)
-          })
-      } else {
+  if (post.kind === 'Repost') {
+    return Post.findById(post.post._id)
+      .then(repostedPost => {
+        repostedPost.notesCount - 1
         return Promise.all([
+          repostedPost.save(),
           Post.deleteOne({ _id: post._id }),
           Like.deleteMany({ post: post._id }),
           Comment.deleteMany({ post: post._id }),
           Mention.deleteMany({ post: post._id }),
         ]).then(() => post._id)
-      }
-    })
+      })
+  } else {
+    return Promise.all([
+      Post.deleteOne({ _id: post._id }),
+      Like.deleteMany({ post: post._id }),
+      Comment.deleteMany({ post: post._id }),
+      Mention.deleteMany({ post: post._id }),
+    ]).then(() => post._id)
+  }
+
+  // return Post.findById(post._id)
+  //   .then(foundPost => {
+  //     if (foundPost.kind === 'Repost') {
+  //       return Post.findById(foundPost.postId)
+  //         .then(repostedPost => {
+  //           repostedPost.notesCount - 1
+  //           return Promise.all([
+  //             repostedPost.save(),
+  //             Post.deleteOne({ _id: post._id }),
+  //             Like.deleteMany({ post: post._id }),
+  //             Comment.deleteMany({ post: post._id }),
+  //             Mention.deleteMany({ post: post._id }),
+  //           ]).then(() => post._id)
+  //         })
+  //     } else {
+  //       return Promise.all([
+  //         Post.deleteOne({ _id: post._id }),
+  //         Like.deleteMany({ post: post._id }),
+  //         Comment.deleteMany({ post: post._id }),
+  //         Mention.deleteMany({ post: post._id }),
+  //       ]).then(() => post._id)
+  //     }
+  //   })
 }
 
 const handleS3Cleanup = async (obj, s3Client, keys) => {

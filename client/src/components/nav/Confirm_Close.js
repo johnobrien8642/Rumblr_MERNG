@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 const ConfirmClose = ({
   mobile,
@@ -14,6 +14,16 @@ const ConfirmClose = ({
   postFormOpen,
   setPostFormOpen
 }) => {
+
+  useEffect(() => {
+    if (confirmClose) {
+      var el = document.querySelector('.discard')
+
+      if (el) {
+        el.scrollIntoView(true)
+      }
+    }
+  }, [confirmClose])
   
   if (confirmClose) {
     return (

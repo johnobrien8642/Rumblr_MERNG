@@ -32,7 +32,8 @@ const ChatPostForm = ({
   postFormOpen,
   setPostFormOpen
 }) => {
-  let chat = useRef('')
+  // let chat = useRef('')
+  let [chat, setChat] = useState('')
 
   let objsToClean = useRef([])
   let [description, setDescription] = useState('');
@@ -90,7 +91,7 @@ const ChatPostForm = ({
   });
 
   const resetInputs = () => {
-    chat.current = '';
+    setChat(chat = '');
     setDescription(description = '');
     body.current = [];
     allText.current = '';
@@ -120,7 +121,7 @@ const ChatPostForm = ({
         handleAllTextChatPost(allText, descriptions, chat)
         
         var instanceData = {
-          variants: { chat: chat.current },
+          variants: { chat: chat },
           allText: allText.current,
           descriptions: descriptions,
           descriptionImages: handleUploadedFiles(body, bodyUploads),
@@ -139,9 +140,9 @@ const ChatPostForm = ({
       }
     )
   }
-
+  
   const disabledBool = () => {
-    return !chat.current &&
+    return !chat &&
     body.current.length === 0 &&
     !description
   }
@@ -171,6 +172,7 @@ const ChatPostForm = ({
   
         <ChatPostInput
           chat={chat}
+          setChat={setChat}
           post={post}
           update={update}
         />
@@ -237,8 +239,8 @@ const ChatPostForm = ({
           />
 
           <button
-            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             type='submit'
+            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             disabled={disabledBool()}
           >
             {post ? 'Update' : 'Post'}

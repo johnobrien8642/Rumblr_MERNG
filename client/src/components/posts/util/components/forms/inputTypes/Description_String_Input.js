@@ -11,15 +11,24 @@ const { FETCH_USERS_FOR_MENTIONS } = Queries;
 
 const DescriptionStringInput = ({
   body, 
-  setDescription, 
+  setDescription,
   description,
+  repost,
   update
 }) => {
   const client = useApolloClient();
 
+  const handlePlaceholder = () => {
+    if (repost) {
+      return 'Enter a caption'
+    } else {
+      return 'Your text here'
+    }
+  }
+
   const editorConfiguration = {
     extraPlugins: [MentionCustomization],
-    placeholder: 'Your text here',
+    placeholder: handlePlaceholder(),
     balloonToolbar: [
       'bold',
       'italic',
@@ -55,39 +64,63 @@ const DescriptionStringInput = ({
     }
   }
 
-  return (
-    <React.Fragment>
-      <CKEditor
-        editor={ Editor }
-        config={
-          editorConfiguration 
-        }
-        onChange={(e, editor) => {
-          setDescription(description = editor.getData())
-        }}
-        onReady={(editor, description) => {
-               
-          editor.editing.view.document.on('keydown', (evt, data) => {
-            if (data.domEvent.key === 'Enter' && editor.getData()) {
-              var textObj = {
-                kind: 'text',
-                srcType: 'text',
-                content: editor.getData(),
-                displayIdx: body.current.length,
-                uniqId: randomstring.generate({
-                  length: 12,
-                  charset: 'alphabetic'
-                })
-              }
-              
-              body.current.push(textObj)
-              editor.setData('<p class="ck-placeholder" data-placeholder="Your text here"><br data-cke-filler="true"></p>')
+  if (repost) {
+    return (
+      <React.Fragment>
+        <div
+          className='descriptionStringContainer'
+        >
+          <CKEditor
+            editor={ Editor }
+            config={
+              editorConfiguration 
             }
-          })
-        }}
-      />
-    </React.Fragment>
-  )
+            onChange={(e, editor) => {
+              setDescription(description = editor.getData())
+            }}
+          />
+        </div>
+      </React.Fragment>
+    )
+  } else {
+    return (
+      <React.Fragment>
+        <div
+          className='descriptionStringContainer'
+        >
+          <CKEditor
+            editor={ Editor }
+            config={
+              editorConfiguration 
+            }
+            onChange={(e, editor) => {
+              setDescription(description = editor.getData())
+            }}
+            onReady={(editor, description) => {
+  
+              editor.editing.view.document.on('keydown', (evt, data) => {
+                if (data.domEvent.key === 'Enter' && editor.getData()) {
+                  var textObj = {
+                    kind: 'text',
+                    srcType: 'text',
+                    content: editor.getData(),
+                    displayIdx: body.current.length,
+                    uniqId: randomstring.generate({
+                      length: 12,
+                      charset: 'alphabetic'
+                    })
+                  }
+  
+                  body.current.push(textObj)
+                  editor.setData('<p class="ck-placeholder" data-placeholder="Your text here"><br data-cke-filler="true"></p>')
+                }
+              })
+            }}
+          />
+        </div>
+      </React.Fragment>
+    )
+  }
 }
 
 export default DescriptionStringInput;

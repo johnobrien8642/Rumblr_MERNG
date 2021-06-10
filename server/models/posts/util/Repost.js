@@ -23,17 +23,19 @@ const RepostSchema = new Schema({
   },
   repostTrail: [
     {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    },
-  ],
-  repostCaptions: [
-    {
       caption: String,
-      userId: Schema.Types.ObjectId,
-      repostId: Schema.Types.ObjectId
+      repostId: Schema.Types.ObjectId,
+      user: {
+        _id: Schema.Types.ObjectId,
+        blogName: String,
+        profilePic: {
+          src: String
+        }
+      }
     }
   ],
+  // repostCaptions: [
+  // ],
   createdAt: {
     type: Date,
     default: Date.now

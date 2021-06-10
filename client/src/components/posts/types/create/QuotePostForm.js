@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
+import randomstring from 'randomstring';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import QuotePostInput from '../../util/components/forms/inputTypes/Quote_Post_Input'
@@ -15,7 +16,7 @@ const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
         handleMentions, discardMentions,
         handleAllTextQuotePost, preventScroll,
-        allowScroll } = PostFormUtil;
+        allowScroll, handleTagInput } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -30,7 +31,9 @@ const QuotePostForm = ({
   postFormModal,
   setPostFormModal,
   postFormOpen,
-  setPostFormOpen
+  setPostFormOpen,
+  uploading,
+  setUploading
 }) => {
   let [quote, setQuote] = useState('');
   let [source, setSource] = useState('');
@@ -78,8 +81,8 @@ const QuotePostForm = ({
         setUpdate(update = false)
       } else {
         allowScroll(document)
-        setQuotePostActive(quotePostActive = false)
-        setPostFormModal(postFormModal = false)
+        setUploading(uploading = false)
+
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
@@ -125,6 +128,7 @@ const QuotePostForm = ({
           allText: allText.current,
           descriptions: descriptions,
           descriptionImages: handleUploadedFiles(body, bodyUploads),
+          mentions: mentions,
           user: Cookies.get('currentUser'),
           tags, kind: 'QuotePost',
           objsToClean: objsToClean.current,
@@ -216,6 +220,7 @@ const QuotePostForm = ({
                   resetInputs()
                   setQuotePostActive(quotePostActive = false)
                   setPostFormModal(postFormModal = false)
+
                   if (mobile) {
                     setPostFormOpen(postFormOpen = false)
                   }
@@ -245,6 +250,34 @@ const QuotePostForm = ({
             className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             type='submit'
             disabled={disabledBool()}
+            onClick={() => {
+              if (description) {
+                var textObj = {
+                  kind: 'text',
+                  srcType: 'text',
+                  content: description,
+                  displayIdx: body.current.length,
+                  uniqId: randomstring.generate({
+                    length: 12,
+                    charset: 'alphabetic'
+                  })
+                }
+
+                body.current.push(textObj)
+              
+                setDescription(description = '')
+              }
+              
+              if (tag) {
+                handleTagInput(
+                  tag, setTag,
+                  tags, setTags
+                )
+              }
+              
+              setPostFormModal(postFormModal = false)
+              setUploading(uploading = true)
+            }}
           >
             {post ? 'Update' : 'Post'}
           </button>

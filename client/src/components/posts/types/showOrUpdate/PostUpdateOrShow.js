@@ -18,7 +18,8 @@ const PostUpdateOrShow = ({
 
   if (update) {
     return (
-      <PostUpdate 
+      <PostUpdate
+        user={currentUser}
         post={post}
         update={update}
         setUpdate={setUpdate}

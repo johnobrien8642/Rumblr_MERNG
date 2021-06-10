@@ -681,16 +681,19 @@ const handleUploadedFiles = (
 
 const handleAllTextAudioPost = (allText, descriptions, title, artist, album) => {
 
+  allText.current += title + ' ' + artist + ' ' + album
+
   descriptions.forEach(d => {
     var span = document.createElement('span')
     span.innerHTML = d.content
     allText.current += span.textContent
   })
 
-  allText.current += title + ' ' + artist + ' ' + album
 }
 
 const handleAllTextTextPost = (allText, descriptions, title) => {
+
+  allText.current += title
 
   descriptions.forEach(d => {
     var span = document.createElement('span')
@@ -698,10 +701,14 @@ const handleAllTextTextPost = (allText, descriptions, title) => {
     allText.current += span.textContent
   })
   
-  allText.current += title
 }
 
 const handleAllTextChatPost = (allText, descriptions, chat) => {
+
+  var span2 = document.createElement('span')
+  span2.innerHTML = chat
+
+  allText.current += span2.textContent
 
   descriptions.forEach(d => {
     var span = document.createElement('span')
@@ -709,10 +716,6 @@ const handleAllTextChatPost = (allText, descriptions, chat) => {
     allText.current += span.textContent
   })
 
-  var span2 = document.createElement('span')
-  span2.innerHTML = chat.current
-
-  allText.current += span2.textContent
 }
 
 const handleAllTextLinkPost = (allText, descriptions, linkObj) => {
@@ -738,6 +741,9 @@ const handleAllTextPhotoPost = (allText, descriptions) => {
 }
 
 const handleAllTextQuotePost = (allText, descriptions, quote, source) => {
+  
+  allText.current += quote
+  allText.current += source
 
   descriptions.forEach(d => {
     var span = document.createElement('span')
@@ -745,8 +751,6 @@ const handleAllTextQuotePost = (allText, descriptions, quote, source) => {
     allText.current += span.textContent
   })
 
-  allText.current += quote
-  allText.current += source
 }
 
 const handleAllTextVideoPost = (allText, descriptions) => {

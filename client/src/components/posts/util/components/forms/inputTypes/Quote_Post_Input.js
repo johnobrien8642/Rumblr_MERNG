@@ -55,7 +55,7 @@ const QuotePostInput = ({
         /> */}
         <span
           data-placeholder='Source'
-          className={quote ? 'sourceInput' : 'sourceInput placeholder'}
+          className={source ? 'sourceInput' : 'sourceInput placeholder'}
           contentEditable='true'
           onInput={e => {
             setSource(source = e.target.textContent)

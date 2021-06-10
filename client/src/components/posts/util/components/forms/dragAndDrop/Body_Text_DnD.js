@@ -59,6 +59,7 @@ const BodyTextDnD = ({
 
   return (
     <div
+      id={text.uniqId}
       className='draggable textContentContainer'
       onDrop={e => {
         onDropBody(
@@ -73,6 +74,7 @@ const BodyTextDnD = ({
       draggable='true'
     >
       <CKEditor
+        id={`${text.uniqId}`}
         editor={ Editor }
         config={ editorConfiguration }
         data={DOMPurify.sanitize(text.content)}
@@ -92,21 +94,6 @@ const BodyTextDnD = ({
           }
         }}
       />
-      {/* <button
-        type='button'
-        onClick={() => {
-          removeBodyObj(
-            text.srcType, body,
-            setBodyImageFiles,
-            bodyImageFiles,
-            objsToClean, bodyIdx
-          )
-          
-          setRender(render + 1)
-        }}
-      >
-        X
-      </button> */}
     </div>
   )
 }

@@ -1,27 +1,60 @@
-import React, { useState, useRef } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useState, useRef, useEffect } from 'react';
+import { useQuery, useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
 import PostNotes from '../../util/components/social/Post_Notes.js';
 import PostOptions from '../../util/components/social/Post_Options.js';
-import RepostForm from '../../../posts/util/components/social/RepostForm';
+import RepostForm from '../../util/components/social/Repost_Form';
 import PostShowUtil from '../../util/functions/post_show_util.js';
 import Queries from '../../../../graphql/queries';
+import Mutations from '../../../../graphql/mutations';
 import FeedUtil from '../../../posts/util/functions/feed_util.js';
+import PostFormUtil from '../../util/functions/post_form_util.js';
+import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
+const { allowScroll, preventScroll } = PostFormUtil;
 const { doesUserFollowUser } = FeedUtil;
-const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
+const { postDelete } = UpdateCacheUtil;
+const { FETCH_LIKES_REPOSTS_AND_COMMENTS, FETCH_USER_FEED } = Queries;
+const { DELETE_POST } = Mutations;
+
 
 const PostShow = ({ 
-  post, repost,
-  update, setUpdate,
+  post, 
+  repostFormBool,
+  update, 
+  setUpdate,
   toggleUpdate,
-  discover, radar,
+  discover, 
+  radar,
   currentUser
 }) => {
-  let [active, setActive] = useState(false)
+  let [notesActive, setNotesActive] = useState(false)
   let [repostActive, setRepostActive] = useState(false)
+  let [confirmDelete, setConfirmDelete] = useState(false)
   let doesUserFollowUserRef = useRef(false)
 
+  useEffect(() => {
+    if (confirmDelete) {
+
+      preventScroll(confirmDelete, document)
+
+    }
+  }, [confirmDelete])
+
   doesUserFollowUser(doesUserFollowUserRef, currentUser, post.user)
+
+  let [deletePost] = useMutation(DELETE_POST, {
+    update(client, { data }) {
+      const { deletePost } = data;
+      var currentUser = Cookies.get('currentUser')
+      var query = FETCH_USER_FEED
+
+      postDelete(
+        client, post, deletePost,
+        currentUser, query
+      )
+    }
+  })
 
   let { loading, error, data } = useQuery(FETCH_LIKES_REPOSTS_AND_COMMENTS, {
     variables: {
@@ -30,44 +63,88 @@ const PostShow = ({
   })
 
   const toggleNotes = () => {
-    if (active) {
-      setActive(active = false)
+    if (notesActive) {
+      setNotesActive(notesActive = false)
     } else {
-      setActive(active = true)
+      setNotesActive(notesActive = true)
     }
   }
 
   const notesAndOptions = () => {
-    if (!repost) {
+    if (!repostFormBool) {
       return (
         <React.Fragment>
           <PostNotes
             post={post}
+            notesCount={data.fetchLikesRepostsAndComments.length}
             notes={data.fetchLikesRepostsAndComments}
-            active={active}
-            setActive={setActive}
+            notesActive={notesActive}
+            setNotesActive={setNotesActive}
           />
       
           <PostOptions
             post={post}
             notesCount={data.fetchLikesRepostsAndComments.length}
-            active={active}
-            setActive={setActive}
+            notesActive={notesActive}
+            setNotesActive={setNotesActive}
             toggleNotes={toggleNotes}
             update={update}
             setUpdate={setUpdate}
             toggleUpdate={toggleUpdate}
             repostActive={repostActive}
             setRepostActive={setRepostActive}
+            confirmDelete={confirmDelete}
+            setConfirmDelete={setConfirmDelete}
           />
         </React.Fragment>
       )
-    } 
+    }
+  }
+
+  const renderConfirmDelete = () => {
+    if (confirmDelete) {
+      return (
+        <React.Fragment>
+          <div className='confirmDeleteModal' />
+          <div
+            className='confirmDelete'
+          >
+            <p>Are you sure you want to delete this post?</p>
+
+            <div>
+              <button
+                className='cancelBtn'
+                onClick={() => {
+                  allowScroll(document)
+                  setConfirmDelete(confirmDelete = false)
+                }}
+              >
+                Cancel
+              </button>
+
+              <button
+                className='deleteBtn'
+                onClick={() => {
+                  allowScroll(document)
+                  deletePost({
+                    variables: {
+                      post: post
+                    }
+                  })
+                }}
+              >
+                Ok
+              </button> 
+            </div>
+          </div>
+        </React.Fragment>
+      )
+    }
   }
 
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`
-
+  
   switch(post) {
     case null:
       return (
@@ -75,24 +152,26 @@ const PostShow = ({
           <p>Sorry, looks like this post no longer exists</p>
         </div>
       )
-    default: 
+    default:
       return (
         <React.Fragment>
-          {postHeader(post, discover, radar, doesUserFollowUserRef)}
-      
-          {postBody(post)}
-      
-          {repostFooter(post)}
-      
-          {postTags(post)}
+            {postHeader(post, discover, radar, doesUserFollowUserRef, repostFormBool)}
+        
+            {postBody(post)}
+        
+            {repostFooter(post)}
+        
+            {postTags(post)}
 
-          {notesAndOptions()}
+            {notesAndOptions()}
 
-          <RepostForm 
-            post={post}
-            repostActive={repostActive}
-            setRepostActive={setRepostActive}
-          />
+            {renderConfirmDelete()}
+
+            <RepostForm
+              post={post}
+              repostActive={repostActive}
+              setRepostActive={setRepostActive}
+            />
         </React.Fragment>
       )
   }

@@ -6,7 +6,12 @@ const QueryFragments = {
       blogName
       blogDescription
       kind
+      profilePic {
+        _id
+        src
+      }
     }
+    allText
     descriptions
     descriptionImages {
       _id

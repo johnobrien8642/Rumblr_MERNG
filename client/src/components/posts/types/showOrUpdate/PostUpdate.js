@@ -11,73 +11,70 @@ const PostUpdate = ({
   post, update,
   setUpdate, toggleUpdate
 }) => {
-
+  
   const renderForm = (post) => {
-    switch(post.kind) {
-      case 'TextPost':
-        return (
-          <TextPostForm
-            post={post}
-            update={update}
-            setUpdate={setUpdate}
-          />
-        )
-      case 'PhotoPost':
-        return (
-          <PhotoPostForm 
-            post={post} 
-            update={update}
-            setUpdate={setUpdate}
-          />
-        )
-      case 'QuotePost':
-        return (
-          <QuotePostForm 
-            post={post}
-            update={update}
-            setUpdate={setUpdate}
-          />
-        )
-      case 'LinkPost':
-        return (
-          <LinkPostForm
-            post={post}
-            update={update}
-            setUpdate={setUpdate}
-          />
+    if (post.kind === 'TextPost') {
+      return (
+        <TextPostForm
+          post={post}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      )
 
-        )
-      case 'ChatPost':
-        return (
-          <ChatPostForm 
-            post={post}
-            update={update}
-            setUpdate={setUpdate}
-          />
-        )
-      case 'AudioPost':
-        return (
-          <AudioPostForm 
-            post={post}
-            update={update}
-            setUpdate={setUpdate}
-          />
-        )
-      case 'VideoPost':
-        return (
-          <VideoPostForm 
-            post={post}
-            update={update}
-            setUpdate={setUpdate}
-          />
-        )
-      default:
-        return
+    } else if (post.kind === 'PhotoPost') {
+      return (
+        <PhotoPostForm 
+          post={post} 
+          update={update}
+          setUpdate={setUpdate}
+        />
+      )
+    } else if (post.kind === 'QuotePost') {
+      return (
+        <QuotePostForm 
+          post={post}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      )
+    } else if (post.kind === 'LinkPost') {
+      return (
+        <LinkPostForm
+          post={post}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      )
+    } else if (post.kind === 'ChatPost') {
+      return (
+        <ChatPostForm 
+          post={post}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      )
+    } else if (post.kind === 'AudioPost') {
+      return (
+        <AudioPostForm 
+          post={post}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      )
+    } else if (post.kind === 'VideoPost') {
+      return (
+        <VideoPostForm 
+          post={post}
+          update={update}
+          setUpdate={setUpdate}
+        />
+      )
     }
   }
 
   return (
-    <div>
+    <React.Fragment>
       
       {renderForm(post)}
 
@@ -89,7 +86,7 @@ const PostUpdate = ({
           toggleUpdate(update, setUpdate)
         }}
       />
-    </div>
+    </React.Fragment>
   )
 }
 

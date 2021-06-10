@@ -1,29 +1,26 @@
-import React, { useState } from 'react'; 
-import { useQuery, useMutation } from '@apollo/client';
+import React from 'react'; 
+import { useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
 import { Link, withRouter } from 'react-router-dom';
 import LikeButton from './Like_Button'
 import Queries from '../../../../../graphql/queries';
-import Mutations from '../../../../../graphql/mutations';
-import UpdateCacheUtil from '../../functions/update_cache_util.js';
-const { DOES_USER_LIKE_POST, FETCH_USER_FEED } = Queries;
-const { DELETE_POST } = Mutations;
-const { postDelete } = UpdateCacheUtil;
+const { DOES_USER_LIKE_POST } = Queries;
 
 const PostOptions = ({ 
   post, 
   refetchNotes, 
   notesCount,
-  active, 
-  setActive, 
+  notesActive, 
+  setNotesActive, 
   toggleNotes,
   update, 
   setUpdate, 
   toggleUpdate,
   repostActive,
-  setRepostActive
+  setRepostActive,
+  confirmDelete,
+  setConfirmDelete
 }) => {
-  let [askToConfirm, confirmDelete] = useState(false)
   var postId
   if (post.kind === 'Like' && post.kind === 'Repost') {
     postId = post.post.post._id
@@ -33,54 +30,12 @@ const PostOptions = ({
     postId = post._id
   }
 
-  let [deletePost] = useMutation(DELETE_POST, {
-    update(client, { data }) {
-      const { deletePost } = data;
-      var currentUser = Cookies.get('currentUser')
-      var query = FETCH_USER_FEED
-
-      postDelete(
-        client, post, deletePost,
-        currentUser, query
-      )
-    }
-  })
-
   let { loading, error, data, refetch } = useQuery(DOES_USER_LIKE_POST,{
     variables: {
       user: Cookies.get('currentUser'),
       postId: postId
     }
   })
-
-  const renderConfirmDelete = () => {
-    if (askToConfirm) {
-      return (
-        <div>
-          <p>Delete post?</p>
-          <button
-            onClick={() => {
-              deletePost({
-                variables: {
-                  post: post
-                }
-              })
-            }}
-          >
-            Delete post
-          </button>
-          
-          <button
-            onClick={() => {
-              confirmDelete(askToConfirm = false)
-            }}
-          >
-            Cancel
-          </button>
-        </div>
-      )
-    }
-  }
 
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`
@@ -95,33 +50,33 @@ const PostOptions = ({
         <div
           className='notesBtn'
           onClick={() => {
-            toggleNotes(active, setActive)
+            toggleNotes(notesActive, setNotesActive)
           }}
         >
           {notesCount} notes
         </div>
-  
+        
         <div
           className='postOptions'
         >
           <img
             className='commentBubbleBtn'
-            src="https://img.icons8.com/windows/32/000000/speech-bubble--v1.png"
+            src="https://img.icons8.com/windows/64/000000/speech-bubble--v1.png"
             alt=''
             onClick={() => {
               toggleNotes()
             }}
           />
-
           <img 
             className='repostIcon'
-            src="https://img.icons8.com/material-outlined/24/000000/retweet.png"
+            src="https://img.icons8.com/material-outlined/64/000000/retweet.png"
             alt=''
             onClick={() => {
+              setNotesActive(notesActive = false)
               setRepostActive(repostActive = true)
             }}
           />
-          
+
           <LikeButton
             post={post}
             liked={doesUserLikePost}
@@ -129,22 +84,21 @@ const PostOptions = ({
             refetchNotes={refetchNotes}
           />
 
-          {renderConfirmDelete()}
-          
           <img
             className='deletePostBtn'
-            src="https://img.icons8.com/metro/26/000000/delete.png"
+            src="https://img.icons8.com/metro/64/000000/delete.png"
             alt=''
             onClick={() => {
-              confirmDelete(askToConfirm = true)
+              setNotesActive(notesActive = false)
+              setConfirmDelete(confirmDelete = true)
             }}
           />
-
           <img
             className='editPostBtn'
-            src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+            src="https://img.icons8.com/windows/64/000000/edit--v1.png"
             alt=''
             onClick={() => {
+              setNotesActive(notesActive = false)
               toggleUpdate(update, setUpdate)
             }}
           />
@@ -159,7 +113,7 @@ const PostOptions = ({
         <div
           className='notesBtn'
           onClick={() => {
-            toggleNotes(active, setActive)
+            toggleNotes(notesActive, setNotesActive)
           }}
         >
           {notesCount} notes

@@ -1,321 +1,930 @@
-.dashboard {
-  position: relative;
-  margin: 0 auto;
-  width: 980px;
-  @media (max-width: 980px) {
-    width: 100vw;
-  }
-  font-family: 'Noto Sans JP', sans-serif;
+.userOrTagFeed {
 
-  .dashboard.fixed {
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  @media (max-width: 980px) {
-    .column2 {
-      display: none;
-    }
-  }
-
-  .column1 {
-    display: flex;
+  .post {
     position: relative;
-    flex-direction: column;
-    float: left;
-    @media (max-width: 980px) {
-      float: none;
-    }
-    margin-top: 100px;
+    display: block;
+    width: 100%;
+    margin-bottom: 25px;
+    border: 1px solid var(--tumblr-deep-blue);
+    border-radius: 3px;
+    font-family: var(--font);
+    background-color: white;
 
-    .browserPostsNavContainer {
+    .userPostHeader {
       position: relative;
-      display: flex;
-      
-      .profilePic {
-        position: absolute;
-        left: -85px;
-        width: 70px;
-        height: 75px;
-        object-fit: contain;
-        box-shadow: 0px 3px 19px -3px black;
-        border-radius: 5px;
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 15px;
+
+      a {
+
+        &:hover {
+          cursor: pointer;
+        }
       }
 
-      .browserPostsNav {
-        display: flex;
-        justify-content: space-between;
-    
-        //for browser
-        @media (max-width: 980px) {
-          display: none;
-        }
-      
-        position: relative;
-        background-color: white;
-        border-radius: 5px;
-        box-shadow: 0px 1px 23px -6px black;
-        width: 600px;
-        height: 120px;
-        overflow: hidden;
-      
-        .postIconContainer {
-          position: relative;
-          font-weight: 500;
-          padding: 20px 5px;
-      
-          
-          div {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            padding: 8px 14px;
 
-            &:hover {
-              cursor: pointer;
-  
-              img {
-                top: -5px;
-              }
-            }
+      .profilePic {
+        position: absolute;
+        top: -14px;
+        left: -100px;
+        padding: 3px 0 3px 0;
+        width: 70px;
+        height: 65px;
+        border-radius: 5px;
+      }
+    }
+
+
+    .descriptionTextAndImage {
+      width: 100%;
+      // background-color: red;
+
+      .descriptionText {
+        // background-color: red;
+        margin: 10px 0 -10px 8px;
+        width: 96%;
+      }
+
+      .descriptionImgContainer {
+        width: 100%;
+        margin: -1% 0 0 0;
+
+        .descriptionImg {
+          width: 100%;
+          object-fit: contain;
+        }
+      }
+    }
+
+    .postTags {
+      position: relative;
+      display: flex;
+
+      .tag {
+        margin-left: 15px;
+
+        a {
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .postNotes {
+      display: inline-flex;
+      flex-direction: column;
+      position: absolute;
+      top: 65%;
+      left: 75px;
+      height: 350px;
+      background-color: white;
+      border-radius: 3px;
+      box-shadow: 0px 2px 30px -1px black;
+      z-index: 95;
+
+      .notesHeader {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+        
+        img {
+          position: relative;
+          display: inline-block;
+          top: 5px;
+          width: 35px;
+          height: 35px;
+          margin: 5px 0;
+          
+        }
+
+        span {
+          position: relative;
+          display: inline-block;
+          top: -12px;
+          left: 65px;
+          // margin: 0 0 10px 43px;
+        }
+      }
+
+      .notes {
+        // background-color: red;
+        height: 100%;
+        overflow: auto;
+        background-color: var(--light-gray);
+
+        a {
+          cursor: pointer;
+        }
+
+        li {
+          display: flex;
+          // flex-direction: column;
+          // justify-content: space-between;
+          margin: 10px 3px 0 3px;
+
+          &:last-child {
+            margin-bottom: 10px;
+          }
+
+          
+
+          .profilePic {
+            border-radius: 3px;
+            margin: 0 15px 0 0;
+          }
+
+          .commentActivityIcon,
+          .likeActivityIcon,
+          .repostActivityIcon {
+            position: relative;
+            top: -10px;
+            left: 15px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            padding: 4px;
             
             img {
               position: relative;
-              top: 0px;
-              height: 45px;
-              transition: top .2s;
-            }
-      
-            span {
-              display: inline-block;
-              text-align: center;
+              top: -11px;
+              left: 0px;
+              height: 8px;
+              width: 8px;
             }
           }
-        }
 
-        .textIcon,
-        .photoIcon,
-        .quoteIcon,
-        .linkIcon,
-        .chatIcon,
-        .audioIcon,
-        .videoIcon {
-          top: 0;
-          
-          &:hover {
+          .repostActivityIcon {
             img {
-              top: -5px;
+              top: -10px;
+              left: -1px;
+              width: 10px;
+              height: 10px;
+            }
+          }
+
+          .noteContentContainer {
+            position: relative;
+            background-color: white;
+            width: 80%;
+            border-radius: 3px;
+
+            .noteContentHeader {
+              display: flex;
+              justify-content: space-between;
+
+              a {
+                font-size: 12px;
+                font-weight: 700;
+                margin: 3px 8px;
+              }
+
+              div {
+
+                .commentOptions {
+                  position: relative;
+                  display: none;
+                  left: -5px;
+                  width: 22px;
+                  height: 22px;
+
+                  &:hover {
+                    cursor: pointer;
+                  }
+                }
+
+                .commentOptions.active {
+                  display: block;
+                }
+  
+                .deleteCommentContainer {
+                  position: absolute;
+                  display: flex;
+                  flex-direction: column;
+                  margin: 3px;
+                  left: 80px;
+                  width: 120px;
+                  background-color: white;
+                  border-radius: 3px;
+                  box-shadow: 1px 2px 15px -6px black;
+                  z-index: 90;
+  
+                  .deleteCommentBtn,
+                  .closeCommentBtn {
+                    cursor: pointer;
+                    margin: 0 auto;
+                    padding: 8px 0;
+                  }
+
+                  .deleteCommentBtn {
+                    color: red;
+                  }
+                }
+              }
+            }
+
+            p {
+              font-size: 14px;
+              margin: 10px 0 8px 8px;
+            }
+          }
+          
+          .commentActivityIcon {
+            background-color: var(--tumblr-light-blue);            
+          }
+
+          .likeActivityIcon {
+            background-color: red
+          }
+
+          .repostActivityIcon {
+            background-color: var(--tumblr-green);
+          }
+
+          &:hover {
+            .noteContentContainer {
+              .noteContentHeader {
+                .commentOptions {
+                  display: block;
+                }
+              }
+            }
+          }
+        }
+
+        img {
+          width: 25px;
+          height: 25px;
+        }
+
+        .noteContentHeader.repost {
+          display: flex;
+          flex-direction: column;
+          // background-color: blue;
+
+          .repostIconAndRepostFromContainer {
+            display: flex;
+            // background-color: blue;
+            padding-left: 8px;
+            opacity: .6;
+
+            .repostIconHeader {
+              width: 18px;
+              height: 18px;
             }
           }
         }
       }
-    }
 
-      .userOrTagFeed {
-        position: relative;
-        @media (max-width: 980px) {
-          margin: auto;
+      .commentInputContainer {
+        border-top: 1px solid rgb(0, 0, 0, 0.1);
+
+        textarea {
+          height: 45px;
+          width: 190px;
+          margin: 8px 0 3px 5px;
+          font-size: 15px;
+          // background-color: blue;
         }
-        margin-top: 25px;
-        width: 600px;
-        @media (max-width: 980px) {
-          width: 100vw;
-        }
-        background-color: red;
-        z-index: 80;
-      }
-    }
-  }
-  
-  .column2 {
-    display: flex;
-    flex-direction: column;
-    float: right;
-    margin-top: 100px;
-
-    .checkOutTheseBlogs {
-      display: flex;
-      position: relative;
-      left: 0px;
-      // margin-left: 30px;
-      flex-direction: column;
-      position: relative;
-      width: 330px;
-      height: auto;
-
-      .explore {
-        color: var(--tumblr-light-blue);
-        font-size: 17px;
-        margin: 25px 0 0 8px;
-      }
-
-      .profilePic {
-        position: relative;
-        margin-top: 8px;
-        width: 38px;
-        height: 42px;
-        border-radius: 5px;
-      }
-
-      h1 {
-        font-size: 22px;
-        font-weight: 700;
-        border-bottom: 3px solid #1A283E;
-        padding: 0 0 15px 10px;
-        // margin: 0 0 0 8px;
-        color: var(--off-white);
-      }
-    
-      div {
-        display: flex;
-        // width: 300px;
-      
-      a {
-        // display: flex;
-        margin: 15px 0 10px 8px;
-        color: var(--off-white);
-
-        h3 {
-          margin: 5px 0 3px 0;
-          font-weight: 700;
-        }
-        p {
-          color: white;
-          opacity: .5;
-          width: 200px;
-          font-size: 14px;
-          font-weight: 500;
-        }
-
-      }
-
-      form {
-        margin-left: auto;
 
         button {
+          position: relative;
+          top: -2px;
+          // background-color: red;
+          padding: 5px;
+          margin: 3px;
           font-size: 15px;
           font-weight: 700;
-          margin: 25px 10px 0 0;
-          color: var(--tumblr-light-blue);
+          color: rgb(0, 0, 0, 0.5);
         }
       }
-    }
-  }
-  
-  .postRadar {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin: 50px 0 0 0;
-    width: 330px;
-    height: fit-content;
-    
-    h1 {
-      font-size: 20px;
-      font-weight: 700;
-      border-bottom: 3px solid #1A283E;
-      padding-bottom: 15px;
-      margin: 0 0 0 8px;
-      color: var(--off-white);
+
     }
 
-    .post {
+    .postFooter {
+      // position: relative;
       display: flex;
-      flex-direction: column;
-      border: 1px solid black;
-      margin: 0 auto;
-      margin-top: 10px;
-      width: 300px;
-      height: auto;
-      background-color: white;
-      font-family: var(--font);
+      justify-content: space-between;
+      // background-color: red;
+      margin: 20px 0 5px 0;
 
-      .postRadarPostHeader {
-        display: flex;
-        border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+      .notesBtn {
+        position: relative;
+        font-weight: 500;
+        margin: 5px 0 0 12px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
       
-        div {
-          display: flex;
-          
-          .profilePic {
-            width: 38px;
-            height: 42px;
-            margin: 10px 0 5px 10px;
-            border-radius: 5px;
+      .commentBubbleBtn,
+      .repostIcon,
+      .likeBtn,
+      .deletePostBtn,
+      .editPostBtn {
+        width: 35px;
+        height: 35px;
+        margin-right: 20px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .deletePostBtn {
+        position: relative;
+        top: -3px;
+        width: 30px;
+        height: 30px;
+      }
+
+      .editPostBtn {
+        position: relative;
+        top: -1px;
+      }
+    }
+
+    .confirmDeleteModal {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--tumblr-deep-blue-modal);
+      z-index: 500;
+      
+      .browserNav {
+        z-index: 490;
+      }
+    }
+
+    .confirmDelete {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%) translateY(-120%);
+      z-index: 501;
+      width: 400px;
+
+      p {
+        display: inline-block;
+        position: relative;
+        text-align: center;
+        margin-bottom: 35px;
+        font-size: 25px;
+        font-weight: 700;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+      }
+
+      div {
+        display: flex;
+        justify-content: center;
+        font-family: var(--font);
+
+        button {
+          margin: 0 15px 0 15px;
+          font-size: 18px;
+          font-weight: 500;
+          border-radius: 3px;
+        }
+
+        .cancelBtn {
+          background-color: var(--cancel-gray);
+          padding: 8px 13px;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        .deleteBtn {
+          background-color: var(--tumblr-light-blue);
+          padding: 8px 15px;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+
+    }
+
+    .repostModal {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--tumblr-deep-blue-modal);
+      z-index: 504;
+      overflow: auto;
+
+      .repostForm {
+        display: block;
+        position: relative;
+        width: 600px;
+        top: 130px;
+        margin-bottom: 250px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: white;
+        border-radius: 3px;
+        z-index: 505;
+
+        .repostHeaderExtraProPic {
+          display: inline-block;
+          margin: 25px 0 0 18px;
+        
+          .standAloneLink {
+            position: absolute;
+            top: 0;
+            left: -85px;
+            
+            .profilePic {
+              border-radius: 3px;
+              width: 70px;
+              height: 75px;
+            }
           }
 
-          h3 {
-            display: block;
+          .profilePicAndLinkContainer {
+            display: flex;
+            // margin: 15px 0 8px 15px;
+            // background-color: blue;
+
+            .profilePic {
+              position: relative;
+              width: 22px;
+              height: 22px;
+              margin-right: 10px;
+            }
+
+
+            a {
+              display: block;
+              // margin: 2px 0 0 22px;
+              font-size: 13px;
+              font-weight: 700;
+
+              &:hover {
+                cursor: pointer;
+              }
+            }
+          }
+        }
+
+        // .profilePic {
+        //   top: -68px;
+        // }
+
+        .userRepostFormHeader {
+          border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+          // background-color: red;
+
+          span {
+            display: inline-flex;
+            margin: 5px 10px;     
+
+            .user {
+              display: block;
+              font-size: 13px;
+              font-weight: 700;
+              margin: 10px 0 10px 10px;
+
+              &:hover {
+                cursor: pointer;
+              }
+            }
+  
+            img {
+              display: block;
+              position: relative;
+              width: 22px;
+              height: 22px;
+              opacity: .6;
+              margin: 10px 0 10px 5px;
+            }
+  
+            .repostedFrom {
+              display: block;
+              margin: 10px 0 10px 5px;
+              font-size: 13px;
+              font-weight: 700;
+              opacity: .6;
+
+              &:hover {
+                cursor: pointer;
+              }
+            }
+          }
+        }
+
+        .descriptionStringContainer {
+          width: 100%;
+          // margin: 5px 0 8px 8px;
+          margin-top: 15px;
+          min-height: 80px;
+          border-top: 1px solid rgb(0, 0, 0, 0.1);
+          // background-color: red;
+
+          .ck {
+            width: 93%;
+            margin: 5px;
+            // background-color: red;
+          }
+        
+        }
+
+        .closeOrPostContainer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          height: 65px;
+          border-top: 1px solid rgb(0, 0, 0, 0.1);
+  
+          .closeBtn {
+            position: relative;
+            background-color: rgb(0, 0, 0, 0.4);
+            height: fit-content;
+            width: fit-content;
             font-size: 14px;
             font-weight: 700;
-            margin: 18px 0 0 7px;
-
-          }
-
-          a {
+            padding: 6px 10px 8px 10px;
+            margin-left: 17px;
+            border-radius: 3px;
+            color: white;
+  
             &:hover {
               cursor: pointer;
             }
           }
+  
+          .confirmCloseModal {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--tumblr-deep-blue-modal);
+            z-index: 500;
+          }
+  
+          .confirmCloseContainer {
+            position: absolute;
+            color: white;
+            top: 40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            z-index: 501;
+            // background-color: red;
+  
+            .discardTitle {
+              display: inline-block;
+              margin: 0 0 15px 42px;
+              font-size: 24px;
+  
+              &:hover {
+                cursor: default;
+              }
+            }
+  
+            div {
+              position: relative;
+              display: flex;
+              justify-content: space-between;
+  
+              .cancel {
+                position: relative;
+                padding: 10px 25px 10px 25px;
+                border-radius: 2px;
+                font-weight: bold;
+                background-color: var(--best-gray);
+                
+                &:hover {
+                  cursor: pointer;
+                }
+              }
+              
+              .discard {
+                position: relative;
+                padding: 10px 38px 10px 38px;
+                font-weight: bold;
+                border-radius: 2px;
+                background-color: var(--tumblr-light-blue);
+  
+                &:hover {
+                  cursor: pointer;
+                }
+              }
+            }
+  
+          }
+  
+          .formSubmitBtn {
+            position: relative;
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            height: fit-content;
+            width: fit-content;
+            margin-right: 17px;
+            padding: 8px 14px 8px 14px;
+            border-radius: 3px;
+            background-color: var(--tumblr-light-blue);
+            color: white;
+  
+            &:hover {
+              cursor: pointer;
+            }
+          }
+  
+          .formSubmitBtn.disabled {
+            color: rgb(255, 255, 255, .5)
+          }
+        }
+      }
+    }
+    
+  }
+
+  .post.repost {
+
+    .userRepostShowHeader {
+      
+      border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+      // background-color: red;
+
+      .profilePic {
+        position: absolute;
+        border-radius: 3px;
+        top: 0px;
+        left: -85px;
+        width: 70px;
+        height: 75px;
+      }
+
+      span {
+        display: inline-flex;
+        margin: 5px 10px;
+
+
+        .user {
+          display: block;
+          font-size: 13px;
+          font-weight: 700;
+          margin: 10px 0 10px 10px;
+
+          &:hover {
+            cursor: pointer;
+          }
         }
 
-        form {
-          margin-left: auto;
+        img {
+          display: block;
+          position: relative;
+          width: 22px;
+          height: 22px;
+          opacity: .6;
+          margin: 10px 0 10px 5px;
+        }
 
-          button {
-            font-size: 16px;
-            font-weight: 700;
-            margin: 22px 15px 0 0;
-            color: var(--tumblr-light-blue);
+        .repostedFrom {
+          display: block;
+          margin: 10px 0 10px 5px;
+          font-size: 13px;
+          font-weight: 700;
+          opacity: .6;
+
+          &:hover {
+            cursor: pointer;
           }
         }
       }
     }
 
-    // .post.textPost {
+    .userRepostHeader {
+      margin: 10px 0 15px 15px;
+      // background-color: red;
+      span {
+        display: inline-block;
+        .profilePic {
+          position: relative;
+          top: 5px;
+          width: 22px;
+          height: 22px;
+          border-radius: 3px;
+          margin: 0 8px 0 0;
+        }
+        a {
+          font-size: 13px;
+          font-weight: 700;
+        }
+      }
+    }
+    .repostItemList {
+      .repostShowItem {
+        margin: 0 0 15px 0;
+        border-top: 1px solid rgb(0, 0, 0, 0.1);
+        span {
+          margin: 12px 0 0 15px;
+          display: flex;
+          .profilePic {
+            position: relative;
+            top: 5px;
+            width: 22px;
+            height: 22px;
+          }
+          .repostActivityIcon {
+            position: relative;
+            top: 20px;
+            left: -8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            padding: 4px;
+            background-color: var(--tumblr-green);
+          
+            img {
+              position: relative;
+              top: -10px;
+              left: -1px;
+              height: 10px;
+              width: 10px;
+            }
+          }
+          a {
+            position: relative;
+            top: 7px;
+            left: -3px;
+            font-size: 13px;
+            font-weight: 700;
+          }
+        }
+        .repostCaptionDiv {
+          margin: 20px 0 0 15px;
+          width: 570px;
+        }
+      }
+    }
+  }
 
-    //   .textPostTitle {
-    //     font-size: 32px;
-    //     font-weight: 400;
-    //     margin: 10px;
-    //   }
+  .post.textPost {
 
-    //   .textPostMain {
-    //     margin: 0 0 10px 20px;
-    //   }
+    h3 {
+      display: block;
+      font-size: 25px;
+      margin: 15px 15px 30px 15px;
+    }
+  }
 
-    //   .descriptionText {
-    //     margin: 0 0 10px 10px;
-    //   }
+  .post.photoPost {
 
-    //   .postFooter {
-    //     position: relative;
-    //     display: flex;
-    //     justify-content: space-between;
+    .mainImageContainer {
+      .mainImage {
+        display: inline-block;
+        position: relative;
+        object-fit: contain;
+        width: 100%;
 
-    //     .notesBtn {
-    //       font-size: 17px;
-    //       font-weight: 500;
-    //       margin: 3px 0 0 10px;
-    //       opacity: .7;
-    //     }
+        &:not(:first-child) {
+          margin: -1% 0 0 0;
+        }
+        
+      }
+    }
+  }
 
-    //     .postOptions {
-    //       display: flex;
+  .post.quotePost {
+    .quote {
+      font-family: var(--quote-font);
+      font-size: 25px;
+      font-weight: bold;
+      margin: 10px 0 20px 20px;
+    }
 
-    //       a {
-    //         display: block;
-    //       }
+    .source {
+      margin: 0 0 10px 20px;
+      font-weight: 500;
+    }
+  }
 
-    //       img {
-    //         width: 30px;
-    //         height: 30px;
-    //         padding: 0 10px 5px 0;
-    //         opacity: .7;
-    //       }
-    //     }
-    //   }
-    // }
-  }  
+  .post.linkPost {
+    .linkContainer {
+      position: relative;
+      width: 90%;
+      margin: 0 auto;
+      border: 1px solid rgb(0, 0, 0, 0.3);
+      border-radius: 10px;
+      // background-color: red;
+
+      .imgContainer {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        // background-color: red;
+        .imgModal {
+          position: absolute;
+          background-color: rgb(0, 0, 0, 0.4);
+          width: 100%;
+          height: 100%;
+          z-index: 95;  
+        }
+
+        .siteImage {
+          display: block;
+          position: relative;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 94;            
+        }
+
+        .siteTitle {
+          display: block;
+          position: relative;
+          top: -175px;
+          width: 400px;
+          text-align: center;
+          margin: 0 auto;
+          font-size: 22px;
+          font-weight: 500;
+          color: white;
+          z-index: 96
+        }
+      }
+
+      .siteDescription {
+        font-size: 15px;
+        margin: 10px 15px;
+        // font-weight: 500;
+      }
+
+      .siteName {
+        display: block;
+        margin: 0 0 10px 15px;
+        font-size: 15px;
+        color:rgb(0, 0, 0, 0.5);
+      }
+
+      a {
+        position: relative;
+        margin: 0 auto;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .post.chatPost {
+
+    .chatDiv {
+      font-family: var(--chat-font);
+      font-size: 15px;
+      width: 570px;
+      margin: 0 auto;
+    }
+  }
+
+  .post.audioPost {
+
+    .audioPlayerContainer {
+      display: flex;
+      background-color: rgb(0, 0, 0, 0.1);
+
+      .audioDataContainer {
+        margin: 0 0 10px 25px;
+
+        p {
+          margin: 5px 0 0 0;
+        }
+
+        .title {
+          font-size: 17px;
+          font-weight: 700;
+        }
+
+        .artist, .album {
+          font-size: 15px;
+        }
+      }
+
+      .rhap_container {
+        width: 450px;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .post.videoPost {
+
+    video {
+      object-fit: contain;
+    }
+  }
 }

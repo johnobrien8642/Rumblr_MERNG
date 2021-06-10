@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
 import randomstring from 'randomstring';
-import { useMutation } from '@apollo/client';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import TextPostInput from '../../util/components/forms/inputTypes/Text_Post_Input'
@@ -19,7 +19,7 @@ const { bodyPost, handleFormData,
         discardMentions, preventScroll, 
         allowScroll } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
-const { FETCH_USER_FEED } = Queries;
+const { FETCH_USER_FEED, FETCH_USER } = Queries;
 
 const TextPostForm = ({
   user,
@@ -32,7 +32,9 @@ const TextPostForm = ({
   postFormModal,
   setPostFormModal,
   postFormOpen,
-  setPostFormOpen
+  setPostFormOpen,
+  uploading,
+  setUploading
 }) => {
   let [title, setTitle] = useState('');
 
@@ -59,6 +61,12 @@ const TextPostForm = ({
     resetDisplayIdx(body)
   })
 
+  // let { data } = useQuery(FETCH_USER, {
+  //   variables: {
+  //     query: Cookies.get('currentUser')
+  //   }
+  // })
+
   let [createOrUpdatePost] = useMutation(CREATE_OR_UPDATE_POST, {
     update(client, { data }){
     const { createOrUpdatePost } = data;
@@ -72,15 +80,14 @@ const TextPostForm = ({
       }
     },
     onCompleted() {
+      resetInputs();
       if (post) {
         setUpdate(update = false)
-        resetInputs();
       } else {
-        resetInputs();
         allowScroll(document)
-        setPostFormModal(postFormModal = false)
+        setUploading(uploading = false)
         setTextPostActive(textPostActive = false)
-        
+
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
@@ -147,19 +154,28 @@ const TextPostForm = ({
     return !title && body.current.length === 0 && !description
   }
 
-  if (textPostActive) {
+  const handleTextPostFormClass = () => {
+    if (textPostActive && !uploading) {
+      return 'postForm textPostForm active'
+    } else if (textPostActive && uploading) {
+      return 'postForm textPostForm hidden'
+    } else {
+      return 'postForm textPostForm none'
+    }
+  }
+
+  console.log(post)
+  
+  if (textPostActive || update) {
     return (
     <div
       className='postFormContainer'
     >
 
-      <ProfilePic user={user} />
+      <ProfilePic user={update ? post.user : user} />
 
       <div
-        className={textPostActive ? 
-          'postForm textPostForm active' :
-          'postForm textPostForm hidden'
-        }
+        className={handleTextPostFormClass()}
       >
         <form
           id={formId}
@@ -168,7 +184,7 @@ const TextPostForm = ({
           encType={'multipart/form-data'}
         >
 
-        <h3>{user.blogName}</h3>
+        <h3>{update ? post.user.blogName : user.blogName}</h3>
   
         <TextPostInput
           post={post}
@@ -217,6 +233,7 @@ const TextPostForm = ({
                   resetInputs()
                   setTextPostActive(textPostActive = false)
                   setPostFormModal(postFormModal = false)
+
                   if (mobile) {
                     setPostFormOpen(postFormOpen = false)
                   }
@@ -243,8 +260,8 @@ const TextPostForm = ({
             />
             
             <button
-              className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
               type='submit'
+              className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
               disabled={disabledBool()}
               onClick={() => {
                 if (description) {
@@ -263,13 +280,16 @@ const TextPostForm = ({
                 
                   setDescription(description = '')
                 }
-              
+                
                 if (tag) {
                   handleTagInput(
                     tag, setTag,
                     tags, setTags
                   )
                 }
+                
+                setPostFormModal(postFormModal = false)
+                setUploading(uploading = true)
               }}
             >
               {post ? 'Update' : 'Post'}

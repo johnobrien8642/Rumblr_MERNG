@@ -13,15 +13,13 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
-          repostTrail {
-            _id
-            blogName
-          }
-          repostCaptions {
-            _id
-            caption
-          }
+          repostTrail
+          
           repostedFrom {
             _id
             blogName
@@ -213,18 +211,12 @@ const Queries = {
             _id
             blogName
           }
-          repostedFrom {
+          edFrom {
             _id
             blogName
           }
-          repostCaptions {
-            _id
-            caption
-          }
-          repostTrail {
-            _id
-            blogName
-          }
+          
+          repostTrail
           post {
             __typename
             ${ALL_POSTS}
@@ -255,6 +247,10 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
         }
         ... on RepostType {
@@ -263,11 +259,16 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
           repostedFrom {
             _id
             blogName
           }
+          repostTrail
         }
         ... on CommentType {
           _id
@@ -276,6 +277,10 @@ const Queries = {
           user {
             _id
             blogName
+            profilePic {
+              _id
+              src
+            }
           }
         }
       }
@@ -313,11 +318,7 @@ const Queries = {
         ... on RepostType {
           _id
           kind
-          repostCaptions {
-            caption
-            userId
-            repostId
-          }
+          repostTrail
           user {
             _id
             blogName

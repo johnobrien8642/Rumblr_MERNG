@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useQuery } from '@apollo/client';
 import { Route } from 'react-router-dom';
@@ -6,12 +6,13 @@ import PostsNav from '../nav/Posts_Nav';
 import Feed from '../feeds/Feed.js';
 import PostRadar from '../dashboard/util/Post_Radar';
 import CheckOutTheseBlogs from '../dashboard/util/Check_Out_These_Blogs';
-import RepostForm from '../posts/util/components/social/RepostForm';
+import RepostForm from '../posts/util/components/social/Repost_Form';
 import Queries from '../../graphql/queries.js';
 const { FETCH_USER } = Queries;
 
 const Dashboard = props => {
-
+  let [uploading, setUploading] = useState(false)
+  
   let { loading, error, data } = useQuery(FETCH_USER, {
     variables: {
       query: Cookies.get('currentUser')
@@ -45,8 +46,17 @@ const Dashboard = props => {
       <div
         className='column1'
       >
-        <PostsNav props={props} user={user} />
-        <Feed user={null} currentUser={user}/>
+        <PostsNav 
+          props={props} 
+          user={user}
+          uploading={uploading}
+          setUploading={setUploading}
+        />
+        <Feed 
+          user={null} 
+          currentUser={user}
+          uploading={uploading}
+        />
       </div>
 
       <div

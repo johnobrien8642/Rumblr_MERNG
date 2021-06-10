@@ -44,6 +44,7 @@ const AllQueryFragment = {
       title
       descriptions
       kind
+      allText
     }
     ... on PhotoPostType {
       _id
@@ -53,6 +54,7 @@ const AllQueryFragment = {
       }
       descriptions
       kind
+      allText
     }
     ... on QuotePostType {
       _id
@@ -62,6 +64,7 @@ const AllQueryFragment = {
       }
       quote
       kind
+      allText
     }
     ... on LinkPostType {
       _id
@@ -71,6 +74,7 @@ const AllQueryFragment = {
       }
       descriptions
       kind
+      allText
     }
     ... on ChatPostType {
       _id
@@ -80,6 +84,8 @@ const AllQueryFragment = {
       }
       descriptions
       kind
+      allText
+      chat
     }
     ... on AudioPostType {
       _id
@@ -89,6 +95,7 @@ const AllQueryFragment = {
       }
       descriptions
       kind
+      allText
     }
     ... on VideoPostType {
       _id
@@ -98,6 +105,7 @@ const AllQueryFragment = {
       }
       descriptions
       kind
+      allText
     }
   `
 }

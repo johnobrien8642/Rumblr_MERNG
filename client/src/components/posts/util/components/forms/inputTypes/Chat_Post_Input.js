@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 
 const ChatPostInput = ({
-  post, chat
+  post, 
+  chat, 
+  setChat
 }) => {
   let [placeholder, setPlaceholder] = useState("<strong>Brother Muzone:</strong> Well we can't stand out here all night...<br><br><strong> Omar Little:</strong> I suppose we can't...<br><br><strong> Brother Muzone:</strong> A man has to have a code.<br><br><strong> Omar Little:</strong> Oh indeed...")
   let [togglePlaceholder, setTogglePlaceholder] = useState(false)
@@ -48,8 +50,8 @@ const ChatPostInput = ({
       onInput={e => {
         regexChat()
 
-        chat.current = e.target.innerHTML
-
+        // chat.current = e.target.innerHTML
+        setChat(chat = e.target.innerHTML)
       }}
       onFocus={() => {
         setPlaceholder(placeholder = '')

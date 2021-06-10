@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
+import randomstring from 'randomstring';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import LinkPreview from '../../util/components/forms/Link_Preview'
@@ -15,7 +16,7 @@ const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx, 
         fetchUrlMetadata, handleMentions, 
         discardMentions, handleAllTextLinkPost,
-        preventScroll, allowScroll } = PostFormUtil;
+        preventScroll, allowScroll, handleTagInput } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -31,7 +32,9 @@ const LinkPostForm = ({
   postFormModal,
   setPostFormModal,
   postFormOpen,
-  setPostFormOpen
+  setPostFormOpen,
+  uploading,
+  setUploading
 }) => {
   let [link, setLink] = useState('');
   let [pastLink, setPastLink] = useState('')
@@ -51,7 +54,7 @@ const LinkPostForm = ({
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false);
-  let [displayBodyImageAndTextInput, setDisplayBodyImageAndTextInput] = useState(false)
+  let [displayBodyImageAndTextInput, setDisplayBodyImageAndTextInput] = useState(false);
   const formId = 'linkPostForm';
   const formInputId = 'linkPostInput';
   
@@ -307,9 +310,37 @@ const LinkPostForm = ({
 
 
           <button
-            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             type='submit'
+            className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             disabled={disabledBool()}
+            onClick={() => {
+              if (description) {
+                var textObj = {
+                  kind: 'text',
+                  srcType: 'text',
+                  content: description,
+                  displayIdx: body.current.length,
+                  uniqId: randomstring.generate({
+                    length: 12,
+                    charset: 'alphabetic'
+                  })
+                }
+
+                body.current.push(textObj)
+              
+                setDescription(description = '')
+              }
+              
+              if (tag) {
+                handleTagInput(
+                  tag, setTag,
+                  tags, setTags
+                )
+              }
+              
+              setPostFormModal(postFormModal = false)
+              setUploading(uploading = true)
+            }}
           >
             {post ? 'Update' : 'Post'}
           </button>

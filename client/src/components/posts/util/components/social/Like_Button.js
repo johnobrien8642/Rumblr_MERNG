@@ -57,7 +57,6 @@ const LikeButton = ({
               postId: post._id
             }
           })
-
           setStatus(status = false)
         }}
       />
@@ -76,7 +75,6 @@ const LikeButton = ({
               postKind: post.kind
             }
           })
-
           setStatus(status = true)
         }}
       />

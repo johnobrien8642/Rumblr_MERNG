@@ -14,12 +14,24 @@ const TextPostInput = ({
   }, [])
 
   return (
-    <input
-      className='titleInput'
-      value={title}
-      placeholder='Title'
-      onChange={e => setTitle(title = e.target.value)}
-    />
+    <div
+      className='titleInputContainer'
+    >
+      <span
+        data-placeholder='Title'
+        className={title ? 'titleInput active' : 'titleInput placeholder'}
+        contentEditable='true'
+        onInput={e => {
+          setTitle(title = e.target.textContent)
+        }}
+      ></span>
+    </div>
+    // <input
+    //   className='titleInput'
+    //   value={title}
+    //   placeholder='Title'
+    //   onChange={e => setTitle(title = e.target.value)}
+    // />
   )
 }
 

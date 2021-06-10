@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import BylineUtil from '../byline_util.js';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
 import handlePostIcon from '../handle_post_icon.js';
+import DOMPurify from 'dompurify';
 const { handleByline } = BylineUtil;
 
 const CommentShow = ({
@@ -35,6 +36,12 @@ const CommentShow = ({
           >
             <span className='activitySlug'>replied to your post {handleByline(comment.post)}</span>
           </Link>
+          <div
+            className='commentContent'
+            dangerouslySetInnerHTML={{ 
+              __html: DOMPurify.sanitize(comment.content)
+            }}
+          />
         </div>
         {handlePostIcon(comment)}
       </div>
