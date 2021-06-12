@@ -96,7 +96,7 @@ const postHeader = (
   }
 }
 
-const repostFooter = (post) => {
+const repostFooter = (post, update, repostCaption, setRepostCaption) => {
   // var data = demeterPost(post)
   let repost = post
 
@@ -121,10 +121,17 @@ const repostFooter = (post) => {
                 </Link>
               </span>
 
-              <div 
+              <div
                 className='repostCaptionDiv'
+                contentEditable={
+                  update && i === repost.repostTrail.length - 1 ?
+                  true : false
+                }
                 dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(obj.caption)
+                }}
+                onInput={e => {
+                  setRepostCaption(repostCaption = e.target.innerHTML)
                 }}
               />
             </li>
@@ -291,7 +298,6 @@ const postBody = (post) => {
       <React.Fragment>
         <ReactPlayer
           width={'100%'}
-          height={'100%'}
           url={data.videoLink.url}
           controls
         />

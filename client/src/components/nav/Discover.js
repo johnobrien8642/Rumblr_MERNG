@@ -5,35 +5,45 @@ import AllTagFeed from '../feeds/All_Tag_Feed';
 import Queries from '../../graphql/queries.js';
 import Cookies from 'js-cookie';
 import FollowedTags from '../search/resultTypes/Followed_Tags_Result';
-const { FETCH_RECOMMENDED_TAGS } = Queries;
+const { FETCH_RECOMMENDED_TAGS, FETCH_USER } = Queries;
 
 const Discover = () => {
   let [tag, setTag] = useState(null)
  
-  let { loading, error, data } = useQuery(FETCH_RECOMMENDED_TAGS, {
+  let { loading: loading1, error: error1, data: recTags } = useQuery(FETCH_RECOMMENDED_TAGS, {
     variables: {
       query: Cookies.get('currentUser')
     }
   })
 
-  if (loading) return 'Loading...';
-  if (error) return `Error: ${error}`;
+  let { loading: loading2, error: error2, data: user } = useQuery(FETCH_USER, {
+    variables: {
+      query: Cookies.get('currentUser')
+    }
+  })
 
-  const { fetchRecommendedTags } = data;
+  if (loading1 || loading2) return 'Loading...';
+  if (error1) return `recommended Error: ${error1}`;
+  if (error2) return `user Error: ${error2}`;
   
   return (
-    <div>
-    <div>
-      <RecommendedTags
-        recTags={fetchRecommendedTags}
-        tag={tag}
-        setTag={setTag}
-      />
-      <FollowedTags 
-        followedActive={true} 
-        discover={true} 
-      />
-    </div>
+    <div
+      className='discoverContainer'
+    >
+      <div
+        className='discoverTagsHeader'
+      >
+        <RecommendedTags
+          recTags={recTags.fetchRecommendedTags}
+          tag={tag}
+          setTag={setTag}
+        />
+        <FollowedTags
+          user={user.user}
+          followedActive={true}
+          discover={true}
+        />
+      </div>
       <AllTagFeed />
     </div>
   )

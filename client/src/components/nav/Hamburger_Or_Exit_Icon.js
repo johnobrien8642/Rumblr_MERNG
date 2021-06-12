@@ -22,7 +22,7 @@ const HamburgerOrExitIcon = ({
           openSettings(settingsOpen = false)
           openMenu(menuOpen = false)
         }}
-          src="https://img.icons8.com/ios-filled/24/ffffff/x.png"
+          src="https://img.icons8.com/ios-filled/64/ffffff/x.png"
           alt=''
         />
       </React.Fragment>
@@ -38,7 +38,7 @@ const HamburgerOrExitIcon = ({
           openSettings(settingsOpen = false)
           openMenu(menuOpen = true)
         }}
-          src="https://img.icons8.com/fluent-systems-filled/32/ffffff/menu.png"
+          src="https://img.icons8.com/fluent-systems-filled/64/ffffff/menu.png"
           alt=''
         />
       </React.Fragment>

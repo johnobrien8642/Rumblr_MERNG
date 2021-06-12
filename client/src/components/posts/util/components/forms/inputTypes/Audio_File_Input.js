@@ -63,7 +63,7 @@ const AudioFileInput = ({
               src="https://img.icons8.com/nolan/64/headphones.png"
               alt=''
             />
-            <span>Upload an audio file</span>
+            <span>Upload a different audio file</span>
           </div>
           <input
             id='audioFileInput'

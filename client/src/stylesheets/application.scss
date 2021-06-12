@@ -7,4 +7,6 @@
 @use 'browser_dashboard';
 @use 'browser_user_settings';
 @use 'post_forms';
-@use 'browser_feed';
+@use 'dashboard_feed';
+@use 'discover_feed';
+@use 'update_forms';

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
 import randomstring from 'randomstring';
 import Mutations from '../../../../graphql/mutations.js';
@@ -19,7 +19,7 @@ const { bodyPost, handleFormData,
         discardMentions, preventScroll, 
         allowScroll } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
-const { FETCH_USER_FEED, FETCH_USER } = Queries;
+const { FETCH_USER_FEED } = Queries;
 
 const TextPostForm = ({
   user,
@@ -83,6 +83,7 @@ const TextPostForm = ({
       resetInputs();
       if (post) {
         setUpdate(update = false)
+        setUploading(uploading = false)
       } else {
         allowScroll(document)
         setUploading(uploading = false)
@@ -91,6 +92,8 @@ const TextPostForm = ({
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
+
+        setUploading(uploading = false)
       }
     },
     onError(error) {
@@ -155,21 +158,19 @@ const TextPostForm = ({
   }
 
   const handleTextPostFormClass = () => {
-    if (textPostActive && !uploading) {
+    if ((textPostActive && !uploading) || update) {
       return 'postForm textPostForm active'
-    } else if (textPostActive && uploading) {
+    } else if ((textPostActive && uploading) || uploading) {
       return 'postForm textPostForm hidden'
     } else {
       return 'postForm textPostForm none'
     }
   }
-
-  console.log(post)
   
   if (textPostActive || update) {
     return (
     <div
-      className='postFormContainer'
+      className={update ? 'postFormContainer update' : 'postFormContainer'}
     >
 
       <ProfilePic user={update ? post.user : user} />
@@ -184,7 +185,9 @@ const TextPostForm = ({
           encType={'multipart/form-data'}
         >
 
-        <h3>{update ? post.user.blogName : user.blogName}</h3>
+        <h3
+          className='userNameHeader'
+        >{update ? post.user.blogName : user.blogName}</h3>
   
         <TextPostInput
           post={post}
@@ -226,13 +229,18 @@ const TextPostForm = ({
             className='closeOrPostContainer'
           >
             <div
-              className='closeBtn'
+              className={'closeBtn'}
               onClick={() => {
                 if (disabledBool()) {
                   allowScroll(document)
                   resetInputs()
-                  setTextPostActive(textPostActive = false)
-                  setPostFormModal(postFormModal = false)
+                  
+                  if (!update) {
+                    setTextPostActive(textPostActive = false)
+                    setPostFormModal(postFormModal = false)
+                  } else {
+                    setUpdate(update = false)
+                  }
 
                   if (mobile) {
                     setPostFormOpen(postFormOpen = false)
@@ -247,6 +255,8 @@ const TextPostForm = ({
 
             <ConfirmClose
               mobile={mobile}
+              update={update}
+              setUpdate={setUpdate}
               confirmClose={confirmClose}
               setConfirmClose={setConfirmClose}
               allowScroll={allowScroll}
@@ -288,7 +298,10 @@ const TextPostForm = ({
                   )
                 }
                 
-                setPostFormModal(postFormModal = false)
+                if (!update) {
+                  setPostFormModal(postFormModal = false)
+                }
+
                 setUploading(uploading = true)
               }}
             >

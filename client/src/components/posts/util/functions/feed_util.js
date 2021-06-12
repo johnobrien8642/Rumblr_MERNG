@@ -54,6 +54,25 @@ const infiniteScroll = (
     })
 }
 
+const handlePostNotesScrollOutOfWindow = (
+  notesActive,
+  setNotesActive
+) => {
+  return document.addEventListener('scroll', function(event) {
+    var node = document.querySelector('.postNotes')
+    if (node) {
+      var el = node.getBoundingClientRect(),
+      elTop = el.top,
+      elBottom = el.bottom,
+      innerHeight = window.innerHeight
+      
+      if (elTop > innerHeight + 10 || elBottom < -10) {
+        setNotesActive(notesActive = false)
+      }
+    }
+  })
+}
+
 const updateCacheInfScroll = (
   res, 
   client, 
@@ -346,6 +365,7 @@ const FeedUtil = {
   updateCacheInfScrollActivity,
   updateCacheInfScrollUserFollowers,
   updateCacheInfScrollFollowedUsers,
+  handlePostNotesScrollOutOfWindow,
   handleData, setgqlQueryAndQuery,
   doesUserFollowUser
 }

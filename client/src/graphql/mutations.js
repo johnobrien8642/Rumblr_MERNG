@@ -90,14 +90,31 @@ const Mutations = {
       deletePost(post: $post)
     }
   `,
+  UPDATE_REPOST: gql`
+    mutation UpdateRepost($repostData: JSONObject) {
+      updateRepost(repostData: $repostData) {
+        _id
+      }
+    }
+  `,
   CREATE_REPOST: gql`
     mutation CreateRepost($repostData: JSONObject ) {
-      repost(repostData: $repostData) {
-       _id
-       post {
-         ${ALL_POSTS}
-       }
-      }
+      repost(repostData: $repostData) {     
+        _id
+        repostTrail {
+          _id
+          caption
+          user {
+            _id
+          }
+          repost {
+            _id
+          }
+        }
+          post {
+            ${ALL_POSTS}
+          }
+        }
     }
   `,
   COMMENT_POST: gql`

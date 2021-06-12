@@ -18,8 +18,17 @@ const Queries = {
               src
             }
           }
-          repostTrail
-          
+          repostTrail {
+            _id
+            caption
+            user {
+              _id
+              blogName
+            }
+            repost {
+              _id
+            }
+          }
           repostedFrom {
             _id
             blogName
@@ -211,12 +220,21 @@ const Queries = {
             _id
             blogName
           }
-          edFrom {
+          repostedFrom {
             _id
             blogName
           }
-          
-          repostTrail
+          repostTrail {
+            _id
+            caption
+            user {
+              _id
+              blogName
+            }
+            repost {
+              _id
+            }
+          }
           post {
             __typename
             ${ALL_POSTS}
@@ -268,7 +286,16 @@ const Queries = {
             _id
             blogName
           }
-          repostTrail
+          repostTrail {
+            _id
+            caption
+            user {
+              _id
+            }
+            repost {
+              _id
+            }
+          }
         }
         ... on CommentType {
           _id
@@ -306,6 +333,16 @@ const Queries = {
             ... on RepostType {
               _id
               kind
+              repostTrail {
+                _id
+                caption
+                user {
+                  _id
+                }
+                repost {
+                  _id
+                }
+              }
               post {
                 __typename
                 ${ALL_POSTS_ACTIVITY}
@@ -318,7 +355,16 @@ const Queries = {
         ... on RepostType {
           _id
           kind
-          repostTrail
+          repostTrail {
+            _id
+            caption
+            user {
+              _id
+            }
+            repost {
+              _id
+            }
+          }
           user {
             _id
             blogName
@@ -470,6 +516,38 @@ const Queries = {
     query FetchAllTagFeed($query: String) {
       fetchAllTagFeed(query: $query) {
         __typename
+        ... on RepostType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+            profilePic {
+              _id
+              src
+            }
+          }
+          repostTrail {
+            _id
+            caption
+            user {
+              _id
+              blogName
+            }
+            repost {
+              _id
+            }
+          }
+          repostedFrom {
+            _id
+            blogName
+            kind
+          }
+          post {
+            __typename
+            ${ALL_POSTS}
+          }
+        }
         ${ALL_POSTS}
       }
     }

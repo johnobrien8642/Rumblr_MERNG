@@ -140,8 +140,6 @@
             width: 100%;
             object-fit: contain;
           }
-
-          
         }
       }
 
@@ -324,66 +322,66 @@
     }
   }
 
-  .tagsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    position: relative;
-    width: 100%;
-    height: auto;
-    white-space: normal;
-    margin: 0 0 0 0;
-    padding: 0 0 20px 0;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.1);
-    // background-color: red;
-
-    .tagDiv {
-      display: flex;
-      font-size: 15px;
-      white-space: nowrap;
-      margin: 0 0 8px 8px;
-      padding: 0 10px 3px 5px;
-      height: fit-content;
-      border-radius: 15px;
-      background-color: var(--tumblr-lighter-blue);
-      color: white;
-      float: left;
-      
-
-      // &:first-of-type {
-      //   margin-left: 15px;
-      // }      
-
-      &:hover {
-        cursor: default;
-      }
-
-      .removeTag {
+      .tagsContainer {
+        display: flex;
+        flex-wrap: wrap;
         position: relative;
-        display: block;
-        top: 6px;
-        left: 4px;
-        height: 13px;
-        width: 10px;
-        text-align: center;
-        // background-color: white;
-        border-radius: 50%;
-        margin-left: 3px;
+        width: 100%;
+        height: auto;
+        white-space: normal;
+        margin: 0 0 0 0;
+        padding: 0 0 20px 0;
+        border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+        // background-color: red;
+      
+        .tagDiv {
+          display: flex;
+          font-size: 15px;
+          white-space: nowrap;
+          margin: 0 0 8px 8px;
+          padding: 0 10px 3px 5px;
+          height: fit-content;
+          border-radius: 15px;
+          background-color: var(--tumblr-lighter-blue);
+          color: white;
+          float: left;
 
-        .removeTag {
-          display: inline-block;
-          // float: right;
+        
+          // &:first-of-type {
+          //   margin-left: 15px;
+          // }      
+          
+          &:hover {
+            cursor: default;
+          }
+        
+          .removeTag {
+            position: relative;
+            display: block;
+            top: 6px;
+            left: 4px;
+            height: 13px;
+            width: 10px;
+            text-align: center;
+            // background-color: white;
+            border-radius: 50%;
+            margin-left: 3px;
+          
+            .removeTag {
+              display: inline-block;
+              // float: right;
+            }
+          
+            span {
+              display: block;
+              position: relative;
+              top: -5.3px;
+              // color: black;
+              font-weight: bold;
+              font-size: 13px;
+            }
+          }
         }
-
-        span {
-          display: block;
-          position: relative;
-          top: -5.3px;
-          // color: black;
-          font-weight: bold;
-          font-size: 13px;
-        }
-      }
-    }
     
         .tagInputAndDDContainer {
           display: inline-block;
@@ -524,7 +522,6 @@
               }
             }
           }
-
         }
 
         .formSubmitBtn {
@@ -987,9 +984,9 @@
 
 
     .quotePostForm {
-      overflow-wrap: break-word;
-      word-break: break-all;
-
+      // overflow-wrap: break-word;
+      // word-break: break-all;
+      
       .quoteAndSourceInputContainer {
         
         .quoteInputContainer {
@@ -1064,7 +1061,7 @@
 
     .chatPostForm {
       .chatText {
-        margin: 0 0 0 15px;
+        margin: 20px 0 0 15px;
         width: 95%;
         // background-color: red;
       }
@@ -1073,7 +1070,6 @@
         color: rgb(0, 0, 0, 0.6)
       }
     }
-
 
     .audioPostForm {
 

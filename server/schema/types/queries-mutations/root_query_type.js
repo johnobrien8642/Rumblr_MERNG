@@ -713,7 +713,10 @@ const RootQueryType = new GraphQLObjectType({
         return User.findOne({ blogName: query })
           .then(user => {
             return Tag.find({
-              '_id': { $nin: user.tagFollows }
+              '_id': { $nin: user.tagFollows },
+              function(err) {
+                console.log(err)
+              }
             })
               .sort('followerCount')
               .limit(8)
@@ -750,7 +753,7 @@ const RootQueryType = new GraphQLObjectType({
             .then(tags => {
               return Promise.all([
                 asyncTagPostArr(
-                  query, tags, 
+                  query, tags,
                   likedPostIds, Post,
                   User, mongoose, 
                   asyncFetchTagPosts,

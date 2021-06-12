@@ -79,13 +79,17 @@ const QuotePostForm = ({
       resetInputs();
       if (post) {
         setUpdate(update = false)
+        setUploading(uploading = false)
       } else {
         allowScroll(document)
         setUploading(uploading = false)
+        setQuotePostActive(quotePostActive = false)
 
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
+
+        setUploading(uploading = false)
       }
     },
     onError(error) {
@@ -151,19 +155,26 @@ const QuotePostForm = ({
     !description
   }
 
-  if (quotePostActive) {
+  const handleQuotePostFormClass = () => {
+    if ((quotePostActive && !uploading) || update) {
+      return 'postForm quotePostForm active'
+    } else if ((quotePostActive && uploading) || uploading) {
+      return 'postForm quotePostForm hidden'
+    } else {
+      return 'postForm quotePostForm none'
+    }
+  }
+
+  if (quotePostActive || update) {
     return (
       <div
-        className='postFormContainer'
+        className={update ? 'postFormContainer update' : 'postFormContainer'}
       >
 
-      <ProfilePic user={user} />
+      <ProfilePic user={update ? post.user : user} />
         
       <div
-        className={quotePostActive ? 
-          'postForm quotePostForm active' : 
-          'postForm quotePostForm active'
-        }
+        className={handleQuotePostFormClass()}
       >
         <form
           id={formId}
@@ -172,7 +183,9 @@ const QuotePostForm = ({
           encType={'multipart/form-data'}
         >
 
-        <h3>{user.blogName}</h3>
+        <h3
+          className='userNameHeader'
+        >{update ? post.user.blogName : user.blogName}</h3>
   
         <QuotePostInput
           post={post}
@@ -218,8 +231,13 @@ const QuotePostForm = ({
               if (disabledBool()) {
                   allowScroll(document)
                   resetInputs()
-                  setQuotePostActive(quotePostActive = false)
-                  setPostFormModal(postFormModal = false)
+                  
+                  if (!update) {
+                    setQuotePostActive(quotePostActive = false)
+                    setPostFormModal(postFormModal = false)
+                  } else {
+                    setUpdate(update = false)
+                  }
 
                   if (mobile) {
                     setPostFormOpen(postFormOpen = false)
@@ -234,6 +252,8 @@ const QuotePostForm = ({
 
           <ConfirmClose
             mobile={mobile}
+            update={update}
+            setUpdate={setUpdate}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -275,7 +295,10 @@ const QuotePostForm = ({
                 )
               }
               
-              setPostFormModal(postFormModal = false)
+              if (!update) {
+                setPostFormModal(postFormModal = false)
+              }
+              
               setUploading(uploading = true)
             }}
           >

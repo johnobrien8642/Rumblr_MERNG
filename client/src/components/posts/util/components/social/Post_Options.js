@@ -84,6 +84,8 @@ const PostOptions = ({
             refetchNotes={refetchNotes}
           />
 
+          {/* {renderConfirmDelete()} */}
+
           <img
             className='deletePostBtn'
             src="https://img.icons8.com/metro/64/000000/delete.png"

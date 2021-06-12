@@ -26,7 +26,10 @@ const PostShow = ({
   toggleUpdate,
   discover, 
   radar,
-  currentUser
+  currentUser,
+  repostTrail,
+  repostCaption,
+  setRepostCaption
 }) => {
   let [notesActive, setNotesActive] = useState(false)
   let [repostActive, setRepostActive] = useState(false)
@@ -159,7 +162,7 @@ const PostShow = ({
         
             {postBody(post)}
         
-            {repostFooter(post)}
+            {repostFooter(post, update, repostCaption, setRepostCaption)}
         
             {postTags(post)}
 

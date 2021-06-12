@@ -20,6 +20,14 @@ const UserResult = ({
   //   doesUserFollowUserRef.current =
   //   currentUser.userFollows.some(obj => obj._id === user._id)
   // }
+
+  const handleDescription = () => {
+    if (user.blogDescription) {
+      return <p>{user.blogDescription}</p>
+    } else {
+      return <br/>
+    }
+  }
   
   return (
     <React.Fragment>
@@ -34,7 +42,7 @@ const UserResult = ({
           }}
         >
           <h3>{user.blogName}</h3>
-          <p>{checkOutTheseBlogs ? user.blogDescription : ''}</p>
+          {handleDescription()}
         </Link>
       </div>
       <FollowButton 

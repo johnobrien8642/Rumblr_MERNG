@@ -1,24 +1,41 @@
 import React from 'react';
-import TextPostForm from '../create/TextPostForm'
-import PhotoPostForm from '../create/PhotoPostForm'
-import QuotePostForm from '../create/QuotePostForm'
-import LinkPostForm from '../create/LinkPostForm'
-import ChatPostForm from '../create/ChatPostForm'
-import AudioPostForm from '../create/AudioPostForm'
-import VideoPostForm from '../create/VideoPostForm'
+import TextPostForm from '../create/TextPostForm';
+import PhotoPostForm from '../create/PhotoPostForm';
+import QuotePostForm from '../create/QuotePostForm';
+import LinkPostForm from '../create/LinkPostForm';
+import ChatPostForm from '../create/ChatPostForm';
+import AudioPostForm from '../create/AudioPostForm';
+import VideoPostForm from '../create/VideoPostForm';
+import RepostForm from '../../util/components/social/Repost_Form';
 
 const PostUpdate = ({ 
-  post, update,
-  setUpdate, toggleUpdate
+  post, 
+  update,
+  setUpdate,
+  toggleUpdate,
+  uploading,
+  setUploading
 }) => {
   
   const renderForm = (post) => {
-    if (post.kind === 'TextPost') {
+    if (post.kind === 'Repost') {
+      return (
+        <RepostForm 
+          post={post}
+          update={update}
+          setUpdate={setUpdate}
+          uploading={uploading}
+          setUploading={setUploading}
+        />
+      )
+    } else if (post.kind === 'TextPost') {
       return (
         <TextPostForm
           post={post}
           update={update}
           setUpdate={setUpdate}
+          uploading={uploading}
+          setUploading={setUploading}
         />
       )
 
@@ -28,6 +45,8 @@ const PostUpdate = ({
           post={post} 
           update={update}
           setUpdate={setUpdate}
+          uploading={uploading}
+          setUploading={setUploading}
         />
       )
     } else if (post.kind === 'QuotePost') {
@@ -36,6 +55,8 @@ const PostUpdate = ({
           post={post}
           update={update}
           setUpdate={setUpdate}
+          uploading={uploading}
+          setUploading={setUploading}
         />
       )
     } else if (post.kind === 'LinkPost') {
@@ -44,6 +65,8 @@ const PostUpdate = ({
           post={post}
           update={update}
           setUpdate={setUpdate}
+          uploading={uploading}
+          setUploading={setUploading}
         />
       )
     } else if (post.kind === 'ChatPost') {
@@ -52,6 +75,8 @@ const PostUpdate = ({
           post={post}
           update={update}
           setUpdate={setUpdate}
+          uploading={uploading}
+          setUploading={setUploading}
         />
       )
     } else if (post.kind === 'AudioPost') {
@@ -60,6 +85,8 @@ const PostUpdate = ({
           post={post}
           update={update}
           setUpdate={setUpdate}
+          uploading={uploading}
+          setUploading={setUploading}
         />
       )
     } else if (post.kind === 'VideoPost') {
@@ -68,25 +95,15 @@ const PostUpdate = ({
           post={post}
           update={update}
           setUpdate={setUpdate}
+          uploading={uploading}
+          setUploading={setUploading}
         />
       )
     }
   }
 
   return (
-    <React.Fragment>
-      
-      {renderForm(post)}
-
-      <img
-        className='backBtn'
-        src="https://img.icons8.com/windows/32/000000/long-arrow-left.png"
-        alt=''
-        onClick={() => {
-          toggleUpdate(update, setUpdate)
-        }}
-      />
-    </React.Fragment>
+    renderForm(post)
   )
 }
 

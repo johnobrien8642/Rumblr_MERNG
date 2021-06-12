@@ -7,6 +7,8 @@ import DeleteComment from '../social/Delete_Comment'
 import ProfilePic from '../../../../user/util/components/Profile_Pic';
 import Mutations from '../../../../../graphql/mutations';
 import Queries from '../../../../../graphql/queries';
+import FeedUtil from '../../functions/feed_util.js';
+const { handlePostNotesScrollOutOfWindow } = FeedUtil;
 const { COMMENT_POST } = Mutations;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
 
@@ -26,6 +28,17 @@ const PostNotes = ({
       el.scrollTop = el.scrollHeight
     }
   })
+
+  useEffect(() => {
+    var scroll = handlePostNotesScrollOutOfWindow(
+      notesActive,
+      setNotesActive
+    )
+
+    return () => {
+      document.removeEventListener('scroll', scroll)
+    }
+  }, [])
 
   let [comment] = useMutation(COMMENT_POST, {
     update(client, { data }) {

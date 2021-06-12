@@ -10,7 +10,7 @@ const RenderSearchOrExitIcon = ({
       <React.Fragment>
         <img
           className='exitIcon'
-          src="https://img.icons8.com/ios-filled/24/ffffff/x.png"
+          src="https://img.icons8.com/ios-filled/64/ffffff/x.png"
           alt=''
           onClick={() => {
             openSearch(searchOpen = false)
@@ -23,7 +23,7 @@ const RenderSearchOrExitIcon = ({
       <React.Fragment>
         <img
           className='searchIcon'
-          src="https://img.icons8.com/android/24/ffffff/search.png"
+          src="https://img.icons8.com/android/64/ffffff/search.png"
           alt=''
           onClick={() => {
             openSearch(searchOpen = true)

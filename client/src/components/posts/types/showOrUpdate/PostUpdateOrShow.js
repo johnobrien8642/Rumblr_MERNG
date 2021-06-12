@@ -4,7 +4,10 @@ import PostShow from '../showOrUpdate/PostShow';
 
 const PostUpdateOrShow = ({
   post,
-  currentUser
+  currentUser,
+  repostFormBool,
+  uploading,
+  setUploading
 }) => {
   let [update, setUpdate] = useState(false)
 
@@ -24,6 +27,8 @@ const PostUpdateOrShow = ({
         update={update}
         setUpdate={setUpdate}
         toggleUpdate={toggleUpdate}
+        uploading={uploading}
+        setUploading={setUploading}
       />
     )
   } else {
@@ -34,6 +39,7 @@ const PostUpdateOrShow = ({
         update={update}
         setUpdate={setUpdate}
         toggleUpdate={toggleUpdate}
+        repostFormBool={repostFormBool}
       />
     )
   }

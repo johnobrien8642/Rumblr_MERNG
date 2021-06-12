@@ -7,6 +7,7 @@ import Mention from './posts/util/Mention.js';
 import Like from './posts/util/Like.js';
 import Comment from './posts/util/Comment.js';
 import Repost from './posts/util/Repost.js';
+import RepostCaption from './posts/util/RepostCaption.js'
 import Follow from './posts/util/Follow.js';
 import Post from './posts/types/Post.js';
 import TextPost from './posts/types/TextPost.js';
@@ -26,6 +27,8 @@ const models = {
   Like,
   Comment,
   Repost,
+  RepostCaption,
+  Mention,
   Follow,
   Post,
   TextPost,

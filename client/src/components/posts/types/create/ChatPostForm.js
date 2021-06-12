@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
+import randomstring from 'randomstring';
 import Mutations from '../../../../graphql/mutations.js';
 import Queries from '../../../../graphql/queries.js';
 import ChatPostInput from '../../util/components/forms/inputTypes/Chat_Post_Input'
@@ -15,7 +16,7 @@ const { bodyPost, handleFormData, stripAllImgs,
         handleUploadedFiles, resetDisplayIdx,
         handleMentions, discardMentions,
         handleAllTextChatPost, preventScroll,
-        allowScroll } = PostFormUtil;
+        allowScroll, handleTagInput } = PostFormUtil;
 const { CREATE_OR_UPDATE_POST } = Mutations;
 const { FETCH_USER_FEED } = Queries;
 
@@ -30,7 +31,9 @@ const ChatPostForm = ({
   postFormModal,
   setPostFormModal,
   postFormOpen,
-  setPostFormOpen
+  setPostFormOpen,
+  uploading,
+  setUploading
 }) => {
   // let chat = useRef('')
   let [chat, setChat] = useState('')
@@ -75,14 +78,16 @@ const ChatPostForm = ({
       resetInputs();
       if (post) {
         setUpdate(update = false)
+        setUploading(uploading = false)
       } else {
         allowScroll(document)
         setChatPostActive(chatPostActive = false)
-        setPostFormModal(postFormModal = false)
 
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
+
+        setUploading(uploading = false)
       }
     },
     onError(error) {
@@ -146,20 +151,27 @@ const ChatPostForm = ({
     body.current.length === 0 &&
     !description
   }
+
+  const handleChatPostFormClass = () => {
+    if ((chatPostActive && !uploading) || update) {
+      return 'postForm chatPostForm active'
+    } else if (chatPostActive && uploading) {
+      return 'postForm chatPostForm hidden'
+    } else {
+      return 'postForm chatPostForm none'
+    }
+  }
   
-  if (chatPostActive) {
+  if (chatPostActive || update) {
     return (
       <div
-        className='postFormContainer'
+        className={update ? 'postFormContainer update' : 'postFormContainer'}
       >
 
-      <ProfilePic user={user} />
+      <ProfilePic user={update ? post.user : user} />
 
       <div
-        className={chatPostActive ? 
-        'postForm chatPostForm active' : 
-        'postForm chatPostForm hidden'
-        }
+        className={handleChatPostFormClass()}
       >
         <form
           id={formId}
@@ -168,7 +180,9 @@ const ChatPostForm = ({
           encType={'multipart/form-data'}
         >
 
-        <h3>{user.blogName}</h3>
+        <h3
+          className='userNameHeader'
+        >{update ? post.user.blogName : user.blogName}</h3>
   
         <ChatPostInput
           chat={chat}
@@ -210,8 +224,13 @@ const ChatPostForm = ({
               if (disabledBool()) {
                   resetInputs()
                   allowScroll(document)
-                  setChatPostActive(chatPostActive = false)
-                  setPostFormModal(postFormModal = false)
+                  
+                  if (!update) {
+                    setPostFormModal(postFormModal = false)
+                    setChatPostActive(chatPostActive = false)
+                  } else {
+                    setUpdate(update = false)
+                  }
 
                   if (mobile) {
                     setPostFormOpen(postFormOpen = false)
@@ -226,6 +245,8 @@ const ChatPostForm = ({
 
           <ConfirmClose
             mobile={mobile}
+            update={update}
+            setUpdate={setUpdate}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -242,6 +263,37 @@ const ChatPostForm = ({
             type='submit'
             className={disabledBool() ? 'formSubmitBtn disabled' : 'formSubmitBtn'}
             disabled={disabledBool()}
+            onClick={() => {
+              if (description) {
+                var textObj = {
+                  kind: 'text',
+                  srcType: 'text',
+                  content: description,
+                  displayIdx: body.current.length,
+                  uniqId: randomstring.generate({
+                    length: 12,
+                    charset: 'alphabetic'
+                  })
+                }
+
+                body.current.push(textObj)
+              
+                setDescription(description = '')
+              }
+              
+              if (tag) {
+                handleTagInput(
+                  tag, setTag,
+                  tags, setTags
+                )
+              }
+              
+              if (!update) {
+                setPostFormModal(postFormModal = false)
+              }
+              
+              setUploading(uploading = true)
+            }}
           >
             {post ? 'Update' : 'Post'}
           </button>

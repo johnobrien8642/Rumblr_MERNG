@@ -44,7 +44,7 @@ const BrowserNav = ({
               }}
             >
               <img 
-                src="https://img.icons8.com/fluent-systems-filled/38/ffffff/r.png"
+                src="https://img.icons8.com/fluent-systems-filled/64/ffffff/r.png"
                 alt=''  
               />
             </Link>
@@ -88,7 +88,7 @@ const BrowserNav = ({
               }}
             >
               <img
-                src="https://img.icons8.com/ios-glyphs/38/ffffff/home-page.png"
+                src="https://img.icons8.com/ios-glyphs/64/ffffff/home-page.png"
                 alt=''
               />
             </Link>
@@ -107,7 +107,7 @@ const BrowserNav = ({
               }}
             >
               <img 
-                src="https://img.icons8.com/ios/34/ffffff/compass--v1.png"
+                src="https://img.icons8.com/ios/64/ffffff/compass--v1.png"
                 alt=''
               />
             </Link>
@@ -132,7 +132,7 @@ const BrowserNav = ({
             }}
           >
             <img 
-              src="https://img.icons8.com/fluent-systems-filled/38/ffffff/lightning-bolt.png"
+              src="https://img.icons8.com/fluent-systems-filled/64/ffffff/lightning-bolt.png"
               alt=''
             />
             {renderTotalCount(totalCountRef)}
@@ -170,7 +170,7 @@ const BrowserNav = ({
             }}
           >
             <img
-              src="https://img.icons8.com/material-rounded/38/ffffff/user.png"
+              src="https://img.icons8.com/material-rounded/64/ffffff/user.png"
               alt=''
             />
           </div>

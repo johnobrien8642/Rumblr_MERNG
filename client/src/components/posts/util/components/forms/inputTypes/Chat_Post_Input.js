@@ -7,11 +7,9 @@ const ChatPostInput = ({
   setChat
 }) => {
   let [placeholder, setPlaceholder] = useState("<strong>Brother Muzone:</strong> Well we can't stand out here all night...<br><br><strong> Omar Little:</strong> I suppose we can't...<br><br><strong> Brother Muzone:</strong> A man has to have a code.<br><br><strong> Omar Little:</strong> Oh indeed...")
-  let [togglePlaceholder, setTogglePlaceholder] = useState(false)
 
   useEffect(() => {
     if (post) {
-      chat.current = post.chat
       document.querySelector('.chatText').innerHTML = post.chat
     }
 
@@ -45,7 +43,7 @@ const ChatPostInput = ({
   
   return (
     <div
-      className={!togglePlaceholder ? 'chatText' : 'chatText placeholder'}
+      className={!placeholder ? 'chatText' : 'chatText placeholder'}
       contentEditable={true}
       onInput={e => {
         regexChat()
@@ -55,7 +53,6 @@ const ChatPostInput = ({
       }}
       onFocus={() => {
         setPlaceholder(placeholder = '')
-        setTogglePlaceholder(togglePlaceholder = false)
       }}
       onKeyDown={e => {
         if (e.key === 'Enter') {
@@ -79,7 +76,7 @@ const ChatPostInput = ({
           }
         }
       }}
-      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(placeholder) }}
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post ? post.chat : placeholder) }}
     >
     </div>
   )

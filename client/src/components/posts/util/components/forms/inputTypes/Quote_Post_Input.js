@@ -1,24 +1,13 @@
-import React, { useEffect } from 'react';
+import DOMPurify from 'dompurify';
+import React from 'react';
 
 const QuotePostInput = ({
   post, 
   quote, 
   setQuote,
   source, 
-  setSource,
-  placeholder,
-  setPlaceholder
+  setSource
 }) => {
-  
-  useEffect(() => {
-    if (post) {
-      //eslint-disable-next-line
-      setQuote(quote = post.quote)
-      //eslint-disable-next-line
-      setSource(source = post.source)
-    }
-
-  }, [quote])
 
   return (
     <div
@@ -32,6 +21,9 @@ const QuotePostInput = ({
           data-quote={'"'}
           className={quote ? 'quoteInput active' : 'quoteInput placeholder'}
           contentEditable='true'
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(post ? post.quote : '')
+          }}
           onInput={e => {
             setQuote(quote = e.target.textContent)
           }}
@@ -46,17 +38,13 @@ const QuotePostInput = ({
         >
           <span>-</span>
         </span>
-
-        {/* <input
-          className='source'
-          value={source}
-          placeholder='Source'
-          onChange={e => setSource(source = e.target.value)}
-        /> */}
         <span
           data-placeholder='Source'
           className={source ? 'sourceInput' : 'sourceInput placeholder'}
           contentEditable='true'
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(post ? post.source : '')
+          }}
           onInput={e => {
             setSource(source = e.target.textContent)
           }}

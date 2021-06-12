@@ -86,15 +86,17 @@ const AudioPostForm = ({
       resetInputs();
       if (post) {
         setUpdate(update = false)
+        setUploading(uploading = false)
       } else {
         resetInputs()
         allowScroll(document)
         setAudioPostActive(audioPostActive = false)
-        setUploading(uploading = false)
 
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
+
+        setUploading(uploading = false)
       }
     },
     onError(error) {
@@ -173,22 +175,31 @@ const AudioPostForm = ({
     return !audioFile
   }
 
-  if (audioPostActive) {
+  const handleAudioPostFormClass = () => {
+    if ((audioPostActive && !uploading) || update) {
+      return 'postForm audioPostForm active'
+    } else if (audioPostActive && uploading) {
+      return 'postForm audioPostForm hidden'
+    } else {
+      return 'postForm audioPostForm none'
+    }
+  }
+
+  if (audioPostActive || update) {
     return (
       <div
-        className='postFormContainer'
+        className={update ? 'postFormContainer update' : 'postFormContainer'}
       >
 
-      <ProfilePic user={user} />
+      <ProfilePic user={update ? post.user : user} />
 
       <div
-        className={audioPostActive ? 
-          'postForm audioPostForm active' : 
-          'postForm audioPostForm hidden'
-        }
+        className={handleAudioPostFormClass()}
       >
 
-        <h3>{user.blogName}</h3>
+        <h3
+          className='userNameHeader'
+        >{update ? post.user.blogName : user.blogName}</h3>
 
         <form
           id={formId}
@@ -198,10 +209,10 @@ const AudioPostForm = ({
         >
       
         <AudioFileInput
-          displayBodyImageAndTextInput={displayBodyImageAndTextInput}
-          setDisplayBodyImageAndTextInput={setDisplayBodyImageAndTextInput}
           post={post}
           update={update}
+          displayBodyImageAndTextInput={displayBodyImageAndTextInput}
+          setDisplayBodyImageAndTextInput={setDisplayBodyImageAndTextInput}
           formId={formId}
           objsToClean={objsToClean}
           audioFile={audioFile}
@@ -255,8 +266,13 @@ const AudioPostForm = ({
               if (disabledBool()) {
                 resetInputs()
                 allowScroll(document)
-                setAudioPostActive(audioPostActive = false)
-                setPostFormModal(postFormModal = false)
+                
+                if (!update) {
+                  setAudioPostActive(audioPostActive = false)
+                  setPostFormModal(postFormModal = false)
+                } else {
+                  setUpdate(update = false)
+                }
 
                 if (mobile) {
                   setPostFormOpen(postFormOpen = false)
@@ -271,6 +287,8 @@ const AudioPostForm = ({
 
           <ConfirmClose
             mobile={mobile}
+            update={update}
+            setUpdate={setUpdate}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -312,7 +330,10 @@ const AudioPostForm = ({
                 )
               }
               
-              setPostFormModal(postFormModal = false)
+              if (!update) {
+                setPostFormModal(postFormModal = false)
+              }
+
               setUploading(uploading = true)
             }}
           >

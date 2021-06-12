@@ -6,7 +6,6 @@ import Cookies from 'js-cookie';
 import Queries from '../../graphql/queries';
 import FeedUtil from '../posts/util/functions/feed_util.js';
 import ProfilePic from '../user/util/components/Profile_Pic';
-import PostShow from '../posts/types/showOrUpdate/PostShow';
 import PostLoading from '../nav/Post_Loading';
 import PostShowUtil from '../posts/util/functions/post_show_util.js';
 const { FETCH_USER_FEED, FETCH_TAG_FEED } = Queries;
@@ -18,7 +17,8 @@ const Feed = ({
   user, 
   tag,
   currentUser,
-  uploading
+  uploading,
+  setUploading
 }) => {
   let feedArr = useRef([])
   let fetchMoreDiv = useRef(null);
@@ -76,6 +76,7 @@ const Feed = ({
               className={handlePostClassName(obj)}
               key={obj._id}
             >
+              
               <div
                 className='userRepostShowHeader'
               >
@@ -100,9 +101,12 @@ const Feed = ({
                   </Link>
                 </span>
               </div>
-              <PostShow
+
+              <PostUpdateOrShow
                 post={obj}
                 repostFormBool={false}
+                uploading={uploading}
+                setUploading={setUploading}
               />
             </div>
           )
@@ -115,6 +119,8 @@ const Feed = ({
               <PostUpdateOrShow
                 post={obj}
                 currentUser={currentUser}
+                uploading={uploading}
+                setUploading={setUploading}
               />
             </div>
           )

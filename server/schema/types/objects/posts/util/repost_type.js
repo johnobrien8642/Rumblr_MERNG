@@ -44,7 +44,14 @@ const RepostType = new GraphQLObjectType({
           .then(repost => repost.repostedFrom)
       }
     },
-    repostTrail: { type: GraphQLList(GraphQLJSONObject) },
+    repostTrail: { 
+      type: GraphQLList(RepostCaptionType),
+      resolve(parentValue) {
+        return Repost.findById(parentValue._id)
+          .populate('repostTrail')
+          .then(repost => repost.repostTrail)
+      }
+    },
     // repostCaptions: { 
     //   type: GraphQLJSONObject,
     //   resolve(parentValue) {

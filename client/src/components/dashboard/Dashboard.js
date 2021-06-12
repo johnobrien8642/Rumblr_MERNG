@@ -56,6 +56,7 @@ const Dashboard = props => {
           user={null} 
           currentUser={user}
           uploading={uploading}
+          setUploading={setUploading}
         />
       </div>
 

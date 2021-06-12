@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const ConfirmClose = ({
   mobile,
+  update,
+  setUpdate,
   confirmClose,
   setConfirmClose,
   allowScroll,
@@ -14,23 +16,13 @@ const ConfirmClose = ({
   postFormOpen,
   setPostFormOpen
 }) => {
-
-  useEffect(() => {
-    if (confirmClose) {
-      var el = document.querySelector('.discard')
-
-      if (el) {
-        el.scrollIntoView(true)
-      }
-    }
-  }, [confirmClose])
   
   if (confirmClose) {
     return (
       <React.Fragment>
         <div className='confirmCloseModal' />
         <div
-          className='confirmCloseContainer'
+          className={update ? 'confirmCloseContainer update' : 'confirmCloseContainer'}
         >
           <span 
             className='discardTitle'
@@ -49,7 +41,12 @@ const ConfirmClose = ({
             <div
               className='discard'
               onClick={() => {
-                if ((repost && mobile) || mobile) {
+                if (update) {
+                  allowScroll(document)
+                  resetInputs()
+                  setConfirmClose(confirmClose = false)
+                  setUpdate(update = false)
+                } else if ((repost && mobile) || mobile) {
                   allowScroll(document)
                   resetInputs()
                   setFormActive(formActive = false)

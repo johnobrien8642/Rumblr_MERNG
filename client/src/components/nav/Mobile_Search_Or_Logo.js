@@ -28,7 +28,7 @@ const MobileSearchOrLogo = ({
             }}
           >
             <img
-              src="https://img.icons8.com/fluent-systems-filled/32/ffffff/r.png"
+              src="https://img.icons8.com/fluent-systems-filled/64/ffffff/r.png"
               alt=''
             />
           </Link>

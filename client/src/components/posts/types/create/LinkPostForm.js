@@ -84,14 +84,15 @@ const LinkPostForm = ({
       resetInputs();
       if (post) {
         setUpdate(update = false)
+        setUploading(uploading = false)
       } else {
         allowScroll(document)
         setLinkPostActive(linkPostActive = false)
-        setPostFormModal(postFormModal = false)
         
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
+        setUploading(uploading = false)
       }
     },
     onError(error) {
@@ -197,20 +198,27 @@ const LinkPostForm = ({
     body.current.length === 0 && 
     !description
   }
+
+  const handleLinkPostFormClass = () => {
+    if ((linkPostActive && !uploading) || update) {
+      return 'postForm linkPostForm active'
+    } else if ((linkPostActive && uploading) || uploading) {
+      return 'postForm linkPostForm hidden'
+    } else {
+      return 'postForm linkPostForm none'
+    }
+  }
   
-  if (linkPostActive) {
+  if (linkPostActive || update) {
     return (
       <div
-        className='postFormContainer'
+        className={update ? 'postFormContainer update' : 'postFormContainer'}
       >
 
-      <ProfilePic user={user} />
+      <ProfilePic user={update ? post.user : user} />
 
       <div
-        className={linkPostActive ? 
-          'postForm linkPostForm active' : 
-          'postForm linkPostForm hidden'
-        }
+        className={handleLinkPostFormClass()}
       >
         <form
           id={formId}
@@ -219,7 +227,9 @@ const LinkPostForm = ({
           encType={'multipart/form-data'}
         >
         
-        <h3>{user.blogName}</h3>
+        <h3
+          className='userNameHeader'
+        >{update ? post.user.blogName : user.blogName}</h3>
   
         {handleLinkPreview()}
         
@@ -279,9 +289,14 @@ const LinkPostForm = ({
               if (disabledBool()) {
                   resetInputs()
                   allowScroll(document)
-                  setLinkPostActive(linkPostActive = false)
-                  setPostFormModal(postFormModal = false)
                   setDisplayBodyImageAndTextInput(displayBodyImageAndTextInput = false)
+                  
+                  if (!update) {
+                    setLinkPostActive(linkPostActive = false)
+                    setPostFormModal(postFormModal = false)
+                  } else {
+                    setUpdate(update = false)
+                  }
 
                   if (mobile) {
                     setPostFormOpen(postFormOpen = false)
@@ -296,6 +311,8 @@ const LinkPostForm = ({
 
           <ConfirmClose
             mobile={mobile}
+            update={update}
+            setUpdate={setUpdate}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -338,7 +355,10 @@ const LinkPostForm = ({
                 )
               }
               
-              setPostFormModal(postFormModal = false)
+              if (!update) {
+                setPostFormModal(postFormModal = false)
+              }
+
               setUploading(uploading = true)
             }}
           >

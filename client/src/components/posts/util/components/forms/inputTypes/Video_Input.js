@@ -38,11 +38,33 @@ const VideoInput = ({
     }
   }, [videoFile, videoObj])
 
+  useEffect(() => {
+    if (update && videoObj) {
+      var el = document.querySelector('.videoLinkInput')
+
+      if (el) {
+        el.value = ''
+      }
+    }
+  }, [videoObj, update])
+
   const renderUpdateFileInput = () => {
     if (update) {
       return (
-        <div>
-          <h3>Upload video file</h3>
+        <div
+          className='videoFileInputContainer'
+        >
+          <label
+            className='videoFileInputCustomLabel'
+          >
+          <div>
+            <img 
+              className='videoIcon'
+              src="https://img.icons8.com/nolan/64/camcorder-pro.png"
+              alt=''
+            />
+            <span>Upload a different video file</span>
+          </div>
           <input
             id='videoFileInput'
             type='file'
@@ -63,8 +85,19 @@ const VideoInput = ({
               document.getElementById('videoFileInput').value = ''
             }}
           />
-          <h3>Upload video link</h3>
+          </label>
+
+          <div
+            className='linkContainer'
+          >
+          <img 
+            className='linkIcon'
+            src="https://img.icons8.com/flat-round/64/000000/link--v1.png"
+            alt=''
+          />
           <textarea
+            className='videoLinkInput'
+            placeholder='Paste a new url'
             onChange={e => {
               previewVideoLink(
                 e,
@@ -78,9 +111,11 @@ const VideoInput = ({
                 objsToClean
               )
 
-              setIsLink(isLink = true)
+              setIsLink(isLink = true) 
             }}
           ></textarea>
+          </div>
+          <div className='borderMiddle' />
         </div>
       )
     }

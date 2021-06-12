@@ -8,7 +8,12 @@ const TextPostInput = ({
 
   useEffect(() => {
     if (post) {
-      reassembleTextPostStatics(post, title, setTitle)
+      var el = document.querySelector('.titleInput')
+      
+      if (el) {
+        el.textContent = post.title
+        reassembleTextPostStatics(post, title, setTitle)
+      }
     }
     //eslint-disable-next-line
   }, [])
@@ -22,16 +27,10 @@ const TextPostInput = ({
         className={title ? 'titleInput active' : 'titleInput placeholder'}
         contentEditable='true'
         onInput={e => {
-          setTitle(title = e.target.textContent)
+          // setTitle(title = e.target.textContent)
         }}
       ></span>
     </div>
-    // <input
-    //   className='titleInput'
-    //   value={title}
-    //   placeholder='Title'
-    //   onChange={e => setTitle(title = e.target.value)}
-    // />
   )
 }
 

@@ -13,7 +13,7 @@ const Results = ({
   setActive 
 }) => {
   
-  let { loading, error, data } = useQuery(SEARCH_USERS_AND_TAGS,
+  let { data } = useQuery(SEARCH_USERS_AND_TAGS,
       { variables: {
         filter: { OR: [
             { blogName_contains: input },
@@ -24,60 +24,73 @@ const Results = ({
     }
   );
   
-  if (loading) return 'Loading...';
-  if (error) return `Error: ${error.message}`;
-  
-  const { usersAndTags } = data;
-  
-  if (active) {
-    return (
-      <ul
-        className='results'
-        tabIndex='0'
-      >
-        {usersAndTags.map((res, i) => {
-          switch(res.__typename) {
-            case 'UserType':
-              return(
-                <li 
-                  key={res._id}
-                >
-                  <UserResult
-                    currentUser={user}
-                    user={res}
-                    active={active}
-                    setActive={setActive}
-                  />
-                </li>
-              )
-            case 'TagType':
-              return(
-                <li 
-                  key={res._id}
-                >
-                  <TagResult
-                    currentUser={user}
-                    tag={res}
-                    active={active}
-                    setActive={setActive}
-                  />
-                </li>
-              )
-            default:
-              return (
-                <li></li>
-              )
-            }
-        })}
-      </ul>
-    )
+  if (data) {
+    
+    const { usersAndTags } = data;
+
+    if (usersAndTags) {
+      if (active) {
+        return (
+          <ul
+            className='results'
+            tabIndex='0'
+          >
+            {usersAndTags.map((res, i) => {
+              switch(res.__typename) {
+                case 'UserType':
+                  return(
+                    <li
+                      className='userResult'
+                      key={res._id}
+                    >
+                      <UserResult
+                        currentUser={user}
+                        user={res}
+                        active={active}
+                        setActive={setActive}
+                      />
+                    </li>
+                  )
+                case 'TagType':
+                  return(
+                    <li
+                      className='tagResult'
+                      key={res._id}
+                    >
+                      <TagResult
+                        currentUser={user}
+                        tag={res}
+                        active={active}
+                        setActive={setActive}
+                      />
+                    </li>
+                  )
+                default:
+                  return (
+                    <li></li>
+                  )
+                }
+            })}
+          </ul>
+        )
+      } else {
+        return (
+          <div>
+          </div>
+        )
+      }
+    } else {
+      return (
+        <div>
+        </div>
+      )
+    }
   } else {
     return (
       <div>
       </div>
     )
   }
-
 }
 
 export default Results;

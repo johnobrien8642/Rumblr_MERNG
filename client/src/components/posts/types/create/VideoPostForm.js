@@ -84,11 +84,12 @@ const VideoPostForm = ({
         resetInputs()
         allowScroll(document)
         setVideoPostActive(videoPostActive = false)
-        setUploading(uploading = false)
-
+        
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
+
+        setUploading(uploading = false)
       }
     },
     onError(error) {
@@ -165,23 +166,32 @@ const VideoPostForm = ({
     !description
   }
 
-  if (videoPostActive) {
+  const handleVideoPostFormClass = () => {
+    if ((videoPostActive && !uploading) || update) {
+      return 'postForm videoPostForm active'
+    } else if (videoPostActive && uploading) {
+      return 'postForm videoPostForm hidden'
+    } else {
+      return 'postForm videoPostForm none'
+    }
+  }
+
+  if (videoPostActive || update) {
     return (
     <div
-      className='postFormContainer'
+      className={update ? 'postFormContainer update' : 'postFormContainer'}
     >
 
-      <ProfilePic user={user} />
+      <ProfilePic user={update ? post.user : user} />
 
       <div>
         <div
-          className={videoPostActive ? 
-            'postForm videoPostForm active' : 
-            'postForm videoPostForm active'
-          }
+          className={handleVideoPostFormClass()}
         >
           
-          <h3>{user.blogName}</h3>
+          <h3
+            className='userNameHeader'
+          >{update ? post.user.blogName : user.blogName}</h3>
 
           <form
             id={formId}
@@ -247,8 +257,13 @@ const VideoPostForm = ({
                 if (disabledBool()) {
                     resetInputs()
                     allowScroll(document)
-                    setVideoPostActive(videoPostActive = false)
-                    setPostFormModal(postFormModal = false)
+                    
+                    if (!update) {
+                      setVideoPostActive(videoPostActive = false)
+                      setPostFormModal(postFormModal = false)
+                    } else {
+                      setUpdate(update = false)
+                    }
 
                     if (mobile) {
                       setPostFormOpen(postFormOpen = false)
@@ -263,6 +278,8 @@ const VideoPostForm = ({
 
             <ConfirmClose
               mobile={mobile}
+              update={update}
+              setUpdate={setUpdate}
               confirmClose={confirmClose}
               setConfirmClose={setConfirmClose}
               allowScroll={allowScroll}
@@ -304,7 +321,10 @@ const VideoPostForm = ({
                   )
                 }
                 
-                setPostFormModal(postFormModal = false)
+                if (!update) {
+                  setPostFormModal(postFormModal = false)
+                }
+
                 setUploading(uploading = true)
               }}
             >

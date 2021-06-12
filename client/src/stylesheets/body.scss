@@ -22,11 +22,24 @@
   z-index: 1
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   // position: relative;
   background-color: var(--tumblr-deep-blue);
   margin: 0 auto;
+  // overflow-x: hidden;
   // z-index: 1;
+
+  .mention {
+    text-decoration: underline;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 .profilePic {
@@ -37,6 +50,7 @@ body {
     cursor: pointer;
   }
 }
+
 
 // .App {
 //   position: relative;

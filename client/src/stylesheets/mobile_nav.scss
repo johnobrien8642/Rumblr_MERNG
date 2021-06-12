@@ -16,13 +16,17 @@
     display: flex;
     position: fixed;
     top: 0px;
+    // width: 100vw;
   
     .hamburgerOrExit {
       width: 50px;
   
       .exitIcon {
+        width: 30px;
+        height: 30px;
         filter: contrast(500%);
         margin: 14px 0 0 7px;
+        
         
         &:hover {
           cursor: pointer;
@@ -30,6 +34,8 @@
       }
     
       .hamburgerIcon {
+        width: 30px;
+        height: 30px;
         filter: contrast(500%);
         margin: 10px 0 0 5px;
         
@@ -226,24 +232,26 @@
       }
   
     .logo {
-      // background: red;
-      // position: fixed;
       margin: auto;
   
       img {
+        width: 40px;
+        height: 40px;
         transition: opacity .2s;
   
         &:hover {
           opacity: .7;
+          cursor: pointer;
         }
       }
-  
     }
   
     .searchOrExitIcon {
       margin: 12px 10px 0 10px;
       
       .searchIcon {
+        width: 30px;
+        height: 30px;
         opacity: .7;
         &:hover {
           cursor: pointer;
@@ -251,11 +259,13 @@
       }
   
       .exitIcon {
+        width: 27px;
+        height: 27px;
 
         @media (max-width: 320px) {
           margin-left: -6px;
         }
-  
+
         &:hover {
           cursor: pointer;
         }
@@ -361,12 +371,29 @@
         
         .results {
           overflow: auto;
+
+          .userResult {
+            // background-color: red;
+            font-size: 15px;
+            font-family: var(--font);
+
+            .profilePic {
+              position: relative;
+              top: 0;
+              width: 30px;
+              height: 35px;
+            }
+          }
+
+          .tagResult {
+            height: 25px;
+          }
           
           li {
             display: flex;
-            margin-top: 5px;
+            margin-top: 10px;
             justify-content: space-between;
-            height: 50px;
+            // height: 50px;
             
             a {
               padding: 5px 15px 3px 8px;

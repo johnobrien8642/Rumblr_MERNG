@@ -13,6 +13,9 @@ import FollowType from '../objects/posts/util/follow_type.js';
 import CommentType from '../objects/posts/util/comment_type.js';
 import AnyPostType from '../unions/any_post_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
+import RepostCaptionType from '../objects/posts/util/repost_caption_type.js'
+import RepostOrRepostCaptionType from '../unions/repost_or_repost_caption_type.js';
+
 import createOrUpdatePost from '../../../models/posts/types/util/create_or_update_function.js';
 import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function_util.js';
 const { deletePost, 
@@ -28,6 +31,7 @@ const Like = mongoose.model('Like');
 const Comment = mongoose.model('Comment')
 const Follow = mongoose.model('Follow');
 const Image = mongoose.model('Image');
+const RepostCaption = mongoose.model('RepostCaption');
 const { GraphQLObjectType, GraphQLID,
         GraphQLString, GraphQLList } = graphql;
 
@@ -222,6 +226,23 @@ const mutation = new GraphQLObjectType({
         })
       }
     },
+    updateRepost: {
+      type: RepostCaptionType,
+      args: {
+        repostData: { type: GraphQLJSONObject }
+      },
+      resolve(parentValue, {
+        repostData
+      }) {
+        return Promise.all([
+          RepostCaption.findById(repostData.captionId)
+        ]).then(([foundCaption]) => {
+          foundCaption.caption = repostData.repostCaption
+          
+          return foundCaption.save().then(caption => caption)
+        })
+      }
+    },
     repost: {
       type: RepostType,
       args: {
@@ -237,12 +258,12 @@ const mutation = new GraphQLObjectType({
             .populate('profilePic')
             .then(user => user),
           User.findOne({ blogName: repostData.repostedFrom }),
-          Post.findById(repostData.repostedId)
+          Post.findById(repostData.repostedId),
         ]).then(([reposter, reposted, foundPost]) => {
-        
+
           var repostTrailUserObj = 
-            repostData.previousReposter ? 
-            repostData.previousReposter : 
+            repostData.previousReposter ?
+            repostData.previousReposter :
             reposter
           
           var repostCaption = 
@@ -258,50 +279,23 @@ const mutation = new GraphQLObjectType({
           repost.user = reposter._id
           repost.repostedFrom = reposted._id
           repost.onModel = repostData.postKind
-
-          repost.repostTrail = foundPost.kind === 'Repost' ?
-            [
-              ...foundPostObj.repostTrail, 
-              {
-                user: {
-                  _id: repostTrailUserObj._id,
-                  blogName: repostTrailUserObj.blogName,
-                  profilePic: {
-                    src: repostTrailUserObj.profilePic.src
-                  }
-                },
-                caption: repostCaption, 
-                repostId: repost._id 
-              }
-            ] 
-              :
-            [
-              { 
-                user: {
-                  _id: repostTrailUserObj._id,
-                  blogName: repostTrailUserObj.blogName,
-                  profilePic: {
-                    src: repostTrailUserObj.profilePic.src
-                  }
-                },
-                caption: repostCaption, 
-                repostId: repost._id 
-              }
-            ]
           
-          // repost.repostTrail = foundPost.kind === 'Repost' ?
-          //   [...foundPostObj.repostTrail, repostTrailId] :
-          //   [repostTrailId]
-
-          // repost.repostCaptions = foundPost.kind === 'Repost' ?
-          //   [...foundPostObj.repostCaptions, { caption: repostCaption, userId: reposter._id, repostId: repost._id }] :
-          //   [{ caption: repostCaption, userId: reposter._id, repostId: repost._id }]
-
+          var caption = new RepostCaption({
+            caption: repostCaption,
+            user: reposter._id,
+            repost: repost._id
+          })
+          
+          repost.repostTrail.push(caption._id)
 
           foundPost.notesCount = foundPost.notesCount + 1
 
-          return Promise.all(
-            ([repost.save(), foundPost.save()])).then(([repost, post]) => repost)
+          return Promise.all([
+              repost.save(), 
+              foundPost.save(), 
+              caption.save()
+            ])
+            .then(([repost, post, caption]) => repost)
         })
       }
     },

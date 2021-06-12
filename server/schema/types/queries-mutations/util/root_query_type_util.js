@@ -29,6 +29,7 @@ const asyncTagPostArr = async (
     asyncFetchTagPosts,
     handleFilterTagRegex,
     handleFilterPostContentRegex) => {
+
   var tagPosts = []
   for (var i = 0; i < tags.length; i++) {
     var posts = await asyncFetchTagPosts(
@@ -43,21 +44,21 @@ const asyncTagPostArr = async (
 }
 
 const asyncFetchTagPosts = async (
-  query, id, 
+  query, tagId, 
   likedPostIds,
   Post, User, 
   mongoose,
   handleFilterTagRegex,
   handleFilterPostContentRegex
 ) => {
-  var recastTagId = mongoose.Types.ObjectId(id)
+  var recastTagId = mongoose.Types.ObjectId(tagId)
 
   var user = await User.findOne({ blogName: query })
   
   var filteredTagRegex = handleFilterTagRegex(user)
 
   var filteredPostContentRegex = handleFilterPostContentRegex(user)
-
+  
   var posts = await Post.aggregate([
     {
       $lookup: {
@@ -92,10 +93,10 @@ const asyncFetchTagPosts = async (
                       }
                     ]
                   },
-                  { $or: [
-                      { $in: [ "$$tagId", "$tagIds" ] },
-                    ]
-                  }
+                  // { $or: [
+                  //     { $in: [ "$$tagId", "$tagIds" ] },
+                  //   ]
+                  // }
                 ]
               }
             }

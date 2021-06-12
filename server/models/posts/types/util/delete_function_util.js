@@ -8,6 +8,7 @@ const Image = mongoose.model('Image');
 const Audio = mongoose.model('Audio');
 const Video = mongoose.model('Video');
 const Mention = mongoose.model('Mention');
+const RepostCaption = mongoose.model('RepostCaption')
 
 var s3Client = new aws.S3({
   secretAccessKey: keys.secretAccessKey,
@@ -27,11 +28,13 @@ const handlePostDelete = async (post) => {
           Like.deleteMany({ post: post._id }),
           Comment.deleteMany({ post: post._id }),
           Mention.deleteMany({ post: post._id }),
+          RepostCaption.deleteMany({ repost: post._id })
         ]).then(() => post._id)
       })
   } else {
     return Promise.all([
       Post.deleteOne({ _id: post._id }),
+      
       Like.deleteMany({ post: post._id }),
       Comment.deleteMany({ post: post._id }),
       Mention.deleteMany({ post: post._id }),

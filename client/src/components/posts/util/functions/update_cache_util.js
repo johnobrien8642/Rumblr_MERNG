@@ -56,6 +56,35 @@ const postUpdate = (
   })
 }
 
+// const repostUpdate = (
+//   client, updateCaption,
+//   currentUser, query
+// ) => {
+  
+//   var readFeed = client.readQuery({
+//     query: query,
+//     variables: {
+//       query: currentUser
+//     }
+//   })
+
+//   console.log(readFeed)
+
+//   var { fetchUserFeed } = readFeed
+//   var repostTrailArr = []
+
+//   fetchUserFeed.forEach(obj => {
+//     if (obj._id === updateCaption.repost._id) {
+//       repostTrailArr = obj.repostTrail.map(obj => ({
+//         ...obj
+//       }))
+//     }
+//   })
+
+//   console.log(repostTrailArr)
+
+// }
+
 const postDelete = (
   client, post, deletePost,
   currentUser, query
@@ -271,7 +300,8 @@ const unfollowUpdate = (
 
 const UpdateCacheUtil = {
   postCreate, 
-  postUpdate, 
+  postUpdate,
+  // repostUpdate,
   postDelete,
   postLike, 
   postUnlike,

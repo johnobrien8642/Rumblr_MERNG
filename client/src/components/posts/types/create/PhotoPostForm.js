@@ -81,6 +81,7 @@ const PhotoPostForm = ({
       resetInputs();
       if (post) {
         setUpdate(update = false)
+        setUploading(uploading = false)
       } else {
         allowScroll(document)
         setUploading(uploading = false)
@@ -89,6 +90,8 @@ const PhotoPostForm = ({
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
         }
+
+        setUploading(uploading = false)
       }
     },
     onError(error) {
@@ -155,19 +158,26 @@ const PhotoPostForm = ({
     !description
   }
 
-  if (photoPostActive) {
+  const handleTextPostFormClass = () => {
+    if ((photoPostActive && !uploading) || update) {
+      return 'postForm photoPostForm active'
+    } else if (photoPostActive && uploading) {
+      return 'postForm photoPostForm hidden'
+    } else {
+      return 'postForm photoPostForm none'
+    }
+  }
+
+  if (photoPostActive || update) {
     return (
     <div
-      className='postFormContainer'
+      className={update ? 'postFormContainer update' : 'postFormContainer'}
     >
 
-      <ProfilePic user={user} />
+      <ProfilePic user={update ? post.user : user} />
       
       <div
-        className={photoPostActive ? 
-          'postForm photoPostForm active' : 
-          'postForm photoPostForm hidden'
-        }
+        className={handleTextPostFormClass()}
       >
         <form
           id={formId}
@@ -176,7 +186,9 @@ const PhotoPostForm = ({
           encType={'multipart/form-data'}
         >
 
-          <h3>{user.blogName}</h3>
+          <h3
+            className='userNameHeader'
+          >{update ? post.user.blogName : user.blogName}</h3>
         
           <PhotoPostOrRegisterPhotoInput
             post={post}
@@ -227,8 +239,13 @@ const PhotoPostForm = ({
               if (disabledBool()) {
                 allowScroll(document)
                 resetInputs()
-                setPhotoPostActive(photoPostActive = false)
-                setPostFormModal(postFormModal = false)
+                
+                if (!update) {
+                  setPhotoPostActive(photoPostActive = false)
+                  setPostFormModal(postFormModal = false)
+                } else {
+                  setUpdate(update = false)
+                }
 
                 if (mobile) {
                   setPostFormOpen(postFormOpen = false)
@@ -242,7 +259,9 @@ const PhotoPostForm = ({
           </div>
 
           <ConfirmClose
-            mobile={mobile} 
+            mobile={mobile}
+            update={update}
+            setUpdate={setUpdate}
             confirmClose={confirmClose}
             setConfirmClose={setConfirmClose}
             allowScroll={allowScroll}
@@ -284,7 +303,10 @@ const PhotoPostForm = ({
                 )
               }
               
-              setPostFormModal(postFormModal = false)
+              if (!update) {
+                setPostFormModal(postFormModal = false)
+              }
+
               setUploading(uploading = true)
             }}
           >

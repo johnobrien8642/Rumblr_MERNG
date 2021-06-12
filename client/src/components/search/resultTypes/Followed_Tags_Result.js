@@ -1,5 +1,9 @@
 import React from 'react';
+import { useQuery } from '@apollo/client';
 import TagResult from '../resultTypes/Tag_Result';
+import Queries from '../../../graphql/queries.js';
+import Cookies from 'js-cookie';
+const { FETCH_USER } = Queries
 
 const FollowedTags = ({
   user,
@@ -7,7 +11,7 @@ const FollowedTags = ({
   setFollowedActive,
   discover
 }) => {
-  
+
   if (followedActive) {
     return (
       <React.Fragment>
@@ -37,8 +41,8 @@ const FollowedTags = ({
     )
   } else {
     return (
-      <ul>
-      </ul>
+      <div>
+      </div>
     )
   }
 }
