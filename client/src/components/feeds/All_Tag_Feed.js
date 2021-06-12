@@ -1,14 +1,19 @@
 import React, { useRef, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client';
+import ProfilePic from '../user/util/components/Profile_Pic';
 import PostShow from '../posts/types/showOrUpdate/PostShow';
 import PostShowUtil from '../posts/util/functions/post_show_util.js';
 import Queries from '../../graphql/queries.js';
 const { FETCH_ALL_TAG_FEED } = Queries;
 const { handlePostClassName } = PostShowUtil;
 
-const AllTagFeed = () => {
-  let feedArr = useRef([]);
+const AllTagFeed = ({
+  user
+}) => {
+  let leftFeedArr = useRef([]);
+  let rightFeedArr = useRef([]);
 
   useEffect(() => {
     
@@ -30,26 +35,128 @@ const AllTagFeed = () => {
   const { fetchAllTagFeed } = data;
   
   if (fetchAllTagFeed) {
-    feedArr.current = fetchAllTagFeed
+    leftFeedArr.current = fetchAllTagFeed.slice(0, (fetchAllTagFeed.length / 2))
+    rightFeedArr.current = fetchAllTagFeed.slice((fetchAllTagFeed.length / 2), fetchAllTagFeed.length)
   }
 
   return(
     <div
-      className='userOrTagFeed'
+      className='discoverFeed'
     >
-      {feedArr.current.map((post, i) => {
-        return (
-          <div
-            className={handlePostClassName(post)}
-            key={post._id}
-          >
-            <PostShow
-              post={post}
-              discover={true}
-            />
-          </div>
-        )
+      <div
+        className='leftColumn'
+      >
+      {leftFeedArr.current.map((post, i) => {
+        if (post.kind === 'Repost') {
+          return (
+            <div
+              className={handlePostClassName(post)}
+              key={post._id}
+            >
+              <div
+                className='userRepostShowHeader'
+              >
+                <ProfilePic
+                  user={post.user}
+                />
+                <span>
+                  <Link 
+                    className='user'
+                    to={`/view/blog/${Cookies.get('currentUser')}`}>
+                    {Cookies.get('currentUser')}
+                  </Link> 
+                  <img
+                    src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
+                    alt=''
+                  />
+                  <Link
+                    className='repostedFrom'
+                    to={`/view/blog/${post.user.blogName}`}
+                  >
+                    {post.user.blogName}
+                  </Link>
+                </span>
+              </div>
+
+              <PostShow
+                post={post}
+                discover={true}
+              />
+            </div>
+          )
+        } else {
+          return (
+            <div
+              className={handlePostClassName(post)}
+              key={post._id}
+            >
+              <PostShow
+                post={post}
+                user={user}
+                discover={true}
+              />
+            </div>
+          )
+        }
       })}
+      </div>
+      <div
+        className='rightColumn'
+      >
+      {rightFeedArr.current.map((post, i) => {
+        if (post.kind === 'Repost') {
+          return (
+            <div
+              className={handlePostClassName(post)}
+              key={post._id}
+            >
+              <div
+                className='userRepostShowHeader'
+              >
+                <ProfilePic
+                  user={post.user}
+                />
+                <span>
+                  <Link 
+                    className='user'
+                    to={`/view/blog/${Cookies.get('currentUser')}`}>
+                    {Cookies.get('currentUser')}
+                  </Link> 
+                  <img
+                    src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
+                    alt=''
+                  />
+                  <Link
+                    className='repostedFrom'
+                    to={`/view/blog/${post.user.blogName}`}
+                  >
+                    {post.user.blogName}
+                  </Link>
+                </span>
+              </div>
+
+              <PostShow
+                post={post}
+                discover={true}
+              />
+            </div>
+          )
+        } else {
+          return (
+            <div
+              className={handlePostClassName(post)}
+              key={post._id}
+            >
+              <PostShow
+                post={post}
+                user={user}
+                discover={true}
+              />
+            </div>
+          )
+        }
+      })}
+      </div>
     </div>
   )
 }

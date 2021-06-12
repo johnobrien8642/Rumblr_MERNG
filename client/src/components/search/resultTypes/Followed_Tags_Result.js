@@ -29,10 +29,17 @@ const FollowedTags = ({
               <li 
                 key={tag._id}
               >
-                <TagResult
-                  currentUser={user}
-                  tag={tag}
-                />
+                <div
+                  className='tagResultContainer'
+                >
+                  <TagResult
+                    currentUser={user}
+                    tag={tag}
+                  />
+                </div>
+                {/* <span
+                  className='recentPostsCount'
+                >{tag.postHeatLastWeek} recent posts</span> */}
               </li>
             )
           })}

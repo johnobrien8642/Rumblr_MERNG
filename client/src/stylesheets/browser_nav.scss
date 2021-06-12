@@ -100,33 +100,42 @@
             overflow: auto;
 
             li {
-              display: flex;
               margin-top: 5px;
-              justify-content: space-between;
               
-              a {
-                padding: 5px 15px 3px 8px;
-                display: inline-block;
-                color: black;
-
-                &:hover {
-                  cursor: pointer;
+              .tagResultContainer {
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                
+                .recentPostsCount {
+                  display: none;
                 }
-              }
-
-              form {
-                button {
-                  margin-top: 8px;
-                  margin-right: 30px;
-                  font-size: 14px;
-                  font-weight: 700;
-                  color: #14A7FF;
-
+                
+                a {
+                  padding: 5px 15px 3px 8px;
+                  display: inline-block;
+                  color: black;
+  
                   &:hover {
                     cursor: pointer;
                   }
                 }
+  
+                form {
+                  button {
+                    margin-top: 8px;
+                    margin-right: 30px;
+                    font-size: 14px;
+                    font-weight: 700;
+                    color: #14A7FF;
+  
+                    &:hover {
+                      cursor: pointer;
+                    }
+                  }
+                }
               }
+
             }
           }
           

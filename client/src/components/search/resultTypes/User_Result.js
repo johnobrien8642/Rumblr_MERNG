@@ -31,7 +31,9 @@ const UserResult = ({
   
   return (
     <React.Fragment>
-      <div>
+      <div
+        className='userResult'
+      >
         <ProfilePic user={user} standaloneLink={true} />
         <Link
           to={`/view/blog/${user.blogName}`}

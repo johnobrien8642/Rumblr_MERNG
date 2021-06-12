@@ -83,7 +83,9 @@ const Feed = ({
                 <ProfilePic
                   user={obj.post.user}
                 />
-                <span>
+                <span
+                  className='repostHeaderContainer'
+                >
                   <Link 
                     className='user'
                     to={`/view/blog/${Cookies.get('currentUser')}`}>

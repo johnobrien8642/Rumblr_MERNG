@@ -11,7 +11,7 @@ const { followUpdate, unfollowUpdate } = UpdateCacheUtil;
 const FollowButton = ({
   feed,
   user,
-  tag, 
+  tag,
   followed 
 }) => {
   var initial;
@@ -60,89 +60,93 @@ const FollowButton = ({
     }
   });
   
-  if (user) {
-    if (
-        (feed &&
-        followed) || 
-        (Cookies.get('currentUser') === 
-        user.blogName)
-      ) {
-        return (
-          <div>
-          </div>
-        )
-    } else if (
-      feed && 
-      !followed && 
-      Cookies.get('currentUser') === user.blogName
-      ) {
-        return (
-          <React.Fragment>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                follow({
-                  variables: {
-                    user: Cookies.get('currentUser'),
-                    item: tagOrUser,
-                    itemKind: itemKind
-                  }
-                })
-                setStatus(status = true)
-              }}
-            >
-              <button type='submit'>Follow</button>
-            </form>
-          </React.Fragment>
-        )
-      } else {
-      if (status) {
-        return (
-          <React.Fragment>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                unfollow({
-                  variables: {
-                    user: Cookies.get('currentUser'),
-                    item: tagOrUser
-                  }
-                })
-                setStatus(status = false)
-              }}
-            >
-              <button type='submit'>Unfollow</button>
-            </form>
-          </React.Fragment>
-        )
-      } else {
-        return (
-          <React.Fragment>
-            <form
-              onSubmit={e => {
-                e.preventDefault();
-                follow({
-                  variables: {
-                    user: Cookies.get('currentUser'),
-                    item: tagOrUser,
-                    itemKind: itemKind
-                  }
-                })
-                setStatus(status = true)
-              }}
-            >
-              <button type='submit'>Follow</button>
-            </form>
-          </React.Fragment>
-        )
-      }
-    }
-  } else {
-    return (
-      <div>
-      </div>
-    )
-  }
+  // if (user) {
+    // if (
+    //     feed &&
+    //     followed &&
+    //     Cookies.get('currentUser') === 
+    //     user.blogName
+    //   ) {
+    //     return (
+    //       <div>
+    //       </div>
+    //     )
+    // } else if (
+    //   feed && 
+    //   !followed && 
+    //   Cookies.get('currentUser') === user.blogName ||
+    //   tag
+    //   ) {
+      //   return (
+      //     <React.Fragment>
+      //       <form
+      //         onSubmit={e => {
+      //           e.preventDefault();
+      //           follow({
+      //             variables: {
+      //               user: Cookies.get('currentUser'),
+      //               item: tagOrUser,
+      //               itemKind: itemKind
+      //             }
+      //           })
+      //           setStatus(status = true)
+      //         }}
+      //       >
+      //         <button type='submit'>Follow</button>
+      //       </form>
+      //     </React.Fragment>
+      //   )
+      // } else {
+      
+      
+        if (status) {
+          return (
+            <React.Fragment>
+              <form
+                onSubmit={e => {
+                  e.preventDefault();
+                  unfollow({
+                    variables: {
+                      user: Cookies.get('currentUser'),
+                      item: tagOrUser
+                    }
+                  })
+                  setStatus(status = false)
+                }}
+              >
+                <button type='submit'>Unfollow</button>
+              </form>
+            </React.Fragment>
+          )
+        } else {
+          return (
+            <React.Fragment>
+              <form
+                onSubmit={e => {
+                  e.preventDefault();
+                  follow({
+                    variables: {
+                      user: Cookies.get('currentUser'),
+                      item: tagOrUser,
+                      itemKind: itemKind
+                    }
+                  })
+                  setStatus(status = true)
+                }}
+              >
+                <button type='submit'>Follow</button>
+              </form>
+            </React.Fragment>
+          )
+        }
+      
+    // }
+  // } else {
+  //   return (
+  //     <div>
+  //     </div>
+  //   )
+  // }
 }
 
 export default FollowButton;

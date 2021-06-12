@@ -509,6 +509,7 @@ const Queries = {
       fetchRecommendedTags(query: $query) {
         _id
         title
+        postHeatLastWeek
       }
     }
   `,
@@ -596,6 +597,7 @@ const Queries = {
         tagFollows {
           _id
           title
+          postHeatLastWeek
         }
         userFollows {
           _id

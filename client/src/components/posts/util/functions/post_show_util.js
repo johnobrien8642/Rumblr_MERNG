@@ -45,7 +45,7 @@ const postHeader = (
   } else if (discover || radar) {
     return (
       <div
-        className='postRadarPostHeader'
+        className='postRadarPostHeader discoverPostHeader'
       >
         <UserResult user={post.user} />
       </div>

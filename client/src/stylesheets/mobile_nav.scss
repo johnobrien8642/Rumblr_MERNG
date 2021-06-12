@@ -2,7 +2,7 @@
   display: none;
   position: fixed;
   height: 50px;
-  width: 100%;
+  width: 100vw;
   background-color: var(--tumblr-deep-blue);
   z-index: 95;
 }
@@ -341,11 +341,15 @@
   
         .followedTags {
           overflow: auto;
-          
+
           li {
             display: flex;
             margin-top: 5px;
             justify-content: space-between;
+
+            .recentPostsCount {
+              display: none;
+            }
             
             a {
               padding: 5px 15px 3px 8px;

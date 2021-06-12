@@ -38,13 +38,20 @@ const Discover = () => {
           tag={tag}
           setTag={setTag}
         />
+        
+      </div>
+      
+      <AllTagFeed />
+
+      <div
+        className='followedTagsContainer'
+      >
         <FollowedTags
           user={user.user}
           followedActive={true}
           discover={true}
         />
       </div>
-      <AllTagFeed />
     </div>
   )
 }

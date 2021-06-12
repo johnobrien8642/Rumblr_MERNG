@@ -19,7 +19,7 @@ const TagResult = ({
   
   return (
     <React.Fragment>
-      <Link 
+    <Link
         to={`/view/tag/${cleanedTag}`}
         onClick={() => {
           if (active) {

@@ -22,10 +22,10 @@ const TagFeed = () => {
   var { tag } = data;
   
   return (
-    <div>
+    <React.Fragment>
       <TagShow tag={tag} />
       <Feed tag={tag} />
-    </div>
+    </React.Fragment>
   )
 }
 
