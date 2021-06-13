@@ -21,12 +21,12 @@ const PostRadar = () => {
   const { fetchPostRadar } = data;
 
   if (fetchPostRadar) {
-
+    console.log(fetchPostRadar)
     return (
       <div
         className='postRadar'
       >
-        <h1>Radar</h1>
+        <h1 className='radarHeader'>Radar</h1>
         <div
           className={handlePostClassName(fetchPostRadar)}
         >
@@ -43,7 +43,7 @@ const PostRadar = () => {
       <div
         className='postRadar'
       >
-        <h1>Radar</h1>
+        <h1 className='radarHeader'>Radar</h1>
       </div>
     )
   }

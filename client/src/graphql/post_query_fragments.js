@@ -10,6 +10,7 @@ const QueryFragments = {
         _id
         src
       }
+      totalLikeCount
     }
     allText
     descriptions

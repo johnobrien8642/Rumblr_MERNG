@@ -17,8 +17,9 @@ const handleActivity = (
   navActive, 
   setNavActive
 ) => {
-
-  if (tab === 'all') {
+  
+  if (tab === 'all' || tab === undefined) {
+    console.log(activity)
     if (activity.kind === 'Mention') {
       return (
         <MentionActivityShow
@@ -117,7 +118,7 @@ const handleTimeAgo = (activity, timeAgoRef, tab) => {
 
   if (
       !timeAgoRef.current.includes(timeAgoString) &&
-      tab === 'all'
+      (tab === 'all' || tab === undefined)
     ) {
       timeAgoRef.current.push(timeAgoString)
 

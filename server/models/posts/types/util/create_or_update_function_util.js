@@ -248,6 +248,7 @@ const handleVariants = async (variants, instance, user) => {
   switch(instance.kind) {
     case 'TextPost':
       var { title } = variants
+      console.log(title)
       instance.title = title
       instance.user = user._id
       break

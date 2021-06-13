@@ -133,14 +133,15 @@ const PostOptions = ({
             }}
           />
 
-          <Link
-            to={`/dashboard/repost/${post.user.blogName}/${post._id}/${post.__typename}`}
-          >
-            <img 
-              src="https://img.icons8.com/material-outlined/64/000000/retweet.png"
-              alt=''
-            />
-          </Link>
+          <img 
+            className='repostIcon'
+            src="https://img.icons8.com/material-outlined/64/000000/retweet.png"
+            alt=''
+            onClick={() => {
+              setNotesActive(notesActive = false)
+              setRepostActive(repostActive = true)
+            }}
+          />
           
           
           <LikeButton

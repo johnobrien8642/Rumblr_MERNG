@@ -52,8 +52,8 @@ const Queries = {
     }
   `,
   FETCH_USER_LIKES: gql`
-    query FetchUserLikes($user: String) {
-      fetchUserLikes(user: $user) {
+    query FetchUserLikes($query: String) {
+      fetchUserLikes(query: $query) {
         _id
         kind
         user {
@@ -121,6 +121,38 @@ const Queries = {
         blogName
         posts {
           __typename
+          ... on RepostType {
+            _id
+            kind
+            user {
+              _id
+              blogName
+              profilePic {
+                _id
+                src
+              }
+            }
+            repostTrail {
+              _id
+              caption
+              user {
+                _id
+                blogName
+              }
+              repost {
+                _id
+              }
+            }
+            repostedFrom {
+              _id
+              blogName
+              kind
+            }
+            post {
+              __typename
+              ${ALL_POSTS}
+            }
+          }
           ${ALL_POSTS}
         }
         reposts {
@@ -588,6 +620,7 @@ const Queries = {
         filteredTags
         filteredPostContent
         email
+        totalLikeCount
         profilePic {
           _id
           src
@@ -604,6 +637,7 @@ const Queries = {
           blogName
           blogDescription
         }
+        kind
       }
     }
   `,

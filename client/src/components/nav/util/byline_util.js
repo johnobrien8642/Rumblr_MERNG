@@ -10,7 +10,7 @@ const handleByline = (activity) => {
 
   if (post.allText !== 'undefined') {
     words = post.allText.split(' ')
-    console.log(words)
+    
     if (words.length > 10) {
       descriptionsArr = words.slice(0, 10)
     } else {

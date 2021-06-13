@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import FollowButton from '../../posts/util/components/social/Follow_Button';
 import ProfilePic from '../../user/util/components/Profile_Pic';
 import FeedUtil from '../../posts/util/functions/feed_util.js';
-const { doesUserFollowUser } = FeedUtil;
+// const { doesUserFollowUser } = FeedUtil;
 
 const UserResult = ({ 
   currentUser,
@@ -12,10 +12,10 @@ const UserResult = ({
   setActive,
   checkOutTheseBlogs
 }) => {
-  let doesUserFollowUserRef = useRef(false)
+  // let doesUserFollowUserRef = useRef(false)
 
-  doesUserFollowUser(doesUserFollowUserRef, currentUser, user)
-  
+  // doesUserFollowUser(doesUserFollowUserRef, currentUser, user)
+
   // if (currentUser) {
   //   doesUserFollowUserRef.current =
   //   currentUser.userFollows.some(obj => obj._id === user._id)
@@ -49,7 +49,7 @@ const UserResult = ({
       </div>
       <FollowButton 
         user={user}
-        followed={doesUserFollowUserRef.current}
+        // followed={doesUserFollowUserRef.current}
       />
     </React.Fragment>
   )

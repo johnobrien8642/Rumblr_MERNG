@@ -167,6 +167,7 @@ const TextPostForm = ({
     }
   }
   
+  
   if (textPostActive || update) {
     return (
     <div

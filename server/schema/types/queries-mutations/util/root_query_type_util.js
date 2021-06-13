@@ -108,7 +108,7 @@ const asyncFetchTagPosts = async (
     { $unwind: '$posts' },
     { $replaceRoot: { "newRoot": "$posts" } },
     { $sort: { "notesHeatLastTwoDays": -1 } },
-    { $limit: 5 }
+    { $limit: 50 }
   ])
   return posts
 }

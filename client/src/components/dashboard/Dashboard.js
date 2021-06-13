@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 import { useQuery } from '@apollo/client';
-import { Route } from 'react-router-dom';
+import { Route, useHistory } from 'react-router-dom';
 import PostsNav from '../nav/Posts_Nav';
 import Feed from '../feeds/Feed.js';
 import PostRadar from '../dashboard/util/Post_Radar';
@@ -12,6 +12,7 @@ const { FETCH_USER } = Queries;
 
 const Dashboard = props => {
   let [uploading, setUploading] = useState(false)
+  let history = useHistory()
   
   let { loading, error, data } = useQuery(FETCH_USER, {
     variables: {
@@ -47,13 +48,15 @@ const Dashboard = props => {
         className='column1'
       >
         <PostsNav 
-          props={props} 
+          props={props}
+          userLikes={history.location.pathname === '/likes' ? true : false}
           user={user}
           uploading={uploading}
           setUploading={setUploading}
         />
         <Feed 
-          user={null} 
+          user={null}
+          userLikes={history.location.pathname === '/likes' ? true : false}
           currentUser={user}
           uploading={uploading}
           setUploading={setUploading}

@@ -6,12 +6,28 @@ const TagShow = ({
 }) => {
 
   return (
-    <div>
-      <h1>{tag.title}</h1>
-      <span>{tag.followerCount} followers</span>
-      <span>/</span>
-      <span>{tag.postHeatLastWeek} recent posts</span>
-      <FollowButton tag={tag} />
+    <div
+      className='tagShow'
+    >
+      <div
+        className='tagShowHeader'
+      >
+        <h1
+          className='title'
+        >{tag.title}</h1>
+        <FollowButton tag={tag} />
+      </div>
+
+      <div
+        className='tagShowData'
+      >
+        <span
+          className='followersCount'
+        >{tag.followerCount} followers</span>
+        <span
+          className='postsCount'
+        >{tag.postHeatLastWeek} recent posts</span>
+      </div>
     </div>
   )
 }

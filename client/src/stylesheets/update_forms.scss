@@ -7,6 +7,7 @@
       position: relative;
       top: -10px;
       margin-bottom: 0;
+      width: 100%;
       border-radius: 0 0 3px 3px;
       z-index: 94;
     }
@@ -156,7 +157,7 @@
         left: 10px;
         margin: 10px 0 -8% 0;
         // word-break: break-all;
-        width: 570px;
+        width: 100%;
         z-index: 100;
 
         @media (max-width: 980px) {
@@ -172,12 +173,11 @@
 
           @media (max-width: 280px) {
             width: 300px;
-            // background-color: red;
           }
         }
 
         .ck {
-          width: 100%;
+          width: 90%;
           height: fit-content;
         }
       }

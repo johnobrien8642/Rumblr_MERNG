@@ -35,6 +35,7 @@ const Logout = ({
   return (
     <React.Fragment>
       <button
+        className='logout'
         type='button'
         onClick={e => {
           Logout({ 

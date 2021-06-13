@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import Feed from './Feed'
+import ProfilePic from '../user/util/components/Profile_Pic';
+import FollowButton from '../posts/util/components/social/Follow_Button';
 import Queries from '../../graphql/queries.js';
+import FeedUtil from '../posts/util/functions/feed_util.js';
+import Cookies from 'js-cookie';
 const { FETCH_USER } = Queries;
+const { doesUserFollowUser } = FeedUtil;
 
 
 const UserBlogShow = () => {
   let { blogName } = useParams();
-  let { loading, error, data, } = useQuery(FETCH_USER, {
+
+  let { loading, error, data: user } = useQuery(FETCH_USER, {
     variables: {
       query: blogName
     }
@@ -16,11 +22,25 @@ const UserBlogShow = () => {
 
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
-
-  const { user } = data;
-
+  console.log(user.user)
   return (
-    <Feed user={user} />
+    <div
+      className='userBlogFeedContainer'
+    >
+      <div
+        className='userShowContainer'
+      >
+        <div>
+          <ProfilePic user={user.user} />
+          <h1>{user.user.blogName}</h1>
+          <h3>{user.user.blogDescription}</h3>
+        </div>
+        <FollowButton 
+          user={user.user}
+        />
+      </div>
+      <Feed user={user.user} />
+    </div>
   )
 }
 

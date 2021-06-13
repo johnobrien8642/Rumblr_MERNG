@@ -5,6 +5,7 @@ import AudioPlayer from 'react-h5-audio-player';
 import ReactPlayer from 'react-player';
 import UserResult from '../../../search/resultTypes/User_Result';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
+import FollowButton from '../../../posts/util/components/social/Follow_Button';
 
 const postHeader = (
   post, 
@@ -91,6 +92,11 @@ const postHeader = (
         >
           {post.user.blogName}
         </Link>
+        <FollowButton
+          feed={true}
+          user={post.user}
+          followed={doesUserFollowUserRef.current}
+        />
       </span>
     )
   }
@@ -353,8 +359,16 @@ const displayDescription = (descriptionArr) => {
   )
 }
 
-const handlePostClassName = (post) => {
-  var { kind } = post;
+const handlePostClassName = (obj) => {
+  var demeterPost 
+
+  if (obj.kind === 'Like') {
+    demeterPost = obj.post
+  } else {
+    demeterPost = obj
+  }
+  
+  var { kind } = demeterPost;
 
   if (kind === 'TextPost') {
     return 'post textPost'
@@ -371,19 +385,19 @@ const handlePostClassName = (post) => {
   } else if (kind === 'VideoPost') {
     return 'post videoPost'
   } else if (kind === 'Repost') {
-    if (post.post.kind === 'TextPost') {
+    if (demeterPost.post.kind === 'TextPost') {
       return 'post repost textPost'
-    } else if (post.post.kind === 'PhotoPost') {
+    } else if (demeterPost.post.kind === 'PhotoPost') {
       return 'post repost photoPost'
-    } else if (post.post.kind === 'QuotePost') {
+    } else if (demeterPost.post.kind === 'QuotePost') {
       return 'post repost quotePost'
-    } else if (post.post.kind === 'LinkPost') {
+    } else if (demeterPost.post.kind === 'LinkPost') {
       return 'post repost linkPost'
-    } else if (post.post.kind === 'ChatPost') {
+    } else if (demeterPost.post.kind === 'ChatPost') {
       return 'post repost chatPost'
-    } else if (post.post.kind === 'AudioPost') {
+    } else if (demeterPost.post.kind === 'AudioPost') {
       return 'post repost audioPost'
-    } else if (post.post.kind === 'VideoPost') {
+    } else if (demeterPost.post.kind === 'VideoPost') {
       return 'post repost videoPost'
     }
   }

@@ -5,51 +5,51 @@
   font-family: 'Noto Sans JP', sans-serif;
 
   @media (max-width: 1024px) {
+    width: 100%;
+    // @media(min-width: 280px) {
+    //   // margin: 0;
+    //   width: 280px;
+    // }
 
-    @media(min-width: 280px) {
-      // margin: 0;
-      width: 280px;
-    }
+    // @media(min-width: 320px) {
+    //   // margin: 0;
+    //   width: 320px;
+    // }
 
-    @media(min-width: 320px) {
-      // margin: 0;
-      width: 320px;
-    }
+    // @media(min-width: 360px) {
+    //   // margin: 0;
+    //   width: 360px;
+    // }
 
-    @media(min-width: 360px) {
-      // margin: 0;
-      width: 360px;
-    }
+    // @media(min-width: 375px) {
+    //   // margin: 0;
+    //   width: 375px;
+    // }
 
-    @media(min-width: 375px) {
-      // margin: 0;
-      width: 375px;
-    }
+    // @media(min-width: 410px) {
+    //   // margin: 0;
+    //   width: 411px;
+    // }
 
-    @media(min-width: 410px) {
-      // margin: 0;
-      width: 411px;
-    }
+    // @media(min-width: 413px) {
+    //   // margin: 0;
+    //   width: 414px;
+    // }
 
-    @media(min-width: 413px) {
-      // margin: 0;
-      width: 414px;
-    }
+    // @media(min-width: 540px) {
+    //   // margin: 0;
+    //   width: 540px;
+    // }
 
-    @media(min-width: 540px) {
-      // margin: 0;
-      width: 540px;
-    }
+    // @media(min-width: 768px) {
+    //   // margin: 0 auto;
+    //   width: 500px;
+    // }
 
-    @media(min-width: 768px) {
-      // margin: 0 auto;
-      width: 500px;
-    }
-
-    @media(min-width: 1020px) {
-      margin: 0 20px 0 auto;
-      width: 870px;
-    }
+    // @media(min-width: 1020px) {
+    //   margin: 0 20px 0 auto;
+    //   width: 870px;
+    // }
   }
 
   .dashboard.fixed {
@@ -115,14 +115,13 @@
         .postIconContainer {
           position: relative;
           font-weight: 500;
-          padding: 20px 5px;
+          margin: auto auto;
       
           
           div {
             position: relative;
             display: flex;
             flex-direction: column;
-            padding: 8px 14px;
 
             &:hover {
               cursor: pointer;
@@ -170,7 +169,6 @@
       margin-top: 25px;
       width: 500px;
 
-      
       @media (max-width: 1024px) {
         width: 500px;
         
@@ -182,7 +180,7 @@
       .loading { 
         position: relative;
         margin-bottom: 20px;
-        width: 600px;
+        width: 100%;
         height: 100px;
         // background-color: red;
 
@@ -254,22 +252,6 @@
               filter: brightness(1);
               transform: scale(1);
             }
-            // .bar1 {
-            //   filter: brightness(1);
-            //   transform: scale(.95);
-            // }
-            // .bar2 {
-            //   filter: brightness(.8);
-            //   transform: scale(.9);
-            // }
-            // .bar3 {
-            //   filter: brightness(.6);
-            //   transform: scale(.85);
-            // }
-            // .bar4 {
-            //   filter: brightness(.4);
-            //   transform: scale(.8);
-            // }
           }
         }
 
@@ -277,7 +259,7 @@
     }
   }
   
-  .column2 {
+  .column2, .followContainer {
     display: flex;
     flex-direction: column;
     float: right;
@@ -359,121 +341,5 @@
         }
       }
     }
-  }
-  
-  .postRadar {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin: 50px 0 0 0;
-    width: 330px;
-    height: fit-content;
-    
-    h1 {
-      font-size: 20px;
-      font-weight: 700;
-      border-bottom: 3px solid #1A283E;
-      padding-bottom: 15px;
-      margin: 0 0 0 8px;
-      color: var(--off-white);
-    }
-
-    .post {
-      display: flex;
-      flex-direction: column;
-      border: 1px solid black;
-      margin: 0 auto;
-      margin-top: 10px;
-      width: 300px;
-      height: auto;
-      background-color: white;
-      font-family: var(--font);
-
-      .postRadarPostHeader {
-        display: flex;
-        border-bottom: 1px solid rgb(0, 0, 0, 0.1);
-      
-        div {
-          display: flex;
-          
-          .profilePic {
-            width: 38px;
-            height: 42px;
-            margin: 10px 0 5px 10px;
-            border-radius: 5px;
-          }
-
-          h3 {
-            display: block;
-            font-size: 14px;
-            font-weight: 700;
-            margin: 18px 0 0 7px;
-
-          }
-
-          a {
-            &:hover {
-              cursor: pointer;
-            }
-          }
-        }
-
-        form {
-          margin-left: auto;
-
-          button {
-            font-size: 16px;
-            font-weight: 700;
-            margin: 22px 15px 0 0;
-            color: var(--tumblr-light-blue);
-          }
-        }
-      }
-    }
-
-    // .post.textPost {
-
-    //   .textPostTitle {
-    //     font-size: 32px;
-    //     font-weight: 400;
-    //     margin: 10px;
-    //   }
-
-    //   .textPostMain {
-    //     margin: 0 0 10px 20px;
-    //   }
-
-    //   .descriptionText {
-    //     margin: 0 0 10px 10px;
-    //   }
-
-    //   .postFooter {
-    //     position: relative;
-    //     display: flex;
-    //     justify-content: space-between;
-
-    //     .notesBtn {
-    //       font-size: 17px;
-    //       font-weight: 500;
-    //       margin: 3px 0 0 10px;
-    //       opacity: .7;
-    //     }
-
-    //     .postOptions {
-    //       display: flex;
-
-    //       a {
-    //         display: block;
-    //       }
-
-    //       img {
-    //         width: 30px;
-    //         height: 30px;
-    //         padding: 0 10px 5px 0;
-    //         opacity: .7;
-    //       }
-    //     }
-    //   }
-    // }
-  }  
+  }    
 }

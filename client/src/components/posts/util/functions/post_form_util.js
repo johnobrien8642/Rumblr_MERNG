@@ -693,7 +693,7 @@ const handleAllTextAudioPost = (allText, descriptions, title, artist, album) => 
 
 const handleAllTextTextPost = (allText, descriptions, title) => {
 
-  allText.current += title
+  allText.current += title + ' '
 
   descriptions.forEach(d => {
     var span = document.createElement('span')

@@ -1,5 +1,3 @@
-
-
 .discoverContainer {
   // background-color: white;
   margin: 100px auto 100px auto;
@@ -47,54 +45,58 @@
   .discoverTagsHeader {
     display: flex;
     flex-direction: row;
-    width: 750px;
-    margin-left: 15px;
+    width: 710px;
+    border: 5px solid var(--tumblr-translucent-blue);
+    margin-left: 7px;
     // background-color: red;
     overflow-x: auto;
 
     @media (max-width: 1024px) {
+      width: 90%;
+      margin: 0 auto;
 
-      @media(min-width: 280px) {
-        width: 280px;
-      }
+      // @media(min-width: 280px) {
+      //   width: 280px;
+      // }
   
-      @media(min-width: 320px) {
-        width: 320px;
-      }
+      // @media(min-width: 320px) {
+      //   width: 320px;
+      // }
   
-      @media(min-width: 360px) {
-        width: 360px;
-      }
+      // @media(min-width: 360px) {
+      //   width: 360px;
+      // }
   
-      @media(min-width: 375px) {
-        width: 375px;
-      }
+      // @media(min-width: 375px) {
+      //   width: 375px;
+      // }
   
-      @media(min-width: 410px) {
-        width: 411px;
-      }
+      // @media(min-width: 410px) {
+      //   width: 411px;
+      // }
   
-      @media(min-width: 413px) {
-        width: 414px;
-      }
+      // @media(min-width: 413px) {
+      //   width: 414px;
+      // }
   
-      @media(min-width: 540px) {
-        width: 540px;
-      }
+      // @media(min-width: 540px) {
+      //   width: 540px;
+      // }
   
-      @media(min-width: 768px) {
-        width: 500px;
-      }
+      // @media(min-width: 768px) {
+      //   width: 500px;
+      // }
   
-      @media(min-width: 1020px) {
-        width: 870px;
-      }
+      // @media(min-width: 1020px) {
+      //   width: 870px;
+      // }
     }
 
     .recommendedTagsContainer {
       display: flex;
       flex-direction: space-between;
-
+      // box-sizing: border-box;
+      
 
       .recommendedTags {
         display: flex;
@@ -152,7 +154,7 @@
   .followedTagsContainer {
     position: relative;
     top: -90px;
-    background-color: #0F1E33;
+    background-color: var(--tumblr-translucent-blue);
     width: 250px;
     max-height: 400px;
     margin: 0 5px 0 0;

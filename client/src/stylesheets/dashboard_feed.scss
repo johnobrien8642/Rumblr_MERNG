@@ -1,4 +1,25 @@
-.userOrTagFeed, .discoverFeed {
+.userOrTagFeed, .discoverFeed, .postShow, .postRadar {
+
+  .userLikesHeader {
+    background-color: var(--tumblr-translucent-blue);
+    color: white;
+    height: fit-content;
+    margin: 0 0 20px 0;
+    border-radius: 3px;
+
+    h1 {
+      font-size: 50px;
+      font-weight: 500;
+      margin: 15px;
+    }
+
+    .totalLikeCount {
+      display: inline-block;
+      font-size: 20px;
+      margin: 0 0 15px 20px;
+    }
+
+  }
 
   .post {
     position: relative;
@@ -17,12 +38,13 @@
 
     .userPostHeader {
       position: relative;
-      display: block;
+      display: flex;
       font-size: 13px;
       font-weight: 700;
       margin: 20px 0 20px 15px;
-
+      
       a {
+        // margin: 0 10px 0 0;
 
         @media (max-width: 980px) {
           margin: 0 0 0 20px;
@@ -34,6 +56,19 @@
 
         &:hover {
           cursor: pointer;
+        }
+      }
+
+      form {
+        button {
+          position: relative;
+          top: -1px;
+          display: inline-block;
+          margin: 0 0 0 15px;
+          color: var(--tumblr-light-blue);
+          font-weight: 700;
+          font-size: 14px;
+          font-family: var(--font);
         }
       }
 
@@ -70,8 +105,7 @@
       // background-color: red;
 
       .descriptionText {
-        // background-color: red;
-        margin: 10px 0 -10px 8px;
+        margin: 10px 0 -10px 12px;
         width: 96%;
       }
 
@@ -364,7 +398,7 @@
         @media (max-width: 980px) {
 
           @media (min-width: 280px) {
-            top: -8px;
+            top: -5px;
           }
         }
 
@@ -417,6 +451,22 @@
       }
     }
 
+    .postOptions {
+
+      .addCommentBtn,
+      .repostIcon,
+      .likeBtn {
+        width: 40px;
+        height: 40px;
+        margin: 0 15px 0 0;
+
+        @media (max-width: 1024px) {
+          width: 30px;
+          height: 30px;
+        }
+      }
+    }
+
     .confirmDeleteModal {
       position: fixed;
       top: 0;
@@ -425,10 +475,6 @@
       right: 0;
       background-color: var(--tumblr-deep-blue-modal);
       z-index: 500;
-      
-      // .browserNav {
-      //   z-index: 490;
-      // }
     }
 
     .confirmDelete {
@@ -546,10 +592,6 @@
             }
           }
         }
-
-        // .profilePic {
-        //   top: -68px;
-        // }
 
         .userRepostFormHeader {
           border-bottom: 1px solid rgb(0, 0, 0, 0.1);
@@ -752,13 +794,19 @@
         }
       }
 
-      span {
+      .repostHeaderContainer {
         display: inline-flex;
-        margin: 5px 0 10px 40px;
+        margin: 5px 0 10px 10px;
 
-        @media (min-width: 768px) {
-          margin: 5px 0 10px 10px;
+        @media (max-width: 1024px) {
+          display: flex;
+          flex-direction: column;
+          margin: 5px 0 10px 40px;
+          
+          // @media (min-width: 768px) {
+          // }
         }
+
 
         .user {
           display: block;
@@ -766,29 +814,64 @@
           font-weight: 700;
           margin: 10px 0 10px 10px;
 
+          @media (max-width: 1024px) {
+            margin: 10px 0 0 10px;
+          }
+
           &:hover {
             cursor: pointer;
           }
         }
 
-        img {
-          display: block;
-          position: relative;
-          width: 22px;
-          height: 22px;
-          opacity: .6;
-          margin: 10px 0 10px 5px;
-        }
+        .iconRepostedAndFollowContainer {
+          display: flex;
+          flex-wrap: wrap;
 
-        .repostedFrom {
-          display: block;
-          margin: 10px 0 10px 5px;
-          font-size: 13px;
-          font-weight: 700;
-          opacity: .6;
+          img {
+            display: block;
+            position: relative;
+            width: 22px;
+            height: 22px;
+            opacity: .6;
+            margin: 10px 0 10px 5px;
 
-          &:hover {
-            cursor: pointer;
+            @media (max-width: 1024px) {
+              margin: 5px 0 0 10px;
+            }
+          }
+  
+          .repostedFrom {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            opacity: .6;
+            margin: 10px 0 10px 5px;
+
+            @media (max-width: 1024px) {
+              margin: 5px 0 10px 5px;
+            }
+  
+            &:hover {
+              cursor: pointer;
+            }
+          }
+  
+          form {
+            button {
+              position: relative;
+              top: 6px;
+              display: inline-block;
+              font-family: var(--font);
+              font-weight: 700;
+              font-size: 13px;
+              color: var(--tumblr-light-blue);
+              margin: 0 0 0 15px;
+
+              @media (max-width: 1024px) {
+                top: 1px;
+                margin: 0 0 0 15px;
+              }
+            }
           }
         }
       }
@@ -796,7 +879,7 @@
 
     .userRepostHeader {
       margin: 10px 0 15px 15px;
-      // background-color: red;
+    
       span {
         display: inline-block;
         .profilePic {
@@ -868,8 +951,8 @@
 
     h3 {
       display: block;
-      font-size: 25px;
-      margin: 15px 15px 30px 15px;
+      font-size: 32px;
+      margin: 10px 15px 20px 10px;
     }
   }
 
@@ -911,27 +994,32 @@
       margin: 0 auto;
       border: 1px solid rgb(0, 0, 0, 0.3);
       border-radius: 10px;
+      z-index: 94;
       // background-color: red;
 
       .imgContainer {
         position: relative;
         width: 100%;
         height: 100%;
+        z-index: 98;
         // background-color: red;
+
         .imgModal {
           position: absolute;
           background-color: rgb(0, 0, 0, 0.4);
           width: 100%;
-          height: 100%;
-          z-index: 95;  
+          height: fit-content;
+          z-index: 98;  
         }
 
         .siteImage {
           display: block;
           position: relative;
+          object-fit: contain;
+          width: 100%;
           left: 50%;
           transform: translateX(-50%);
-          z-index: 94;            
+          z-index: 94;         
         }
 
         .siteTitle {
@@ -939,6 +1027,8 @@
           position: relative;
           top: -175px;
           width: 400px;
+          background-color: rgb(0, 0, 0, 0.5);
+          border-radius: 3px;
 
           @media (max-width: 980px) {
             width: 100%;
@@ -954,8 +1044,10 @@
       }
 
       .siteDescription {
+        position: relative;
+        top: -50px;
         font-size: 15px;
-        margin: 10px 15px;
+        margin: 10px 15px -20px 15px;
         // font-weight: 500;
       }
 
@@ -981,14 +1073,8 @@
     .chatDiv {
       font-family: var(--chat-font);
       font-size: 15px;
-      width: 570px;
-
-      @media (max-width: 980px) {
-        width: 95%;
-      }
-
+      width: 95%;
       margin: 0 auto 20px auto;
-
     }
   }
 
@@ -1021,7 +1107,7 @@
       }
 
       .rhap_container {
-        width: 450px;
+        width: 100%;
 
         @media (max-width: 980px) {
           width: 100%;  

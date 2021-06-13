@@ -305,10 +305,14 @@ const updateCacheInfScrollFollowedUsers = (
 }
 
 const handleData = (data, feedArr, cursorId, endOfPosts) => {
-  var { fetchUserFeed, fetchTagFeed, 
-          fetchAllUserActivity, 
-          fetchUserFollowers,
-          fetchFollowedUsers } = data
+  var { fetchUserFeed, 
+        fetchTagFeed, 
+        fetchAllUserActivity, 
+        fetchUserFollowers,
+        fetchFollowedUsers,
+        fetchUserLikes,
+        fetchUserFollowers,
+        fetchFollowedUsers } = data
 
   if (fetchUserFeed) {
     feedArr.current = fetchUserFeed
@@ -322,6 +326,12 @@ const handleData = (data, feedArr, cursorId, endOfPosts) => {
     feedArr.current = fetchUserFollowers
   } else if (fetchFollowedUsers) {
     feedArr.current = fetchFollowedUsers
+  } else if (fetchUserLikes) {
+    feedArr.current = fetchUserLikes
+  } else if (fetchFollowedUsers) {
+    feedArr.current = fetchFollowedUsers
+  } else if (fetchUserFollowers) {
+    feedArr.current = fetchUserFollowers
   }
   
   endOfPosts.current = feedArr.current.length === 0 ? true : false
@@ -330,34 +340,45 @@ const handleData = (data, feedArr, cursorId, endOfPosts) => {
   }
 }
 
-const setgqlQueryAndQuery = (
-  tag, user,
+const setgqlQueryAndQueryFeed = (
+  tag, user, userLikes,
   gqlQuery, query, 
   FETCH_TAG_FEED,
+  FETCH_USER_LIKES,
   currentUser
 ) => {
 
-  
   if (tag) {
     query.current = tag.title.slice(1)
     gqlQuery.current = FETCH_TAG_FEED
   } else if (user) {
     query.current = user.blogName
+  } else if (userLikes) {
+    query.current = currentUser
+    gqlQuery.current = FETCH_USER_LIKES
   } else {
     query.current = currentUser
   }
 }
 
-const doesUserFollowUser = (
-  doesUserFollowUserRef,
-  currentUser,
-  user
+const setgqlQueryUserFollowedOrFollowingOrActivity = (
+  historyParam,
+  gqlQuery,
+  FETCH_USER_FOLLOWERS,
+  FETCH_FOLLOWED_USERS,
+  FETCH_ALL_ACTIVITY
 ) => {
-  if (currentUser) {
-    doesUserFollowUserRef.current =
-    currentUser.userFollows.some(obj => obj._id === user._id)
+
+  if (historyParam === '/followers') {
+    gqlQuery.current = FETCH_USER_FOLLOWERS
+  } else if (historyParam === '/following') {
+    gqlQuery.current = FETCH_FOLLOWED_USERS
+  } else if (historyParam === '/activity') {
+    gqlQuery.current = FETCH_ALL_ACTIVITY
   }
 }
+
+
 
 const FeedUtil = { 
   header, updateCacheInfScroll,
@@ -366,8 +387,9 @@ const FeedUtil = {
   updateCacheInfScrollUserFollowers,
   updateCacheInfScrollFollowedUsers,
   handlePostNotesScrollOutOfWindow,
-  handleData, setgqlQueryAndQuery,
-  doesUserFollowUser
+  handleData, setgqlQueryAndQueryFeed,
+  setgqlQueryUserFollowedOrFollowingOrActivity
+  // doesUserFollowUser
 }
 
 export default FeedUtil;

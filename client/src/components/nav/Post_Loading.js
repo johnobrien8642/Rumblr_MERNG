@@ -16,7 +16,7 @@ const PostLoading = ({
           //eslint-disable-next-line
           setToggle(toggle = true)
         }
-      }, 700)
+      }, 500)
     }
 
     return () => {

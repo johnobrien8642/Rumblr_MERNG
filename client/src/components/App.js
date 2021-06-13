@@ -9,7 +9,7 @@ import UserPostLikesFeed from './feeds/User_Post_Likes_Feed';
 import UserFollowingFeed from './feeds/User_Following_Feed';
 import UserBlogShow from './feeds/User_Blog_Show';
 import UserPostShow from './feeds/User_Post_Show';
-import UserFollowersFeed from './feeds/User_Followers_Feed';
+import UserFollowersOrFollowingOrActivityFeed from './feeds/User_Followers_Or_Following_Or_Activity_Feed';
 import UserActivityFeed from './feeds/User_Activity_Feed';
 import UserSettings from './user/User_Settings';
 import Discover from './nav/Discover';
@@ -39,16 +39,17 @@ const App = () => {
     {/* // <div className="App"> */}
       <Nav />
       <Switch>
-        <AuthRoute path={'/dashboard'} component={Dashboard} />
+        <AuthRoute path={['/dashboard', '/likes']} component={Dashboard} />
         <AuthRoute path={'/view/tag/:tagTitle'} component={TagFeed} />
         <AuthRoute path={'/view/blog/:blogName'} component={UserBlogShow} />
         <AuthRoute exact path={'/settings/account'} component={UserSettings} />
         <AuthRoute exact path='/blog/view/:blogName/:postId' component={UserPostShow} />
-        <AuthRoute exact path='/blog/:blogName/followers' component={UserFollowersFeed} />
-        <AuthRoute exact path='/blog/:blogName/activity' component={UserActivityFeed} />
+        <AuthRoute 
+          exact path={['/followers', '/following', '/activity']} 
+          component={UserFollowersOrFollowingOrActivityFeed} 
+        />
         <AuthRoute exact path='/discover' component={Discover} />
         <AuthRoute exact path='/likes' component={UserPostLikesFeed} />
-        <AuthRoute exact path='/following' component={UserFollowingFeed} />
         {/* uncomment below for email auth welcome page */}
         {/* <AuthRoute exact path='/welcome' component={WelcomePage} /> */}
         <AuthRoute exact path='/register' component={Register} routeType={'auth'} />

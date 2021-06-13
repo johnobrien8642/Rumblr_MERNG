@@ -44,14 +44,14 @@ const PostShow = ({
     }
   }, [confirmDelete])
 
-  doesUserFollowUser(doesUserFollowUserRef, currentUser, post.user)
+  // doesUserFollowUser(doesUserFollowUserRef, currentUser, post.user)
 
   let [deletePost] = useMutation(DELETE_POST, {
     update(client, { data }) {
       const { deletePost } = data;
       var currentUser = Cookies.get('currentUser')
       var query = FETCH_USER_FEED
-
+    
       postDelete(
         client, post, deletePost,
         currentUser, query
@@ -127,13 +127,14 @@ const PostShow = ({
 
               <button
                 className='deleteBtn'
-                onClick={() => {
+                onClick={e => {
                   allowScroll(document)
                   deletePost({
                     variables: {
                       post: post
                     }
                   })
+                  setConfirmDelete(confirmDelete = false)
                 }}
               >
                 Ok

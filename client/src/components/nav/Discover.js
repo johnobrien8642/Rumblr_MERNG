@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
+import Cookies from 'js-cookie';
 import RecommendedTags from '../nav/Recommended_Tags';
 import AllTagFeed from '../feeds/All_Tag_Feed';
 import Queries from '../../graphql/queries.js';
-import Cookies from 'js-cookie';
 import FollowedTags from '../search/resultTypes/Followed_Tags_Result';
 const { FETCH_RECOMMENDED_TAGS, FETCH_USER } = Queries;
 
@@ -40,7 +40,7 @@ const Discover = () => {
         />
         
       </div>
-      
+
       <AllTagFeed />
 
       <div

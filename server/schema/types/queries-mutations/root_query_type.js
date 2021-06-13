@@ -98,12 +98,12 @@ const RootQueryType = new GraphQLObjectType({
     fetchUserLikes: {
       type: GraphQLList(LikeType),
       args: {
-        user: { type: GraphQLString }
+        query: { type: GraphQLString }
       },
-      resolve(_, { user }) {
+      resolve(_, { query }) {
         return User
           .aggregate([
-            { $match: { blogName: user } },
+            { $match: { blogName: query } },
             {
               $lookup: {
                 from: 'likes',
@@ -847,7 +847,7 @@ const RootQueryType = new GraphQLObjectType({
                                     }
                                   }
                                 ]
-                              },
+                              }
                             ]
                           }
                         }

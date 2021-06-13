@@ -148,7 +148,7 @@ const UserDetails = ({
           <li>
             <Link
               className='blogDetailData'
-              to={`/blog/${blogName}/followers`}
+              to='/followers'
               onClick={() => {
                 setNavActive(navActive = false)
               }}
@@ -156,6 +156,17 @@ const UserDetails = ({
               <p>Followers</p>
             </Link>
               <span className='detailCount'>{followersCount}</span>
+          </li>
+          <li>
+            <Link
+              className='blogDetailData'
+              to='/activity'
+              onClick={() => {
+                setNavActive(navActive = false)
+              }}
+            >
+              <p>Activity</p>
+            </Link>
           </li>
         </ul>
       </div>

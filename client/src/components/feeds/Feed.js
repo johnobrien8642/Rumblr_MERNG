@@ -7,15 +7,17 @@ import Queries from '../../graphql/queries';
 import FeedUtil from '../posts/util/functions/feed_util.js';
 import ProfilePic from '../user/util/components/Profile_Pic';
 import PostLoading from '../nav/Post_Loading';
+import FollowButton from '../posts/util/components/social/Follow_Button';
 import PostShowUtil from '../posts/util/functions/post_show_util.js';
-const { FETCH_USER_FEED, FETCH_TAG_FEED } = Queries;
+const { FETCH_USER_FEED, FETCH_TAG_FEED, FETCH_USER_LIKES } = Queries;
 const { infiniteScroll, updateCacheInfScroll,
-        handleData, setgqlQueryAndQuery } = FeedUtil;
+        handleData, setgqlQueryAndQueryFeed } = FeedUtil;
 const { handlePostClassName } = PostShowUtil;
 
 const Feed = ({
   user, 
   tag,
+  userLikes,
   currentUser,
   uploading,
   setUploading
@@ -29,9 +31,14 @@ const Feed = ({
   let endOfPosts = useRef(false)
   const client = useApolloClient();
 
-  setgqlQueryAndQuery(
-    tag, user, gqlQuery,
-    query, FETCH_TAG_FEED,
+  setgqlQueryAndQueryFeed(
+    tag, 
+    user, 
+    userLikes, 
+    gqlQuery, 
+    query, 
+    FETCH_TAG_FEED,
+    FETCH_USER_LIKES,
     Cookies.get('currentUser')
   )
   
@@ -61,11 +68,31 @@ const Feed = ({
   if (error) return `Error: ${error}`;
   
   handleData(data, feedArr, cursorId, endOfPosts)
+
+  var handleLikesHeader = () => {
+    if (userLikes) {
+      return (
+        <div
+          className='userLikesHeader'
+        >
+          <h1>Likes</h1>
+          <span 
+            className='totalLikeCount'
+          >
+            {currentUser.totalLikeCount + ' ' + 'likes'} 
+          </span>
+        </div>
+      )
+    }
+  }
   
   return(
     <div
       className='userOrTagFeed'
     >
+
+      {handleLikesHeader()}
+
       <PostLoading 
         uploading={uploading}
       />
@@ -88,22 +115,31 @@ const Feed = ({
                 >
                   <Link 
                     className='user'
-                    to={`/view/blog/${Cookies.get('currentUser')}`}>
-                    {Cookies.get('currentUser')}
-                  </Link> 
-                  <img
-                    src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
-                    alt=''
-                  />
-                  <Link
-                    className='repostedFrom'
-                    to={`/view/blog/${obj.user.blogName}`}
-                  >
+                    to={`/view/blog/${obj.user.blogName}`}>
                     {obj.user.blogName}
                   </Link>
+
+                  <div
+                    className='iconRepostedAndFollowContainer'
+                  >
+                    <img
+                      src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
+                      alt=''
+                    />
+                    <Link
+                      className='repostedFrom'
+                      to={`/view/blog/${obj.repostedFrom.blogName}`}
+                    >
+                      {obj.user.blogName}
+                    </Link>
+                    <FollowButton
+                      feed={true}
+                      user={obj.repostedFrom}
+                    />
+                  </div>
                 </span>
               </div>
-
+              
               <PostUpdateOrShow
                 post={obj}
                 repostFormBool={false}

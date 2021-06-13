@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client';
 import ProfilePic from '../user/util/components/Profile_Pic';
 import PostShow from '../posts/types/showOrUpdate/PostShow';
+import PostLoading from '../nav/Post_Loading';
 import PostShowUtil from '../posts/util/functions/post_show_util.js';
 import Queries from '../../graphql/queries.js';
 const { FETCH_ALL_TAG_FEED } = Queries;
@@ -29,7 +30,7 @@ const AllTagFeed = ({
     }
   })
 
-  if (loading) return 'Loading...';
+  if (loading) return '';
   if (error) return `Error: ${error.message}`;
   
   const { fetchAllTagFeed } = data;
