@@ -17,7 +17,7 @@ const MobileNav = ({
   totalCountRef,
   cursorId
 }) => {
-  let [menuOpen, openMenu] = useState(true)
+  let [menuOpen, openMenu] = useState(false)
   let [settingsOpen, openSettings] = useState(false)
   let [searchOpen, openSearch] = useState(false)
   let scrollYRef = useRef(null)
@@ -54,10 +54,8 @@ const MobileNav = ({
         className='mobileNav loggedIn'
         tabIndex={-1}
         onBlur={() => {
-          // document.body.style.margin = ''
-          // document.body.style.height = ''
-          // document.body.style.overflow = ''
-          // openMenu(menuOpen = false)
+          allowScroll(document)
+          openMenu(menuOpen = false)
         }}
       >
         <div
