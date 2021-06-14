@@ -14,7 +14,7 @@ const { mainPost,
 
 const Register = () => {
   let previewProfilePicRef = useRef({});
-  let [profileImageFile, setProfileImageFile] = useState(null);
+  let [profileImageFile, setProfileImageFile] = useState([]);
   let [email, setEmail] = useState('');
   let [blogName, setBlogName] = useState('');
   let [blogDescription, setBlogDescription] = useState('');
@@ -42,7 +42,7 @@ const Register = () => {
       Cookies.set('auth-token', token)
       Cookies.set('currentUser', blogName)
       resetInputs();
-      history.push('/');
+      window.location.reload();
     },
     update(client, { data }) {
       client.writeQuery({
@@ -72,7 +72,7 @@ const Register = () => {
     .then(([mainUpload]) => {
       
       var instanceData = {
-        profilePicId: mainUpload[0]._id,
+        profilePicId: mainUpload[0] ? mainUpload[0]._id : null,
         email: email, 
         blogName: blogName,
         password: password,

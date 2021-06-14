@@ -996,7 +996,7 @@
       border-radius: 10px;
       z-index: 94;
       // background-color: red;
-
+      
       .imgContainer {
         position: relative;
         width: 100%;
@@ -1029,17 +1029,19 @@
           width: 400px;
           background-color: rgb(0, 0, 0, 0.5);
           border-radius: 3px;
+          overflow-y: hidden;
 
           @media (max-width: 980px) {
             width: 100%;
           }
-
+          
           text-align: center;
           margin: 0 auto;
           font-size: 22px;
           font-weight: 500;
+          font-size: 120%;
           color: white;
-          z-index: 96
+          z-index: 96;
         }
       }
 
@@ -1047,7 +1049,7 @@
         position: relative;
         top: -50px;
         font-size: 15px;
-        margin: 10px 15px -20px 15px;
+        margin: 35px 15px -5px 15px;
         // font-weight: 500;
       }
 

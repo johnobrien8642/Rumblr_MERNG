@@ -89,6 +89,7 @@ const EditProfilePic = ({
   if (active) {
     return (
       <form
+        className='upload'
         onSubmit={e => {
           if (profileImageFile && password) {
             handleSubmit(e)
@@ -108,36 +109,48 @@ const EditProfilePic = ({
           setRender={setRender}
         />
 
-        <p>{errorMessage ? `${errorMessage}` : ''}</p>
+        <p
+          className='errMessage'
+        >{errorMessage ? `${errorMessage}` : ''}</p>
 
-        <input
-          type='password'
-          placeholder='Confirm password'
-          value={password}
-          onChange={e => {
-            setPassword(password = e.target.value)
-          }}
-        />
+        <div
+          className='inputAndBtnContainer'
+        >
+          <input
+            type='password'
+            placeholder='Confirm password'
+            value={password}
+            onChange={e => {
+              setPassword(password = e.target.value)
+            }}
+          />
 
-        <button
-          type='button'
-          onClick={() => {
-            resetInputs()
-            setActive(active = false)
-          }}
-        >
-          Cancel
-        </button>
-        <button
-          type='submit'
-        >
-          Save
-        </button>
+          <div>
+            <button
+              className='cancel'
+              type='button'
+              onClick={() => {
+                resetInputs()
+                setActive(active = false)
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              className='save'
+              type='submit'
+            >
+              Save
+            </button>
+          </div>
+        </div>
       </form>
     )
   } else {
     return (
-      <div>
+      <div
+        className='currentProPic settingContainer'
+      >
         <img
           className='profilePic'
           src={iconUrls.user ? iconUrls.user : iconUrls.default}
@@ -145,7 +158,7 @@ const EditProfilePic = ({
         />
         <img
           className='editPostBtn'
-          src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+          src="https://img.icons8.com/windows/64/000000/edit--v1.png"
           alt=''
           onClick={() => {
             setActive(active = true)

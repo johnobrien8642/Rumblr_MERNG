@@ -13,7 +13,7 @@ const Email = ({
 }) => {
   let emailRef = useRef(userEmail)
   let [active, setActive] = useState(false);
-  let [email, setEmail] = useState(userEmail);
+  let [email, setEmail] = useState('');
   let [password, setPassword] = useState('');
   let [errorMessage, setError] = useState(null);
 
@@ -43,30 +43,34 @@ const Email = ({
 
   if (active) {
     return (
-      <div>
-        <form
-          onSubmit={e => {
-            e.preventDefault()
-
-            updateUserEmail({
-              variables: {
-                email: email,
-                password: password,
-                user: Cookies.get('currentUser')
-              }
-            })
-          }}
+      <form
+        className='upload'
+        onSubmit={e => {
+          e.preventDefault()
+          updateUserEmail({
+            variables: {
+              email: email,
+              password: password,
+              user: Cookies.get('currentUser')
+            }
+          })
+        }}
+      >
+        <div
+          className='inputAndBtnContainer'
         >
           <input
-            type='text'
-            value={email}
+            // type='text'
+            value={userEmail}
             onChange={e => {
               setEmail(email = e.target.value)
             }}
           />
-          <p>{errorMessage ? `${errorMessage}` : ''}</p>
+          <p
+            className='errMessage'
+          >{errorMessage ? `${errorMessage}` : ''}</p>
           <input
-            type='password'
+            // type='password'
             placeholder='Confirm password'
             value={password}
             onChange={e => {
@@ -75,6 +79,7 @@ const Email = ({
           />
           <div>
             <button
+              className='cancel'
               type='button'
               onClick={() => {
                 resetInputs()
@@ -84,21 +89,24 @@ const Email = ({
               Cancel
             </button>
             <button
+              className='save'
               type='submit'
             >
               Save
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     )
   } else {
     return (
-      <div>
+      <div
+        className='settingContainer'
+      >
         <p>{emailRef.current}</p>
         <img
           className='editPostBtn'
-          src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+          src="https://img.icons8.com/windows/64/000000/edit--v1.png"
           alt=''
           onClick={() => {
             setActive(active = true)

@@ -14,7 +14,7 @@ const BlogDescription = ({
 }) => {
   let blogDescriptionRef = useRef(userBlogDescription)
   let [active, setActive] = useState(false);
-  let [blogDescription, setBlogDescription] = useState(userBlogDescription);
+  let [blogDescription, setBlogDescription] = useState('');
   let [password, setPassword] = useState('');
   let [errorMessage, setError] = useState(null);
 
@@ -45,32 +45,36 @@ const BlogDescription = ({
 
   if (active) {
     return (
-      <div>
-        <form
-          onSubmit={e => {
-            e.preventDefault()
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          updateUserBlogDescription({
+            variables: {
+              blogDescription: blogDescription,
+              password: password,
+              user: Cookies.get('currentUser')
+            }
+          })
+        }}
+      >
 
-            updateUserBlogDescription({
-              variables: {
-                blogDescription: blogDescription,
-                password: password,
-                user: Cookies.get('currentUser')
-              }
-            })
-          }}
+        <div
+          className='inputAndBtnContainer'
         >
           <textarea
-            type='text'
+            className='blogDescriptionTextarea'
             value={blogDescription}
             onChange={e => {
-              if (blogDescription.length < 150) {
-                setBlogDescription(blogDescription = e.target.value)
-              }
+              setBlogDescription(blogDescription = e.target.value)
             }}
           />
-          <span>{150 - blogDescription.length} characters left</span>
+          <span
+            className='characterCount'
+          >{150 - blogDescription.length} characters left</span>
           
-          <p>{errorMessage ? `${errorMessage}` : ''}</p>
+          <p
+            className='errMessage'
+          >{errorMessage ? `${errorMessage}` : ''}</p>
           <input
             type='password'
             placeholder='Confirm password'
@@ -79,8 +83,10 @@ const BlogDescription = ({
               setPassword(password = e.target.value)
             }}
           />
+
           <div>
             <button
+              className='cancel'
               type='button'
               onClick={() => {
                 resetInputs()
@@ -88,19 +94,22 @@ const BlogDescription = ({
               }}
             >Cancel</button>
             <button
+              className='save'
               type='submit'
             >Save</button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     )
   } else {
     return (
-      <div>
+      <div
+        className='settingContainer'
+      >
         <p>{blogDescriptionRef.current}</p>
         <img
           className='editPostBtn'
-          src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+          src="https://img.icons8.com/windows/64/000000/edit--v1.png"
           alt=''
           onClick={() => {
             setActive(active = true)

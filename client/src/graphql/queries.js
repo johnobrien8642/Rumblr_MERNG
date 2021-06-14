@@ -621,6 +621,9 @@ const Queries = {
         filteredPostContent
         email
         totalLikeCount
+        userFollowCount
+        userPostsCount
+        followersCount
         profilePic {
           _id
           src
@@ -644,6 +647,39 @@ const Queries = {
   FETCH_POST_RADAR: gql`
     query FetchPostRadar($query: String) {
       fetchPostRadar(query: $query) {
+        __typename
+        ... on RepostType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+            profilePic {
+              _id
+              src
+            }
+          }
+          repostTrail {
+            _id
+            caption
+            user {
+              _id
+              blogName
+            }
+            repost {
+              _id
+            }
+          }
+          repostedFrom {
+            _id
+            blogName
+            kind
+          }
+          post {
+            __typename
+            ${ALL_POSTS}
+          }
+        }
         ${ALL_POSTS}
       }
     }

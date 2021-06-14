@@ -4,10 +4,12 @@ const doesUserFollowUser = (
   tag
 ) => {
 
-  if (user) {
-    return currentUser.userFollows.some(obj => obj._id === user._id)
-  } else if (tag) {
-    return currentUser.tagFollows.some(obj => obj._id === tag._id)
+  if (currentUser) {
+    if (user) {
+      return currentUser.userFollows.some(obj => obj._id === user._id)
+    } else if (tag) {
+      return currentUser.tagFollows.some(obj => obj._id === tag._id)
+    }
   }
 }
 

@@ -44,11 +44,10 @@ const FilterTagInput = ({
 
   if (active) {
     return (
-      <div>
+      <React.Fragment>
         <form
         onSubmit={e => {
-          e.preventDefault()
-  
+          e.preventDefault()    
           addFilterTag({
               variables: {
                 tag: tag,
@@ -57,28 +56,34 @@ const FilterTagInput = ({
             })
           }}
         >
-          <input
-            type='text'
-            placeholder='Filter a tag'
-            value={tag}
-            onChange={e => {
-              setTag(tag = e.target.value)
-            }}
-          />
-          <button
-            type='submit'
-            disabled={tag ? false : true}
+          <div
+            className='filterTagInputContainer'
           >
-            Add
-          </button>
+            <input
+              type='text'
+              placeholder='Filter a tag'
+              value={tag}
+              onChange={e => {
+                setTag(tag = e.target.value)
+              }}
+            />
+            <button
+              className='addBtn'
+              type='submit'
+              disabled={tag ? false : true}
+            >
+              Add
+            </button>
+          </div>
         </form>
         <ul>
           {user.filteredTags.map((tag, i) => {
             return (
               <li
-                key={i}
+                className='filteredTag'
+                key={tag._id}
               >
-                {tag}
+                <span>{tag}</span>
                 <button
                   type='button'
                   onClick={() => {
@@ -96,15 +101,17 @@ const FilterTagInput = ({
             )
           })}
         </ul>
-      </div>
+      </React.Fragment>
     )
   } else {
     return (
-      <div>
+      <div
+        className='settingContainer'
+      >
         <p>You're not filtering any tags</p>
         <img
           className='editPostBtn'
-          src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+          src="https://img.icons8.com/windows/64/000000/edit--v1.png"
           alt=''
           onClick={() => {
             setActive(active = true)

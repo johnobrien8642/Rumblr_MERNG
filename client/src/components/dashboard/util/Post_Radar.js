@@ -21,7 +21,6 @@ const PostRadar = () => {
   const { fetchPostRadar } = data;
 
   if (fetchPostRadar) {
-    console.log(fetchPostRadar)
     return (
       <div
         className='postRadar'

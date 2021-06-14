@@ -8,7 +8,9 @@ const Filtering = ({
 }) => {
 
   return (
-    <div>
+    <div
+      className='filteringContainer'
+    >
       <h3>Filtered Tags</h3>
       <FilterTagInput user={user} mobile={mobile} />
       <h3>Filtered Post Content</h3>

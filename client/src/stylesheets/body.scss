@@ -44,8 +44,8 @@ body {
 }
 
 .profilePic {
-  background-color: var(--off-white);
   object-fit: contain;
+  background-color: white;
 
   &:hover {
     cursor: pointer;

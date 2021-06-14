@@ -39,7 +39,7 @@ const UserSettings = () => {
           }}
         >
           <img
-            src="https://img.icons8.com/windows/32/000000/long-arrow-left.png"
+            src="https://img.icons8.com/windows/64/000000/long-arrow-left.png"
             alt=''
           />
         </div>
@@ -47,42 +47,54 @@ const UserSettings = () => {
         <div
           className='editProfilePic'
         >
-          <h3>Profile Picture</h3>
+          <h3
+            className='userSettingHeader'
+          >Profile Picture</h3>
           <EditProfilePic user={user} />
         </div>
 
         <div
           className='editEmail'
         >
-          <h3>Email</h3>
+          <h3
+            className='userSettingHeader'
+          >Email</h3>
           <Email userEmail={user.email} />
         </div>
 
         <div
           className='editBlogDescription'
         >
-          <h3>Blog Description</h3>
+          <h3
+            className='userSettingHeader'
+          >Blog Description</h3>
           <BlogDescription userBlogDescription={user.blogDescription} />
         </div>
 
         <div
           className='editPassword'
         >
-          <h3>Password</h3>
+          <h3
+            className='userSettingHeader'
+          >Password</h3>
           <Password user={user} />
         </div>
 
         <div
           className='filtering'
         >
-          <h3>Filtering</h3>
+          <h3
+            className='userSettingHeader'
+          >Filtering</h3>
           <Filtering user={user} />
         </div>
 
         <div
-          className='deleteMyAcct'
+          className='deleteMyAcctContainer'
         >
-          <h3>Delete My Account</h3>
+          <h3
+            className='userSettingHeader'
+          >Delete My Account</h3>
           <DeleteMyAccount />
         </div>
       </div>

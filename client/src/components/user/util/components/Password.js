@@ -54,23 +54,24 @@ const Password = ({
 
   if (active) {
     return (
-      <div>
-        <form
-          onSubmit={e => {
-            e.preventDefault()
-
-            if (newPassword === confNewPassword) {
-              updateUserPassword({
-                variables: {
-                  currentPW: currentPW,
-                  newPassword: newPassword,
-                  user: Cookies.get('currentUser')
-                }
-              })
-            } else {
-              setPWError(errorPWMessage = "Passwords don't match")
-            }
-          }}
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          if (newPassword === confNewPassword) {
+            updateUserPassword({
+              variables: {
+                currentPW: currentPW,
+                newPassword: newPassword,
+                user: Cookies.get('currentUser')
+              }
+            })
+          } else {
+            setPWError(errorPWMessage = "Passwords don't match")
+          }
+        }}
+      >
+        <div
+          className='inputAndBtnContainer'
         >
           <input
             type='password'
@@ -80,7 +81,6 @@ const Password = ({
               setCurrentPW(currentPW = e.target.value)
             }}
           />
-          <p>{errorMessage ? `${errorMessage}` : ''}</p>
           <input
             type='password'
             placeholder='New password'
@@ -90,9 +90,12 @@ const Password = ({
             }}
           />
           {renderConfirmPW()}
-          <p>{errorPWMessage ? `${errorPWMessage}` : ''}</p>
+          <p
+            className='errMessage'
+          >{errorMessage ? `${errorMessage}` : ''}</p>
           <div>
             <button
+              className='cancel'
               type='button'
               onClick={() => {
                 resetInputs()
@@ -100,17 +103,20 @@ const Password = ({
               }}
             >Cancel</button>
             <button
+              className='save'
               type='submit'
             >
               Save
             </button>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
     )
   } else {
     return (
-      <div>
+      <div
+        className='settingContainer'
+      >
         <p>{alert ? `${alert}` : ''}</p>
         <input
             type='password'
@@ -119,7 +125,7 @@ const Password = ({
           />
         <img
           className='editPostBtn'
-          src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+          src="https://img.icons8.com/windows/64/000000/edit--v1.png"
           alt=''
           onClick={() => {
             setActive(active = true)

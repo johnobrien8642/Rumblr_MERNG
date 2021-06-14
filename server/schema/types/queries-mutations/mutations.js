@@ -15,7 +15,6 @@ import AnyPostType from '../unions/any_post_type.js';
 import UserAndTagType from '../unions/user_and_tag_type.js';
 import RepostCaptionType from '../objects/posts/util/repost_caption_type.js'
 import RepostOrRepostCaptionType from '../unions/repost_or_repost_caption_type.js';
-
 import createOrUpdatePost from '../../../models/posts/types/util/create_or_update_function.js';
 import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function_util.js';
 const { deletePost, 
@@ -33,7 +32,7 @@ const Follow = mongoose.model('Follow');
 const Image = mongoose.model('Image');
 const RepostCaption = mongoose.model('RepostCaption');
 const { GraphQLObjectType, GraphQLID,
-        GraphQLString, GraphQLList } = graphql;
+        GraphQLString, GraphQLList, GraphQLInt } = graphql;
 
 var s3Client = new aws.S3({
   secretAccessKey: keys.secretAccessKey,
@@ -423,16 +422,20 @@ const mutation = new GraphQLObjectType({
       resolve(parentValue, {
         blogDescription, password, user
       }) {
-        return User.findOne({ blogName: user })
-          .then(user => {
-            if (bcrypt.compareSync(password, user.password)) {
-              user.blogDescription = blogDescription
-              return user.save()
-                .then(user => user)
-            } else {
-              return new Error('Incorrect password')
-            }
-          })
+        if (blogDescription.length < 150) {
+          return User.findOne({ blogName: user })
+            .then(user => {
+              if (bcrypt.compareSync(password, user.password)) {
+                user.blogDescription = blogDescription
+                return user.save()
+                  .then(user => user)
+              } else {
+                return new Error('Incorrect password')
+              }
+            })
+        } else {
+          return new Error('Blog Description must be 150 characters or less')
+        }
       }
     },
     updateUserPassword: {
@@ -554,7 +557,7 @@ const mutation = new GraphQLObjectType({
       }
     },
     deleteMyAccount: {
-      type: UserType,
+      type: GraphQLInt,
       args: {
         query: { type: GraphQLString },
         password: { type: GraphQLString },
@@ -577,14 +580,14 @@ const mutation = new GraphQLObjectType({
                 { $replaceRoot: { "newRoot": "$posts" } }
               ]).then(posts => {
                 return Promise.all([
-                  asyncDeleteAllPostsAndProfilePic(posts, deletePost),
-                  asyncDeleteAllActivity(user),
-                  handleS3Cleanup(user.profilePic)
+                  asyncDeleteAllPosts(posts, deletePost, s3Client, keys),
+                  asyncDeleteAllActivityAndProfilePic(user)
                 ]).then(() => {
-                    return User.deleteOne({ blogName: query })
-                      .then(() => {
-                        return AuthService.logout(token)
-                      })
+                  return AuthService.logout(token)
+                    .then(() => {
+                      return User.deleteOne({ blogName: query })
+                        .then(obj => obj.n)
+                    })
                   })
               })
             } else {

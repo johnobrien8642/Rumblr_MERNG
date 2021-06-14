@@ -14,11 +14,12 @@ const DeleteMyAccount = () => {
 
   let [deleteMyAccount] = useMutation(DELETE_MY_ACCOUNT, {
     onCompleted(data) {
-      resetInputs()
-      setActive(active = false)
-      history.push('/')
+      resetInputs();
+      setActive(active = false);
+      window.location.reload();
     },
     onError(error) {
+      console.log(error)
       setError(errorMessage = error.message)
     }
   })
@@ -45,8 +46,11 @@ const DeleteMyAccount = () => {
   
         <p>{errorMessage ? `${errorMessage}` : ''}</p>
   
-        <div>
+        <div
+          className='deleteOrCancelContainer'
+        >
           <button
+            className='save'
             type='button'
             onClick={() => {
               if (password) {
@@ -60,6 +64,7 @@ const DeleteMyAccount = () => {
             Delete My Account
           </button>
           <button
+            className='cancel'
             type='button'
             onClick={() => {
               setActive(active = false)
@@ -73,9 +78,10 @@ const DeleteMyAccount = () => {
   } else if (askToConfirm) {
     return (
       <div
-        className='deleteMyAcct'
+        className='deleteMyAcct confirm'
       >
         <button
+          className='confirmDelete'
           onClick={() => {
             deleteMyAccount({
               variables: {
@@ -86,9 +92,11 @@ const DeleteMyAccount = () => {
             })
           }}
         >
-          Delete my account (This action cannot be undone)
+          <span>Delete my account</span> 
+          <span>(This action cannot be undone)</span>
         </button>
         <button
+          className='cancel'
           type='button'
           onClick={() => {
             setPassword(password = '')
@@ -102,10 +110,9 @@ const DeleteMyAccount = () => {
     )
   } else {
     return (
-      <div
-        className='deleteMyAcct'
-      >
+      <React.Fragment>
         <button
+          className='deleteMyAcctBtn'
           onClick={() => {
             setActive(active = true)
             confirmDelete(askToConfirm = true)
@@ -113,7 +120,7 @@ const DeleteMyAccount = () => {
         >
           Delete My Account
         </button>
-      </div>
+      </React.Fragment>
     )
   }
 }

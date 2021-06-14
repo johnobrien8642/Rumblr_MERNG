@@ -42,7 +42,7 @@ const FilterPostContentInput = ({
 
   if (active) {
     return (
-      <div>
+      <React.Fragment>
         <form
           onSubmit={e => {
             e.preventDefault()
@@ -55,28 +55,33 @@ const FilterPostContentInput = ({
               })
             }}
           >
-            <input
-              type='text'
-              placeholder='Filter content'
-              value={postContent}
-              onChange={e => {
-                setPostContent(postContent = e.target.value)
-              }}
-            />
-            <button
-              type='submit'
-              disabled={postContent ? false : true}
+            <div
+              className='filterTagInputContainer'
             >
-              Add
-            </button>
+              <input
+                type='text'
+                placeholder='Filter content'
+                value={postContent}
+                onChange={e => {
+                  setPostContent(postContent = e.target.value)
+                }}
+              />
+              <button
+                type='submit'
+                disabled={postContent ? false : true}
+              >
+                Add
+              </button>
+            </div>
           </form>
         <ul>
           {user.filteredPostContent.map((postContent, i) => {
             return (
               <li
+                className='filteredTag'
                 key={i}
               >
-                {postContent}
+                <span>{postContent}</span>
                 <button
                   type='button'
                   onClick={() => {
@@ -94,15 +99,17 @@ const FilterPostContentInput = ({
             )
           })}
         </ul>
-      </div>
+      </React.Fragment>
     )
   } else {
     return (
-      <div>
+      <div
+        className='settingContainer'
+      >
         <p>You're not filtering any post content</p>
         <img
           className='editPostBtn'
-          src="https://img.icons8.com/windows/32/000000/edit--v1.png"
+          src="https://img.icons8.com/windows/64/000000/edit--v1.png"
           alt=''
           onClick={() => {
             setActive(active = true)

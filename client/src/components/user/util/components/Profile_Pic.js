@@ -101,11 +101,12 @@ const ProfilePic = ({
         </React.Fragment>
       )
     }  
+  } else {
+    return (
+      <div>
+      </div>
+    )
   }
-  
-  
-  
-
 }
 
 export default ProfilePic;

@@ -32,7 +32,7 @@ const Login = () => {
       Cookies.set('auth-token', token)
       Cookies.set('currentUser', blogName)
       resetInputs();
-      history.push('/dashboard')
+      window.location.reload();
     },
     update(client, { data }) {
       client.writeQuery({

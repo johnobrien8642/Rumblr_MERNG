@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import aws from 'aws-sdk';
 import keys from '../../../../config/keys.js';
+import Follow from '../../util/Follow.js';
 const Post = mongoose.model('Post');
 const Like = mongoose.model('Like');
 const Comment = mongoose.model('Comment')
@@ -38,7 +39,7 @@ const handlePostDelete = async (post) => {
       Like.deleteMany({ post: post._id }),
       Comment.deleteMany({ post: post._id }),
       Mention.deleteMany({ post: post._id }),
-    ]).then(post => {
+    ]).then(() => {
       return post._id
     })
   }
@@ -120,26 +121,33 @@ const cleanupMention = async (mentionObjs) => {
   })
 }
 
-const asyncDeleteAllPosts = async (posts, deletePost) => {
+const asyncDeleteAllPosts = async (
+  posts, 
+  deletePost,
+  s3Client, 
+  keys,
+  handles3AndObjectCleanup
+) => {
   for (let i = 0; i < posts.length; i++) {
-    await deletePost(posts[i])
+    await deletePost(
+      posts[i], 
+      s3Client, 
+      keys, 
+      handles3AndObjectCleanup
+    )
   }
 }
 
 const asyncDeleteAllActivityAndProfilePic = async (user) => {
-  await Image.findById(user.profilePic)
-          .then(image => {
-
-          })
-
-  await Post.deleteMany({ kind: 'Repost', postAuthor: user._id })
+  await Image.deleteOne({ _id: user.profilePic })
   await Like.deleteMany({ user: user._id })
   await Comment.deleteMany({ user: user._id })
-  
+  await Mention.deleteMany({ user: user._id })
+  await Follow.deleteMany({ user: user._id })
 }
 
-const deletePost = async (post) => {
-  if 
+const deletePost = async (post, s3Client, keys, handles3AndObjectCleanup) => {
+  if
     (
       post.kind === 'TextPost' ||
       post.kind === 'QuotePost' ||

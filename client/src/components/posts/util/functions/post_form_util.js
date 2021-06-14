@@ -635,12 +635,13 @@ const handleFormData = (
   imageFileArr
 ) => {
   var formData = new FormData();
-
+  
   for (var i = 0; i < imageFileArr.length; i++) {
     var file2 = imageFileArr[i];
     formData.append('images', file2);
   }
-
+  console.log(formData)
+  
   return formData
 }
 

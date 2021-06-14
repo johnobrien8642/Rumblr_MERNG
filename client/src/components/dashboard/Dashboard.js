@@ -44,6 +44,7 @@ const Dashboard = props => {
           />
         )}
       />
+      
       <div
         className='column1'
       >

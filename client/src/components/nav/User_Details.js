@@ -5,16 +5,9 @@ import ProfilePic from '../user/util/components/Profile_Pic';
 
 const UserDetails = ({
   user,
-  navActive, 
+  navActive,
   setNavActive,
   detailsClose,
-  profilePic,
-  blogName,
-  blogDescription,
-  totalLikeCount,
-  userFollowCount,
-  userPostsCount,
-  followersCount,
   detailsOpen,
   setDetailsOpen
 }) => {
@@ -30,10 +23,10 @@ const UserDetails = ({
     
     //eslint-disable-next-line
   }, [detailsClose, detailsOpen, active])
-
+  
   if (detailsOpen) {
     const { 
-      totalLikeCount, 
+      totalLikeCount,
       userFollowCount, 
       userPostsCount,
       followersCount,

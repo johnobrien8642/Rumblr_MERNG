@@ -72,8 +72,8 @@ const logout = async data => {
     const decoded = jwt.verify(data, keys.secretOrKey);
     const { _id } = decoded;
 
-    const user = await User.findById({ _id })
-
+    const user = await User.findById(_id)
+    
     return { loggedIn: false, ...user._doc }
   } catch (err) {
     throw err;

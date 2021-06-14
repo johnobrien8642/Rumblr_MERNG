@@ -11,7 +11,7 @@ const UserSchema = new Schema({
     required: true
   },
   blogDescription: {
-    type: String,
+    type: String
   },
   email: {
     type: String,
