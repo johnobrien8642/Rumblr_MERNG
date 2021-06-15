@@ -7,8 +7,6 @@ import RepostType from '../objects/posts/util/repost_type.js'
 import FollowType from '../objects/posts/util/follow_type.js'
 import ImageType from './posts/util/image_type.js';
 const User = mongoose.model('User');
-const Follow = mongoose.model('Follow');
-const Mention = mongoose.model('Mention');
 const { GraphQLObjectType, GraphQLString,
         GraphQLList, GraphQLInt,
         GraphQLBoolean, GraphQLID } = graphql;
@@ -220,7 +218,6 @@ const UserType = new GraphQLObjectType({
         ]).then(res => res[0].totalLikeCount)
       }
     },
-    // postLikes: {}
   })
 })
 

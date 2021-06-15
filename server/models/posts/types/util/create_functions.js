@@ -11,11 +11,13 @@ const Tag = mongoose.model('Tag')
 const Image = mongoose.model('Image')
 
 const createTextPost = ({
-  title, main,
+  title, 
+  main,
   descriptions,
   descriptionImageUploads,
   descriptionImageLinks,
-  user, tags
+  user, 
+  tags
 }) => {
   var post = new TextPost();
   
@@ -102,7 +104,8 @@ const createPhotoPost = ({
     descriptionImageUploads,
     descriptionImageLinks, 
     descriptions,
-    tags, user
+    tags, 
+    user
   }) => {
     var post = new PhotoPost();
     
@@ -190,10 +193,13 @@ const createPhotoPost = ({
 }
 
 const createQuotePost = ({
-  quote, source, descriptions,
+  quote, 
+  source, 
+  descriptions,
   descriptionImageUploads,
   descriptionImageLinks,
-  tags, user, 
+  tags, 
+  user
 }) => {
   var post = new QuotePost();
   
@@ -274,7 +280,8 @@ const createQuotePost = ({
 }
 
 const createLinkPost = ({
-  linkObj, descriptions,
+  linkObj, 
+  descriptions,
   descriptionImages,
   tags, user,
 }) => {
@@ -456,7 +463,8 @@ const createVideoPost = ({
   videoLink,
   descriptions,
   descriptionImages,
-  tags, user,
+  tags, 
+  user
 }) => {
   var post = new VideoPost();
   
@@ -513,9 +521,12 @@ const createVideoPost = ({
 }
 
 const CreateFunctions = {
-  createTextPost, createPhotoPost,
-  createQuotePost, createLinkPost,
-  createChatPost, createAudioPost,
+  createTextPost, 
+  createPhotoPost,
+  createQuotePost, 
+  createLinkPost,
+  createChatPost, 
+  createAudioPost,
   createVideoPost
 }
 

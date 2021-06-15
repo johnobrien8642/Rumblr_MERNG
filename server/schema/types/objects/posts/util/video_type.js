@@ -1,6 +1,6 @@
 import graphql from 'graphql';
-const { GraphQLID, GraphQLObjectType, 
-        GraphQLString, GraphQLFloat } = graphql;
+const { GraphQLID, 
+        GraphQLObjectType, GraphQLString } = graphql;
 
 const VideoType = new GraphQLObjectType({
   name: 'VideoType',

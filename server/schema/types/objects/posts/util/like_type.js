@@ -1,5 +1,5 @@
-import graphql from 'graphql';
 import mongoose from 'mongoose';
+import graphql from 'graphql';
 import AnyPostType from '../../../unions/any_post_type.js';
 import UserType from '../../user_type.js';
 const Like = mongoose.model('Like');

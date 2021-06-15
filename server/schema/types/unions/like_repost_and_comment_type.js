@@ -1,9 +1,8 @@
-import mongoose from 'mongoose';
 import graphql from'graphql';
-const { GraphQLUnionType } = graphql;
 import LikeType from '../objects/posts/util/like_type.js';
 import RepostType from '../objects/posts/util/repost_type.js';
 import CommentType from '../objects/posts/util/comment_type.js';
+const { GraphQLUnionType } = graphql;
 
 const LikeRepostAndCommentType = new GraphQLUnionType({
   name: 'LikeRepostAndCommentType',

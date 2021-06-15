@@ -1,11 +1,8 @@
 import mongoose from 'mongoose';
-import mongodb from 'mongodb';
 import graphql from 'graphql';
 import jwt from 'jsonwebtoken';
 import keys from '../../../../config/keys.js'
 import UserType from '../objects/user_type.js';
-// import PhotoPostType from '../objects/photo_post_type.js';
-import RepostType from '../objects/posts/util/repost_type.js';
 import FollowType from '../objects/posts/util/follow_type.js';
 import ImageType from '../objects/posts/util/image_type.js';
 import TagType from '../objects/posts/util/tag_type.js';
@@ -13,14 +10,12 @@ import UserAndTagType from '../unions/user_and_tag_type.js';
 import UserAndTagInputType from '../inputs/user_and_tag_input_type.js'
 import AnyPostType from '../unions/any_post_type.js'
 import AnyActivityType from '../unions/any_activity_type.js'
-import ActivityCountsType from '../objects/posts/util/activity_counts_type.js'
 import LikeRepostAndCommentType from '../unions/like_repost_and_comment_type.js'
 import LikeType from '../objects/posts/util/like_type.js'
 import SearchUtil from '../../../services/search_util.js';
 import RootQueryTypeUtil from './util/root_query_type_util.js';
 const User = mongoose.model('User');
 const Post = mongoose.model('Post');
-const Repost = mongoose.model('Repost');
 const Image = mongoose.model('Image');
 const Tag = mongoose.model('Tag');
 const Like = mongoose.model('Like');
@@ -540,7 +535,6 @@ const RootQueryType = new GraphQLObjectType({
       }
     },
     fetchActivityCount: {
-      // type: ActivityCountsType,
       type: GraphQLInt,
       args: { 
         query: { type: GraphQLString },

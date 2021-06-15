@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 const TextPost = mongoose.model('TextPost')
 const PhotoPost = mongoose.model('PhotoPost')
 const QuotePost = mongoose.model('QuotePost')
@@ -66,7 +67,13 @@ const findOrCreateTag = async (t, user) => {
 
 //handle mentions
 
-const handleMentions = async (mentions, asyncMention, findOrCreateMention, user, post) => {
+const handleMentions = async (
+  mentions, 
+  asyncMention, 
+  findOrCreateMention, 
+  user, 
+  post
+) => {
   return Promise.all(mentions.map((m, i) => {
         return asyncMention(m, findOrCreateMention, user, post)
       }
@@ -74,7 +81,12 @@ const handleMentions = async (mentions, asyncMention, findOrCreateMention, user,
   )
 }
 
-const asyncMention = async (m, findOrCreateMention, user, post) => {
+const asyncMention = async (
+  m, 
+  findOrCreateMention, 
+  user, 
+  post
+) => {
   return findOrCreateMention(m, user, post)
 }
 

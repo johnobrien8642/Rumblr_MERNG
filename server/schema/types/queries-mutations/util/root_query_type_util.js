@@ -23,12 +23,16 @@ const handleFilterPostContentRegex = (user) => {
 //all tag post feed
 
 const asyncTagPostArr = async (
-    query, tags, 
-    likedPostIds, Post,
-    User, mongoose,
+    query, 
+    tags, 
+    likedPostIds, 
+    Post,
+    User, 
+    mongoose,
     asyncFetchTagPosts,
     handleFilterTagRegex,
-    handleFilterPostContentRegex) => {
+    handleFilterPostContentRegex
+  ) => {
 
   var tagPosts = []
   for (var i = 0; i < tags.length; i++) {
@@ -44,9 +48,11 @@ const asyncTagPostArr = async (
 }
 
 const asyncFetchTagPosts = async (
-  query, tagId, 
+  query, 
+  tagId, 
   likedPostIds,
-  Post, User, 
+  Post, 
+  User, 
   mongoose,
   handleFilterTagRegex,
   handleFilterPostContentRegex

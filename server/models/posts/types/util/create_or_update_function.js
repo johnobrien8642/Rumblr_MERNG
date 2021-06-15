@@ -33,7 +33,9 @@ const createOrUpdatePost = ({
   descriptions,
   descriptionImages,
   mentions,
-  user, tags, kind,
+  user, 
+  tags, 
+  kind,
   objsToClean,
   postId
 }) => {

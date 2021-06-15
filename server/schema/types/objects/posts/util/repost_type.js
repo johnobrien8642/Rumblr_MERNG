@@ -52,26 +52,6 @@ const RepostType = new GraphQLObjectType({
           .then(repost => repost.repostTrail)
       }
     },
-    // repostCaptions: { 
-    //   type: GraphQLJSONObject,
-    //   resolve(parentValue) {
-    //     return Repost.findById(parentValue._id)
-    //       .populate('repostCaptions')
-    //       .then(repost => {
-    //         var captionObjs = repost.repostCaptions
-    //         var obj = {}
-
-    //         for (var i = 0; i < captionObjs.length; i++) {
-    //           obj[captionObjs[i].userId.toString() + captionObjs[i].repostId.toString()] = {
-    //             caption: captionObjs[i].caption,
-    //             repostId: captionObjs[i].repostId
-    //           }
-    //         }
-
-    //         return obj
-    //       })
-    //   }
-    // },
     createdAt: { type: GraphQLString },
     onModel: { type: GraphQLString },
     kind: { type: GraphQLString }

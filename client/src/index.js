@@ -210,7 +210,6 @@ if (token) {
     })
 }
 
-
 const Root = () => {
   return (
     <ApolloProvider client={client}>

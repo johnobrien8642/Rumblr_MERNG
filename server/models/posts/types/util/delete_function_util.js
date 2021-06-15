@@ -1,10 +1,11 @@
 import mongoose from 'mongoose';
 import aws from 'aws-sdk';
 import keys from '../../../../config/keys.js';
-import Follow from '../../util/Follow.js';
+
 const Post = mongoose.model('Post');
 const Like = mongoose.model('Like');
 const Comment = mongoose.model('Comment')
+const Follow = mongoose.model('Follow')
 const Image = mongoose.model('Image');
 const Audio = mongoose.model('Audio');
 const Video = mongoose.model('Video');
@@ -146,7 +147,12 @@ const asyncDeleteAllActivityAndProfilePic = async (user) => {
   await Follow.deleteMany({ user: user._id })
 }
 
-const deletePost = async (post, s3Client, keys, handles3AndObjectCleanup) => {
+const deletePost = async (
+  post, 
+  s3Client, 
+  keys, 
+  handles3AndObjectCleanup
+) => {
   if
     (
       post.kind === 'TextPost' ||

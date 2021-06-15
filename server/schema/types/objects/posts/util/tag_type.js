@@ -1,5 +1,5 @@
-import graphql, { GraphQLInt } from 'graphql';
 import mongoose from 'mongoose';
+import graphql, { GraphQLInt } from 'graphql';
 import UserType from '../../user_type.js';
 const Tag = mongoose.model('Tag');
 const { GraphQLObjectType, 

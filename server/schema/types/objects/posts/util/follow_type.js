@@ -1,9 +1,8 @@
 import mongoose from 'mongoose';
-import graphql, { GraphQLInt } from 'graphql';
 import UserType from '../../user_type.js';
 import UserAndTagType from '../../../unions/user_and_tag_type.js';
 const Follow = mongoose.model('Follow');
-
+import graphql, { GraphQLInt } from 'graphql';
 const { GraphQLObjectType,
         GraphQLString, GraphQLID } = graphql
 

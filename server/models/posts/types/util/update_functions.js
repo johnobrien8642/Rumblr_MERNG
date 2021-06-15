@@ -4,8 +4,10 @@ const Tag = mongoose.model('Tag')
 const Image = mongoose.model('Image')
 
 const updateTextPost = ({
-  postId, title,
-  main, descriptions,
+  postId, 
+  title,
+  main, 
+  descriptions,
   descriptionImageUploads,
   descriptionImageLinks,
   tags
@@ -90,7 +92,8 @@ const updateTextPost = ({
 }
 
 const updatePhotoPost = ({
-  postId, mainImageUploads,
+  postId, 
+  mainImageUploads,
   mainImageLinks,
   descriptions,
   descriptionImageUploads,
@@ -245,7 +248,8 @@ const updateQuotePost = ({
 }
 
 const updateLinkPost = ({
-  postId, linkObj,
+  postId, 
+  linkObj,
   descriptions,
   descriptionImages,
   tags
@@ -305,7 +309,8 @@ const updateLinkPost = ({
 }
 
 const updateAudioPost = ({
-  postId, audioMeta,
+  postId, 
+  audioMeta,
   descriptions,
   descriptionImages,
   tags
@@ -365,7 +370,8 @@ const updateAudioPost = ({
 }
 
 const updateChatPost = ({
-  postId, chat,
+  postId, 
+  chat,
   descriptions,
   descriptionImages,
   tags
@@ -425,7 +431,8 @@ const updateChatPost = ({
 }
 
 const updateVideoPost = ({
-  postId, descriptions,
+  postId, 
+  descriptions,
   descriptionImages,
   tags
 }) => {
@@ -483,9 +490,12 @@ const updateVideoPost = ({
 }
 
 const UpdateFunctions = {
-  updateTextPost, updatePhotoPost, 
-  updateQuotePost, updateLinkPost,
-  updateChatPost, updateAudioPost,
+  updateTextPost, 
+  updatePhotoPost, 
+  updateQuotePost, 
+  updateLinkPost,
+  updateChatPost, 
+  updateAudioPost,
   updateVideoPost
 }
 

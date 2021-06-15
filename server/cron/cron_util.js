@@ -55,7 +55,6 @@ var cronTagFollowerHeat = cron.schedule('* 23 * * *', async () => {
 
 var cronTagPostHeat = cron.schedule('* 23 * * *', async () => {
   var allTags =  await Tag.find()
-  // var allPostsPast2Days = await Post.find({ createdAt: { $gt: twoDaysAgo } })
   var aWeekAgo = new Date(new Date().setDate(new Date().getDate() - 7))
 
   for (var i = 0; i < allTags.length; i++) {
