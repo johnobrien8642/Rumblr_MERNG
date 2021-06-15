@@ -25,7 +25,6 @@
   right: 0;
   background-color: rgba(0, 0, 0, 0);
   z-index: 98;
-  // transition: background-color .5s;
   
   .mobilePostsNav.open {
     transform: translateX(-50%) rotate(0deg);
@@ -46,7 +45,6 @@
     left: 50%;
     transform: translateX(-250%) rotate(-180deg) scale(1);
     border-radius: 50%;
-    // overflow: hidden;
     width: 350px;
     height: 350px;
     margin: 0 auto;
@@ -69,7 +67,6 @@
       transform: rotate(180deg);
       transition: transform .5s ease;
 
-      //galaxy fold and iphone 5
       @media (max-width: 320px) {
         width: 60px;
         height: 60px;
@@ -89,7 +86,6 @@
           width: 50px;
           filter: contrast(500%);
 
-          //galaxy fold and iphone 5
           @media (max-width: 320px) {
             top: 15px;
             width: 30px;
@@ -118,7 +114,6 @@
     top: 55px;
     left: 25px;
 
-    //galaxy fold and iphone 5
     @media (max-width: 320px) {
       top: 37px;
       left: 25px;
@@ -139,7 +134,6 @@
     top: 0px;
     left: 46px;
 
-    //galaxy fold and iphone 5
     @media (max-width: 320px) {
       top: 0px;
       left: 45px;
@@ -160,7 +154,6 @@
     top: 55px;
     left: 70px;
 
-    //galaxy fold and iphone 5
     @media (max-width: 320px) {
       top: 36px;
       left: 64px;
@@ -181,7 +174,6 @@
     top: 175px;
     left: 8px;
 
-    //galaxy fold and iphone 5
     @media (max-width: 320px) {
       top: 128px;
       left: 23px;
@@ -202,7 +194,6 @@
     top: 170px;
     left: 183px;
 
-    //galaxy fold and iphone 5
     @media (max-width: 320px) {
       top: 138px;
       left: 149px;
@@ -223,7 +214,6 @@
     top: 170px;
     left: -4px;
 
-    //galaxy fold and iphone 5
     @media (max-width: 320px) {
       top: 138px;
       left: -.5px;
@@ -243,8 +233,6 @@
     background-color: #FC41C4;
     top: 85px;
     left: -165px;
-
-    //galaxy fold and iphone 5
     
     span {
       left: -3px;

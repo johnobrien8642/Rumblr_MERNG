@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+
 import PhotoPostForm from '../posts/types/create/PhotoPostForm';
 import TextPostForm from '../posts/types/create/TextPostForm';
 import QuotePostForm from '../posts/types/create/QuotePostForm';
@@ -8,11 +9,11 @@ import ChatPostForm from '../posts/types/create/ChatPostForm';
 import AudioPostForm from '../posts/types/create/AudioPostForm';
 import VideoPostForm from '../posts/types/create/VideoPostForm';
 import ProfilePic from '../user/util/components/Profile_Pic';
+
 import PostFormUtil from '../posts/util/functions/post_form_util.js'
 const { preventScroll, allowScroll } = PostFormUtil;
 
-const PostsNav = ({ 
-  props,
+const PostsNav = ({
   user,
   userLikes,
   mobile,
@@ -87,14 +88,6 @@ const PostsNav = ({
       return 'mobilePostsNavModal open'
     }
   }
-
-  // const handleBrowserPostsNavModalClass = () => {
-  //   if (mobile && !open) {
-  //     return 'mobilePostsNavModal'
-  //   } else if (mobile && open) {
-  //     return 'mobilePostsNavModal open'
-  //   }
-  // }
   
   const handleMobileOrBrowserPostsNavClass = (mobile, open) => {
   if (mobile && open && postFormOpen)  {
@@ -506,8 +499,6 @@ const PostsNav = ({
                 <span>Video</span>
               </div>
             </div>
-  
-            
   
             <div
               className={postFormModal ?

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
-import Mutations from '../../../../../graphql/mutations';
+
 import Queries from '../../../../../graphql/queries';
+import Mutations from '../../../../../graphql/mutations';
 const { DELETE_COMMENT } = Mutations;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries
 
@@ -13,7 +14,7 @@ const DeleteComment = ({
   let [active, setActive] = useState(false)
   
   let [deleteComment] = useMutation(DELETE_COMMENT, {
-    update(client, { data }) {
+    update(client) {
       var query = FETCH_LIKES_REPOSTS_AND_COMMENTS
       
       var readFeed = client.readQuery({

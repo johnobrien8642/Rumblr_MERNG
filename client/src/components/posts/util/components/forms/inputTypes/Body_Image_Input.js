@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+
 import PostFormUtil from '../../../functions/post_form_util.js'
 const { previewBodyImages, previewLink } = PostFormUtil;
 
 const BodyImageInput = ({
-  formId, body, 
+  body, 
   bodyImageFiles,
   setBodyImageFiles,
-  render, setRender,
-  errMessage, setErrMessage
+  render, 
+  setRender,
+  errMessage, 
+  setErrMessage
 }) => {
   let [active, setActive] = useState(false)
   

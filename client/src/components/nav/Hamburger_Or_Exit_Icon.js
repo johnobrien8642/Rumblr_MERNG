@@ -8,8 +8,7 @@ const HamburgerOrExitIcon = ({
   scrollYRef,
   scrollYRef2
 }) => {
-  
-  
+
   if (menuOpen) {
     return (
       <React.Fragment>

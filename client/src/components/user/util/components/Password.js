@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
+
 import Mutations from '../../../../graphql/mutations.js';
 const { UPDATE_USER_PASSWORD } = Mutations;
 

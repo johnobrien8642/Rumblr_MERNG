@@ -1,13 +1,17 @@
 import React from 'react'
+
 import PostFormUtil from '../../../functions/post_form_util.js'
 const { removeBodyObj, drag, 
         onDropBody, allowDrop } = PostFormUtil;
 
 const BodyImageDnD = ({
-  bodyIdx, img, body, 
+  bodyIdx, 
+  img, 
+  body, 
   setBodyImageFiles,
   bodyImageFiles,
-  render, setRender,
+  render, 
+  setRender,
   objsToClean
 }) => {
 

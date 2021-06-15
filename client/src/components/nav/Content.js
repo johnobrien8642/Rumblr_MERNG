@@ -14,8 +14,7 @@ const { infiniteScroll,
 const Content = ({
   tab, 
   active, 
-  setActive, 
-  activityCursorId, 
+  setActive,
   navActive, 
   setNavActive,
   timeAgoRef

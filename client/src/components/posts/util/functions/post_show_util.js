@@ -28,18 +28,6 @@ const postHeader = (
           >
             {post.user.blogName}
           </Link>
-          {/* <img
-            src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
-            alt=''
-          />
-          <Link to={`/view/blog/${post.repostedFrom.blogName}`}>
-            {post.repostedFrom.blogName}
-          </Link> */}
-          {/* <FollowButton
-            feed={true}
-            user={post.repostedFrom}
-            followed={doesUserFollowUserRef.current}
-          /> */}
         </span>
       </div>
     )
@@ -66,7 +54,6 @@ const postHeader = (
         >
           <ProfilePic 
             user={post.user}
-            // activity={{ kind: 'Repost'}} 
           />
 
           <Link
@@ -92,6 +79,7 @@ const postHeader = (
         >
           {post.user.blogName}
         </Link>
+
         <FollowButton
           feed={true}
           user={post.user}
@@ -103,7 +91,6 @@ const postHeader = (
 }
 
 const repostFooter = (post, update, repostCaption, setRepostCaption) => {
-  // var data = demeterPost(post)
   let repost = post
 
   if (post.kind === 'Repost') {

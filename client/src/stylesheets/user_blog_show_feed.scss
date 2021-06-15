@@ -61,10 +61,6 @@
       margin: 15px auto;
       width: fit-content;
 
-      @media (max-width: 1024px) {
-        // display: none;
-      }
-
       .profilePic {
         width: 120px;
         height: 130px;
@@ -114,13 +110,11 @@
         font-size: 25px;
         padding: 10px 20px;
         border-radius: 3px;
-        // margin: 0 15px 0 0;
 
         @media (max-width: 1024px) {
           font-size: 18px;
         }
       }
     }
-
   }
 }

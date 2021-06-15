@@ -1,14 +1,18 @@
 import React from 'react'
+
 import PostFormUtil from '../../../functions/post_form_util.js'
 const { removeMainObj, drag, 
         onDropMain, allowDrop } = PostFormUtil;
 
 const MainImageDnD = ({
-  mainIdx, img, main, 
+  mainIdx, 
+  img, 
+  main, 
   setMainImageFiles, 
   mainImageFiles,
   objsToClean,
-  render, setRender
+  render, 
+  setRender
 }) => {
 
   return (

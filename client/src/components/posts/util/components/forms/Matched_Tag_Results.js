@@ -1,18 +1,19 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
+
 import Queries from '../../../../../graphql/queries.js';
 import PostFormUtil from '../../functions/post_form_util.js';
 const { FETCH_MATCHING_TAGS } = Queries;
 const { handleFoundTag } = PostFormUtil;
 
-
 const MatchedTagResults = ({
     query,
-    setTags, 
     tags,
+    setTags, 
+    tag,
     setTag, 
-    tag
   }) => {
+    
     let { error, data } = useQuery(FETCH_MATCHING_TAGS, {
       variables: {
         filter: query

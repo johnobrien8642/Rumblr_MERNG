@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter } from 'react-router-dom';
-import './index.css';
-import App from './components/App';
 import { ApolloClient, InMemoryCache,
-         ApolloProvider, HttpLink } from '@apollo/client';
+          ApolloProvider, HttpLink } from '@apollo/client';
+import { HashRouter } from 'react-router-dom';
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
-// import IntervalUpdateUtil from ''
 import Cookies from 'js-cookie';
+
+import App from './components/App';
+import './index.css';
+
 import Queries from './graphql/queries'
 import Mutations from './graphql/mutations'
 

@@ -1,14 +1,19 @@
 import React, { useEffect } from 'react';
+
 import MainImageDnD from '../../forms/dragAndDrop/Main_Image_DnD'
 import MainImageInput from './Main_Image_Or_Register_Photo_Input'
+
 import PostUpdateUtil from '../../../functions/post_update_util.js'
 const { reassemblePhotoPostMain } = PostUpdateUtil;
 
 const PhotoPostInput = ({
-  post, formId, main,
+  post, 
+  formId, 
+  main,
   mainImageFiles,
   setMainImageFiles,
-  render, setRender,
+  render, 
+  setRender,
   objsToClean,
   errMessage,
   setErrMessage

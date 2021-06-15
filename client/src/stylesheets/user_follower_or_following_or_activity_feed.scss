@@ -104,7 +104,6 @@
           font-size: 14px;
           
           a {
-            // font-size: 13px;
             &:hover {
               cursor: pointer;
             }
@@ -222,7 +221,6 @@
             img {
               position: relative;
               display: block;
-              // margin: auto;
               width: 8px;
               height: 8px;
               z-index: 99;
@@ -360,13 +358,11 @@
     }
     #fetchMoreFollowers {
       position: relative;
-      // top: 80px;
     }
   }
   
 
   .checkOutTheseBlogs {
-    // background-color: blue;
     font-family: var(--font);
 
     @media (max-width: 980px) {

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
-import Mutations from '../../../../../graphql/mutations';
+
 import Queries from '../../../../../graphql/queries';
+import Mutations from '../../../../../graphql/mutations';
 import UpdateCacheUtil from '../../functions/update_cache_util.js';
 const { LIKE_POST, UNLIKE_POST } = Mutations;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;

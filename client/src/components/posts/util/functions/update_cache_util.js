@@ -1,6 +1,8 @@
 const postCreate = (
-  client, createPost,
-  currentUser, query
+  client, 
+  createPost,
+  currentUser, 
+  query
 ) => {
   var readQuery = client.readQuery({
     query: query,
@@ -25,8 +27,10 @@ const postCreate = (
 }
 
 const postUpdate = (
-  client, updatePost,
-  currentUser, query
+  client, 
+  updatePost,
+  currentUser, 
+  query
 ) => {
   var readQuery = client.readQuery({
     query: query,
@@ -84,38 +88,12 @@ const commentPost = (
   })
 }
 
-// const repostUpdate = (
-//   client, updateCaption,
-//   currentUser, query
-// ) => {
-  
-//   var readFeed = client.readQuery({
-//     query: query,
-//     variables: {
-//       query: currentUser
-//     }
-//   })
-
-//   console.log(readFeed)
-
-//   var { fetchUserFeed } = readFeed
-//   var repostTrailArr = []
-
-//   fetchUserFeed.forEach(obj => {
-//     if (obj._id === updateCaption.repost._id) {
-//       repostTrailArr = obj.repostTrail.map(obj => ({
-//         ...obj
-//       }))
-//     }
-//   })
-
-//   console.log(repostTrailArr)
-
-// }
-
 const postDelete = (
-  client, post, deletePost,
-  currentUser, query
+  client, 
+  post, 
+  deletePost,
+  currentUser, 
+  query
 ) => {
   var readFeed = client.readQuery({
     query: query,
@@ -140,8 +118,10 @@ const postDelete = (
 }
 
 const postLike = (
-  client, likePost,
-  post, query
+  client, 
+  likePost,
+  post, 
+  query
 ) => {
   
   var readFeed = client.readQuery({
@@ -167,8 +147,11 @@ const postLike = (
 }
 
 const postUnlike = (
-  client, unlikePost,
-  post, liked, query
+  client, 
+  unlikePost,
+  post, 
+  liked, 
+  query
 ) => {
 
   var readFeed = client.readQuery({
@@ -201,8 +184,10 @@ const postUnlike = (
 }
 
 const filterTag = (
-  client, addFilterTag,
-  currentUser, query
+  client, 
+  addFilterTag,
+  currentUser, 
+  query
 ) => {
   
   client.writeQuery({
@@ -219,8 +204,10 @@ const filterTag = (
 }
 
 const filterPostContent = (
-  client, addFilterPostContent,
-  currentUser, query
+  client, 
+  addFilterPostContent,
+  currentUser, 
+  query
 ) => {
   
   client.writeQuery({
@@ -237,8 +224,10 @@ const filterPostContent = (
 }
 
 const followUpdate = (
-  client, follow,
-  gqlQuery, query,
+  client, 
+  follow,
+  gqlQuery, 
+  query,
   kind
 ) => {
   var readFeed = client.readQuery({
@@ -282,8 +271,10 @@ const followUpdate = (
 }
 
 const unfollowUpdate = (
-  client, unfollow,
-  gqlQuery, query,
+  client, 
+  unfollow,
+  gqlQuery, 
+  query,
   kind
 ) => {
   var readFeed = client.readQuery({
@@ -329,7 +320,6 @@ const unfollowUpdate = (
 const UpdateCacheUtil = {
   postCreate, 
   postUpdate,
-  // repostUpdate,
   commentPost,
   postDelete,
   postLike, 

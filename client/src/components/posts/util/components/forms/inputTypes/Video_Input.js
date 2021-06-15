@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
+
 import ReactPlayer from 'react-player';
+
 import PostFormUtil from '../../../functions/post_form_util.js'
 const { previewVideoFile, previewVideoLink, 
         removeVideoObj } = PostFormUtil;
@@ -7,15 +9,17 @@ const { previewVideoFile, previewVideoLink,
 const VideoInput = ({
   displayBodyImageAndTextInput,
   setDisplayBodyImageAndTextInput,
-  formId,
   post,
   update,
   videoFile,
   setVideoFile,
-  videoObj, setVideoObj,
+  videoObj, 
+  setVideoObj,
   objsToClean,
-  active, setActive,
-  isLink, setIsLink
+  active, 
+  setActive,
+  isLink, 
+  setIsLink
 }) => {
 
   useEffect(() => {

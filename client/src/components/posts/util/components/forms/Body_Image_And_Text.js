@@ -1,19 +1,28 @@
 import React, { useEffect } from 'react';
+
 import BodyImageDnD from './dragAndDrop/Body_Image_DnD'
 import BodyTextDnD from '../forms/dragAndDrop/Body_Text_DnD'
 import BodyImageInput from './inputTypes/Body_Image_Input';
 import DescriptionStringInput from './inputTypes/Description_String_Input';
+
 import PostUpdateUtil from '../../functions/post_update_util.js';
 const { reassembleBody } = PostUpdateUtil;
 
 const BodyImageAndText = ({
   displayBodyImageAndTextInput,
-  post, formId, update,
-  formInputId, objsToClean,
-  body, bodyImageFiles,
-  setBodyImageFiles, description,
-  setDescription, render,
-  setRender, errMessage,
+  post, 
+  formId, 
+  update,
+  formInputId, 
+  objsToClean,
+  body, 
+  bodyImageFiles,
+  setBodyImageFiles, 
+  description,
+  setDescription, 
+  render,
+  setRender, 
+  errMessage,
   setErrMessage
 }) => {
 

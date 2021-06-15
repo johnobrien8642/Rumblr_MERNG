@@ -2,10 +2,12 @@ import React, { useRef, useEffect } from 'react';
 import { useQuery, useApolloClient } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
+
 import UserResult from '../search/resultTypes/User_Result';
+import CheckOutTheseBlogs from '../dashboard/util/Check_Out_These_Blogs';
+
 import Queries from '../../graphql/queries.js';
 import FeedUtil from '../posts/util/functions/feed_util.js';
-import CheckOutTheseBlogs from '../dashboard/util/Check_Out_These_Blogs';
 import ActivityUtil from '../nav/util/activity_util.js';
 const { handleActivity, handleTimeAgo } = ActivityUtil;
 const { FETCH_USER_FOLLOWERS, 
@@ -69,8 +71,7 @@ const UserFollowersOrFollowingFeed = () => {
     variables: {
       query: Cookies.get('currentUser'),
       cursorId: null
-    },
-    // fetchPolicy: 'no-cache'
+    }
   })
 
   if (loading) return 'Loading...';
@@ -115,7 +116,6 @@ const UserFollowersOrFollowingFeed = () => {
               if (history.location.pathname === '/activity') {
                 return (
                   <div
-                    // className='activityResult'
                     key={followOrActivity._id}
                   >
                     {handleTimeAgo(followOrActivity, timeAgoRef)}

@@ -28,7 +28,6 @@ const RenderSearchOrExitIcon = ({
           onClick={() => {
             openSearch(searchOpen = true)
           }}
-          // style={{opacity: .3}}
         />
       </React.Fragment>
     )

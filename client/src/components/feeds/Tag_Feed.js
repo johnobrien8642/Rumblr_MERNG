@@ -1,8 +1,10 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
+
 import Feed from './Feed.js';
-import TagShow from '../feeds/util/Tag_Show';
+import TagShow from './Tag_Show';
+
 import Queries from '../../graphql/queries';
 const { FETCH_TAG } = Queries;
  

@@ -17,7 +17,8 @@ const header = (user, tag) => {
 const infiniteScroll = (
   client,
   updateCacheFunc,
-  query, gqlQuery,
+  query, 
+  gqlQuery,
   cursorId,
   fetchMoreDiv,
   fetchMoreDivId
@@ -32,7 +33,6 @@ const infiniteScroll = (
         var innerHeight = window.innerHeight
         
         if (elTop >= 0 && elBottom <= innerHeight) {
-          //gqlQuery may need to be different?
           client.query({
             query: gqlQuery.current,
             variables: {
@@ -43,7 +43,6 @@ const infiniteScroll = (
             
           }).then(res => {
             if (res.loading) return 'Loading...';
-              //this may need to be a more specific func
               updateCacheFunc(
                 res, client, query.current,
                 gqlQuery.current, cursorId

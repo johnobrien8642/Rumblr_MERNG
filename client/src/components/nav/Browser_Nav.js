@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import Search from '../search/Search';
@@ -6,25 +6,11 @@ import UserDetails from './User_Details';
 import Activity from './Activity';
 import ActivityCountIcon from '../nav/Activity_Count_Icon';
 
-import NavUtil from './util/nav_util.js';
-const { accumulateCounts, renderTotalCount } = NavUtil;
-
 const BrowserNav = ({
   user,
-  activityCounts,
   userDetailsCounts,
   loggedInBool,
-  // cursorId,
-  mentionsCount,
-  likesCount,
-  commentsCount,
-  repostsCount,
-  totalCountRefNum,
-  totalCountRef
-  // renderTotalCount,
-  // accumulateCounts
 }) => {
-  let [navActive, setNavActive] = useState(false)
   let [searchClose, closeSearch] = useState(false)
   let [activityClose, closeActivity] = useState(false)
   let [detailsClose, closeDetails] = useState(false)
@@ -46,9 +32,6 @@ const BrowserNav = ({
           >
             <Link
               to='/dashboard'
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
             >
               <img 
                 src="https://img.icons8.com/fluent-systems-filled/64/ffffff/r.png"
@@ -88,7 +71,6 @@ const BrowserNav = ({
                   document.querySelector('.userDetails').blur()
                 }
 
-                setNavActive(navActive = false)
                 closeSearch(searchClose = true)
                 setActivityOpen(activityOpen = false)
                 setDetailsOpen(detailsOpen = false)
@@ -107,7 +89,6 @@ const BrowserNav = ({
             <Link
               to='/discover'
               onClick={() => {
-                setNavActive(navActive = false)
                 closeSearch(searchClose = true)
                 setActivityOpen(activityOpen = false)
                 setDetailsOpen(detailsOpen = false)
@@ -125,7 +106,6 @@ const BrowserNav = ({
             tabIndex={0}
             onClick={() => {
           
-
               if (activityOpen) {
                 setActivityOpen(activityOpen = false)
               } else {
@@ -154,11 +134,6 @@ const BrowserNav = ({
           </div>
           
           <Activity
-            // mentionsCount={activityCounts.mentionsCount}
-            // repostsCount={activityCounts.repostsCount}
-            // commentsCount={activityCounts.commentsCount}
-            navActive={navActive}
-            setNavActive={setNavActive}
             activityClose={activityClose}
             closeActivity={closeActivity}
             detailsClose={detailsClose}
@@ -203,8 +178,6 @@ const BrowserNav = ({
             userFollowCount={userDetailsCounts.user ? userDetailsCounts.user.userFollowCount : null}
             userPostsCount={userDetailsCounts.user ? userDetailsCounts.user.userPostsCount : null}
             followersCount={userDetailsCounts.user ? userDetailsCounts.user.followersCount : null}
-            navActive={navActive}
-            setNavActive={setNavActive}
             detailsClose={detailsClose}
             closeDetails={closeDetails}
             activityClose={activityClose}

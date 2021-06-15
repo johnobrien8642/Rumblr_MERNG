@@ -1,7 +1,8 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import Queries from '../../graphql/queries.js';
 import Cookies from 'js-cookie';
+
+import Queries from '../../graphql/queries.js';
 const { FETCH_USER } = Queries;
 
 const Tabs = ({
@@ -33,6 +34,7 @@ const Tabs = ({
       <div
         className='activityTabsDiv'
       >
+
         <div
         className={tab === 'all' ? 'tab activityTabSelected' : 'tab'}
         onClick={() => {
@@ -43,6 +45,7 @@ const Tabs = ({
         >
           <span>All</span>
         </div>
+
         <div
           className={tab === 'Mention' ? 'tab activityTabSelected' : 'tab'}
           onClick={() => {
@@ -53,6 +56,7 @@ const Tabs = ({
         >
           <span>Mentions</span>
         </div>
+
         <div
           className={tab === 'Repost' ? 'tab activityTabSelected' : 'tab'}
           onClick={() => {
@@ -63,6 +67,7 @@ const Tabs = ({
         >
           <span>Reblogs</span>
         </div>
+
         <div
           className={tab === 'Comment' ? 'tab activityTabSelected' : 'tab'}
           onClick={() => {
@@ -73,6 +78,7 @@ const Tabs = ({
         >
           <span>Replies</span>
         </div>
+        
       </div>
     </React.Fragment>
   )

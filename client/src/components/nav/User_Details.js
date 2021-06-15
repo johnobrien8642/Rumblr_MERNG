@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+
 import Logout from '../auth/Logout.js';
 import ProfilePic from '../user/util/components/Profile_Pic';
 
@@ -56,6 +57,7 @@ const UserDetails = ({
         </div>
       
         <ul>
+
           <li>
             <Link
               to='/likes'
@@ -72,6 +74,7 @@ const UserDetails = ({
             </Link>
             <span>{totalLikeCount}</span>
           </li>
+
           <li>
             <Link 
               to='/following'
@@ -88,6 +91,7 @@ const UserDetails = ({
             </Link>
             <span>{userFollowCount}</span>
           </li>
+
           <li>
             <Link 
               to='/settings/account'
@@ -103,10 +107,12 @@ const UserDetails = ({
               Settings
             </Link>
           </li>
-            <li
-              className='separator'
-            >
-            </li>
+
+          <li
+            className='separator'
+          >
+          </li>
+
           <li
             className='blogDescription'
           > 
@@ -126,6 +132,7 @@ const UserDetails = ({
               </div>
             </Link>
           </li>
+
           <li>
             <Link
               className='blogDetailData'
@@ -138,6 +145,7 @@ const UserDetails = ({
             </Link>
               <span className='detailCount'>{userPostsCount}</span>
           </li>
+
           <li>
             <Link
               className='blogDetailData'
@@ -150,6 +158,7 @@ const UserDetails = ({
             </Link>
               <span className='detailCount'>{followersCount}</span>
           </li>
+
           <li>
             <Link
               className='blogDetailData'
@@ -161,6 +170,7 @@ const UserDetails = ({
               <p>Activity</p>
             </Link>
           </li>
+          
         </ul>
       </div>
     )

@@ -195,12 +195,12 @@ const PostNotes = ({
                         </Link>
                       </div>
                     </div>
+                    
                     <div 
                       dangerouslySetInnerHTML={{ 
                         __html: DOMPurify.sanitize(caption)
                       }}
                     />
-                    {/* <p>{note.repostCaptions.filter(obj => obj.userId === n.user._id)}</p> */}
                   </div>
                 </li>
               )

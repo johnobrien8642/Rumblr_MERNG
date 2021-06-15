@@ -24,20 +24,6 @@ const PostLoading = ({
     }
   }, [uploading])
 
-
-
-  // const leftRightInterval = () => {
-  //   setInterval(() => {
-  //     if (toggleRef.current) {
-  //       toggleRef.current = false
-  //       return 'loading left'
-  //     } else {
-  //       toggleRef.current = true
-  //       return 'loading right'
-  //     }
-  //   }, 500)
-  // }
-
   if (uploading) {
     return (
       <div

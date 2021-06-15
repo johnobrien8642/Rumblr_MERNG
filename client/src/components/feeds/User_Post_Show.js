@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
+
 import PostUpdateOrShow from '../posts/types/showOrUpdate/PostUpdateOrShow'
-import PostShowUtil from '../posts/util/functions/post_show_util.js';
 import ProfilePic from '../user/util/components/Profile_Pic';
 import PostLoading from '../nav/Post_Loading';
 import FollowButton from '../posts/util/components/social/Follow_Button';
+
 import Queries from '../../graphql/queries.js';
+import PostShowUtil from '../posts/util/functions/post_show_util.js';
 const { FETCH_POST } = Queries;
 const { handlePostClassName } = PostShowUtil;
 

@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
+import Cookies from 'js-cookie';
+
 import UserSettingsUtil from '../functions/user_settings_util.js'
+
 import Queries from '../../../../graphql/queries.js';
 import Mutations from '../../../../graphql/mutations.js';
 const { FETCH_USER } = Queries;

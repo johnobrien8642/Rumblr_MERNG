@@ -45,7 +45,6 @@ const previewAudio = (
   var reader = new FileReader();
 
   reader.onloadend = () => {
-    // console.log(file)
     mm.parseBlob(file).then(meta => {
       const { common } = meta;
       audioObj.current.src = reader.result
@@ -62,9 +61,11 @@ const previewAudio = (
 }
 
 const previewVideoFile = (
-  e, videoObj, 
+  e, 
+  videoObj, 
   videoFile,
-  active, setActive
+  active, 
+  setActive
 ) => {
   const file = e.currentTarget.files[0]
   const videoPath = URL.createObjectURL(file)
@@ -91,22 +92,28 @@ const previewVideoLink = (
 //remove objs
 
 const removeMainObj = (
-  i, main, setMain
+  i, 
+  main, 
+  setMain
   ) => {
   var filtered = main.filter((obj, i2) => i !== i2)
   setMain(main = filtered)
 }
 
 const removeBodyObj = (
-  i, body, setBody
+  i, 
+  body, 
+  setBody
   ) => {
   var filtered = body.filter((obj, i2) => i !== i2)
   setBody(body = filtered)
 }
 
 const removeLinkSiteNameAndImage = (
-  siteName, setSitename,
-  imageUrl, setImageUrl,
+  siteName, 
+  setSitename,
+  imageUrl, 
+  setImageUrl,
   showNameAndUrl,
   setShowNameAndUrl,
 ) => {
@@ -116,7 +123,8 @@ const removeLinkSiteNameAndImage = (
 }
 
 const removeLinkTitleAndDesc = (
-  title, setTitle, 
+  title, 
+  setTitle, 
   setLinkDescription, 
   linkDescription,
   showTitleAndLinkDescription,
@@ -128,8 +136,10 @@ const removeLinkTitleAndDesc = (
 }
 
 const removeAudioObj = (
-  audioObj, audioFile,
-  active, setActive
+  audioObj, 
+  audioFile,
+  active, 
+  setActive
 ) => {
   audioObj.current = {}
   audioFile.current = {}
@@ -137,8 +147,10 @@ const removeAudioObj = (
 }
 
 const removeVideoObj = (
-  videoObj, videoFile,
-  active, setActive
+  videoObj, 
+  videoFile,
+  active, 
+  setActive
 ) => {
   videoObj.current = {}
   videoFile.current = {}
@@ -148,8 +160,10 @@ const removeVideoObj = (
 //handle tags
 
 const handleTagInput = (
-    tag, setTag,
-    tags, setTags
+    tag, 
+    setTag,
+    tags, 
+    setTags
   ) => {
   //eslint-disable-next-line
   var trimmedTag = tag.trim()
@@ -172,8 +186,10 @@ const handleTagInput = (
 }
 
 const handleFoundTag = (
-    title, setTags, 
-    tags, setTag, 
+    title, 
+    setTags,
+    tags, 
+    setTag, 
     tag
   ) => {
   setTags(tags.concat(title))
@@ -193,8 +209,6 @@ const onDropBody = (
   let oldIdx = e.dataTransfer.getData('oldIndex')
   let obj = e.dataTransfer.getData('obj')
   let parsedObj = JSON.parse(obj)
-
-  console.log(parsedObj)
   
   var bodyDup = [...body]
   bodyDup.splice(oldIdx, 1)
@@ -295,169 +309,29 @@ const videoPost = (
   }
 }
 
-//apollo cache
-
-const updateCacheCreate = (
-  client, createPost,
-  currentUser, query
-) => {
-  var readQuery = client.readQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    }
-  })
-  
-  var { fetchUserFeed } = readQuery;
-  
-  var newPostArr = [createPost, ...fetchUserFeed]
-  
-  client.writeQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    },
-    data: {
-      fetchUserFeed: newPostArr
-    }
-  })
-}
-
-const updateCacheUpdate = (
-  client, updatePost,
-  currentUser, query
-) => {
-  var readQuery = client.readQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    }
-  })
-  
-  var { fetchUserFeed } = readQuery;
-  
-  var newPostArr = [...fetchUserFeed]
-
-  fetchUserFeed.forEach((p, i) => {
-    if (updatePost._id === p._id) {
-      newPostArr.splice(i, 1, updatePost)
-    }
-  })
-  
-  client.writeQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    },
-    data: {
-      fetchUserFeed: newPostArr
-    }
-  })
-}
-
-const updateCacheDelete = (
-  client, deletedPost,
-  currentUser, query
-) => {
-  var readFeed = client.readQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    }
-  })
-
-  var { fetchUserFeed } = readFeed;
-
-  var newPostArr = fetchUserFeed.filter(post => 
-    post._id !== deletedPost._id
-  )
-
-  client.writeQuery({
-    query: query,
-    variables: {
-      query: currentUser
-    },
-    data: {
-      fetchUserFeed: newPostArr
-    }
-  })
-}
-
-const updateCacheLike = (
-  client, likePost,
-  post, query
-) => {
-  
-  var readFeed = client.readQuery({
-    query: query,
-    variables: {
-      postId: post._id
-    }
-  })
-  
-  var { fetchLikesRepostsAndComments } = readFeed;
-  
-  var newPostArr = [...fetchLikesRepostsAndComments, likePost]
-  
-  client.writeQuery({
-    query: query,
-    variables: {
-      postId: post._id
-    },
-    data: {
-      fetchLikesRepostsAndComments: newPostArr
-    }
-  })
-}
-
-const updateCacheUnlike = (
-  client, unlikePost,
-  post, liked, query
-) => {
-
-  var readFeed = client.readQuery({
-    query: query,
-    variables: {
-      postId: post._id
-    }
-  })
-  
-  var { fetchLikesRepostsAndComments } = readFeed;
-  
-  var newPostArr = fetchLikesRepostsAndComments.filter(item => {
-      if (item._id === liked._id) {
-        return false
-      } else {
-        return true
-      }
-    }
-  )
-  
-  client.writeQuery({
-    query: query,
-    variables: {
-      postId: post._id
-    },
-    data: {
-      fetchLikesRepostsAndComments: newPostArr
-    }
-  })
-}
-
 const PostCreateUtil = { 
   previewFile,
   previewLink,
-  previewAudio, previewVideoFile, 
-  previewVideoLink, removeMainObj,
-  removeBodyObj, removeAudioObj,
-  removeVideoObj, handleTagInput, handleFoundTag, 
-  drag, onDropBody, onDropMain, allowDrop, 
+  previewAudio, 
+  previewVideoFile, 
+  previewVideoLink, 
+  removeMainObj,
+  removeBodyObj, 
+  removeAudioObj,
+  removeVideoObj, 
+  handleTagInput, 
+  handleFoundTag, 
+  drag, 
+  onDropBody, 
+  onDropMain, 
+  allowDrop, 
   removeLinkSiteNameAndImage,
   removeLinkTitleAndDesc,
-  fetchUrlMetadata, mainPost, bodyPost,
-  audioPost, videoPost, updateCacheCreate,
-  updateCacheUpdate, updateCacheDelete, 
-  updateCacheLike, updateCacheUnlike
+  fetchUrlMetadata, 
+  mainPost, 
+  bodyPost,
+  audioPost, 
+  videoPost
 };
 
 export default PostCreateUtil;

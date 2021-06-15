@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
+
 import FollowButton from '../../posts/util/components/social/Follow_Button'
 
 const TagResult = ({ 

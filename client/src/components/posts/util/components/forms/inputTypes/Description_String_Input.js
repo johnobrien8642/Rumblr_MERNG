@@ -1,8 +1,10 @@
 import React from 'react';
 import { useApolloClient } from '@apollo/client';
+import randomstring from 'randomstring';
+
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import randomstring from 'randomstring';
+
 import Queries from '../../../../../../graphql/queries.js'
 import PostFormUtil from '../../../functions/post_form_util.js'
 const { MentionCustomization } = PostFormUtil;
@@ -11,10 +13,9 @@ const { FETCH_USERS_FOR_MENTIONS } = Queries;
 
 const DescriptionStringInput = ({
   body, 
-  setDescription,
   description,
+  setDescription,
   repost,
-  update
 }) => {
   const client = useApolloClient();
 

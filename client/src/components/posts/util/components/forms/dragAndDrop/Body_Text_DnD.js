@@ -1,11 +1,13 @@
 import React from 'react';
-import randomstring from 'randomstring';
 import { useApolloClient } from '@apollo/client';
+import randomstring from 'randomstring';
+import DOMPurify from 'dompurify';
+
 import Editor from 'ckeditor5-custom-build/build/ckeditor';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import DOMPurify from 'dompurify';
-import PostFormUtil from '../../../functions/post_form_util.js';
+
 import Queries from '../../../../../../graphql/queries.js';
+import PostFormUtil from '../../../functions/post_form_util.js';
 const { FETCH_USERS_FOR_MENTIONS } = Queries;
 const { removeBodyObj, drag, 
         onDropBody, allowDrop, MentionCustomization } = PostFormUtil;

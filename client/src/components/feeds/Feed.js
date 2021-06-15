@@ -64,7 +64,7 @@ const Feed = ({
     },
   })
 
-  if (loading) return 'Loading...';
+  if (loading) return '';
   if (error) return `Error: ${error}`;
   
   handleData(data, feedArr, cursorId, endOfPosts)

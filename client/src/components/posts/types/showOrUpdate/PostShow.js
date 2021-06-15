@@ -26,8 +26,6 @@ const PostShow = ({
   toggleUpdate,
   discover, 
   radar,
-  currentUser,
-  repostTrail,
   repostCaption,
   setRepostCaption
 }) => {
@@ -42,9 +40,8 @@ const PostShow = ({
       preventScroll(confirmDelete, document)
 
     }
+    
   }, [confirmDelete])
-
-  // doesUserFollowUser(doesUserFollowUserRef, currentUser, post.user)
 
   let [deletePost] = useMutation(DELETE_POST, {
     update(client, { data }) {

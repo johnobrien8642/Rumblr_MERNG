@@ -6,7 +6,6 @@
 
   .browserUserSettings {
     position: relative;
-    // width: 620px;
     padding: 40px;
     font-family: var(--font);
     color: var(--middler-gray);
@@ -23,7 +22,6 @@ x
       }
 
       .blogDescriptionTextarea {
-        // background-color: red;
         width: 60%;
         height: 60px;
         font-size: 17px;
@@ -196,7 +194,6 @@ x
       font-family: var(--font);
 
       input {
-        // background-color: red;
         width: 50%;
         font-size: 18px;
         margin: 5px 10px 5px 0;
@@ -298,7 +295,6 @@ x
           position: relative;
           width: 300px;
           height: auto;
-          // margin: auto;
           margin-bottom: 15px;
     
           .removeProPicBtn {
@@ -360,12 +356,9 @@ x
               margin: auto;
             }
           }
-          
-    
-          // text-align: center;
+        
           #profilePicFileInput {
             display: none;
-            // background-color: red;
           }
         }
       }
@@ -379,6 +372,5 @@ x
         margin: 8px 0;
       }
     }
-  
   }
 }

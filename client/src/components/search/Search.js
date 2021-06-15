@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
+
 import SearchDropDown from './resultTypes/SearchDropDown';
+
 import Queries from '../../graphql/queries';
 const { IS_LOGGED_IN } = Queries;
 

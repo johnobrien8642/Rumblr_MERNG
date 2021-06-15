@@ -84,9 +84,12 @@ const previewProfilePic = (
 }
 
 const previewBodyImages = (
-    e, body, bodyImageFiles,
+    e, 
+    body, 
+    bodyImageFiles,
     setBodyImageFiles,
-    setErrMessage, errMessage,
+    setErrMessage, 
+    errMessage
   ) => {
 
   const files = Object.values(e.currentTarget.files)
@@ -238,11 +241,13 @@ const previewVideoLink = (
 //remove objs
 
 const removeMainObj = (
-    srcType, main, 
+    srcType, 
+    main, 
     setMainImageFiles,
     mainImageFiles,
     objsToClean,
-    mainIdx, optionalArrPos
+    mainIdx, 
+    optionalArrPos
   ) => {
 
   var plucked = main.current.splice(mainIdx, 1)
@@ -287,10 +292,12 @@ const removeMainObj = (
 }
 
 const removeBodyObj = (
-    srcType, body,
+    srcType, 
+    body,
     setBodyImageFiles, 
     bodyImageFiles,
-    objsToClean, bodyIdx,
+    objsToClean, 
+    bodyIdx,
     optionalArrPos
   ) => {
   
@@ -341,8 +348,10 @@ const removeTag = (i, tags, setTags) => {
 }
 
 const removeLinkSiteNameAndImage = (
-  siteName, setSitename,
-  imageUrl, setImageUrl,
+  siteName, 
+  setSitename,
+  imageUrl, 
+  setImageUrl,
   showNameAndUrl,
   setShowNameAndUrl,
 ) => {
@@ -352,8 +361,9 @@ const removeLinkSiteNameAndImage = (
 }
 
 const removeLinkTitleAndDesc = (
-  title, setTitle, 
-  setLinkDescription, 
+  title, 
+  setTitle,
+  setLinkDescription,
   linkDescription,
   showTitleAndLinkDescription,
   setShowTitleAndLinkDescription,
@@ -409,7 +419,8 @@ const removeProfilePic = (
   previewProfilePicRef,
   profileImageFile,
   setProfileImageFile,
-  edit, render,
+  edit, 
+  render,
   setRender
 ) => {
   previewProfilePicRef.current = {}
@@ -423,8 +434,10 @@ const removeProfilePic = (
 //handle tags
 
 const handleTagInput = (
-    tag, setTag,
-    tags, setTags
+    tag, 
+    setTag,
+    tags, 
+    setTags
   ) => {
   //eslint-disable-next-line
   var trimmedTag = tag.trim()
@@ -448,8 +461,10 @@ const handleTagInput = (
 }
 
 const handleFoundTag = (
-    title, setTags, 
-    tags, setTag, 
+    title, 
+    setTags,
+    tags, 
+    setTag,
     tag
   ) => {
   setTags(tags.concat(title))
@@ -464,7 +479,10 @@ const drag = (e, i, obj) => {
 }
 
 const onDropBody = (
-  e, i, body, bodyImageFiles
+  e, 
+  i, 
+  body, 
+  bodyImageFiles
 ) => {
   let oldIdx = e.dataTransfer.getData('oldIndex')
   let obj = e.dataTransfer.getData('obj')
@@ -497,8 +515,10 @@ const onDropBody = (
 }
 
 const onDropMain = (
-  e, i, main,
-  mainImageFiles,
+  e, 
+  i, 
+  main,
+  mainImageFiles
 ) => {
   var oldIdx = e.dataTransfer.getData('oldIndex')
   var obj = e.dataTransfer.getData('obj')
@@ -672,9 +692,8 @@ const handleUploadedFiles = (
   refArray,
   uploads
 ) => {
-  //reinsert mainUpload files
+  //reinsert uploads
   //at index and reset displayIdx
-
   var refArrayDup = [...refArray.current]
 
   var i1 = 0
@@ -893,12 +912,7 @@ const PostFormUtil = {
   mainPost, 
   bodyPost,
   audioPost, 
-  videoPost, 
-  // updateCacheCreate,
-  // updateCacheUpdate, updateCacheDelete, 
-  // updateCacheLike, updateCacheUnlike,
-  // updateCacheAddFilterTag,
-  // updateCacheDeleteFilterTag, 
+  videoPost,
   handleFormData, 
   stripAllImgs, 
   handleUploadedFiles,

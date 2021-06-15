@@ -1,18 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import { Link } from 'react-router-dom';
+
 import Search from '../search/Search';
 import MobileMenuDD from './Mobile_Menu_DD';
-import { Link } from 'react-router-dom';
 import MobileSearchOrLogo from './Mobile_Search_Or_Logo';
 import RenderSearchOrExitIcon from './Render_Search_Or_Exit_Icon';
-import PostFormUtil from '../posts/util/functions/post_form_util.js';
-import NavUtil from './util/nav_util.js';
 import HamburgerOrExitIcon from './Hamburger_Or_Exit_Icon';
-import Queries from '../../graphql/queries.js';
-import Cookies from 'js-cookie';
-const { accumulateCounts } = NavUtil;
+
+import PostFormUtil from '../posts/util/functions/post_form_util.js';
 const { preventScroll, allowScroll } = PostFormUtil;
-const { FETCH_ACTIVITY_COUNTS } = Queries;
 
 const MobileNav = ({
   activityCounts, 

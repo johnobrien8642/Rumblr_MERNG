@@ -1,5 +1,6 @@
 import React from 'react';
-import FollowButton from '../../posts/util/components/social/Follow_Button';
+
+import FollowButton from '../posts/util/components/social/Follow_Button';
 
 const TagShow = ({
   tag

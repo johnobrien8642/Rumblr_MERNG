@@ -1,24 +1,26 @@
 import React, { useEffect } from 'react';
+
 import MainImageDnD from '../dragAndDrop/Main_Image_DnD';
 import MainImageOrRegisterPhotoInput from './Main_Image_Or_Register_Photo_Input';
-import PostUpdateUtil from '../../../functions/post_update_util.js';
+
 import PostFormUtil from '../../../functions/post_form_util.js';
+import PostUpdateUtil from '../../../functions/post_update_util.js';
 const { reassemblePhotoPostMain } = PostUpdateUtil;
 const { removeProfilePic } = PostFormUtil;
 
 const PhotoPostOrRegisterInput = ({
   edit,
-  user,
   register,
   previewProfilePicRef,
-  profilePicToDeleteRef,
   profileImageFile,
   setProfileImageFile,
   post,
-  formId, main,
+  formId, 
+  main,
   mainImageFiles,
   setMainImageFiles,
-  render, setRender,
+  render, 
+  setRender,
   objsToClean,
   errMessage,
   setErrMessage
@@ -60,8 +62,6 @@ const PhotoPostOrRegisterInput = ({
       )
     }
   }
-
-  
 
   const renderPhotoInput = (
     register,

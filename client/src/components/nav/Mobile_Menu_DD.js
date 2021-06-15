@@ -2,20 +2,20 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
+
 import Logout from '../auth/Logout';
+
 import Queries from '../../graphql/queries.js';
+import PostFormUtil from '../posts/util/functions/post_form_util.js';
 const { FETCH_ACTIVITY_COUNTS } = Queries;
+const { allowScroll } = PostFormUtil;
 
 const MobileMenuDD = ({
   menuOpen,
   openMenu,
   settingsOpen,
   openSettings,
-  activityCounts,
   userDetailsCounts,
-  loggedInBool,
-  totalCount,
-  // cursorId,
   scrollYRef2
 }) => {
   let cursorId = useRef(new Date().getTime())
@@ -25,6 +25,7 @@ const MobileMenuDD = ({
       window.scrollTo(0, scrollYRef2.current)
     }
 
+    //eslint-disable-next-line
     return () => {
       refetch()
     }
@@ -67,7 +68,7 @@ const MobileMenuDD = ({
             <img
               src="https://img.icons8.com/metro/26/ffffff/edit.png"
               alt=''
-              />
+            />
             <span>Create a post</span>
             </div>
           </Link>
@@ -112,7 +113,6 @@ const MobileMenuDD = ({
           <div
             className='mobileMenuItem'
             onClick={() => {
-              // totalCountRef.current = 0
               cursorId.current = new Date().getTime()
             }}
           >
@@ -127,7 +127,7 @@ const MobileMenuDD = ({
               <span>Activity</span>
             </Link>
   
-            {/* <span className='count'>{data ? data.fetchActivityCount : 0}</span> */}
+            
             {renderActivityCount()}
           </div>
   
@@ -137,9 +137,6 @@ const MobileMenuDD = ({
             <Link
               className='likes'
               to='/likes'
-              onClick={() => {
-                // setNavActive(navActive = false)
-              }}
             >
               <img 
                 src="https://img.icons8.com/material-sharp/24/ffffff/like--v1.png"
@@ -156,9 +153,6 @@ const MobileMenuDD = ({
             <Link 
               className='following'
               to='/following'
-              onClick={() => {
-                // setNavActive(navActive = false)
-              }}
             >
               <img
                 src="https://img.icons8.com/metro/26/ffffff/gender-neutral-user.png"
@@ -192,9 +186,6 @@ const MobileMenuDD = ({
           >
             <Link
               to={`/view/blog/${user.blogName}`} 
-              onClick={() => {
-                // setNavActive(navActive = false)
-              }}
             >
               <h3>{user.blogName}</h3>
               <p>{user.blogDescription}</p>
@@ -206,9 +197,6 @@ const MobileMenuDD = ({
           >
             <Link
               to={`/view/blog/${user.blogName}`}
-              onClick={() => {
-                // setNavActive(navActive = false)
-              }}
             >
               <p>Posts</p>
             </Link>
@@ -220,9 +208,6 @@ const MobileMenuDD = ({
           >
             <Link
               to={`/followers`}
-              onClick={() => {
-                // setNavActive(navActive = false)
-              }}
             >
               <p>Followers</p>
             </Link>
@@ -233,8 +218,7 @@ const MobileMenuDD = ({
         <div
           className={menuOpen ? 'mobileMenuDDModal open' : 'mobileMenuDDModal'}
           onClick={() => {
-            var body = document.body
-            body.style.position = ''
+            allowScroll(document)
             openMenu(menuOpen = false)
           }}
         />

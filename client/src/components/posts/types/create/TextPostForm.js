@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import Cookies from 'js-cookie';
 import randomstring from 'randomstring';
-import Mutations from '../../../../graphql/mutations.js';
-import Queries from '../../../../graphql/queries.js';
+import Cookies from 'js-cookie';
+
 import TextPostInput from '../../util/components/forms/inputTypes/Text_Post_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
-import PostFormUtil from '../../util/functions/post_form_util.js';
-import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
 import ConfirmClose from '../../../nav/Confirm_Close.js';
+
+import Queries from '../../../../graphql/queries.js';
+import Mutations from '../../../../graphql/mutations.js';
+import PostFormUtil from '../../util/functions/post_form_util.js';
+import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, handleFormData, 
         stripAllImgs, handleUploadedFiles, 
@@ -60,12 +62,6 @@ const TextPostForm = ({
   useEffect(() => {
     resetDisplayIdx(body)
   })
-
-  // let { data } = useQuery(FETCH_USER, {
-  //   variables: {
-  //     query: Cookies.get('currentUser')
-  //   }
-  // })
 
   let [createOrUpdatePost] = useMutation(CREATE_OR_UPDATE_POST, {
     update(client, { data }){

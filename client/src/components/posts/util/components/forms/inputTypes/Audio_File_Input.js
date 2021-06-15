@@ -9,8 +9,7 @@ const AudioFileInput = ({
   setDisplayBodyImageAndTextInput,
   post, 
   update, 
-  formId, 
-  audioFile, 
+  audioFile,
   setAudioFile,
   title, 
   setTitle, 
@@ -22,8 +21,7 @@ const AudioFileInput = ({
   setSrc,
   audioObj, setAudioObj, 
   active, setActive,
-  objsToClean,
-  render, setRender
+  objsToClean
 }) => {
 
   useEffect(() => {

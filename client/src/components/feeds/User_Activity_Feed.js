@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useQuery, useApolloClient } from '@apollo/client';
+import Cookies from 'js-cookie';
+
 import Queries from '../../graphql/queries.js';
 import FeedUtil from '../posts/util/functions/feed_util.js';
 import ActivityUtil from '../nav/util/activity_util.js';
@@ -59,9 +60,6 @@ const UserActivityFeed = () => {
         return (
           <div
             key={activity._id}
-            onClick={() => {
-              // setNavActive(navActive = false)
-            }}
           >
             {handleTimeAgo(activity, timeAgoRef, 'all')}
             {handleActivity(activity, 'all', false)}

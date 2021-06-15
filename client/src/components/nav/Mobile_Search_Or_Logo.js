@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 import Search from '../search/Search';
 
 const MobileSearchOrLogo = ({
@@ -23,9 +24,6 @@ const MobileSearchOrLogo = ({
         >
           <Link
             to='/dashboard'
-            onClick={() => {
-              // setNavActive(navActive = false)
-            }}
           >
             <img
               src="https://img.icons8.com/fluent-systems-filled/64/ffffff/r.png"

@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
+
 import PostNotes from '../../util/components/social/Post_Notes.js';
 import PostOptions from '../../util/components/social/Post_Options.js';
-import PostShowUtil from '../../util/functions/post_show_util.js';
+
 import Queries from '../../../../graphql/queries';
+import PostShowUtil from '../../util/functions/post_show_util.js';
 const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
 
 const PostShow = ({ 
-  post, repost, 
-  update 
+  post, 
+  repost
 }) => {
   
   let [active, setActive] = useState(false)

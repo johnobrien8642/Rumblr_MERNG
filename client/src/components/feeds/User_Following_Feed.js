@@ -1,7 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useQuery, useApolloClient } from '@apollo/client';
+import Cookies from 'js-cookie';
+
 import UserResult from '../search/resultTypes/User_Result';
+
 import Queries from '../../graphql/queries.js';
 import FeedUtil from '../posts/util/functions/feed_util.js';
 const { FETCH_FOLLOWED_USERS } = Queries;

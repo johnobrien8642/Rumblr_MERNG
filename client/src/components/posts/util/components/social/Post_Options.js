@@ -63,6 +63,7 @@ const PostOptions = ({
               toggleNotes()
             }}
           />
+
           <img 
             className='repostIcon'
             src="https://img.icons8.com/material-outlined/64/000000/retweet.png"
@@ -136,7 +137,6 @@ const PostOptions = ({
               setRepostActive(repostActive = true)
             }}
           />
-          
           
           <LikeButton
             post={post}

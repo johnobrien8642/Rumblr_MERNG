@@ -1,11 +1,14 @@
 import React, { useRef } from 'react';
+
 import PostCreateUtil from '../../../functions/post_create_util.js'
 const { previewFile, previewLink } = PostCreateUtil;
 
 const MainImageInput = ({
-  formId, main,
+  formId, 
+  main,
   setMain,
-  errMessage, setErrMessage
+  errMessage, 
+  setErrMessage
 }) => {
   let resultArr = useRef([]);
 
@@ -25,6 +28,7 @@ const MainImageInput = ({
               while (i < files.length) {
                 let name = files[i].name
                 let file = files[i]
+                
                 //eslint-disable-next-line
                 previewFile(files[i]).then(result => {
                   var imgObj = {}
@@ -41,6 +45,7 @@ const MainImageInput = ({
                     setMain(main.concat(resultArr.current))
                   }
                 })
+
                 i++
               }
               

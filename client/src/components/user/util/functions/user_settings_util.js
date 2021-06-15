@@ -1,6 +1,8 @@
 const updateCacheUpdateProfilePic = (
-  client, updateProfilePic,
-  currentUser, query
+  client, 
+  updateProfilePic,
+  currentUser, 
+  query
 ) => {
   
   client.writeQuery({
@@ -20,8 +22,10 @@ const updateCacheUpdateProfilePic = (
 }
 
 const updateCacheUpdateEmail = (
-  client, updateUserEmail,
-  currentUser, query
+  client, 
+  updateUserEmail,
+  currentUser, 
+  query
 ) => {
   
   client.writeQuery({
@@ -39,8 +43,10 @@ const updateCacheUpdateEmail = (
 
 
 const blogDescriptionCache = (
-  client, updateUserBlogDescription,
-  currentUser, query
+  client, 
+  updateUserBlogDescription,
+  currentUser, 
+  query
 ) => {
   
   client.writeQuery({

@@ -19,9 +19,6 @@ const ChatPostInput = ({
     //eslint-disable-next-line
   }, [])
 
-  
-  
-  
   const regexChat = () => {
     var chatDiv = document.querySelector('.chatText')
     
@@ -47,8 +44,7 @@ const ChatPostInput = ({
       contentEditable={true}
       onInput={e => {
         regexChat()
-
-        // chat.current = e.target.innerHTML
+        
         setChat(chat = e.target.innerHTML)
       }}
       onFocus={() => {

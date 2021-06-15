@@ -1,13 +1,15 @@
 import React from 'react';
+import { useQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 import EditProfilePic from './util/components/Edit_Profile_Pic';
 import Email from './util/components/Email';
 import BlogDescription from './util/components/Blog_Description';
 import Password from './util/components/Password';
 import Filtering from './util/components/Filtering';
 import DeleteMyAccount from './util/components/Delete_My_Account';
-import Cookies from 'js-cookie';
-import { useQuery } from '@apollo/client';
+
 import Queries from '../../graphql/queries.js';
 const { FETCH_USER } = Queries;
 

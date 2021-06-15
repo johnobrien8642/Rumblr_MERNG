@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
-import Mutations from '../../../../graphql/mutations.js';
+import Cookies from 'js-cookie';
+
 import Queries from '../../../../graphql/queries.js';
+import Mutations from '../../../../graphql/mutations.js';
 import UpdateCacheUtil from '../../../posts/util/functions/update_cache_util.js';
 const { filterPostContent } = UpdateCacheUtil;
 const { ADD_FILTER_POST_CONTENT, DELETE_FILTER_POST_CONTENT } = Mutations;

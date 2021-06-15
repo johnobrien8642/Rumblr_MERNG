@@ -1,8 +1,9 @@
 import React from 'react';
+
 import TagResult from '../search/resultTypes/Tag_Result';
 
 const RecommendedTags = ({
-  recTags, tag, setTag
+  recTags
 }) => {
 
   const handleClassNameWithColor = () => {

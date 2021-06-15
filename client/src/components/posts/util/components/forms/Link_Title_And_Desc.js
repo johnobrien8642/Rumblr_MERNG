@@ -1,11 +1,14 @@
 import React from 'react';
+
 import PostFormUtil from '../../functions/post_form_util.js'
 const { removeLinkTitleAndDesc } = PostFormUtil;
 
 const LinkTitleAndDesc = ({
-  link, showTitleAndLinkDescription, 
+  showTitleAndLinkDescription, 
   setShowTitleAndLinkDescription, 
-  setTitle, title, setLinkDescription, 
+  setTitle, 
+  title, 
+  setLinkDescription, 
   linkDescription,
 }) => {
 
@@ -29,10 +32,8 @@ const LinkTitleAndDesc = ({
           X
         </button>
 
-        {/* <a href={link}> */}
-          <h2>{title}</h2>
-          <p>{linkDescription}</p>
-        {/* </a> */}
+        <h2>{title}</h2>
+        <p>{linkDescription}</p>
       </div>
     )
   } else {

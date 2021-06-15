@@ -1,16 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import randomstring from 'randomstring';
-import Mutations from '../../../../graphql/mutations';
-import Queries from '../../../../graphql/queries';
 import Cookies from 'js-cookie';
+
 import PhotoPostOrRegisterPhotoInput from '../../util/components/forms/inputTypes/Photo_Post_Or_Register_Photo_Input'
 import BodyImageAndText from '../../util/components/forms/Body_Image_And_Text'
 import Tags from '../../util/components/forms/Tags'
-import PostFormUtil from '../../util/functions/post_form_util.js'
-import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 import ProfilePic from '../../../user/util/components/Profile_Pic';
 import ConfirmClose from '../../../nav/Confirm_Close.js';
+
+import Queries from '../../../../graphql/queries';
+import Mutations from '../../../../graphql/mutations';
+import PostFormUtil from '../../util/functions/post_form_util.js'
+import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 const { postCreate, postUpdate } = UpdateCacheUtil;
 const { bodyPost, mainPost,
         handleFormData, stripAllImgs,

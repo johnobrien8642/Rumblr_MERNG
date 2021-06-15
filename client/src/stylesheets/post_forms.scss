@@ -41,7 +41,6 @@
     transform: translateX(-50%) scale(1);
 
     @media (max-width: 980px) {
-      // transform: translateX(-50%) scale(.7);
       width: 380px;
       min-height: 200px;
 
@@ -77,8 +76,6 @@
     .postForm {
       position: relative;
       box-sizing: border-box;
-      // margin: 18px;
-      // overflow-y: auto;
       z-index: 102;
 
       h3 {
@@ -147,7 +144,6 @@
         position: relative;
         left: 10px;
         margin: 10px 0 -8% 0;
-        // word-break: break-all;
         width: 510px;
         z-index: 100;
 
@@ -164,7 +160,6 @@
 
           @media (max-width: 280px) {
             width: 300px;
-            // background-color: red;
           }
         }
 
@@ -238,7 +233,6 @@
         }
   
         .bodyImageInputCustomLabel {
-          // position: absolute;
           border-right: 3px dashed rgb(0, 0, 0, 0.3);
           width: 250px;
           height: 200px;
@@ -309,8 +303,6 @@
           left: 12px;
           min-height: 110px;
           z-index: 10;
-          // background-color: red;
-          
           
           &:focus {
             outline: none;
@@ -332,7 +324,6 @@
         margin: 0 0 0 0;
         padding: 0 0 20px 0;
         border-bottom: 1px solid rgb(0, 0, 0, 0.1);
-        // background-color: red;
       
         .tagDiv {
           display: flex;
@@ -345,11 +336,6 @@
           background-color: var(--tumblr-lighter-blue);
           color: white;
           float: left;
-
-        
-          // &:first-of-type {
-          //   margin-left: 15px;
-          // }      
           
           &:hover {
             cursor: default;
@@ -363,20 +349,17 @@
             height: 13px;
             width: 10px;
             text-align: center;
-            // background-color: white;
             border-radius: 50%;
             margin-left: 3px;
           
             .removeTag {
               display: inline-block;
-              // float: right;
             }
           
             span {
               display: block;
               position: relative;
               top: -5.3px;
-              // color: black;
               font-weight: bold;
               font-size: 13px;
             }
@@ -387,10 +370,8 @@
           display: inline-block;
           position: relative;
           width: fit-content;
-          // background-color: red;
           
           input {
-            // display: inline-block;
             margin: -2px 0 0 15px;
             font-size: 17px;
           }
@@ -481,7 +462,6 @@
           transform: translateX(-50%);
           width: 280px;
           z-index: 501;
-          // background-color: red;
 
           .discardTitle {
             display: inline-block;
@@ -555,7 +535,6 @@
           left: 15px;
           width: 510px;
           font-size: 34px;
-          // background-color: red;
         }
         
         .titleInput.placeholder:empty:before {
@@ -564,22 +543,17 @@
         }
         
         .titleInput.active {
-          // background-color: red;
-          // display: none;
           font-size: 34px;
-          // margin: 0 0 0 15px;
 
-          
-
-        &:focus {
-          outline: none;
-          border: none;
-        }
+          &:focus {
+            outline: none;
+            border: none;
+          }
       
-        &::placeholder {
-          color: rgb(0, 0, 0, 0.7);
-        }
-      }
+          &::placeholder {
+            color: rgb(0, 0, 0, 0.7);
+          }
+       }
     }
 
 
@@ -622,7 +596,6 @@
             margin-left: 20px;
             font-size: 18px;
             font-weight: 700;
-            // background-color: red;
             width: fit-content;
             color: rgb(0, 0, 0, 0.7)
           }
@@ -631,10 +604,8 @@
             display: inline-block;
             width: 85%;
             margin: 0 0 20px 20px;
-            font-size: 15px;
-            
+            font-size: 15px; 
           }
-
         }
 
         .linkNameAndImageContainer,
@@ -775,10 +746,6 @@
         overflow: hidden;
         transform: translateX(-50%) scale(1);
 
-        @media (max-width: 980px) {
-          // transform: translateX(-50%) scale(.7);
-        }
-
         .borderMiddle {
           border-right: 1px solid rgb(0, 0, 0, 0.1);
           position: absolute;
@@ -849,24 +816,7 @@
             font-size: 17px;
             font-weight: 500;
             font-family: var(--font);
-
-            // @media (max-width: 980px) {
-            //   top: 131px;
-            //   left: 58px;
-
-            //   @media (max-width: 420px) {
-            //     left: 70px;
-            //   }
-            //   @media (max-width: 375px) {
-            //     left: 95px;
-            //   }
-            //   @media (max-width: 280px) {
-            //     left: 75px;
-            //   }
-            // }
-
           }
-
         }
 
         .backBtnContainer {
@@ -913,10 +863,8 @@
         
         .mainImageFileInputCustomLabel {
           position: relative;
-          // border-right: 1px solid rgb(0, 0, 0, 0.3);
           width: 250px;
           height: 200px;
-          // left: 10px;
           transform: scale(1);
 
           @media (max-width: 980px) {
@@ -964,14 +912,6 @@
             }
           }
   
-          // span {
-          //   display: inline-block;
-          //   position: relative;
-          //   top: 90px;
-          //   left: 50%;
-          //   transform: translateX(-50%);
-          // }
-  
           &:hover {
             cursor: pointer;
           }
@@ -986,8 +926,6 @@
 
 
     .quotePostForm {
-      // overflow-wrap: break-word;
-      // word-break: break-all;
       
       .quoteAndSourceInputContainer {
         
@@ -1037,7 +975,6 @@
           .dash {
             position: relative;
             display: block;
-            // background-color: red;
             top: 9px;
             height: 10px;
             font-size: 50px;
@@ -1065,7 +1002,6 @@
       .chatText {
         margin: 20px 0 0 15px;
         width: 95%;
-        // background-color: red;
       }
 
       .chatText.placeholder {
@@ -1310,7 +1246,6 @@
   
         .videoFileInputCustomLabel {
           position: relative;
-          // border-right: 1px solid rgb(0, 0, 0, 0.3);
           width: 250px;
           height: 200px;
           transform: scale(1);
@@ -1360,16 +1295,7 @@
                 }
               }
             }
-            
-            // img {
-            //   position: relative;
-            //   display: block;
-            //   margin: auto;
-            //   width: 70px;
-            //   filter: grayscale(100%);
-            //   opacity: .7;
-            // }
-    
+        
             span {
               position: relative;
               display: block;
@@ -1379,34 +1305,8 @@
               font-size: 15px;
               font-weight: 500;
               color: rgb(0, 0, 0, 0.5);
-              // background-color: red;
-
-              // @media (max-width: 980px) {
-              //   left: 10px;
-              //   transform: scale(.8);
-      
-              //   @media (max-width: 420px) {
-              //     left: 11px;
-              //   }
-      
-              //   @media (max-width: 375px) {
-              //     left: 20px;
-              //   }
-      
-              //   @media (max-width: 280px) {
-              //     left: 20px;
-              //   }
-              // }
             }
           }
-  
-          // span {
-          //   display: inline-block;
-          //   position: relative;
-          //   top: 90px;
-          //   left: 50%;
-          //   transform: translateX(-50%);
-          // }
   
           &:hover {
             cursor: pointer;

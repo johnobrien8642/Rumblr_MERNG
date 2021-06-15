@@ -143,7 +143,6 @@
             overflow: auto;
 
             .userResult {
-              // background-color: red;
               font-size: 15px;
 
               .profilePic {
@@ -158,7 +157,6 @@
               display: flex;
               margin: 5px 0 0 0;
               justify-content: space-between;
-              // height: 50px;
               
               a {
                 padding: 5px 15px 3px 8px;
@@ -380,7 +378,6 @@
 
         .activityResult {
           display: flex;
-          // flex-direction: column;
           position: relative;
           padding: 3px 5px 20px 5px;
           color: black;
@@ -491,7 +488,6 @@
             img {
               position: relative;
               display: block;
-              // margin: auto;
               width: 8px;
               height: 8px;
               z-index: 99;

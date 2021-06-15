@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
+
 import PhotoPostOrRegisterPhotoInput from '../../../posts/util/components/forms/inputTypes/Photo_Post_Or_Register_Photo_Input';
-import PostFormUtil from '../../../posts/util/functions/post_form_util.js';
-import Mutations from '../../../../graphql/mutations.js';
+
 import Queries from '../../../../graphql/queries';
+import Mutations from '../../../../graphql/mutations.js';
+import PostFormUtil from '../../../posts/util/functions/post_form_util.js';
 import UserSettingsUtil from '../functions/user_settings_util.js'
 const { handleFormData, mainPost } = PostFormUtil;
 const { UPDATE_PROFILE_PIC } = Mutations;

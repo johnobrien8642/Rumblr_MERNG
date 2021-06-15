@@ -1,9 +1,11 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
+import Cookies from 'js-cookie';
+
 import FollowedTags from './Followed_Tags_Result';
 import Results from '../Results';
+
 import Queries from '../../../graphql/queries.js'
-import Cookies from 'js-cookie';
 const { FETCH_USER } = Queries;
 
 const SearchDropDown = ({
