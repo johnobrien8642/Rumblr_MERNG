@@ -38,16 +38,17 @@ const UserFollowersOrFollowingFeed = () => {
   )
   
   useEffect(() => {
+    var scroll;
   
     if (history.location.pathname === '/followers') {
-      var scroll = infiniteScroll(
+      scroll = infiniteScroll(
         client, updateCacheInfScrollUserFollowers,
         query, gqlQuery,
         cursorId, fetchMoreDiv,
         fetchMoreDivId
       )
     } else {
-      var scroll = infiniteScroll(
+      scroll = infiniteScroll(
         client, updateCacheInfScrollFollowedUsers,
         query, gqlQuery,
         cursorId, fetchMoreDiv,
@@ -55,12 +56,12 @@ const UserFollowersOrFollowingFeed = () => {
       )
     }
 
-
     return () => {
       document.removeEventListener('scroll', scroll)
       timeAgoRef.current = []
       refetch()
     }
+
     //eslint-disable-next-line
   }, [])
   

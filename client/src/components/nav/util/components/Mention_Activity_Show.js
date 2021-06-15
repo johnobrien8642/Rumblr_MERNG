@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 import ProfilePic from '../../../user/util/components/Profile_Pic';
+
 import BylineUtil from '../byline_util.js'
 import handlePostIcon from '../handle_post_icon.js';
 const { handleByline } = BylineUtil;

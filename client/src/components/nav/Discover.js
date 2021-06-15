@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
+
 import RecommendedTags from '../nav/Recommended_Tags';
 import AllTagFeed from '../feeds/All_Tag_Feed';
-import Queries from '../../graphql/queries.js';
 import FollowedTags from '../search/resultTypes/Followed_Tags_Result';
+
+import Queries from '../../graphql/queries.js';
 const { FETCH_RECOMMENDED_TAGS, FETCH_USER } = Queries;
 
 const Discover = () => {

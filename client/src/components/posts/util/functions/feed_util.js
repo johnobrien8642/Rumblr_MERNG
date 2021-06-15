@@ -310,9 +310,7 @@ const handleData = (data, feedArr, cursorId, endOfPosts) => {
         fetchAllUserActivity, 
         fetchUserFollowers,
         fetchFollowedUsers,
-        fetchUserLikes,
-        fetchUserFollowers,
-        fetchFollowedUsers } = data
+        fetchUserLikes } = data
 
   if (fetchUserFeed) {
     feedArr.current = fetchUserFeed

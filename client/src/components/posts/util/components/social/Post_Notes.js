@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import DOMPurify from 'dompurify';
+
 import DeleteComment from '../social/Delete_Comment'
 import ProfilePic from '../../../../user/util/components/Profile_Pic';
-import Mutations from '../../../../../graphql/mutations';
+
 import Queries from '../../../../../graphql/queries';
+import Mutations from '../../../../../graphql/mutations';
 import FeedUtil from '../../functions/feed_util.js';
-const { handlePostNotesScrollOutOfWindow } = FeedUtil;
-const { COMMENT_POST } = Mutations;
+import UpdateCacheUtil from '../../functions/update_cache_util.js';
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
+const { COMMENT_POST } = Mutations;
+const { handlePostNotesScrollOutOfWindow } = FeedUtil;
+const { commentPost } = UpdateCacheUtil;
 
 const PostNotes = ({
   post,
@@ -38,33 +42,14 @@ const PostNotes = ({
     return () => {
       document.removeEventListener('scroll', scroll)
     }
-  }, [])
+  }, [notesActive, setNotesActive])
 
   let [comment] = useMutation(COMMENT_POST, {
     update(client, { data }) {
       let { comment } = data;
       let query = FETCH_LIKES_REPOSTS_AND_COMMENTS;
-      
-      var readFeed = client.readQuery({
-        query: query,
-        variables: {
-          postId: post._id
-        }
-      })
-      
-      var { fetchLikesRepostsAndComments } = readFeed;
 
-      var newPostArr = [...fetchLikesRepostsAndComments, comment]
-      
-      client.writeQuery({
-        query: query,
-        variables: {
-          postId: post._id
-        },
-        data: {
-          fetchLikesRepostsAndComments: newPostArr
-        }
-      })
+      commentPost(client, comment, post, query)
     },
     onCompleted() {
       setContent(content = '')

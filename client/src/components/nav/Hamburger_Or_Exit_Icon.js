@@ -16,9 +16,6 @@ const HamburgerOrExitIcon = ({
         <img
         className='exitIcon'
         onClick={() => {
-          var body = document.body
-          body.style.position = ''
-          
           openSettings(settingsOpen = false)
           openMenu(menuOpen = false)
         }}

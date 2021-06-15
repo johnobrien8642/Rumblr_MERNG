@@ -432,6 +432,10 @@ const Queries = {
             ... on RepostType {
               _id
               kind
+              user {
+                _id
+                blogName
+              }
               post {
                 __typename
                 ${ALL_POSTS_ACTIVITY}
@@ -519,12 +523,8 @@ const Queries = {
     }
   `,
   FETCH_ACTIVITY_COUNTS: gql`
-    query FetchActivityCounts($query: String, $cursorId: String) {
-      fetchActivityCounts(query: $query, cursorId: $cursorId) {
-        mentionsCount
-        repostsCount
-        commentsCount
-      }
+    query FetchActivityCount($query: String, $cursorId: String) {
+      fetchActivityCount(query: $query, cursorId: $cursorId)
     }
   `,
   FETCH_USERS_FOR_MENTIONS: gql`

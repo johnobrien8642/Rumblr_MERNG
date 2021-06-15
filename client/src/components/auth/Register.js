@@ -1,11 +1,13 @@
 import React, { useState, useRef } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
 import { useHistory, Link } from 'react-router-dom';
-import Mutations from '../../graphql/mutations';
-import Queries from '../../graphql/queries';
-import PostFormUtil from '../posts/util/functions/post_form_util.js';
+import Cookies from 'js-cookie';
+
 import PhotoPostOrRegisterPhotoInput from '../posts/util/components/forms/inputTypes/Photo_Post_Or_Register_Photo_Input';
+
+import Queries from '../../graphql/queries';
+import Mutations from '../../graphql/mutations';
+import PostFormUtil from '../posts/util/functions/post_form_util.js';
 const { REGISTER_USER } = Mutations;
 const { IS_LOGGED_IN } = Queries;
 const { mainPost, 

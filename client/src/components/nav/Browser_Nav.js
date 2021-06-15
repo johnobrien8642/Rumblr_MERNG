@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+
 import Search from '../search/Search';
 import UserDetails from './User_Details';
 import Activity from './Activity';
-import { Link } from 'react-router-dom';
+import ActivityCountIcon from '../nav/Activity_Count_Icon';
+
 import NavUtil from './util/nav_util.js';
 const { accumulateCounts, renderTotalCount } = NavUtil;
 
@@ -11,8 +14,13 @@ const BrowserNav = ({
   activityCounts,
   userDetailsCounts,
   loggedInBool,
-  totalCountRef,
-  cursorId
+  // cursorId,
+  mentionsCount,
+  likesCount,
+  commentsCount,
+  repostsCount,
+  totalCountRefNum,
+  totalCountRef
   // renderTotalCount,
   // accumulateCounts
 }) => {
@@ -22,11 +30,10 @@ const BrowserNav = ({
   let [detailsClose, closeDetails] = useState(false)
   let [activityOpen, setActivityOpen] = useState(false)
   let [detailsOpen, setDetailsOpen] = useState(false)
+  let cursorId = useRef(new Date().getTime())
+  let totalActivityCountRef = useRef(0)
   
   if (loggedInBool.isLoggedIn) {
-    
-    accumulateCounts(activityCounts.fetchActivityCounts, totalCountRef)
-
     return (
       <div
         className='browserNav loggedIn'
@@ -117,17 +124,22 @@ const BrowserNav = ({
             className='activityIcon'
             tabIndex={0}
             onClick={() => {
-              totalCountRef.current = 0
+          
 
               if (activityOpen) {
-                cursorId.current = new Date().getTime()
                 setActivityOpen(activityOpen = false)
               } else {
+                totalActivityCountRef.current = 0
+                cursorId.current = new Date().getTime()
                 setActivityOpen(activityOpen = true)
               }
 
               if (detailsOpen) {
                 setDetailsOpen(detailsOpen = false)
+              }
+
+              if (!searchClose) {
+                closeSearch(searchClose = true)
               }
             }}
           >
@@ -135,13 +147,16 @@ const BrowserNav = ({
               src="https://img.icons8.com/fluent-systems-filled/64/ffffff/lightning-bolt.png"
               alt=''
             />
-            {renderTotalCount(totalCountRef)}
+            {/* {renderTotalCount(totalActivityCountRef, activityCounts, activityOpen)} */}
+            <ActivityCountIcon
+              cursorId={cursorId.current}
+            />
           </div>
           
           <Activity
-            mentionsCount={activityCounts.mentionsCount}
-            repostsCount={activityCounts.repostsCount}
-            commentsCount={activityCounts.commentsCount}
+            // mentionsCount={activityCounts.mentionsCount}
+            // repostsCount={activityCounts.repostsCount}
+            // commentsCount={activityCounts.commentsCount}
             navActive={navActive}
             setNavActive={setNavActive}
             activityClose={activityClose}
@@ -166,6 +181,10 @@ const BrowserNav = ({
             
               if (activityOpen) {
                 setActivityOpen(activityOpen = false)
+              }
+
+              if (!searchClose) {
+                closeSearch(searchClose = true)
               }
             }}
           >

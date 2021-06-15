@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Cookies from 'js-cookie';
 import { useMutation } from '@apollo/client';
-import { useHistory } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 import Mutations from '../../../../graphql/mutations.js';
 const { DELETE_MY_ACCOUNT } = Mutations;
 
@@ -10,7 +10,6 @@ const DeleteMyAccount = () => {
   let [password, setPassword] = useState('');
   let [askToConfirm, confirmDelete] = useState(false)
   let [errorMessage, setError] = useState(null)
-  let history = useHistory();
 
   let [deleteMyAccount] = useMutation(DELETE_MY_ACCOUNT, {
     onCompleted(data) {

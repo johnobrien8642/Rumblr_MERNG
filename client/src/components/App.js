@@ -1,25 +1,23 @@
 import React, { useEffect } from 'react';
 import { Switch, Redirect } from 'react-router-dom';
+
 import Nav from '../components/nav/Nav';
 import Dashboard from './dashboard/Dashboard';
 import Login from '../components/auth/Login';
 import Register from './auth/Register';
 import TagFeed from './feeds/Tag_Feed';
 import UserPostLikesFeed from './feeds/User_Post_Likes_Feed';
-import UserFollowingFeed from './feeds/User_Following_Feed';
 import UserBlogShow from './feeds/User_Blog_Show';
 import UserPostShow from './feeds/User_Post_Show';
 import UserFollowersOrFollowingOrActivityFeed from './feeds/User_Followers_Or_Following_Or_Activity_Feed';
-import UserActivityFeed from './feeds/User_Activity_Feed';
 import UserSettings from './user/User_Settings';
 import Discover from './nav/Discover';
 import AuthRoute from '../util/route_util';
 // uncomment below for email auth welcome page
 // import WelcomePage from './auth/Welcome_Page';
+
 import 'react-h5-audio-player/lib/styles.css';
 import './../stylesheets/application.scss';
-
-
 
 const App = () => {
 
@@ -36,7 +34,6 @@ const App = () => {
 
   return (
     <React.Fragment>
-    {/* // <div className="App"> */}
       <Nav />
       <Switch>
         <AuthRoute path={['/dashboard', '/likes']} component={Dashboard} />
@@ -56,7 +53,6 @@ const App = () => {
         <AuthRoute exact path='/login' component={Login} routeType={'auth'} />
         <Redirect from='/' to='/dashboard' />
       </Switch>
-    {/* // </div> */}
     </React.Fragment>
   );
 }

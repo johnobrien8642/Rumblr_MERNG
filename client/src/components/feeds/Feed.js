@@ -79,7 +79,7 @@ const Feed = ({
           <span 
             className='totalLikeCount'
           >
-            {currentUser.totalLikeCount + ' ' + 'likes'} 
+            {`${currentUser.totalLikeCount} likes`}
           </span>
         </div>
       )

@@ -12,7 +12,6 @@ const Password = ({
   let [newPassword, setNewPassword] = useState('');
   let [confNewPassword, setConfNewPassword] = useState('');
   let [errorMessage, setError] = useState(null)
-  let [errorPWMessage, setPWError] = useState(null);
   let [alert, setAlert] = useState('')
 
   let [updateUserPassword] = useMutation(UPDATE_USER_PASSWORD, {
@@ -33,7 +32,6 @@ const Password = ({
     setCurrentPW(currentPW = '')
     setNewPassword(newPassword = '')
     setConfNewPassword(confNewPassword = '')
-    setPWError(errorPWMessage = '')
     setError(errorMessage = '')
   }
 
@@ -66,7 +64,7 @@ const Password = ({
               }
             })
           } else {
-            setPWError(errorPWMessage = "Passwords don't match")
+            setError(errorMessage = "Passwords don't match")
           }
         }}
       >

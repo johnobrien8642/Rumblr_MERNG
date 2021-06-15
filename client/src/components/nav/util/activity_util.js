@@ -3,6 +3,7 @@ import RepostActivityShow from './components/Repost_Activity_Show';
 import CommentActivityShow from './components/Comment_Activity_Show';
 import FollowerActivityShow from './components/Follower_Activity_Show';
 import LikeActivityShow from './components/Like_Activity_Show';
+
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 
@@ -11,15 +12,14 @@ TimeAgo.addDefaultLocale(en)
 const timeAgo = new TimeAgo('en-US')
 
 const handleActivity = (
-  activity, 
-  tab, 
-  dropdown, 
-  navActive, 
+  activity,
+  tab,
+  dropdown,
+  navActive,
   setNavActive
 ) => {
   
   if (tab === 'all' || tab === undefined) {
-    console.log(activity)
     if (activity.kind === 'Mention') {
       return (
         <MentionActivityShow

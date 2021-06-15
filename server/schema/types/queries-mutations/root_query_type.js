@@ -26,7 +26,7 @@ const Tag = mongoose.model('Tag');
 const Like = mongoose.model('Like');
 const Follow = mongoose.model('Follow');
 const { GraphQLObjectType, GraphQLList,
-        GraphQLString, GraphQLID } = graphql;
+        GraphQLString, GraphQLID, GraphQLInt } = graphql;
 const { handleFilterTagRegex, 
         handleFilterPostContentRegex,
         asyncTagPostArr,
@@ -539,8 +539,9 @@ const RootQueryType = new GraphQLObjectType({
         })
       }
     },
-    fetchActivityCounts: {
-      type: ActivityCountsType,
+    fetchActivityCount: {
+      // type: ActivityCountsType,
+      type: GraphQLInt,
       args: { 
         query: { type: GraphQLString },
         cursorId: { type: GraphQLString }
@@ -609,14 +610,37 @@ const RootQueryType = new GraphQLObjectType({
             }
           },
           {
+            $lookup: {  
+              from: 'likes',
+              let: { userId: '$_id', cursorId: new Date(dateNum) },
+                pipeline: [
+                  { $match: {
+                    $expr: {
+                      $and:
+                      [
+                        { $gt: [ "$createdAt", "$$cursorId"]},
+                        { $eq: [ "$user", "$$userId" ] },
+                      ]
+                    }
+                  }
+                }
+              ],
+              as: 'likes'
+            }
+          },
+          {
             $project: {
               mentionsCount: { $size: "$mentions" },
               repostsCount: { $size: "$reposts" },
               commentsCount: { $size: "$comments" },
+              likesCount: { $size: "$likes" },
             }
           }
         ]).then(res => {
-          return res[0]
+          return res[0].mentionsCount + 
+          res[0].repostsCount + 
+          res[0].commentsCount + 
+          res[0].likesCount
         })
       }
     },

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useQuery } from '@apollo/client';
 import Search from '../search/Search';
 import MobileMenuDD from './Mobile_Menu_DD';
 import { Link } from 'react-router-dom';
@@ -7,14 +8,16 @@ import RenderSearchOrExitIcon from './Render_Search_Or_Exit_Icon';
 import PostFormUtil from '../posts/util/functions/post_form_util.js';
 import NavUtil from './util/nav_util.js';
 import HamburgerOrExitIcon from './Hamburger_Or_Exit_Icon';
+import Queries from '../../graphql/queries.js';
+import Cookies from 'js-cookie';
 const { accumulateCounts } = NavUtil;
 const { preventScroll, allowScroll } = PostFormUtil;
+const { FETCH_ACTIVITY_COUNTS } = Queries;
 
 const MobileNav = ({
   activityCounts, 
   userDetailsCounts,
   loggedInBool,
-  totalCountRef,
   cursorId
 }) => {
   let [menuOpen, openMenu] = useState(false)
@@ -44,11 +47,10 @@ const MobileNav = ({
       allowScroll(document)
     }
   }, [menuOpen])
+
+  
   
   if (loggedInBool.isLoggedIn) {
-    
-    accumulateCounts(activityCounts.fetchActivityCounts, totalCountRef)
-
     return (
       <div
         className='mobileNav loggedIn'
@@ -79,7 +81,6 @@ const MobileNav = ({
           openMenu={openMenu}
           settingsOpen={settingsOpen}
           openSettings={openSettings}
-          totalCountRef={totalCountRef}
           cursorId={cursorId}
           scrollYRef={scrollYRef}
           scrollYRef2={scrollYRef2}

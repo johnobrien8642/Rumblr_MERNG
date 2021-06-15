@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
+import { Link } from 'react-router-dom';
 import Cookies from 'js-cookie';
+
 import UserResult from '../../search/resultTypes/User_Result';
+
 import Queries from '../../../graphql/queries.js';
 const { FETCH_CHECK_OUT_THESE_BLOGS } = Queries;
 
 const CheckOutTheseBlogs = () => {
 
   useEffect(() => {
+
     return () => {
       refetch()
     }

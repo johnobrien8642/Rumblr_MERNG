@@ -1,25 +1,13 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import FollowButton from '../../posts/util/components/social/Follow_Button';
 import ProfilePic from '../../user/util/components/Profile_Pic';
-import FeedUtil from '../../posts/util/functions/feed_util.js';
-// const { doesUserFollowUser } = FeedUtil;
 
-const UserResult = ({ 
-  currentUser,
-  user, 
+const UserResult = ({
+  user,
   active,
-  setActive,
-  checkOutTheseBlogs
+  setActive
 }) => {
-  // let doesUserFollowUserRef = useRef(false)
-
-  // doesUserFollowUser(doesUserFollowUserRef, currentUser, user)
-
-  // if (currentUser) {
-  //   doesUserFollowUserRef.current =
-  //   currentUser.userFollows.some(obj => obj._id === user._id)
-  // }
 
   const handleDescription = () => {
     if (user.blogDescription) {
@@ -49,7 +37,6 @@ const UserResult = ({
       </div>
       <FollowButton 
         user={user}
-        // followed={doesUserFollowUserRef.current}
       />
     </React.Fragment>
   )

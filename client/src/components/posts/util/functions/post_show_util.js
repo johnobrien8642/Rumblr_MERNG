@@ -403,13 +403,22 @@ const handlePostClassName = (obj) => {
   }
 }
 
+const handleDemeterActivityPost = (activity) => {
+  if (activity.post.kind === 'Repost') {
+    return activity.post.post
+  } else {
+    return activity.post
+  }
+}
+
 
 const PostShowUtil = { 
   postHeader, 
   postBody, 
   repostFooter, 
   postTags,
-  handlePostClassName
+  handlePostClassName,
+  handleDemeterActivityPost
 }
 
 export default PostShowUtil;

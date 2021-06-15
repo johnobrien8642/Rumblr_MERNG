@@ -198,6 +198,10 @@
               font-family: var(--font);
             }
           }
+
+          span {
+            font-size: 14px;
+          }
         }
 
         .recentPostsCount {
@@ -274,22 +278,52 @@
       }
     }
 
-    .post.repost {
-
-      .userRepostShowHeader {
+    .leftColumn, .rightColumn {
       
-        .profilePic {
-          left: 8px;
-          top: 11px;
-          width: 30px;
-          height: 30px;
-
-        }
-        span {
-          margin: 5px 0 10px 35px;
+      .post.repost {
+  
+        .userRepostShowHeader {
+          
+          .profilePic {
+            left: 8px;
+            top: 10px;
+            width: 30px;
+            height: 30px;
+          }
+  
+          a {
+            font-size: 13px;
+            font-weight: 700;
+            color: inherit;
+          }
+  
+          span {
+            display: inline-flex;
+            margin: 15px 0 10px 45px;
+          }
+  
+          div {
+            position: relative;
+            top: -4px;
+            
+            img {
+              position: relative;
+              top: 2px;
+              margin: 0 0 0 5px;
+              opacity: .7;
+            }
+            
+            .repostedFrom {
+              position: relative;
+              top: -5px;
+              margin-left: 5px;
+              color:rgb(0, 0, 0, 0.7);
+            }
+          }
         }
       }
     }
+
 
     .post.chatPost {
       

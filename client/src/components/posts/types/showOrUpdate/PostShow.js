@@ -1,18 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import Cookies from 'js-cookie';
+
 import PostNotes from '../../util/components/social/Post_Notes.js';
 import PostOptions from '../../util/components/social/Post_Options.js';
 import RepostForm from '../../util/components/social/Repost_Form';
+
 import PostShowUtil from '../../util/functions/post_show_util.js';
 import Queries from '../../../../graphql/queries';
 import Mutations from '../../../../graphql/mutations';
-import FeedUtil from '../../../posts/util/functions/feed_util.js';
 import PostFormUtil from '../../util/functions/post_form_util.js';
 import UpdateCacheUtil from '../../util/functions/update_cache_util.js';
 const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
 const { allowScroll, preventScroll } = PostFormUtil;
-const { doesUserFollowUser } = FeedUtil;
 const { postDelete } = UpdateCacheUtil;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS, FETCH_USER_FEED } = Queries;
 const { DELETE_POST } = Mutations;

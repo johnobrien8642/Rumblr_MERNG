@@ -1,10 +1,11 @@
 import React, { useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom'
 import { useQuery } from '@apollo/client';
+import Cookies from 'js-cookie';
+
 import ProfilePic from '../user/util/components/Profile_Pic';
 import PostShow from '../posts/types/showOrUpdate/PostShow';
-import PostLoading from '../nav/Post_Loading';
+
 import PostShowUtil from '../posts/util/functions/post_show_util.js';
 import Queries from '../../graphql/queries.js';
 const { FETCH_ALL_TAG_FEED } = Queries;
@@ -65,17 +66,20 @@ const AllTagFeed = ({
                     className='user'
                     to={`/view/blog/${Cookies.get('currentUser')}`}>
                     {Cookies.get('currentUser')}
-                  </Link> 
-                  <img
-                    src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
-                    alt=''
-                  />
-                  <Link
-                    className='repostedFrom'
-                    to={`/view/blog/${post.user.blogName}`}
-                  >
-                    {post.user.blogName}
                   </Link>
+
+                  <div>
+                    <img
+                      src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
+                      alt=''
+                    />
+                    <Link
+                      className='repostedFrom'
+                      to={`/view/blog/${post.user.blogName}`}
+                    >
+                      {post.user.blogName}
+                    </Link>
+                  </div>
                 </span>
               </div>
 
@@ -122,17 +126,20 @@ const AllTagFeed = ({
                     className='user'
                     to={`/view/blog/${Cookies.get('currentUser')}`}>
                     {Cookies.get('currentUser')}
-                  </Link> 
-                  <img
-                    src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
-                    alt=''
-                  />
-                  <Link
-                    className='repostedFrom'
-                    to={`/view/blog/${post.user.blogName}`}
-                  >
-                    {post.user.blogName}
                   </Link>
+
+                  <div>
+                    <img
+                      src="https://img.icons8.com/material-two-tone/24/ffffff/retweet.png"
+                      alt=''
+                    />
+                    <Link
+                      className='repostedFrom'
+                      to={`/view/blog/${post.user.blogName}`}
+                    >
+                      {post.user.blogName}
+                    </Link>
+                  </div>
                 </span>
               </div>
 

@@ -1,10 +1,13 @@
 import React from 'react'; 
 import { useQuery } from '@apollo/client';
 import Cookies from 'js-cookie';
-import { Link, withRouter } from 'react-router-dom';
+
 import LikeButton from './Like_Button'
+
 import Queries from '../../../../../graphql/queries';
+import PostFormUtil from '../../functions/post_form_util.js';
 const { DOES_USER_LIKE_POST } = Queries;
+const { handlePostId } = PostFormUtil;
 
 const PostOptions = ({ 
   post, 
@@ -21,14 +24,7 @@ const PostOptions = ({
   confirmDelete,
   setConfirmDelete
 }) => {
-  var postId
-  if (post.kind === 'Like' && post.kind === 'Repost') {
-    postId = post.post.post._id
-  } else if (post.kind === 'Like') {
-    postId = post.post._id
-  } else {
-    postId = post._id
-  }
+  var postId = handlePostId(post)
 
   let { loading, error, data, refetch } = useQuery(DOES_USER_LIKE_POST,{
     variables: {
@@ -83,8 +79,6 @@ const PostOptions = ({
             refetchDoesUserLikePost={refetch}
             refetchNotes={refetchNotes}
           />
-
-          {/* {renderConfirmDelete()} */}
 
           <img
             className='deletePostBtn'
@@ -153,6 +147,6 @@ const PostOptions = ({
       </div>
     )
   }
-}
+};
 
-export default withRouter(PostOptions);
+export default PostOptions;

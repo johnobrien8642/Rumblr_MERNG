@@ -284,6 +284,12 @@ const mutation = new GraphQLObjectType({
             user: reposter._id,
             repost: repost._id
           })
+
+          if (foundPostObj && foundPostObj.kind === 'Repost') {
+            foundPostObj.repostTrail.forEach(obj => {
+              repost.repostTrail.push(obj._id)
+            })
+          }
           
           repost.repostTrail.push(caption._id)
 

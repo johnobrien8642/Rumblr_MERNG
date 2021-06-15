@@ -7,6 +7,7 @@ const ActivityCountsType = new GraphQLObjectType({
     mentionsCount: { type: GraphQLInt },
     repostsCount: { type: GraphQLInt },
     commentsCount: { type: GraphQLInt },
+    likesCount: { type: GraphQLInt },
   })
 })
 

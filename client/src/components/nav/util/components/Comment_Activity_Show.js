@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import BylineUtil from '../byline_util.js';
-import ProfilePic from '../../../user/util/components/Profile_Pic';
-import handlePostIcon from '../handle_post_icon.js';
 import DOMPurify from 'dompurify';
+
+import ProfilePic from '../../../user/util/components/Profile_Pic';
+
+import handlePostIcon from '../handle_post_icon.js';
+import BylineUtil from '../byline_util.js';
 const { handleByline } = BylineUtil;
 
 const CommentShow = ({
   dropdown, comment, navActive, setNavActive
 }) => {
-
+  
   if (comment.post) {
     return(
       <div

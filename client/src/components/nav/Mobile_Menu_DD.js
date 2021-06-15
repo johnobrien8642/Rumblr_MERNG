@@ -1,6 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import Cookies from 'js-cookie';
 import Logout from '../auth/Logout';
+import Queries from '../../graphql/queries.js';
+const { FETCH_ACTIVITY_COUNTS } = Queries;
 
 const MobileMenuDD = ({
   menuOpen,
@@ -10,19 +14,41 @@ const MobileMenuDD = ({
   activityCounts,
   userDetailsCounts,
   loggedInBool,
-  totalCountRef,
-  cursorId,
+  totalCount,
+  // cursorId,
   scrollYRef2
 }) => {
+  let cursorId = useRef(new Date().getTime())
 
   useEffect(() => {
     if (!menuOpen || menuOpen) {
       window.scrollTo(0, scrollYRef2.current)
     }
+
+    return () => {
+      refetch()
+    }
   }, [menuOpen, settingsOpen, scrollYRef2])
 
+  let { data, refetch } = useQuery(FETCH_ACTIVITY_COUNTS, {
+    variables: {
+      query: Cookies.get('currentUser'),
+      cursorId: cursorId.current.toString()
+    },
+    pollInterval: 10000
+  })
+
   const { user } = userDetailsCounts;
-  
+
+  const renderActivityCount = () => {
+    if (data) {
+      if (data.fetchActivityCount) {
+        return <span className='count'>{data.fetchActivityCount}</span>
+      } else {
+        return <span className='count'></span>
+      }
+    }
+  }
 
   if (user) {
     return (
@@ -86,7 +112,7 @@ const MobileMenuDD = ({
           <div
             className='mobileMenuItem'
             onClick={() => {
-              totalCountRef.current = 0
+              // totalCountRef.current = 0
               cursorId.current = new Date().getTime()
             }}
           >
@@ -101,7 +127,8 @@ const MobileMenuDD = ({
               <span>Activity</span>
             </Link>
   
-            <span className='count'>{totalCountRef.current ? totalCountRef.current : ''}</span>
+            {/* <span className='count'>{data ? data.fetchActivityCount : 0}</span> */}
+            {renderActivityCount()}
           </div>
   
           <div

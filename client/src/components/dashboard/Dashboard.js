@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import Cookies from 'js-cookie';
 import { useQuery } from '@apollo/client';
 import { Route, useHistory } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 import PostsNav from '../nav/Posts_Nav';
 import Feed from '../feeds/Feed.js';
 import PostRadar from '../dashboard/util/Post_Radar';
 import CheckOutTheseBlogs from '../dashboard/util/Check_Out_These_Blogs';
 import RepostForm from '../posts/util/components/social/Repost_Form';
+
 import Queries from '../../graphql/queries.js';
 const { FETCH_USER } = Queries;
 

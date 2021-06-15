@@ -3,6 +3,16 @@
 import axios from 'axios';
 import Validator from 'validator';
 
+const handlePostId = (post) => {
+  if (post.kind === 'Like' && post.kind === 'Repost') {
+    return post.post.post._id
+  } else if (post.kind === 'Like') {
+    return post.post._id
+  } else {
+    return post._id
+  }
+}
+
 const previewMainImages = (
   e, 
   main,
@@ -495,7 +505,7 @@ const onDropMain = (
   var parsedObj = JSON.parse(obj)
 
   if (parsedObj.srcType === 'newImgFile') {
-    //if we're dragging and dropping a file upload
+    //if we're dragging and dropping an uploaded image
     //the main.current needs to tell mainImageFiles
     //how it should be ordered 
     main.current.splice(oldIdx, 1)
@@ -856,7 +866,8 @@ const allowScroll = (document) => {
   document.body.style.overflow = ''
 }
 
-const PostCreateUtil = { 
+const PostFormUtil = {
+  handlePostId,
   previewMainImages, 
   previewBodyImages, 
   previewLink,
@@ -907,4 +918,4 @@ const PostCreateUtil = {
   allowScroll
 };
  
-export default PostCreateUtil;
+export default PostFormUtil;

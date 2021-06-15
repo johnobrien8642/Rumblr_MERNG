@@ -3,6 +3,7 @@ import React from 'react';
 const ConfirmClose = ({
   mobile,
   update,
+  repost,
   setUpdate,
   confirmClose,
   setConfirmClose,
@@ -10,9 +11,8 @@ const ConfirmClose = ({
   resetInputs,
   setFormActive,
   formActive,
-  setPostFormModal,
   postFormModal,
-  repost,
+  setPostFormModal,
   postFormOpen,
   setPostFormOpen
 }) => {

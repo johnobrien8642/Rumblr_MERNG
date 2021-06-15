@@ -8,7 +8,7 @@ const RecommendedTags = ({
   const handleClassNameWithColor = () => {
     var colors = ['blue', 'green', 'orange']
 
-    return 'recommendedTags' + ' ' + colors[Math.floor(Math.random() * 3)]
+    return `recommendedTags ${colors[Math.floor(Math.random() * 3)]}`
   }
 
   return (
@@ -22,6 +22,7 @@ const RecommendedTags = ({
             key={tag._id}
           >
             <TagResult tag={tag} />
+            <span>{}</span>
           </div>
         )
       })}

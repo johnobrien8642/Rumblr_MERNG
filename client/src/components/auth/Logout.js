@@ -1,7 +1,8 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
+
 import Mutations from '../../graphql/mutations';
 import Queries from '../../graphql/queries';
 const { LOGOUT_USER } = Mutations;

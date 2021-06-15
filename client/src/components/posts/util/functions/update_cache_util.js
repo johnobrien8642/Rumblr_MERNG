@@ -56,6 +56,34 @@ const postUpdate = (
   })
 }
 
+const commentPost = (
+  client,
+  comment,
+  post,
+  query
+) => {
+  var readFeed = client.readQuery({
+    query: query,
+    variables: {
+      postId: post._id
+    }
+  })
+  
+  var { fetchLikesRepostsAndComments } = readFeed;
+
+  var newPostArr = [...fetchLikesRepostsAndComments, comment]
+  
+  client.writeQuery({
+    query: query,
+    variables: {
+      postId: post._id
+    },
+    data: {
+      fetchLikesRepostsAndComments: newPostArr
+    }
+  })
+}
+
 // const repostUpdate = (
 //   client, updateCaption,
 //   currentUser, query
@@ -302,6 +330,7 @@ const UpdateCacheUtil = {
   postCreate, 
   postUpdate,
   // repostUpdate,
+  commentPost,
   postDelete,
   postLike, 
   postUnlike,

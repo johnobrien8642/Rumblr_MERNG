@@ -1,39 +1,55 @@
 const accumulateCounts = (
-  data1,
-  totalCountRef
+  commentsCount,
+  likesCount,
+  mentionsCount,
+  repostsCount
 ) => {
-  if (data1) {
-    totalCountRef.current =
-    totalCountRef.current +
-    data1.mentionsCount +
-    data1.repostsCount +
-    data1.commentsCount
-  }
+  let count = 0
+
+  count += mentionsCount +
+  repostsCount +
+  likesCount +
+  commentsCount
+  
+  return count
 }
 
-const renderTotalCount = (totalCountRef) => {
-    if (totalCountRef.current > 0 && totalCountRef.current <= 99) {
+const renderTotalCount = (totalActivityCountRef, activityCounts, activityOpen) => {
+    const { fetchActivityCounts } = activityCounts;
+    const { mentionsCount, repostsCount, likesCount, commentsCount } = fetchActivityCounts;
+
+    if (!activityOpen) {
+      totalActivityCountRef.current = totalActivityCountRef.current +
+        mentionsCount +
+        repostsCount + 
+        likesCount + 
+        commentsCount
+    }
+
+    if (totalActivityCountRef.current > 0 && totalActivityCountRef.current <= 99) {
       return (
         <div
           className='countAlertWrapperDiv'
+          key={totalActivityCountRef.current}
         >
           <div>
             <span
               className={
-                totalCountRef.current < 10 ? 
+                totalActivityCountRef.current < 10 ? 
                 'oneThroughTen' : 
                 'elevenThroughNinetyNine'
               }
             >
-              {totalCountRef.current}
+              {totalActivityCountRef.current}
             </span>
           </div>
         </div>
       )
-    } else if (totalCountRef.current > 99) {
+    } else if (totalActivityCountRef.current > 99) {
       return (
         <div
           className='countAlertWrapperDiv'
+          key={totalActivityCountRef.current}
         >
           <div>
             <span

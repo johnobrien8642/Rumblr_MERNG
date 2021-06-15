@@ -1,9 +1,10 @@
 import React, { useRef, useEffect } from 'react';
-import Cookies from 'js-cookie';
 import { useQuery, useApolloClient } from '@apollo/client';
-import Queries from '../../graphql/queries.js';
+import Cookies from 'js-cookie';
+
 import FeedUtil from '../posts/util/functions/feed_util.js';
 import ActivityUtil from '../nav/util/activity_util.js';
+import Queries from '../../graphql/queries.js';
 const { FETCH_ALL_ACTIVITY } = Queries;
 const { handleActivity, handleTimeAgo } = ActivityUtil;
 const { infiniteScroll, 
@@ -11,9 +12,12 @@ const { infiniteScroll,
         handleData } = FeedUtil;
 
 const Content = ({
-  tab, active, 
-  setActive, activityCursorId, 
-  navActive, setNavActive,
+  tab, 
+  active, 
+  setActive, 
+  activityCursorId, 
+  navActive, 
+  setNavActive,
   timeAgoRef
 }) => {
   let feedArr = useRef([]);

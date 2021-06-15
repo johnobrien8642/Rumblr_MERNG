@@ -1,14 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
-import Feed from './Feed'
+
+import Feed from './Feed';
 import ProfilePic from '../user/util/components/Profile_Pic';
 import FollowButton from '../posts/util/components/social/Follow_Button';
 import Queries from '../../graphql/queries.js';
-import FeedUtil from '../posts/util/functions/feed_util.js';
-import Cookies from 'js-cookie';
 const { FETCH_USER } = Queries;
-const { doesUserFollowUser } = FeedUtil;
+
 
 
 const UserBlogShow = () => {
