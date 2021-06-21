@@ -15,8 +15,6 @@ const Content = ({
   tab, 
   active, 
   setActive,
-  navActive, 
-  setNavActive,
   timeAgoRef
 }) => {
   let feedArr = useRef([]);
@@ -68,12 +66,9 @@ const Content = ({
         return (
           <div
             key={activity._id}
-            onClick={() => {
-              setNavActive(navActive = false)
-            }}
           >
             {handleTimeAgo(activity, timeAgoRef, tab)}
-            {handleActivity(activity, tab, true, navActive, setNavActive)}
+            {handleActivity(activity, tab, true, active, setActive)}
           </div>
         )
       })}

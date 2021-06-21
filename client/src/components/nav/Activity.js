@@ -4,8 +4,7 @@ import Tabs from './Tabs';
 import Content from './Content';
 
 const Activity = ({
-  navActive, setNavActive, 
-  activityClose, 
+  activityClose,
   activityOpen,
   setActivityOpen
 }) => {
@@ -24,7 +23,6 @@ const Activity = ({
   }, [activityClose, activityOpen, active])
   
   if (activityOpen) {
-
     return (
       <div
         className='activity'
@@ -46,8 +44,6 @@ const Activity = ({
           active={active}
           setActive={setActive}
           activityCursorId={cursorId}
-          navActive={navActive}
-          setNavActive={setNavActive}
           timeAgoRef={timeAgoRef}
         />
       </div>

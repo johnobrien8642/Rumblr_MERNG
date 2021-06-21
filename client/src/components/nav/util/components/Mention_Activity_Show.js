@@ -9,7 +9,7 @@ const { handleByline } = BylineUtil;
 
 
 const MentionShow = ({
-  dropdown, mention, navActive, setNavActive
+  mention, active, setActive
 }) => {
 
   if (mention.post) {
@@ -17,9 +17,7 @@ const MentionShow = ({
       <div
         className='activityResult'
         onClick={() => {
-          if (dropdown) {
-            setNavActive(navActive = false)
-          }
+          setActive(active = false)
         }}
       >
         <ProfilePic 

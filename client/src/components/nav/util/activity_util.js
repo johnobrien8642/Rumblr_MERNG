@@ -15,8 +15,8 @@ const handleActivity = (
   activity,
   tab,
   dropdown,
-  navActive,
-  setNavActive
+  active,
+  setActive
 ) => {
   
   if (tab === 'all' || tab === undefined) {
@@ -25,8 +25,8 @@ const handleActivity = (
         <MentionActivityShow
           dropdown={dropdown}
           mention={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     } else if (activity.kind === 'Repost') {
@@ -34,8 +34,8 @@ const handleActivity = (
         <RepostActivityShow
           dropdown={dropdown}
           repost={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     } else if (activity.kind === 'Comment') {
@@ -43,8 +43,8 @@ const handleActivity = (
         <CommentActivityShow 
           dropdown={dropdown}
           comment={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     } else if (activity.kind === 'Follow') {
@@ -52,8 +52,8 @@ const handleActivity = (
         <FollowerActivityShow
           dropdown={dropdown}
           follow={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     } else if (activity.kind === 'Like') {
@@ -61,8 +61,8 @@ const handleActivity = (
         <LikeActivityShow
           dropdown={dropdown}
           like={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     }
@@ -72,8 +72,8 @@ const handleActivity = (
         <MentionActivityShow
           dropdown={dropdown}
           mention={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     }
@@ -83,8 +83,8 @@ const handleActivity = (
         <RepostActivityShow
           dropdown={dropdown}
           repost={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     }
@@ -94,8 +94,8 @@ const handleActivity = (
         <CommentActivityShow
           dropdown={dropdown} 
           comment={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     }
@@ -105,8 +105,8 @@ const handleActivity = (
         <FollowerActivityShow
           dropdown={dropdown}
           follow={activity}
-          navActive={navActive}
-          setNavActive={setNavActive}
+          active={active}
+          setActive={setActive}
         />
       )
     }

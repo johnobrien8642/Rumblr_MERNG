@@ -118,6 +118,10 @@
       }
     }
 
+    .descriptionTextAndImage div:last-of-type {
+      margin-bottom: 10px;
+    }
+
     .postTags {
       position: relative;
       display: flex;
@@ -805,7 +809,6 @@
 
         .iconRepostedAndFollowContainer {
           display: flex;
-          flex-wrap: wrap;
 
           img {
             display: block;
@@ -935,6 +938,10 @@
       display: block;
       font-size: 32px;
       margin: 10px 15px 20px 10px;
+    }
+
+    .textPostTitle:empty {
+      display: none;
     }
   }
 

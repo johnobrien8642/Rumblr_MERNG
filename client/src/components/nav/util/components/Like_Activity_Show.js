@@ -8,7 +8,7 @@ import BylineUtil from '../byline_util.js'
 const { handleByline } = BylineUtil;
 
 const LikeActivityShow = ({
-  dropdown, like, navActive, setNavActive
+  like, active, setActive
 }) => {
 
   if (like.post) {
@@ -16,9 +16,7 @@ const LikeActivityShow = ({
       <div
         className='activityResult'
         onClick={() => {
-          if (dropdown) {
-            setNavActive(navActive = false)
-          }
+          setActive(active = false)
         }}
       >
         <ProfilePic 
