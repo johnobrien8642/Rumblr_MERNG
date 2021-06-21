@@ -2,13 +2,14 @@ import mongoose from 'mongoose';
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
 import models from './models/index.js';
+import keys from './config/keys.js';
 import schema from './schema/schema.js';
 import posts from './routes/api/posts.js';
 import mailer from './routes/api/mailer.js';
 import CronUtil from './cron/cron_util.js'
 import { expressCspHeader, SELF } from 'express-csp-header';
 import cors from 'cors';
-const url = 'mongodb://127.0.0.1:27017/Rumblr_MERNG';
+const url = keys.mongoURL;
 const { cronTagFollowerHeat,
         cronPostNotesHeat,
         cronTagPostHeat,
