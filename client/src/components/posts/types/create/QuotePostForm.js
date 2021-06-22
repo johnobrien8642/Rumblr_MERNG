@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import randomstring from 'randomstring';
 
@@ -53,6 +54,7 @@ const QuotePostForm = ({
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false)
   let formId = 'quotePostForm';
+  let history = useHistory();
   const formInputId = 'quotePostInput';
   
   useEffect(() => {
@@ -146,6 +148,10 @@ const QuotePostForm = ({
             instanceData: instanceData
           }
         })
+
+        if (mobile) {
+          history.push('/')
+        }
       }
     )
   }

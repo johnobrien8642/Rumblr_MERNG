@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import randomstring from 'randomstring';
 import Cookies from 'js-cookie';
 
@@ -50,6 +51,7 @@ const TextPostForm = ({
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false);
+  let history = useHistory();
   const formId = 'textPostForm'
   const formInputId = 'textPostInput'
 
@@ -145,6 +147,10 @@ const TextPostForm = ({
             instanceData: instanceData
           }
         })
+
+        if (mobile) {
+          history.push('/')
+        }
       }
     )
   }

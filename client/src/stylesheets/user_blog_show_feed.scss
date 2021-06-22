@@ -98,8 +98,8 @@
       width: fit-content;
 
       @media (max-width: 1024px) {
-        top: -2%;
-        left: 50%;
+        top: -4%;
+        left: 84%;
         transform: translateX(-50%);
       }
       
@@ -112,7 +112,7 @@
         border-radius: 3px;
 
         @media (max-width: 1024px) {
-          font-size: 18px;
+          font-size: 12px;
         }
       }
     }

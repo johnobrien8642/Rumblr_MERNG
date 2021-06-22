@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom'; 
 import Cookies from 'js-cookie';
 import randomstring from 'randomstring';
 
@@ -53,6 +54,7 @@ const VideoPostForm = ({
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false);
   let [displayBodyImageAndTextInput, setDisplayBodyImageAndTextInput] = useState(false);
+  let history = useHistory();
   const formId = 'videoPostForm';
   const formInputId = 'videoPostInput'
 
@@ -156,6 +158,10 @@ const VideoPostForm = ({
             instanceData: instanceData
           }
         })
+
+        if (mobile) {
+          history.push('/')
+        }
       }
     )
   }

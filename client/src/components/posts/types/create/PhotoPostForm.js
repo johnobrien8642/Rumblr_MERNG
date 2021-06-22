@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import randomstring from 'randomstring';
 import Cookies from 'js-cookie';
 
@@ -53,6 +54,7 @@ const PhotoPostForm = ({
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0)
   let [confirmClose, setConfirmClose] = useState(false)
+  let history = useHistory();
   const formId = 'photoPostForm'
   const formInputId = 'photoPostInput'
 
@@ -91,6 +93,7 @@ const PhotoPostForm = ({
 
         if (mobile) {
           setPostFormOpen(postFormOpen = false)
+          history.push('/dashboard')
         }
 
         setUploading(uploading = false)

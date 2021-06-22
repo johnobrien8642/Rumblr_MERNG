@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import randomstring from 'randomstring';
 
@@ -57,6 +58,7 @@ const LinkPostForm = ({
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false);
   let [displayBodyImageAndTextInput, setDisplayBodyImageAndTextInput] = useState(false);
+  let history = useHistory();
   const formId = 'linkPostForm';
   const formInputId = 'linkPostInput';
   
@@ -161,6 +163,10 @@ const LinkPostForm = ({
             instanceData: instanceData
           }
         })
+
+        if (mobile) {
+          history.push('/')
+        }
       }
     )
   }

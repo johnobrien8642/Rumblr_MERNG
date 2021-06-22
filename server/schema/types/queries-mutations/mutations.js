@@ -20,7 +20,7 @@ import DeleteFunctionUtil from '../../../models/posts/types/util/delete_function
 const { deletePost, 
         asyncDeleteAllPosts, 
         asyncDeleteAllActivityAndProfilePic,
-        handleS3Cleanup } = DeleteFunctionUtil;
+        handleS3Cleanup, handles3AndObjectCleanup } = DeleteFunctionUtil;
 
 const Post = mongoose.model('Post');
 const User = mongoose.model('User');
@@ -98,7 +98,12 @@ const mutation = new GraphQLObjectType({
         post: { type: GraphQLJSONObject }
       },
       resolve(_, { post }) {
-        return deletePost(post)
+        return deletePost(
+          post,
+          s3Client,
+          keys,
+          handles3AndObjectCleanup
+        )
       }
     },
     likePost: {

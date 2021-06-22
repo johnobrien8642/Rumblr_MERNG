@@ -125,6 +125,7 @@
     .postTags {
       position: relative;
       display: flex;
+      flex-wrap: wrap;
 
       .tag {
         margin-left: 15px;

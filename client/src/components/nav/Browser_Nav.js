@@ -9,7 +9,7 @@ import ActivityCountIcon from '../nav/Activity_Count_Icon';
 const BrowserNav = ({
   user,
   userDetailsCounts,
-  loggedInBool,
+  loggedInBool
 }) => {
   let [searchClose, closeSearch] = useState(false)
   let [activityClose, closeActivity] = useState(false)

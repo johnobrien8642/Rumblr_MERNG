@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import randomstring from 'randomstring';
 
@@ -56,6 +57,7 @@ const AudioPostForm = ({
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false);
   let [displayBodyImageAndTextInput, setDisplayBodyImageAndTextInput] = useState(false)
+  let history = useHistory();
   const formId = 'audioPostForm';
   const formInputId = 'audioPostInput'
   
@@ -166,6 +168,10 @@ const AudioPostForm = ({
             instanceData: instanceData
           }
         })
+
+        if (mobile) {
+          history.push('/')
+        }
       }
     )
   }

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import randomstring from 'randomstring';
 
@@ -50,6 +51,7 @@ const ChatPostForm = ({
   let [errMessage, setErrMessage] = useState('');
   let [render, setRender] = useState(0);
   let [confirmClose, setConfirmClose] = useState(false);
+  let history = useHistory();
   const formId = 'chatPostForm';
   const formInputId = 'chatPostInput';
 
@@ -143,6 +145,10 @@ const ChatPostForm = ({
             instanceData: instanceData
           }
         })
+
+        if (mobile) {
+          history.push('/')
+        }
       }
     )
   }

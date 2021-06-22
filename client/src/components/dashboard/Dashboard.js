@@ -43,6 +43,8 @@ const Dashboard = props => {
             props={props}
             mobile={true}
             user={user}
+            uploading={uploading}
+            setUploading={setUploading}
           />
         )}
       />

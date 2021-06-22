@@ -81,16 +81,20 @@ const PostsNav = ({
     }, 100)
   }
   
-  const handleMobilePostsNavModalClass = (mobile, open) => {
-    if (mobile && !open) {
+  const handleMobilePostsNavModalClass = (uploading, mobile, open) => {
+    if (uploading) {
+      return 'mobilePostsNavModal hidden'
+    } else if (mobile && !open) {
       return 'mobilePostsNavModal'
     } else if (mobile && open) {
       return 'mobilePostsNavModal open'
     }
   }
   
-  const handleMobileOrBrowserPostsNavClass = (mobile, open) => {
-  if (mobile && open && postFormOpen)  {
+  const handleMobileOrBrowserPostsNavClass = (uploading, mobile, open) => {
+    if (uploading && mobile && postFormOpen) {
+      return 'mobilePostsNav hidden'
+    } else if (mobile && open && postFormOpen)  {
       return 'mobilePostsNav open postFormOpen'
     } else if (mobile && open) {
       return 'mobilePostsNav open'
@@ -105,10 +109,10 @@ const PostsNav = ({
     if (mobile) {
       return (
         <div
-          className={handleMobilePostsNavModalClass(mobile, open)}
+          className={handleMobilePostsNavModalClass(uploading, mobile, open)}
         >
           <div
-            className={handleMobileOrBrowserPostsNavClass(mobile, open)}
+            className={handleMobileOrBrowserPostsNavClass(uploading, mobile, open)}
             tabIndex={-1}
             onBlur={() => {
               if (mobile && !postFormOpen) {

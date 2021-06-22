@@ -8,6 +8,14 @@
   }
 }
 
+.mobilePostsNavModal.hidden {
+  display: hidden;
+}
+
+.mobilePostsNav.hidden {
+  display: hidden;
+}
+
 .mobilePostsNavModal.open {
   background-color: rgba(0, 0, 0, 0.7);
 }
