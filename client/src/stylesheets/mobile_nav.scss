@@ -62,21 +62,22 @@
       top: 50px;
       z-index: 100;
     }
-
-      .mobileMenuDD {
-        display: block;
-        position: absolute;
-        top: 50px;
-        left: 0px;
-        width: 0%;
-        height: 80vh;
-        transition: width .3s;
-        font-family: 'Noto Sans JP', sans-serif;
-        background-color: var(--tumblr-deep-blue);
-        overflow-x: hidden;
-        overflow-y: auto;
-        white-space: nowrap;
-        z-index: 101;
+    
+    .mobileMenuDD {
+      display: block;
+      position: absolute;
+      top: 50px;
+      left: 0px;
+      width: 0%;
+      height: 80vh;
+      transition: width .3s;
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: var(--tumblr-deep-blue);
+      overflow-x: hidden;
+      overflow-y: auto;
+      white-space: nowrap;
+      z-index: 101;
+      overscroll-behavior: contain;
 
         .logout {
           color: white;

@@ -243,6 +243,7 @@
       .post.repost {
   
         .userRepostShowHeader {
+          display: flex;
           
           .profilePic {
             left: 8px;
@@ -256,30 +257,82 @@
             font-weight: 700;
             color: inherit;
           }
+
+          .iconRepostedAndFollowContainer {
+            position: relative;
+            display: flex;
+  
+            img {
+              display: block;
+              position: relative;
+              width: 22px;
+              height: 22px;
+              opacity: .6;
+              margin: 10px 0 10px 5px;
+  
+              @media (max-width: 1024px) {
+                margin: 5px 0 0 10px;
+              }
+            }
+    
+            .repostedFrom {
+              display: block;
+              font-size: 13px;
+              font-weight: 700;
+              opacity: .6;
+              margin: 10px 0 10px 5px;
+  
+              @media (max-width: 1024px) {
+                margin: 5px 0 10px 5px;
+              }
+    
+              &:hover {
+                cursor: pointer;
+              }
+            }
+    
+            form {
+              button {
+                position: relative;
+                top: 6px;
+                display: inline-block;
+                font-family: var(--font);
+                font-weight: 700;
+                font-size: 15px;
+                color: var(--tumblr-light-blue);
+                margin: 0 0 0 15px;
+  
+                @media (max-width: 1024px) {
+                  top: 1px;
+                  margin: 0 0 0 15px;
+                }
+              }
+            }
+          }
   
           span {
             display: inline-flex;
             margin: 15px 0 10px 45px;
           }
   
-          div {
-            position: relative;
-            top: -4px;
+          // div {
+          //   position: relative;
+          //   top: -4px;
             
-            img {
-              position: relative;
-              top: 2px;
-              margin: 0 0 0 5px;
-              opacity: .7;
-            }
+          //   img {
+          //     position: relative;
+          //     top: 2px;
+          //     margin: 0 0 0 5px;
+          //     opacity: .7;
+          //   }
             
-            .repostedFrom {
-              position: relative;
-              top: -5px;
-              margin-left: 5px;
-              color:rgb(0, 0, 0, 0.7);
-            }
-          }
+          //   .repostedFrom {
+          //     position: relative;
+          //     top: -5px;
+          //     margin-left: 5px;
+          //     color:rgb(0, 0, 0, 0.7);
+          //   }
+          // }
         }
       }
     }

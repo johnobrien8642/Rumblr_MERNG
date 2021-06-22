@@ -19,8 +19,8 @@
 }
 
 #root {
+  z-index: 1;
   position: relative;
-  z-index: 1
 }
 
 html {
@@ -30,6 +30,7 @@ html {
 body {
   background-color: var(--tumblr-deep-blue);
   margin: 0 auto;
+  position: relative;
 
   .mention {
     text-decoration: underline;
