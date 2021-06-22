@@ -517,7 +517,14 @@
           }
         }
       }
+    }
 
+    .repostModal.hidden {
+      display: hidden;
+    }
+
+    .repostForm.hidden {
+      display: hidden;
     }
 
     .repostModal {

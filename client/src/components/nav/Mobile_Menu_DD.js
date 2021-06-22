@@ -61,6 +61,7 @@ const MobileMenuDD = ({
             to='/dashboard/create'
             className='mobileMenuItem createAPost'
             onClick={() => {
+              allowScroll(document)
               openMenu(menuOpen = false)
             }}
           >
@@ -80,7 +81,8 @@ const MobileMenuDD = ({
             <Link
               className='dashboard'
               to='/dashboard'
-                onClick={() => {      
+                onClick={() => {
+                  allowScroll(document)
                   openMenu(menuOpen = false)
                 }}
             >
@@ -99,6 +101,7 @@ const MobileMenuDD = ({
               className='discover'
               to='/discover'
               onClick={() => {
+                allowScroll(document)
                 openMenu(menuOpen = false)
               }}
             >
@@ -112,13 +115,15 @@ const MobileMenuDD = ({
   
           <div
             className='mobileMenuItem'
-            onClick={() => {
-              cursorId.current = new Date().getTime()
-            }}
-          >
+            >
             <Link
               className='activity'
               to={`/activity`}
+              onClick={() => {
+                cursorId.current = new Date().getTime()
+                allowScroll(document)
+                openMenu(menuOpen = false)
+              }}
             >
               <img
                 src="https://img.icons8.com/fluent-systems-filled/38/ffffff/lightning-bolt.png"
@@ -137,6 +142,10 @@ const MobileMenuDD = ({
             <Link
               className='likes'
               to='/likes'
+              onClick={() => {
+                allowScroll(document)
+                openMenu(menuOpen = false)
+              }}
             >
               <img 
                 src="https://img.icons8.com/material-sharp/24/ffffff/like--v1.png"
@@ -153,6 +162,10 @@ const MobileMenuDD = ({
             <Link 
               className='following'
               to='/following'
+              onClick={() => {
+                allowScroll(document)
+                openMenu(menuOpen = false)
+              }}
             >
               <img
                 src="https://img.icons8.com/metro/26/ffffff/gender-neutral-user.png"
@@ -165,13 +178,15 @@ const MobileMenuDD = ({
   
           <div
             className='mobileMenuItem'
-            onClick={() => {
-              openSettings(settingsOpen = true)
-            }}
-          >
+            >
             <Link
               className='settings'
               to='/settings/account'
+              onClick={() => {
+                allowScroll(document)
+                openMenu(menuOpen = false)
+                openSettings(settingsOpen = true)
+              }}
             >
               <img
                 src="https://img.icons8.com/material-sharp/24/ffffff/settings.png"
@@ -185,7 +200,11 @@ const MobileMenuDD = ({
             className='mobileMenuItem blogDetailHeader'
           >
             <Link
-              to={`/view/blog/${user.blogName}`} 
+              to={`/view/blog/${user.blogName}`}
+              onClick={() => {
+                allowScroll(document)
+                openMenu(menuOpen = false)
+              }}
             >
               <h3>{user.blogName}</h3>
               <p>{user.blogDescription}</p>
@@ -197,6 +216,10 @@ const MobileMenuDD = ({
           >
             <Link
               to={`/view/blog/${user.blogName}`}
+              onClick={() => {
+                allowScroll(document)
+                openMenu(menuOpen = false)
+              }}
             >
               <p>Posts</p>
             </Link>
@@ -208,6 +231,10 @@ const MobileMenuDD = ({
           >
             <Link
               to={`/followers`}
+              onClick={() => {
+                allowScroll(document)
+                openMenu(menuOpen = false)
+              }}
             >
               <p>Followers</p>
             </Link>

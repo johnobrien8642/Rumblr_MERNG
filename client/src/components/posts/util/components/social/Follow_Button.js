@@ -46,42 +46,49 @@ const FollowButton = ({
   if (loading) return 'Loading...';
   if (error) return `Error: ${error}`;
   
-  if (doesUserFollow(currentUser.user, user, tag)) {
-    return (
-      <React.Fragment>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            unfollow({
-              variables: {
-                user: Cookies.get('currentUser'),
-                item: user ? user._id : tag._id
-              }
-            })
-          }}
-        >
-          <button type='submit'>Unfollow</button>
-        </form>
-      </React.Fragment>
-    )
+  if (currentUser.user.blogName !== user.blogName) {
+    if (doesUserFollow(currentUser.user, user, tag)) {
+      return (
+        <React.Fragment>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              unfollow({
+                variables: {
+                  user: Cookies.get('currentUser'),
+                  item: user ? user._id : tag._id
+                }
+              })
+            }}
+          >
+            <button type='submit'>Unfollow</button>
+          </form>
+        </React.Fragment>
+      )
+    } else {
+      return (
+        <React.Fragment>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              follow({
+                variables: {
+                  user: Cookies.get('currentUser'),
+                  item: user ? user._id : tag._id,
+                  itemKind: user ? 'User' : 'Tag'
+                }
+              })
+            }}
+          >
+            <button type='submit'>Follow</button>
+          </form>
+        </React.Fragment>
+      )
+    }
   } else {
     return (
-      <React.Fragment>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            follow({
-              variables: {
-                user: Cookies.get('currentUser'),
-                item: user ? user._id : tag._id,
-                itemKind: user ? 'User' : 'Tag'
-              }
-            })
-          }}
-        >
-          <button type='submit'>Follow</button>
-        </form>
-      </React.Fragment>
+      <div>
+      </div>
     )
   }
 }

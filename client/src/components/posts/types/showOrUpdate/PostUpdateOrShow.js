@@ -41,6 +41,8 @@ const PostUpdateOrShow = ({
         setUpdate={setUpdate}
         toggleUpdate={toggleUpdate}
         repostFormBool={repostFormBool}
+        uploading={uploading}
+        setUploading={setUploading}
       />
     )
   }

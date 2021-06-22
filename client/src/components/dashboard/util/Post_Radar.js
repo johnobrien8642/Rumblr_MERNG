@@ -25,8 +25,6 @@ const PostRadar = () => {
 
   const { fetchPostRadar } = data;
 
-  console.log(fetchPostRadar)
-
   if (fetchPostRadar) {
     if (fetchPostRadar.kind === 'Repost') {
       return (
