@@ -761,25 +761,66 @@ const RootQueryType = new GraphQLObjectType({
         ]).then(likes => {
           var likedPostIds = likes.map(l => l.post._id)
 
-          return Tag.find()
-            .sort([
-              ['postHeatLastWeek', -1],
-              ['followerHeatLastWeek', -1],
-              ['followerCount', -1],
-            ])
-            .limit(30)
-            .then(tags => {
-              return Promise.all([
-                asyncTagPostArr(
-                  query, tags,
-                  likedPostIds, Post,
-                  User, mongoose, 
-                  asyncFetchTagPosts,
-                  handleFilterTagRegex,
-                  handleFilterPostContentRegex
-                )
-              ]).then(res => {
-                return res[0]
+          return User.findOne({ blogName: query })
+            .then(user => {
+              var filteredTagRegex = handleFilterTagRegex(user)
+    
+              var filteredPostContentRegex = handleFilterPostContentRegex(user)
+    
+              return Post.aggregate([
+                {
+                  $lookup: {
+                    from: 'posts',
+                    let: {
+                      userId: user._id,
+                      likedPostIds: likedPostIds,
+                      filteredTagRegex: filteredTagRegex,
+                      filteredPostContentRegex: filteredPostContentRegex
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and:
+                            [
+                              { $not: { $eq: ["$user", "$$userId" ] } },
+                              { $not: { $in: ["$_id", "$$likedPostIds" ] } },
+                              { $not: [
+                                  {
+                                    $regexMatch: {
+                                      input: "$tagTitles",
+                                      regex: "$$filteredTagRegex"
+                                    }
+                                  }
+                                ]
+                              },
+                            { $not: [
+                                  {
+                                    $regexMatch: {
+                                      input: "$allText",
+                                      regex: "$$filteredPostContentRegex"
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ],
+                    as: 'posts'
+                  }
+                },
+                { $group: {
+                    _id: '$posts'
+                  }
+                },
+                { $unwind: '$_id' },
+                { $replaceRoot: { "newRoot": "$_id" } },
+                { $sort: { "notesHeatLastTwoDays": 1, "notesCount": 1 } },
+                { $limit: 30 }
+              ]).then(posts => {
+                return posts
               })
             })
         })
