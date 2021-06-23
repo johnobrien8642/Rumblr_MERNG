@@ -30,13 +30,19 @@ const UserBlogShow = () => {
         className='userShowContainer'
       >
         <div>
-          <ProfilePic user={user.user} />
-          <h1>{user.user.blogName}</h1>
-          <h3>{user.user.blogDescription}</h3>
+          <div>
+            <div
+              className='profilePicAndFollowContainer'
+            >
+              <ProfilePic user={user.user} />
+              <FollowButton 
+                user={user.user}
+              />
+            </div>
+            <h1>{user.user.blogName}</h1>
+            <h3>{user.user.blogDescription}</h3>
+          </div>
         </div>
-        <FollowButton 
-          user={user.user}
-        />
       </div>
       <Feed user={user.user} />
     </div>
