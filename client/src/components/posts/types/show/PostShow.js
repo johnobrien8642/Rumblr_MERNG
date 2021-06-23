@@ -10,10 +10,10 @@ const { postHeader, postBody, repostFooter, postTags } = PostShowUtil;
 const { FETCH_LIKES_REPOSTS_AND_COMMENTS } = Queries;
 
 const PostShow = ({ 
-  post, 
-  repost
+  post,
+  repost,
+  radar
 }) => {
-  
   let [active, setActive] = useState(false)
   let { loading, error, data } = useQuery(FETCH_LIKES_REPOSTS_AND_COMMENTS, {
     variables: {
@@ -74,7 +74,7 @@ const PostShow = ({
         >
           {postHeader(post)}
       
-          {postBody(post)}
+          {postBody(post, radar)}
       
           {repostFooter(post)}
       

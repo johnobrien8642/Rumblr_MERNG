@@ -161,7 +161,7 @@ const postTags = (post) => {
   )
 }
 
-const postBody = (post) => {
+const postBody = (post, radar) => {
   var data = demeterPost(post)
   var descriptionArr = [...data.descriptionImages]
   
@@ -291,6 +291,7 @@ const postBody = (post) => {
       <React.Fragment>
         <ReactPlayer
           width={'100%'}
+          height={'100%'}
           url={data.videoLink.url}
           controls
         />

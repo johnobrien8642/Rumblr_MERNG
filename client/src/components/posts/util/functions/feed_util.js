@@ -304,15 +304,18 @@ const updateCacheInfScrollFollowedUsers = (
 }
 
 const handleData = (data, feedArr, cursorId, endOfPosts) => {
-  var { fetchUserFeed, 
+  var { fetchUserFeed,
+        fetchUserBlogFeed, 
         fetchTagFeed, 
-        fetchAllUserActivity, 
+        fetchAllUserActivity,
         fetchUserFollowers,
         fetchFollowedUsers,
         fetchUserLikes } = data
 
   if (fetchUserFeed) {
     feedArr.current = fetchUserFeed
+  } else if (fetchUserBlogFeed) {
+    feedArr.current = fetchUserBlogFeed
   } else if (fetchTagFeed) {
     feedArr.current = fetchTagFeed
   } else if (fetchAllUserActivity) {
@@ -341,6 +344,7 @@ const setgqlQueryAndQueryFeed = (
   tag, user, userLikes,
   gqlQuery, query, 
   FETCH_TAG_FEED,
+  FETCH_USER_BLOG_FEED,
   FETCH_USER_LIKES,
   currentUser
 ) => {
@@ -350,6 +354,7 @@ const setgqlQueryAndQueryFeed = (
     gqlQuery.current = FETCH_TAG_FEED
   } else if (user) {
     query.current = user.blogName
+    gqlQuery.current = FETCH_USER_BLOG_FEED
   } else if (userLikes) {
     query.current = currentUser
     gqlQuery.current = FETCH_USER_LIKES

@@ -61,9 +61,6 @@ const UserDetails = ({
           <li>
             <Link
               to='/likes'
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
             >
               <img
                 className='detailIcon'
@@ -78,9 +75,6 @@ const UserDetails = ({
           <li>
             <Link 
               to='/following'
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
             >
               <img 
                 className='detailIcon'
@@ -95,9 +89,6 @@ const UserDetails = ({
           <li>
             <Link 
               to='/settings/account'
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
             >
               <img
                 className='detailIcon'
@@ -117,10 +108,7 @@ const UserDetails = ({
             className='blogDescription'
           > 
             <Link 
-              to={`/view/blog/${blogName}`} 
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
+              to={`/view/blog/${blogName}`}
             >
               <ProfilePic 
                 user={user}
@@ -137,9 +125,6 @@ const UserDetails = ({
             <Link
               className='blogDetailData'
               to={`/view/blog/${blogName}`}
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
             >
               <p>Posts</p>
             </Link>
@@ -150,9 +135,6 @@ const UserDetails = ({
             <Link
               className='blogDetailData'
               to='/followers'
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
             >
               <p>Followers</p>
             </Link>
@@ -163,9 +145,6 @@ const UserDetails = ({
             <Link
               className='blogDetailData'
               to='/activity'
-              onClick={() => {
-                setNavActive(navActive = false)
-              }}
             >
               <p>Activity</p>
             </Link>

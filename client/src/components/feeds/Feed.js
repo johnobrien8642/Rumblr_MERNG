@@ -9,7 +9,7 @@ import ProfilePic from '../user/util/components/Profile_Pic';
 import PostLoading from '../nav/Post_Loading';
 import FollowButton from '../posts/util/components/social/Follow_Button';
 import PostShowUtil from '../posts/util/functions/post_show_util.js';
-const { FETCH_USER_FEED, FETCH_TAG_FEED, FETCH_USER_LIKES } = Queries;
+const { FETCH_USER_FEED, FETCH_USER_BLOG_FEED, FETCH_TAG_FEED, FETCH_USER_LIKES } = Queries;
 const { infiniteScroll, updateCacheInfScroll,
         handleData, setgqlQueryAndQueryFeed } = FeedUtil;
 const { handlePostClassName } = PostShowUtil;
@@ -38,6 +38,7 @@ const Feed = ({
     gqlQuery, 
     query, 
     FETCH_TAG_FEED,
+    FETCH_USER_BLOG_FEED,
     FETCH_USER_LIKES,
     Cookies.get('currentUser')
   )
@@ -108,7 +109,7 @@ const Feed = ({
                 className='userRepostShowHeader'
               >
                 <ProfilePic
-                  user={obj.post.user}
+                  user={obj.user}
                 />
                 <span
                   className='repostHeaderContainer'
@@ -130,11 +131,11 @@ const Feed = ({
                       className='repostedFrom'
                       to={`/view/blog/${obj.repostedFrom.blogName}`}
                     >
-                      {obj.user.blogName}
+                      {obj.repostedFrom.blogName}
                     </Link>
                     <FollowButton
                       feed={true}
-                      user={obj.repostedFrom}
+                      user={obj.repostedFrom.blogName}
                     />
                   </div>
                 </span>
@@ -143,7 +144,7 @@ const Feed = ({
               <PostUpdateOrShow
                 post={obj}
                 repostFormBool={false}
-                uploading={uploading}
+                uploading={uploading}z
                 setUploading={setUploading}
               />
             </div>

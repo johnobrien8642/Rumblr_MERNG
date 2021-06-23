@@ -61,7 +61,7 @@ const PostRadar = () => {
                       className='repostedFrom'
                       to={`/view/blog/${fetchPostRadar.repostedFrom.blogName}`}
                     >
-                      {fetchPostRadar.user.blogName}
+                      {fetchPostRadar.repostedFrom.blogName}
                     </Link>
                     <FollowButton
                       feed={true}

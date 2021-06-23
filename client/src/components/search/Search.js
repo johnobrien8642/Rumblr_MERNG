@@ -20,7 +20,7 @@ const Search = ({
 }) => {
   let [input, setInput] = useState('');
   let [followedActive, setFollowedActive] = useState(mobile ? true : false)
-  let [active, setActive] = useState(true);
+  let [active, setActive] = useState(false);
   
   useEffect(() => {
     if (searchClose) {
@@ -49,7 +49,7 @@ const Search = ({
       <div
         className='searchBar'
         tabIndex='0'
-        // onBlur={e => onBlur(e)}
+        onBlur={e => onBlur(e)}
         onFocus={e => {
           if (
             !e.relatedTarget || 

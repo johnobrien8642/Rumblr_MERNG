@@ -43,6 +43,46 @@ const Queries = {
       }
     }
   `,
+  FETCH_USER_BLOG_FEED: gql`
+    query fetchUserBlogFeed($query: String) {
+      fetchUserBlogFeed(query: $query) {
+        __typename
+        ... on RepostType {
+          _id
+          kind
+          user {
+            _id
+            blogName
+            profilePic {
+              _id
+              src
+            }
+          }
+          repostTrail {
+            _id
+            caption
+            user {
+              _id
+              blogName
+            }
+            repost {
+              _id
+            }
+          }
+          repostedFrom {
+            _id
+            blogName
+            kind
+          }
+          post {
+            __typename
+            ${ALL_POSTS}
+          }
+        }
+        ${ALL_POSTS}
+      }
+    }
+  `,
   FETCH_TAG_FEED: gql`
     query FetchTagFeed($query: String, $cursorId: String) {
       fetchTagFeed(query: $query, cursorId: $cursorId) {
