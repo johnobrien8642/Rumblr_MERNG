@@ -335,8 +335,15 @@
 
           li {
             display: flex;
+            flex-direction: row;
             margin-top: 5px;
             justify-content: space-between;
+            
+            .tagResultContainer {
+              display: flex;
+              justify-content: space-between;
+              width: 100%;
+            }
 
             .recentPostsCount {
               display: none;
@@ -380,7 +387,7 @@
           }
 
           .tagResult {
-            height: 25px;
+            height: fit-content;
           }
           
           li {
