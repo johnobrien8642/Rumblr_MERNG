@@ -231,7 +231,7 @@ const mutation = new GraphQLObjectType({
       }
     },
     updateRepost: {
-      type: RepostCaptionType,
+      type: RepostType,
       args: {
         repostData: { type: GraphQLJSONObject }
       },
@@ -239,11 +239,24 @@ const mutation = new GraphQLObjectType({
         repostData
       }) {
         return Promise.all([
+          Repost.findById(repostData.repostedId)
+            .populate('repostTrail')
+            .then(repost => repost),
           RepostCaption.findById(repostData.captionId)
-        ]).then(([foundCaption]) => {
+        ]).then(([foundRepost, foundCaption]) => {
+          var repostObj = foundRepost.toObject()
+
+          repostObj.repostTrail.forEach(obj => {
+            if (obj._id === foundCaption._id) {
+              obj.caption = repostData.repostCaption
+            }
+          })
+
           foundCaption.caption = repostData.repostCaption
           
-          return foundCaption.save().then(caption => caption)
+          return foundCaption.save().then(() => {
+            return repostObj
+          })
         })
       }
     },

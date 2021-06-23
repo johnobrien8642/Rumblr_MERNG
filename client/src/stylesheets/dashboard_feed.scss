@@ -69,6 +69,10 @@
           font-weight: 700;
           font-size: 14px;
           font-family: var(--font);
+
+          &:hover {
+            cursor: pointer;
+          }
         }
       }
 
@@ -857,6 +861,10 @@
               font-size: 13px;
               color: var(--tumblr-light-blue);
               margin: 0 0 0 15px;
+
+              &:hover {
+                cursor: pointer;
+              }
 
               @media (max-width: 1024px) {
                 top: 1px;
