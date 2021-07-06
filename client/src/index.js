@@ -14,7 +14,7 @@ import Queries from './graphql/queries'
 import Mutations from './graphql/mutations'
 
 const { IS_LOGGED_IN } = Queries;
-const { VERIFY_USER } = Mutations;
+const { VERIFY_USER, LOGOUT_USER } = Mutations;
 
 const token = Cookies.get('auth-token');
 
@@ -209,6 +209,29 @@ if (token) {
       })
     })
 }
+
+// setInterval(() => {
+
+//   if (Cookies.get('auth-token')) {
+//     client
+//       .mutate({ mutation: LOGOUT_USER, variables: { token: token } })
+//       .then(({ data }) => {
+
+//         client.writeQuery({
+//           query: IS_LOGGED_IN,
+//           data: {
+//             isLoggedIN: data.logoutUser.loggedIn
+//           }
+//         })
+
+//         Cookies.set('auth-token', '')
+//         Cookies.set('currentUser', '')
+
+//         alert("This clone logs you out automatically after two hours. If you'd like to continue checking out Rumblr simply log back in.")
+//       })
+//   }
+
+// }, 5000)
 
 const Root = () => {
   return (

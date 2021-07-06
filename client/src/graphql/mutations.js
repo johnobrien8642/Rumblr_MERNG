@@ -93,37 +93,37 @@ const Mutations = {
   UPDATE_REPOST: gql`
     mutation UpdateRepost($repostData: JSONObject) {
       updateRepost(repostData: $repostData) {
+        _id
+        kind
+        user {
           _id
-          kind
+          blogName
+          profilePic {
+            _id
+            src
+          }
+        }
+        repostTrail {
+          _id
+          caption
           user {
             _id
             blogName
-            profilePic {
-              _id
-              src
-            }
           }
-          repostTrail {
+          repost {
             _id
-            caption
-            user {
-              _id
-              blogName
-            }
-            repost {
-              _id
-            }
-          }
-          repostedFrom {
-            _id
-            blogName
-            kind
-          }
-          post {
-            __typename
-            ${ALL_POSTS}
           }
         }
+        repostedFrom {
+          _id
+          blogName
+          kind
+        }
+        post {
+          __typename
+          ${ALL_POSTS}
+        }
+      }
     }
   `,
   CREATE_REPOST: gql`

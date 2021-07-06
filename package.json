@@ -10,6 +10,7 @@
     "server": "nodemon index.js",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
+  "proxy": "http://localhost:5000",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/johnobrien8642/Rumblr_MERNG.git"
